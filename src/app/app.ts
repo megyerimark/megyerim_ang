@@ -1,10 +1,28 @@
 import { Component, inject, signal } from '@angular/core';
-import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { Navbar } from './components/navbar/navbar';
-@Component({selector:'app-root',standalone:true,imports:[RouterOutlet,Navbar],template:`@if(showNavbar()){<app-navbar/>}<router-outlet/>`})
+@Component({
+    selector: 'app-root',
+    standalone: true,
+    imports: [RouterOutlet, Navbar],
+    templateUrl: './app.html',
+    styleUrl: './app.scss'
+})
 export class App {
-  private router=inject(Router);
-  showNavbar=signal(!this.router.url.startsWith('/admin'));
-  constructor(){const saved=localStorage.getItem('mm-theme');document.documentElement.setAttribute('data-theme',saved?(saved==='dark'?'dark':'light'):(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));this.router.events.pipe(filter((e):e is NavigationEnd=>e instanceof NavigationEnd)).subscribe(e=>this.showNavbar.set(!e.urlAfterRedirects.startsWith('/admin')));}
+    private readonly router = inject(Router);
+    readonly showNavbar = signal(!this.router.url.startsWith('/admin'));
+    constructor() {
+        const savedTheme = localStorage.getItem('mm-theme');
+        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = savedTheme
+            ? (savedTheme === 'dark' ? 'dark' : 'light')
+            : (systemTheme ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+        this.router.events
+            .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+            .subscribe(event => {
+            this.showNavbar.set(!event.urlAfterRedirects.startsWith('/admin'));
+        });
+    }
 }

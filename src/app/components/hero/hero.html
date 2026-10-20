@@ -1,20 +1,148 @@
 <section class="hero" id="fooldal" aria-labelledby="hero-title">
- <div class="hero-glow glow1"></div><div class="hero-glow glow2"></div><div class="hero-grid"></div>
- <div class="container hero-layout">
-  <div class="hero-copy"><span class="hero-tag"><span class="alive"></span> EGYEDI WEBFEJLESZTÉS · DIGITÁLIS ÉLMÉNYEK</span>
-   <h1 id="hero-title">{{headline}}</h1>
-   <p class="hero-description">{{description}}</p>
-   <div class="hero-actions"><a routerLink="/ajanlatkeres" class="btn btn-primary">Beszéljünk a projektedről <span aria-hidden="true">↗</span></a><a routerLink="/" fragment="munkak" class="btn btn-outline">Munkáim megtekintése <span aria-hidden="true">↘</span></a></div>
-   <div class="hero-proof"><span><i>✦</i> Egyedi megoldások</span><span><i>✦</i> Mobilbarát kivitelezés</span><span><i>✦</i> Közvetlen kapcsolattartás</span></div>
+  <div class="hero-grid" aria-hidden="true">
   </div>
-  <div class="hero-stage" (mousemove)="move($event)" (mouseleave)="reset()" aria-label="Animált, háromdimenziós hatású illusztráció weboldal-előnézetekkel">
-   <div class="stage-world" [style.transform]="'rotateX('+tiltX+'deg) rotateY('+tiltY+'deg)'">
-    <div class="orb-blur"></div><div class="orb"><div class="orb-shine"></div></div><div class="ring ring-one"></div><div class="ring ring-two"></div>
-    <div class="floating-site site-one"><div class="browser-top"><span class="dots">● ● ●</span><small>PREVIEW / 01</small></div><div class="site-one-body"><div class="site-mini-nav"><strong>NOIR.</strong><span>☰</span></div><div class="site-eyebrow">THE ART OF PRESENCE</div><b>Design that<br>speaks for you.</b><div class="site-mini-button">Explore ↗</div><div class="mini-circle"></div></div></div>
-    <div class="floating-site site-two"><div class="browser-top"><span class="dots">● ● ●</span><small>PREVIEW / 02</small></div><div class="site-two-body"><div class="studio-label">STUDIO / 24</div><strong>Think bigger.<br>Build better.</strong><div class="site-progress"></div><div class="site-progress short"></div></div></div>
-    <div class="float-tag"><span>✳</span><b>Creative development</b></div>
-   </div>
+  <div class="hero-glow hero-glow--right" aria-hidden="true">
   </div>
- </div>
- <div class="container hero-bottom"><span>DESIGN × TECH × STRATEGY</span><a routerLink="/" fragment="szolgaltatasok">FEDEZD FEL <span>↓</span></a></div>
+  <div class="hero-glow hero-glow--left" aria-hidden="true">
+  </div>
+  <div class="container hero-layout">
+    <div class="hero-copy">
+      <div class="hero-eyebrow">
+        <span class="eyebrow-index">
+          01 / DIGITAL CRAFT
+        </span>
+        <span class="eyebrow-rule">
+        </span>
+        <span>
+          DESIGN & DEVELOPMENT
+        </span>
+      </div>
+      <h1 id="hero-title">
+        {{ headline }}
+      </h1>
+      <p class="hero-description">
+        {{ description }}
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" routerLink="/ajanlatkeres">
+          Beszéljünk a projektedről
+          <span aria-hidden="true">
+            ↗
+          </span>
+        </a>
+        <a class="btn btn-outline" routerLink="/" fragment="munkak">
+          Munkáim megtekintése
+          <span aria-hidden="true">
+            ↘
+          </span>
+        </a>
+      </div>
+      <div class="hero-proof">
+        <span>
+          <i aria-hidden="true">
+            ✳
+          </i>
+          Egyedi vizuális arculat
+        </span>
+        <span>
+          <i aria-hidden="true">
+            ✳
+          </i>
+          Valódi üzleti fókusz
+        </span>
+        <span>
+          <i aria-hidden="true">
+            ✳
+          </i>
+          Közvetlen együttműködés
+        </span>
+      </div>
+    </div>
+    <div
+      class="hero-stage"
+      aria-label="3D digitális szobor és két weboldal-terv vizuális bemutatója"
+    >
+      <span class="stage-coordinate stage-coordinate--top" aria-hidden="true">
+        DESIGN SYSTEM / 001
+      </span>
+      <div class="stage-orbit" aria-hidden="true">
+      </div>
+      <div class="stage-halo" aria-hidden="true">
+      </div>
+      <app-hero-sculpture>
+      </app-hero-sculpture>
+      <div class="floating-site site-one" aria-hidden="true">
+        <div class="site-topbar">
+          <span class="site-dots">
+            <i>
+            </i>
+            <i>
+            </i>
+            <i>
+            </i>
+          </span>
+          <small>
+            VÁGAT / STUDIO
+          </small>
+          <span class="site-topbar-icon">
+            ↗
+          </span>
+        </div>
+        <img
+          src="/demos/previews/vagat.png"
+          alt=""
+          loading="eager"
+          width="540"
+          height="338"
+        />
+      </div>
+      <div class="floating-site site-two" aria-hidden="true">
+        <div class="site-topbar">
+          <span class="site-dots">
+            <i>
+            </i>
+            <i>
+            </i>
+            <i>
+            </i>
+          </span>
+          <small>
+            AXIS / DETAILING
+          </small>
+          <span class="site-topbar-icon">
+            ↗
+          </span>
+        </div>
+        <img
+          src="/demos/previews/axis.png"
+          alt=""
+          loading="eager"
+          width="480"
+          height="300"
+        />
+      </div>
+      <div class="stage-tag" aria-hidden="true">
+        <span>
+          ✧
+        </span>
+        <span>
+          Form follows purpose.
+        </span>
+      </div>
+      <span class="stage-coordinate stage-coordinate--bottom" aria-hidden="true">
+        MMM / INTERACTIVE EXPERIENCE
+      </span>
+    </div>
+  </div>
+  <div class="container hero-bottom">
+    <span>
+      MEGYERI MÁRK MÁTÉ · WEBFEJLESZTÉS
+    </span>
+    <a routerLink="/" fragment="szolgaltatasok">
+      FEDEZD FEL
+      <span aria-hidden="true">
+        ↓
+      </span>
+    </a>
+  </div>
 </section>

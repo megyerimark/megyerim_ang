@@ -1,13 +1,335 @@
-<main class="quote-page"><div class="container">
- @if(sent()!==null){<section class="sent-card card"><div class="sent-icon">✓</div><span class="overline">MEGÉRKEZETT</span><h1>Köszönöm a bizalmad!</h1><p>Az ajánlatkérésed sikeresen beérkezett. Hamarosan egyeztetünk a részletekről.</p><div class="ref-code">Ajánlatkérés azonosítója <strong>#{{sent()}}</strong></div><a routerLink="/" class="btn btn-primary">Vissza a főoldalra ↗</a></section>}
- @else{<div class="quote-heading"><div><span class="overline">INDÍTSUNK EL VALAMIT</span><h1>Mesélj a <span class="gradient-text">projektedről.</span></h1><p>Néhány rövid lépésben összeállíthatod, milyen weboldalt szeretnél. Ez még nem jár megrendelési kötelezettséggel.</p></div><a routerLink="/" class="exit-link">← Vissza a főoldalra</a></div>
- <div class="wizard-layout"><div class="wizard-main card"><div class="step-header"><span>LÉPÉS {{step()}} / 4</span><strong>{{step()===1?'Projekt típusa':step()===2?'Dizájn & stílus':step()===3?'Funkciók & részletek':'Kapcsolattartás'}}</strong></div><div class="progress-bar"><span [style.width.%]="step()*25"></span></div>
- @if(step()===1){<div class="step-content"><h2>Milyen weboldalra van szükséged?</h2><p class="step-intro">Válaszd ki a hozzád legközelebb álló típust.</p><div class="type-grid">@for(t of websiteTypes;track t.v){<button type="button" class="type-card" [class.selected]="data.website_type===t.v" (click)="data.website_type=t.v"><span class="option-symbol">{{t.icon}}</span><strong>{{t.title}}</strong><small>{{t.desc}}</small><span class="check-circle">{{data.website_type===t.v?'✓':''}}</span></button>}</div></div>}
- @if(step()===2){<div class="step-content"><h2>Mi áll közel hozzád?</h2><p class="step-intro">Válassz egy hangulatot, és akár több színt is. Később természetesen finomíthatunk rajta.</p><div class="style-grid">@for(s of styles;track s.v){<button type="button" class="style-card" [class.selected]="data.design_style===s.v" (click)="data.design_style=s.v"><span class="style-preview" [class]="s.css"><span class="tiny-title"></span><span class="tiny-line"></span><span class="tiny-line short"></span><span class="tiny-button"></span></span><strong>{{s.title}}</strong><small>{{s.desc}}</small></button>}</div><h3>Kedvenc színek <small>(legfeljebb 6)</small></h3><div class="colors">@for(c of palette;track c){<button class="color" type="button" [style.background]="c" [class.selected]="data.colors.includes(c)" [disabled]="data.colors.length>=6&&!data.colors.includes(c)" (click)="toggle('colors',c)" [attr.aria-label]="'Szín kiválasztása: '+c" [title]="c">{{data.colors.includes(c)?'✓':''}}</button>}</div></div>}
- @if(step()===3){<div class="step-content"><h2>Mit tudjon a weboldalad?</h2><p class="step-intro">Jelöld a kért funkciókat, és írd le az elképzeléseidet.</p><div class="feature-grid">@for(f of featureOptions;track f){<button type="button" class="feature-choice" [class.selected]="data.features.includes(f)" (click)="toggle('features',f)"><span>{{data.features.includes(f)?'✓':'+'}}</span>{{f}}</button>}</div><div class="field-stack"><div class="form-field"><label for="project-description">Projektleírás *</label><textarea id="project-description" class="input" rows="5" maxlength="5000" [(ngModel)]="data.project_description" placeholder="Milyen vállalkozáshoz készül? Kiknek szól? Milyen célokat szolgáljon?"></textarea><span class="help">Legalább 10 karakter · {{data.project_description.length}} / 5000</span></div><div class="form-field"><label for="inspirations">Inspirációs weboldalak</label><textarea class="input" id="inspirations" rows="2" [(ngModel)]="inspiration" placeholder="https://pelda.hu (soronként egy link)"></textarea><span class="help">Legfeljebb 5 teljes URL, http:// vagy https:// kezdettel.</span></div><label class="maintenance"><input type="checkbox" [(ngModel)]="data.wants_maintenance"><span><strong>Szeretnék későbbi karbantartást is</strong><small>Tartalomfrissítés, módosítások, technikai támogatás</small></span></label></div></div>}
- @if(step()===4){<div class="step-content"><h2>Hogyan érhetlek el?</h2><p class="step-intro">Az ajánlatkérésed alapján felveszem veled a kapcsolatot.</p><div class="two-fields"><div class="form-field"><label for="name">Név *</label><input class="input" id="name" autocomplete="name" maxlength="120" [(ngModel)]="data.customer_name" placeholder="Teljes név">@if(errors()['customer_name']){<span class="error-msg">{{errors()['customer_name'][0]}}</span>}</div><div class="form-field"><label for="email">E-mail-cím *</label><input class="input" id="email" type="email" autocomplete="email" maxlength="254" [(ngModel)]="data.email" placeholder="nev@vallalkozas.hu">@if(errors()['email']){<span class="error-msg">{{errors()['email'][0]}}</span>}</div><div class="form-field"><label for="phone">Telefonszám</label><input class="input" id="phone" type="tel" autocomplete="tel" maxlength="30" [(ngModel)]="data.phone" placeholder="+36 ..."></div><div class="form-field"><label for="company">Vállalkozás neve</label><input class="input" id="company" maxlength="150" [(ngModel)]="data.company_name" placeholder="Opcionális"></div><div class="form-field"><label for="budget">Költségkeret</label><select class="input" id="budget" [(ngModel)]="data.budget_range">@for(b of budgets;track b.v){<option [value]="b.v">{{b.l}}</option>}</select></div><div class="form-field"><label for="deadline">Tervezett határidő</label><input class="input" id="deadline" type="date" [min]="minDate()" [(ngModel)]="data.desired_deadline"></div></div><div class="honeypot" aria-hidden="true"><label for="website-field">Weboldal</label><input id="website-field" name="website" tabindex="-1" autocomplete="off" [(ngModel)]="data.website"></div><label class="privacy-consent"><input type="checkbox" [(ngModel)]="data.privacy_notice_acknowledged"><span>Elolvastam és tudomásul vettem az <a routerLink="/adatkezeles" target="_blank" rel="noopener noreferrer">adatkezelési tájékoztatót</a>. *</span></label><div class="summary-line">A beküldés díjmentes, nem jár megrendelési kötelezettséggel.</div></div>}
- @if(generalError()){<div class="notice error" role="alert">{{generalError()}}@if(errors()&&step()===4){@for(err of (errors()['project_description']||[]);track err){<div>{{err}}</div>}}</div>}
- <div class="wizard-footer">@if(step()>1){<button class="btn btn-outline" type="button" (click)="back()">← Vissza</button>}@else{<span></span>}@if(step()<4){<button class="btn btn-primary" type="button" (click)="next()">Folytatás ↗</button>}@else{<button class="btn btn-primary" type="button" [disabled]="sending()" (click)="submit()">{{sending()?'Küldés folyamatban…':'Ajánlatkérés elküldése ↗'}}</button>}</div></div>
- <aside class="wizard-side"><div class="aside-card card"><span class="overline">A TE PROJEKTED</span><h3>Egyedi elképzelés.<br>Átgondolt megoldás.</h3><div class="aside-art"><span class="small-orb"></span><b>MM.</b></div><p>Minden projekt más. A részletek alapján személyre szabott javaslatot készítek.</p><div class="aside-checks"><span>✓ Nincs automatikus megrendelés</span><span>✓ Személyes egyeztetés</span><span>✓ Átlátható ajánlat</span></div></div></aside>
- </div>}
-</div></main>
+<main class="quote-page">
+  <div class="container">
+    @if(sent()!==null){
+    <section class="sent-card card">
+      <div class="sent-icon">
+        ✓
+      </div>
+      <span class="overline">
+        MEGÉRKEZETT
+      </span>
+      <h1>
+        Köszönöm a bizalmad!
+      </h1>
+      <p>
+        Az ajánlatkérésed sikeresen beérkezett. Hamarosan egyeztetünk a részletekről.
+      </p>
+      <div class="ref-code">
+        Ajánlatkérés azonosítója
+        <strong>
+          #{{sent()}}
+        </strong>
+      </div>
+      <a routerLink="/" class="btn btn-primary">
+        Vissza a főoldalra ↗
+      </a>
+    </section>
+    }
+ @else{
+    <div class="quote-heading">
+      <div>
+        <span class="overline">
+          INDÍTSUNK EL VALAMIT
+        </span>
+        <h1>
+          Mesélj a
+          <span class="gradient-text">
+            projektedről.
+          </span>
+        </h1>
+        <p>
+          Néhány rövid lépésben összeállíthatod, milyen weboldalt szeretnél. Ez még nem jár megrendelési kötelezettséggel.
+        </p>
+      </div>
+      <a routerLink="/" class="exit-link">
+        ← Vissza a főoldalra
+      </a>
+    </div>
+    <div class="wizard-layout">
+      <div class="wizard-main card">
+        <div class="step-header">
+          <span>
+            LÉPÉS {{step()}} / 4
+          </span>
+          <strong>
+            {{step()===1?'Projekt típusa':step()===2?'Dizájn & stílus':step()===3?'Funkciók & részletek':'Kapcsolattartás'}}
+          </strong>
+        </div>
+        <div class="progress-bar">
+          <span [style.width.%]="step()*25">
+          </span>
+        </div>
+        @if(step()===1){
+        <div class="step-content">
+          <h2>
+            Milyen weboldalra van szükséged?
+          </h2>
+          <p class="step-intro">
+            Válaszd ki a hozzád legközelebb álló típust.
+          </p>
+          <div class="type-grid">
+            @for(t of websiteTypes;track t.v){
+            <button type="button" class="type-card" [class.selected]="data.website_type===t.v" (click)="data.website_type=t.v">
+              <span class="option-symbol">
+                {{t.icon}}
+              </span>
+              <strong>
+                {{t.title}}
+              </strong>
+              <small>
+                {{t.desc}}
+              </small>
+              <span class="check-circle">
+                {{data.website_type===t.v?'✓':''}}
+              </span>
+            </button>
+            }
+          </div>
+        </div>
+        }
+ @if(step()===2){
+        <div class="step-content">
+          <h2>
+            Mi áll közel hozzád?
+          </h2>
+          <p class="step-intro">
+            Válassz egy hangulatot, és akár több színt is. Később természetesen finomíthatunk rajta.
+          </p>
+          <div class="style-grid">
+            @for(s of styles;track s.v){
+            <button type="button" class="style-card" [class.selected]="data.design_style===s.v" (click)="data.design_style=s.v">
+              <span class="style-preview" [class]="s.css">
+                <span class="tiny-title">
+                </span>
+                <span class="tiny-line">
+                </span>
+                <span class="tiny-line short">
+                </span>
+                <span class="tiny-button">
+                </span>
+              </span>
+              <strong>
+                {{s.title}}
+              </strong>
+              <small>
+                {{s.desc}}
+              </small>
+            </button>
+            }
+          </div>
+          <h3>
+            Kedvenc színek
+            <small>
+              (legfeljebb 6)
+            </small>
+          </h3>
+          <div class="colors">
+            @for(c of palette;track c){
+            <button class="color" type="button" [style.background]="c" [class.selected]="data.colors.includes(c)" [disabled]="data.colors.length>=6&&!data.colors.includes(c)" (click)="toggle('colors',c)" [attr.aria-label]="'Szín kiválasztása: '+c" [title]="c">
+              {{data.colors.includes(c)?'✓':''}}
+            </button>
+            }
+          </div>
+        </div>
+        }
+ @if(step()===3){
+        <div class="step-content">
+          <h2>
+            Mit tudjon a weboldalad?
+          </h2>
+          <p class="step-intro">
+            Jelöld a kért funkciókat, és írd le az elképzeléseidet.
+          </p>
+          <div class="feature-grid">
+            @for(f of featureOptions;track f){
+            <button type="button" class="feature-choice" [class.selected]="data.features.includes(f)" (click)="toggle('features',f)">
+              <span>
+                {{data.features.includes(f)?'✓':'+'}}
+              </span>
+              {{f}}
+            </button>
+            }
+          </div>
+          <div class="field-stack">
+            <div class="form-field">
+              <label for="project-description">
+                Projektleírás *
+              </label>
+              <textarea id="project-description" class="input" rows="5" maxlength="5000" [(ngModel)]="data.project_description" placeholder="Milyen vállalkozáshoz készül? Kiknek szól? Milyen célokat szolgáljon?">
+              </textarea>
+              <span class="help">
+                Legalább 10 karakter · {{data.project_description.length}} / 5000
+              </span>
+            </div>
+            <div class="form-field">
+              <label for="inspirations">
+                Inspirációs weboldalak
+              </label>
+              <textarea class="input" id="inspirations" rows="2" [(ngModel)]="inspiration" placeholder="https://pelda.hu (soronként egy link)">
+              </textarea>
+              <span class="help">
+                Legfeljebb 5 teljes URL, http:// vagy https:// kezdettel.
+              </span>
+            </div>
+            <label class="maintenance">
+              <input type="checkbox" [(ngModel)]="data.wants_maintenance">
+              <span>
+                <strong>
+                  Szeretnék későbbi karbantartást is
+                </strong>
+                <small>
+                  Tartalomfrissítés, módosítások, technikai támogatás
+                </small>
+              </span>
+            </label>
+          </div>
+        </div>
+        }
+ @if(step()===4){
+        <div class="step-content">
+          <h2>
+            Hogyan érhetlek el?
+          </h2>
+          <p class="step-intro">
+            Az ajánlatkérésed alapján felveszem veled a kapcsolatot.
+          </p>
+          <div class="two-fields">
+            <div class="form-field">
+              <label for="name">
+                Név *
+              </label>
+              <input class="input" id="name" autocomplete="name" maxlength="120" [(ngModel)]="data.customer_name" placeholder="Teljes név">
+              @if(errors()['customer_name']){
+              <span class="error-msg">
+                {{errors()['customer_name'][0]}}
+              </span>
+              }
+            </div>
+            <div class="form-field">
+              <label for="email">
+                E-mail-cím *
+              </label>
+              <input class="input" id="email" type="email" autocomplete="email" maxlength="254" [(ngModel)]="data.email" placeholder="nev@vallalkozas.hu">
+              @if(errors()['email']){
+              <span class="error-msg">
+                {{errors()['email'][0]}}
+              </span>
+              }
+            </div>
+            <div class="form-field">
+              <label for="phone">
+                Telefonszám
+              </label>
+              <input class="input" id="phone" type="tel" autocomplete="tel" maxlength="30" [(ngModel)]="data.phone" placeholder="+36 ...">
+            </div>
+            <div class="form-field">
+              <label for="company">
+                Vállalkozás neve
+              </label>
+              <input class="input" id="company" maxlength="150" [(ngModel)]="data.company_name" placeholder="Opcionális">
+            </div>
+            <div class="form-field">
+              <label for="budget">
+                Költségkeret
+              </label>
+              <select class="input" id="budget" [(ngModel)]="data.budget_range">
+                @for(b of budgets;track b.v){
+                <option [value]="b.v">
+                  {{b.l}}
+                </option>
+                }
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="deadline">
+                Tervezett határidő
+              </label>
+              <input class="input" id="deadline" type="date" [min]="minDate()" [(ngModel)]="data.desired_deadline">
+            </div>
+          </div>
+          <div class="honeypot" aria-hidden="true">
+            <label for="website-field">
+              Weboldal
+            </label>
+            <input id="website-field" name="website" tabindex="-1" autocomplete="off" [(ngModel)]="data.website">
+          </div>
+          <label class="privacy-consent">
+            <input type="checkbox" [(ngModel)]="data.privacy_notice_acknowledged">
+            <span>
+              Elolvastam és tudomásul vettem az
+              <a routerLink="/adatkezeles" target="_blank" rel="noopener noreferrer">
+                adatkezelési tájékoztatót
+              </a>
+              . *
+            </span>
+          </label>
+          <div class="summary-line">
+            A beküldés díjmentes, nem jár megrendelési kötelezettséggel.
+          </div>
+        </div>
+        }
+ @if(generalError()){
+        <div class="notice error" role="alert">
+          {{generalError()}}@if(errors()&&step()===4){@for(err of (errors()['project_description']||[]);track err){
+          <div>
+            {{err}}
+          </div>
+          }}
+        </div>
+        }
+        <div class="wizard-footer">
+          @if(step()>1){
+          <button class="btn btn-outline" type="button" (click)="back()">
+            ← Vissza
+          </button>
+          }@else{
+          <span>
+          </span>
+          }@if(step()
+          <4){<button class="btn btn-primary" type="button" (click)="next()">
+          Folytatás ↗
+        </button>
+        }@else{
+        <button class="btn btn-primary" type="button" [disabled]="sending()" (click)="submit()">
+          {{sending()?'Küldés folyamatban…':'Ajánlatkérés elküldése ↗'}}
+        </button>
+        }
+      </div>
+    </div>
+    <aside class="wizard-side">
+      <div class="aside-card card">
+        <span class="overline">
+          A TE PROJEKTED
+        </span>
+        <h3>
+          Egyedi elképzelés.
+          <br>
+          Átgondolt megoldás.
+        </h3>
+        <div class="aside-art">
+          <span class="small-orb">
+          </span>
+          <b>
+            MM.
+          </b>
+        </div>
+        <p>
+          Minden projekt más. A részletek alapján személyre szabott javaslatot készítek.
+        </p>
+        <div class="aside-checks">
+          <span>
+            ✓ Nincs automatikus megrendelés
+          </span>
+          <span>
+            ✓ Személyes egyeztetés
+          </span>
+          <span>
+            ✓ Átlátható ajánlat
+          </span>
+        </div>
+      </div>
+    </aside>
+  </div>
+  }
+</div>
+</main>

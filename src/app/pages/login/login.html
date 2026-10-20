@@ -1,1 +1,70 @@
-<main class="login-page"><div class="login-shell"><div class="login-brand"><a routerLink="/" class="back">← Vissza a weboldalra</a><div class="login-art"><span>MEGYERI MÁRK / DIGITAL STUDIO</span><strong>Make<br>every detail<br><em>count.</em></strong><div class="login-orb"></div><small>ADMINISTRATION / PRIVATE ACCESS</small></div></div><div class="login-card"><div class="lock-icon">⌘</div><span class="overline">ADMIN FELÜLET</span><h1>Üdv újra!</h1><p>Jelentkezz be, és kezeld a beérkező ajánlatokat, szolgáltatásokat és referenciákat.</p><div class="api-status" [class.online]="apiState()==='online'" [class.offline]="apiState()==='offline'" role="status">@switch(apiState()){@case('online'){● Laravel API elérhető}@case('offline'){● Nem érhető el a Laravel API. Indítsd el a backendet és ellenőrizd az Angular proxyt.}@default{○ Laravel kapcsolat ellenőrzése…}}</div><form (ngSubmit)="submit()"><div class="form-field"><label for="login-email">E-mail-cím</label><input class="input" type="email" id="login-email" name="email" [(ngModel)]="email" autocomplete="username" required></div><div class="form-field"><label for="login-password">Jelszó</label><input class="input" type="password" id="login-password" name="password" [(ngModel)]="password" autocomplete="current-password" required></div>@if(error()){<div class="notice error" role="alert">{{error()}}</div>}<button class="btn btn-primary" type="submit" [disabled]="loading()">{{loading()?'Bejelentkezés…':'Belépés az adminba ↗'}}</button></form><div class="login-foot">Védett adminfelület · Laravel Sanctum</div></div></div></main>
+<main class="login-page">
+  <div class="login-shell">
+    <div class="login-brand">
+      <a routerLink="/" class="back">
+        ← Vissza a weboldalra
+      </a>
+      <div class="login-art">
+        <span>
+          MEGYERI MÁRK MÁTÉ / DIGITAL STUDIO
+        </span>
+        <strong>
+          Make
+          <br>
+          every detail
+          <br>
+          <em>
+            count.
+          </em>
+        </strong>
+        <div class="login-orb">
+        </div>
+        <small>
+          ADMINISTRATION / PRIVATE ACCESS
+        </small>
+      </div>
+    </div>
+    <div class="login-card">
+      <div class="lock-icon">
+        ⌘
+      </div>
+      <span class="overline">
+        ADMIN FELÜLET
+      </span>
+      <h1>
+        Üdv újra!
+      </h1>
+      <p>
+        Jelentkezz be, és kezeld a beérkező ajánlatokat, szolgáltatásokat és referenciákat.
+      </p>
+      <div class="api-status" [class.online]="apiState()==='online'" [class.offline]="apiState()==='offline'" role="status">
+        @switch(apiState()){@case('online'){● Laravel API elérhető}@case('offline'){● Nem érhető el a Laravel API. Indítsd el a backendet és ellenőrizd az Angular proxyt.}@default{○ Laravel kapcsolat ellenőrzése…}}
+      </div>
+      <form (ngSubmit)="submit()">
+        <div class="form-field">
+          <label for="login-email">
+            E-mail-cím
+          </label>
+          <input class="input" type="email" id="login-email" name="email" [(ngModel)]="email" autocomplete="username" required>
+        </div>
+        <div class="form-field">
+          <label for="login-password">
+            Jelszó
+          </label>
+          <input class="input" type="password" id="login-password" name="password" [(ngModel)]="password" autocomplete="current-password" required>
+        </div>
+        @if(error()){
+        <div class="notice error" role="alert">
+          {{error()}}
+        </div>
+        }
+        <button class="btn btn-primary" type="submit" [disabled]="loading()">
+          {{loading()?'Bejelentkezés…':'Belépés az adminba ↗'}}
+        </button>
+      </form>
+      <div class="login-foot">
+        Védett adminfelület · Laravel Sanctum
+      </div>
+    </div>
+  </div>
+</main>

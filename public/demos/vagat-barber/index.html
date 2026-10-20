@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="VÁGAT Barber Studio – fiktív barber shop weboldal-demó, prémium megjelenéssel.">
+    <meta name="theme-color" content="#12120f">
+    <title>
+      VÁGAT. — Barber Studio | Demó
+    </title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer>
+    </script>
+  </head>
+  <body>
+    <div class="demo-ribbon">
+      PORTFÓLIÓ DEMÓ — FIKTÍV MÁRKA, NEM VALÓDI FOGLALÓRENDSZER
+      <a href="../index.html">
+        ← Összes demó
+      </a>
+    </div>
+    <header class="site-header" id="top">
+      <a href="#top" class="brand" aria-label="Vágat főoldal">
+        VÁGAT
+        <span class="brand-period">
+          .
+        </span>
+        <small>
+          BARBER STUDIO
+        </small>
+      </a>
+      <nav class="desktop-nav" aria-label="Fő navigáció">
+        <a href="#szolgaltatasok">
+          Szolgáltatások
+        </a>
+        <a href="#studio">
+          A stúdió
+        </a>
+        <a href="#arak">
+          Áraink
+        </a>
+        <a href="#gyik">
+          Gyakori kérdések
+        </a>
+      </nav>
+      <div class="head-actions">
+        <a class="outline-btn header-cta" href="#foglalas">
+          Időpontot kérek
+          <span>
+            ↗
+          </span>
+        </a>
+        <button class="menu-toggle" aria-controls="mobile-nav" aria-expanded="false" aria-label="Menü megnyitása">
+          <span>
+          </span>
+          <span>
+          </span>
+        </button>
+      </div>
+    </header>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobil navigáció" hidden>
+      <a href="#szolgaltatasok">
+        Szolgáltatások
+      </a>
+      <a href="#studio">
+        A stúdió
+      </a>
+      <a href="#arak">
+        Áraink
+      </a>
+      <a href="#gyik">
+        Gyakori kérdések
+      </a>
+      <a href="#foglalas">
+        Időpontkérés
+      </a>
+    </nav>
+    <main>
+      <section class="hero" aria-labelledby="main-title">
+        <div class="hero-noise" aria-hidden="true">
+        </div>
+        <div class="hero-copy">
+          <span class="eyebrow">
+            <i>
+            </i>
+            EGY JÓ VÁGÁS TÖBB MINT STÍLUS
+          </span>
+          <h1 id="main-title">
+            THE ART
+            <br>
+            OF
+            <em>
+              LOOKING
+            </em>
+            <br>
+            SHARP
+            <span class="mark">
+              .
+            </span>
+          </h1>
+          <p>
+            Precíz vonalak. Karakteres megjelenés. Egy hely, ahol a részletek számítanak.
+          </p>
+          <div class="hero-buttons">
+            <a class="solid-btn" href="#foglalas">
+              Foglalj időpontot
+              <span>
+                ↗
+              </span>
+            </a>
+            <a class="text-btn" href="#szolgaltatasok">
+              Fedezd fel a szolgáltatásokat
+              <span>
+                ↓
+              </span>
+            </a>
+          </div>
+          <div class="hero-bottomline">
+            <span>
+              01 / 03 — A STÍLUS ITT KEZDŐDIK
+            </span>
+            <span>
+              BUDAPEST · KONCEPCIÓ
+            </span>
+          </div>
+        </div>
+        <div class="hero-art" aria-label="Stilizált barber studio illusztráció" role="img">
+          <div class="arch">
+          </div>
+          <div class="sun-disc">
+          </div>
+          <svg class="portrait" viewBox="0 0 600 780" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="skin" x1="0" y1="0" x2="1" y2="1">
+                <stop stop-color="#d4a67e"/>
+                <stop offset="1" stop-color="#8f5e41"/>
+              </linearGradient>
+              <linearGradient id="jacket" x1="0" x2="1" y1="0" y2="1">
+                <stop stop-color="#282925"/>
+                <stop offset="1" stop-color="#080908"/>
+              </linearGradient>
+            </defs>
+            <path d="M56 780 Q74 645 169 609 Q232 589 259 570 L368 564 Q496 610 548 780Z" fill="url(#jacket)"/>
+            <path d="M268 520L265 631 338 695 385 608 379 505Z" fill="url(#skin)"/>
+            <path d="M270 574l70 81 43-66-44 149z" fill="#b9a08a" opacity=".7"/>
+            <path d="M163 269Q160 132 304 121Q448 114 450 278L431 426Q421 520 335 557Q230 545 190 448Z" fill="url(#skin)"/>
+            <path d="M172 326Q139 215 202 160Q198 106 296 89Q422 65 452 164Q484 210 439 322L429 237Q408 254 360 224Q271 267 188 251L190 358Z" fill="#211c19"/>
+            <path d="M177 258 Q146 255 141 312Q141 365 190 375" fill="#a17659"/>
+            <path d="M439 277 Q465 267 469 307Q469 352 431 367" fill="#a77956"/>
+            <path d="M205 340Q249 311 283 333" stroke="#3b2820" stroke-width="17" stroke-linecap="round" fill="none"/>
+            <path d="M352 327Q389 308 416 333" stroke="#3b2820" stroke-width="16" stroke-linecap="round" fill="none"/>
+            <path d="M222 357Q248 346 270 356M363 357Q384 347 405 359" stroke="#1e1c1b" stroke-width="7" stroke-linecap="round" fill="none"/>
+            <path d="M310 345l-16 68q24 16 44-1" stroke="#85533d" stroke-width="9" stroke-linecap="round" fill="none"/>
+            <path d="M240 451q79 48 151-3" stroke="#5c3329" stroke-width="9" stroke-linecap="round" fill="none"/>
+            <path d="M207 418Q231 515 310 538Q391 539 420 421Q391 455 354 468Q307 483 272 465Z" fill="#29221d"/>
+            <path d="M245 437q58-20 126 0" stroke="#241c18" stroke-width="14" stroke-linecap="round" fill="none"/>
+            <path d="M172 678L249 594L312 739L272 780H121Z" fill="#30312b"/>
+            <path d="M379 591L312 739L342 780H510L461 674Z" fill="#242520"/>
+            <path d="M244 591l67 147 66-145" fill="none" stroke="#a29381" stroke-width="4" opacity=".5"/>
+          </svg>
+          <div class="hero-art-text">
+            EST. 2026
+            <span>
+              ///
+            </span>
+            PRECISION & CRAFT
+          </div>
+          <div class="vertical-word">
+            NOT JUST A HAIRCUT — AN ATTITUDE
+          </div>
+        </div>
+      </section>
+      <section class="ticker" aria-label="Értékeink">
+        <div>
+          PRECISION
+          <b>
+            ✳
+          </b>
+          CONFIDENCE
+          <b>
+            ✳
+          </b>
+          CRAFTSMANSHIP
+          <b>
+            ✳
+          </b>
+          PRECISION
+          <b>
+            ✳
+          </b>
+          CONFIDENCE
+          <b>
+            ✳
+          </b>
+          CRAFTSMANSHIP
+          <b>
+            ✳
+          </b>
+        </div>
+      </section>
+      <section id="szolgaltatasok" class="section services reveal">
+        <div class="section-intro">
+          <span class="section-tag">
+            01 / SZOLGÁLTATÁSOK
+          </span>
+          <h2>
+            A részletekben
+            <br>
+            rejlik az
+            <em>
+              egyediség.
+            </em>
+          </h2>
+          <p>
+            Letisztult szolgáltatások egy határozott megjelenésért. A demóban szereplő árak illusztrációk.
+          </p>
+        </div>
+        <div class="service-grid">
+          <article class="service">
+            <span class="service-nr">
+              01
+            </span>
+            <div class="service-icon">
+              ✂
+            </div>
+            <h3>
+              Férfi hajvágás
+            </h3>
+            <p>
+              Személyre szabott forma, precíz átmenet és részletgazdag kidolgozás.
+            </p>
+            <div class="service-foot">
+              <span>
+                45 PERC
+              </span>
+              <strong>
+                7 900 Ft
+              </strong>
+            </div>
+          </article>
+          <article class="service">
+            <span class="service-nr">
+              02
+            </span>
+            <div class="service-icon">
+              〰
+            </div>
+            <h3>
+              Szakállformázás
+            </h3>
+            <p>
+              Tiszta kontúrok, tökéletes arányok és professzionális ápolás.
+            </p>
+            <div class="service-foot">
+              <span>
+                30 PERC
+              </span>
+              <strong>
+                4 900 Ft
+              </strong>
+            </div>
+          </article>
+          <article class="service">
+            <span class="service-nr">
+              03
+            </span>
+            <div class="service-icon">
+              ✦
+            </div>
+            <h3>
+              Signature csomag
+            </h3>
+            <p>
+              Teljes haj- és szakállélmény, hogy minden részlet a helyére kerüljön.
+            </p>
+            <div class="service-foot">
+              <span>
+                75 PERC
+              </span>
+              <strong>
+                11 900 Ft
+              </strong>
+            </div>
+          </article>
+        </div>
+      </section>
+      <section id="studio" class="studio">
+        <div class="studio-poster" aria-hidden="true">
+          <div class="poster-stamp">
+            V
+            <span>
+              .
+            </span>
+          </div>
+          <div>
+            STYLE IS
+            <br>
+            A STATEMENT.
+          </div>
+          <small>
+            CRAFT / CHARACTER / CONFIDENCE
+          </small>
+        </div>
+        <div class="studio-copy reveal">
+          <span class="section-tag">
+            02 / A STÚDIÓ
+          </span>
+          <h2>
+            Nem futószalag.
+            <br>
+            <em>
+              Élmény.
+            </em>
+          </h2>
+          <p>
+            A VÁGAT egy elképzelt, karakteres barber márka vizuális világa. A cél az volt, hogy az időpontfoglalásra ösztönző felület egyszerre legyen elegáns, gyors és mobilbarát.
+          </p>
+          <ul>
+            <li>
+              Karakteres, szerkesztőségi tipográfia
+            </li>
+            <li>
+              Mobilra optimalizált navigáció
+            </li>
+            <li>
+              Átlátható szolgáltatások és árak
+            </li>
+          </ul>
+          <a href="#foglalas" class="inline-link">
+            Tovább az időpontkéréshez ↗
+          </a>
+        </div>
+      </section>
+      <section id="arak" class="prices section reveal">
+        <div class="section-intro compact">
+          <span class="section-tag">
+            03 / ÁRAK
+          </span>
+          <h2>
+            Egyszerű választás.
+            <br>
+            <em>
+              Határozott stílus.
+            </em>
+          </h2>
+        </div>
+        <div class="price-list">
+          <div>
+            <span>
+              01
+            </span>
+            <strong>
+              Férfi hajvágás
+            </strong>
+            <small>
+              Vágás + styling
+            </small>
+            <b>
+              7 900 Ft
+            </b>
+          </div>
+          <div>
+            <span>
+              02
+            </span>
+            <strong>
+              Szakállformázás
+            </strong>
+            <small>
+              Kontúr + ápolás
+            </small>
+            <b>
+              4 900 Ft
+            </b>
+          </div>
+          <div>
+            <span>
+              03
+            </span>
+            <strong>
+              Signature csomag
+            </strong>
+            <small>
+              Haj + szakáll
+            </small>
+            <b>
+              11 900 Ft
+            </b>
+          </div>
+        </div>
+        <p class="fineprint">
+          * A megjelenített szolgáltatások és összegek bemutatóadatok.
+        </p>
+      </section>
+      <section id="gyik" class="faq section reveal">
+        <div>
+          <span class="section-tag">
+            04 / GYIK
+          </span>
+          <h2>
+            Jó tudni,
+            <br>
+            mielőtt
+            <em>
+              érkezel.
+            </em>
+          </h2>
+        </div>
+        <div class="faq-list">
+          <details>
+            <summary>
+              Hogyan foglalhatok időpontot?
+              <span>
+                +
+              </span>
+            </summary>
+            <p>
+              Ez egy demóoldal. A foglalás gomb a példa-űrlaphoz vezet, de valódi időpontot nem rögzít.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Mi történik, ha késni fogok?
+              <span>
+                +
+              </span>
+            </summary>
+            <p>
+              Éles ügyféloldalon itt jelenhet meg a szalon késési és lemondási szabályzata.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Lehet kombinálni a szolgáltatásokat?
+              <span>
+                +
+              </span>
+            </summary>
+            <p>
+              Igen, a Signature csomag hajvágást és szakállformázást is tartalmaz a bemutatóban.
+            </p>
+          </details>
+        </div>
+      </section>
+      <section id="foglalas" class="booking section">
+        <div class="booking-copy">
+          <span class="section-tag">
+            05 / KAPCSOLAT
+          </span>
+          <h2>
+            A következő
+            <br>
+            jó döntésed
+            <em>
+              itt kezdődik.
+            </em>
+          </h2>
+          <p>
+            Kérj időpontot a mintaűrlapon. A beküldött adatok nem kerülnek szerverre.
+          </p>
+        </div>
+        <form id="booking-form" class="booking-form">
+          <div class="two">
+            <label>
+              Név
+              <input name="name" placeholder="Teljes neved" required autocomplete="name">
+            </label>
+            <label>
+              E-mail
+              <input name="email" type="email" placeholder="email@pelda.hu" autocomplete="email" required>
+            </label>
+          </div>
+          <label>
+            Szolgáltatás
+            <select name="service" required>
+              <option value="">
+                Válassz szolgáltatást
+              </option>
+              <option>
+                Férfi hajvágás
+              </option>
+              <option>
+                Szakállformázás
+              </option>
+              <option>
+                Signature csomag
+              </option>
+            </select>
+          </label>
+          <button type="submit" class="solid-btn">
+            Minta időpontkérés
+            <span>
+              ↗
+            </span>
+          </button>
+          <p class="form-status" aria-live="polite">
+          </p>
+          <small>
+            Ez portfóliódemó, nem valódi foglalási rendszer.
+          </small>
+        </form>
+      </section>
+    </main>
+    <footer>
+      <div class="footer-brand">
+        VÁGAT
+        <span>
+          .
+        </span>
+        <small>
+          BARBER STUDIO / DEMO CONCEPT
+        </small>
+      </div>
+      <div>
+        <span>
+          PREMIUM BARBER EXPERIENCE
+        </span>
+        <p>
+          Fiktív márka · Design & fejlesztés: Megyeri Márk Máté
+        </p>
+      </div>
+      <a href="#top">
+        Vissza az elejére ↑
+      </a>
+    </footer>
+  </body>
+</html>

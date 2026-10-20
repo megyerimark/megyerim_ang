@@ -11,9 +11,9 @@ describe('App', () => {
     fixture.detectChanges();
     expect(fixture.componentInstance).toBeTruthy();
   });
-  it('should render the Megyeri Márk navigation brand', () => {
+  it('should render the Megyeri Márk Máté navigation brand', () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
-    expect((fixture.nativeElement as HTMLElement).textContent).toContain('MEGYERI MÁRK');
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('MEGYERI MÁRK MÁTÉ');
   });
 });

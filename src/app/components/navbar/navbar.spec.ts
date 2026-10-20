@@ -8,7 +8,7 @@ describe('Navbar', () => {
     const fixture = TestBed.createComponent(Navbar);
     fixture.detectChanges();
     const html = fixture.nativeElement as HTMLElement;
-    expect(html.textContent).toContain('MEGYERI MÁRK');
+    expect(html.textContent).toContain('MEGYERI MÁRK MÁTÉ');
     expect(html.querySelector('button.theme-btn')).toBeTruthy();
   });
 });

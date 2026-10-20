@@ -1,10 +1,84 @@
-<header class="nav-wrap"><div class="navbar container">
- <a routerLink="/" class="brand" (click)="close()" aria-label="Megyeri Márk főoldal">
-  <span class="brand-monogram">M<span>.</span></span><span class="brand-text"><strong>MEGYERI MÁRK</strong><small>WEBFEJLESZTÉS</small></span>
- </a>
- <nav class="nav-links" [class.open]="menuOpen()" aria-label="Fő navigáció">
-  <a routerLink="/" (click)="close()">Főoldal</a><a routerLink="/" fragment="szolgaltatasok" (click)="close()">Szolgáltatások</a><a routerLink="/" fragment="munkak" (click)="close()">Munkáim</a><a routerLink="/" fragment="rolam" (click)="close()">Rólam</a>
-  <a routerLink="/ajanlatkeres" class="mobile-quote" (click)="close()">Ajánlatot kérek ↗</a>
- </nav>
- <div class="nav-actions"><button type="button" class="theme-btn" (click)="toggleTheme()" [attr.aria-label]="isDark()?'Világos téma':'Sötét téma'" [title]="isDark()?'Világos téma':'Sötét téma'">{{isDark()?'☼':'☾'}}</button><a class="nav-cta" routerLink="/ajanlatkeres" (click)="close()">Ajánlatkérés <span>↗</span></a><button class="menu-btn" type="button" (click)="menuOpen.set(!menuOpen())" [attr.aria-expanded]="menuOpen()" aria-label="Menü">{{menuOpen()?'✕':'☰'}}</button></div>
-</div></header>
+<header class="nav-wrap">
+  <div class="navbar container">
+    <a
+      class="brand"
+      routerLink="/"
+      (click)="close()"
+      aria-label="Megyeri Márk Máté – főoldal"
+    >
+      <span class="brand-monogram" aria-hidden="true">
+        M
+        <span>
+          .
+        </span>
+      </span>
+      <span class="brand-text">
+        <strong>
+          MEGYERI MÁRK MÁTÉ
+        </strong>
+        <small>
+          FÜGGETLEN WEBFEJLESZTŐ
+        </small>
+      </span>
+    </a>
+    <nav
+      class="nav-links"
+      [class.open]="menuOpen()"
+      aria-label="Fő navigáció"
+    >
+      <a routerLink="/" (click)="close()">
+        Főoldal
+      </a>
+      <a routerLink="/" fragment="szolgaltatasok" (click)="close()">
+        Szolgáltatások
+      </a>
+      <a routerLink="/" fragment="munkak" (click)="close()">
+        Munkáim
+      </a>
+      <a routerLink="/" fragment="folyamat" (click)="close()">
+        Folyamat
+      </a>
+      <a routerLink="/" fragment="rolam" (click)="close()">
+        Rólam
+      </a>
+      <a
+        class="mobile-quote"
+        routerLink="/ajanlatkeres"
+        (click)="close()"
+      >
+        Mesélj a projektedről
+        <span aria-hidden="true">
+          ↗
+        </span>
+      </a>
+    </nav>
+    <div class="nav-actions">
+      <button
+        type="button"
+        class="theme-btn"
+        (click)="toggleTheme()"
+        [attr.aria-label]="isDark() ? 'Világos téma' : 'Sötét téma'"
+        [title]="isDark() ? 'Világos téma' : 'Sötét téma'"
+      >
+        <span aria-hidden="true">
+          {{ isDark() ? '☀' : '☾' }}
+        </span>
+      </button>
+      <a class="nav-cta" routerLink="/ajanlatkeres" (click)="close()">
+        Ajánlatot kérek
+        <span aria-hidden="true">
+          ↗
+        </span>
+      </a>
+      <button
+        class="menu-btn"
+        type="button"
+        (click)="menuOpen.set(!menuOpen())"
+        [attr.aria-expanded]="menuOpen()"
+        [attr.aria-label]="menuOpen() ? 'Menü bezárása' : 'Menü megnyitása'"
+      >
+        {{ menuOpen() ? '✕' : '☰' }}
+      </button>
+    </div>
+  </div>
+</header>

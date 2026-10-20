@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="AXIS Auto Detailing – prémium autókozmetika demóweboldal, interaktív csomagokkal.">
+    <meta name="theme-color" content="#07121e">
+    <title>
+      AXIS. – Auto Detailing | Demó
+    </title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer>
+    </script>
+  </head>
+  <body>
+    <div class="demo-ribbon">
+      PORTFÓLIÓ DEMÓ — FIKTÍV AUTÓKOZMETIKA
+      <a href="../index.html">
+        ← Összes demó
+      </a>
+    </div>
+    <header class="topbar" id="top">
+      <a class="logo" href="#top" aria-label="Axis főoldal">
+        <span class="logo-symbol">
+          //
+        </span>
+        AXIS
+        <span class="point">
+          .
+        </span>
+        <small>
+          DETAILING LAB
+        </small>
+      </a>
+      <nav class="nav" aria-label="Fő navigáció">
+        <a href="#szolgaltatasok">
+          Szolgáltatások
+        </a>
+        <a href="#elotte-utana">
+          Átalakulás
+        </a>
+        <a href="#csomagok">
+          Csomagok
+        </a>
+        <a href="#kapcsolat">
+          Kapcsolat
+        </a>
+      </nav>
+      <div class="top-actions">
+        <a class="nav-cta" href="#kapcsolat">
+          Ajánlatot kérek
+          <span>
+            ↗
+          </span>
+        </a>
+        <button type="button" class="menu-toggle" aria-controls="mobile-nav" aria-expanded="false" aria-label="Menü megnyitása">
+          <span>
+          </span>
+          <span>
+          </span>
+          <span>
+          </span>
+        </button>
+      </div>
+    </header>
+    <nav class="mobile-nav" id="mobile-nav" hidden>
+      <a href="#szolgaltatasok">
+        Szolgáltatások
+      </a>
+      <a href="#elotte-utana">
+        Átalakulás
+      </a>
+      <a href="#csomagok">
+        Csomagok
+      </a>
+      <a href="#kapcsolat">
+        Kapcsolat
+      </a>
+    </nav>
+    <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+      <defs>
+        <linearGradient id="carPaint" x1="0" y1="0" x2="0" y2="1">
+          <stop stop-color="#d8faff"/>
+          <stop offset=".32" stop-color="#65c9ed"/>
+          <stop offset=".6" stop-color="#175a83"/>
+          <stop offset=".93" stop-color="#0c273c"/>
+        </linearGradient>
+        <linearGradient id="glass" x1="0" y1="0" x2=".7" y2="1">
+          <stop stop-color="#d9fcff" stop-opacity=".65"/>
+          <stop offset="1" stop-color="#132c46" stop-opacity=".95"/>
+        </linearGradient>
+        <linearGradient id="rim" x1="0" x2="1" y1="0" y2="1">
+          <stop stop-color="#d9eced"/>
+          <stop offset=".5" stop-color="#4e7485"/>
+          <stop offset="1" stop-color="#0a141e"/>
+        </linearGradient>
+        <symbol id="sports-car" viewBox="0 0 1100 480">
+          <ellipse cx="558" cy="401" rx="472" ry="36" fill="#000" opacity=".35"/>
+          <path d="M105 292l38-50q25-24 104-39l139-28q56-84 148-92l208-4q72 0 127 53l95 81 55 19q51 17 60 70l4 53-50 23H156l-73-20 8-48z" fill="url(#carPaint)" stroke="#75cde4" stroke-width="3"/>
+          <path d="M392 178q64-79 145-84h197q53 1 88 41l72 79-511 2z" fill="#0c2334" stroke="#8de9f3" stroke-width="3"/>
+          <path d="M414 201q55-84 130-89h94v94z" fill="url(#glass)"/>
+          <path d="M650 109h75q44 0 76 33l53 66H649z" fill="url(#glass)"/>
+          <path d="M640 104l1 111" stroke="#102030" stroke-width="11"/>
+          <path d="M398 180l-28 36M824 151l54 63" stroke="#acdce4" stroke-width="3" opacity=".7"/>
+          <path d="M137 274q89-42 238-47l506 1q105 12 151 51" fill="none" stroke="#ccfcff" stroke-width="4" opacity=".8"/>
+          <path d="M104 339q130 27 278 24h627" stroke="#08283b" stroke-width="18" fill="none"/>
+          <path d="M126 315l62-8-7 16-77 11z" fill="#d5fbff"/>
+          <path d="M990 257l56 21-3 19-71-16z" fill="#c5efff"/>
+          <path d="M248 228l57-7-7 14-71 9z" fill="#74bad3"/>
+          <path d="M783 233l73 7" stroke="#1b3b54" stroke-width="9" stroke-linecap="round"/>
+          <circle cx="308" cy="365" r="81" fill="#0b1821" stroke="#082130" stroke-width="12"/>
+          <circle cx="308" cy="365" r="56" fill="url(#rim)" stroke="#c6f9fb" stroke-width="3"/>
+          <circle cx="308" cy="365" r="36" fill="#0b1d2b" stroke="#87d9e8" stroke-width="12" stroke-dasharray="15 12"/>
+          <circle cx="308" cy="365" r="14" fill="#87d9e8"/>
+          <circle cx="867" cy="365" r="81" fill="#0b1821" stroke="#082130" stroke-width="12"/>
+          <circle cx="867" cy="365" r="56" fill="url(#rim)" stroke="#c6f9fb" stroke-width="3"/>
+          <circle cx="867" cy="365" r="36" fill="#0b1d2b" stroke="#87d9e8" stroke-width="12" stroke-dasharray="15 12"/>
+          <circle cx="867" cy="365" r="14" fill="#87d9e8"/>
+          <path d="M128 341h71m200 0h375m181 0h79" stroke="#76b7cf" stroke-width="3" opacity=".7"/>
+          <path d="M434 225h45" stroke="#d3ffff" stroke-width="6" stroke-linecap="round"/>
+        </symbol>
+      </defs>
+    </svg>
+    <main>
+      <section class="hero">
+        <div class="hero-lines" aria-hidden="true">
+        </div>
+        <div class="hero-inner">
+          <div class="hero-copy">
+            <div class="eyebrow">
+              <span class="pulsedot">
+              </span>
+              DETAILING IS AN ART FORM / BUDAPEST
+            </div>
+            <h1>
+              ÚJ SZINTRE
+              <br>
+              EMELJÜK
+              <br>
+              A
+              <span>
+                RAGYOGÁST.
+              </span>
+            </h1>
+            <p>
+              Prémium autóápolás. Makulátlan részletek. Egy látvány, amit nem lehet figyelmen kívül hagyni.
+            </p>
+            <div class="hero-actions">
+              <a class="button-primary" href="#csomagok">
+                Fedezd fel a csomagokat
+                <span>
+                  ↗
+                </span>
+              </a>
+              <a class="link-button" href="#elotte-utana">
+                Nézd meg a különbséget ↓
+              </a>
+            </div>
+          </div>
+          <div class="hero-car-area">
+            <div class="circle-frame">
+            </div>
+            <div class="car-glow">
+            </div>
+            <svg class="hero-car" viewBox="0 0 1100 480" role="img" aria-label="Stilizált prémium sportautó">
+              <use href="#sports-car"/>
+            </svg>
+            <div class="car-label l1">
+              <small>
+                01 / COATING
+              </small>
+              <strong>
+                CERAMIC SHIELD
+              </strong>
+            </div>
+            <div class="car-label l2">
+              <small>
+                02 / FINISH
+              </small>
+              <strong>
+                MIRROR GLOSS
+              </strong>
+            </div>
+          </div>
+        </div>
+        <div class="hero-bottom">
+          <span>
+            PRECISION ABOVE EVERYTHING
+          </span>
+          <span>
+            SCROLL TO EXPLORE ↓
+          </span>
+          <span>
+            01 — 04
+          </span>
+        </div>
+      </section>
+      <section class="stats">
+        <div>
+          <strong>
+            01
+          </strong>
+          <span>
+            PRÉMIUM SZEMLÉLET
+          </span>
+        </div>
+        <div>
+          <strong>
+            02
+          </strong>
+          <span>
+            ÁTGONDOLT FOLYAMAT
+          </span>
+        </div>
+        <div>
+          <strong>
+            03
+          </strong>
+          <span>
+            RÉSZLETEKRE FIGYELÉS
+          </span>
+        </div>
+        <div>
+          <strong>
+            04
+          </strong>
+          <span>
+            EGYEDI MEGOLDÁS
+          </span>
+        </div>
+      </section>
+      <section class="section services reveal" id="szolgaltatasok">
+        <div class="section-heading">
+          <div>
+            <div class="overline">
+              01 / SZOLGÁLTATÁSAINK
+            </div>
+            <h2>
+              Minden részlet.
+              <br>
+              <span>
+                Tökéletes összhang.
+              </span>
+            </h2>
+          </div>
+          <p>
+            Az autóápolás új értelmezése: átgondolt szolgáltatások a tartós, látványos eredményért.
+          </p>
+        </div>
+        <div class="services-grid">
+          <article class="service-card">
+            <div class="sc-icon">
+              ✦
+            </div>
+            <span>
+              01 / EXTERIOR
+            </span>
+            <h3>
+              Külső detailing
+            </h3>
+            <p>
+              Kímélő tisztítás, fényezésápolás és részletes külső gondoskodás.
+            </p>
+            <a href="#csomagok">
+              Felfedezem ↗
+            </a>
+          </article>
+          <article class="service-card featured">
+            <div class="sc-icon">
+              ◈
+            </div>
+            <span>
+              02 / PROTECTION
+            </span>
+            <h3>
+              Kerámia bevonat
+            </h3>
+            <p>
+              Modern felületvédelem és fény, amely minden szögből karakteres.
+            </p>
+            <a href="#csomagok">
+              Felfedezem ↗
+            </a>
+          </article>
+          <article class="service-card">
+            <div class="sc-icon">
+              ▤
+            </div>
+            <span>
+              03 / INTERIOR
+            </span>
+            <h3>
+              Belső ápolás
+            </h3>
+            <p>
+              Igényes utastér, precíz felülettisztítás és friss megjelenés.
+            </p>
+            <a href="#csomagok">
+              Felfedezem ↗
+            </a>
+          </article>
+        </div>
+      </section>
+      <section class="comparison section" id="elotte-utana">
+        <div class="section-heading reveal">
+          <div>
+            <span class="overline">
+              02 / ÁTALAKULÁS
+            </span>
+            <h2>
+              Lásd a
+              <span>
+                különbséget.
+              </span>
+            </h2>
+          </div>
+          <p>
+            Húzd el a csúszkát: a stilizált illusztráció két eltérő felületkezelését hasonlíthatod össze.
+          </p>
+        </div>
+        <div class="comparison-frame">
+          <div class="compare-before">
+            <svg viewBox="0 0 1100 480" aria-hidden="true">
+              <use href="#sports-car"/>
+            </svg>
+            <span>
+              ELŐTTE / DEMÓ
+            </span>
+          </div>
+          <div class="compare-after" id="compare-after">
+            <svg viewBox="0 0 1100 480" aria-hidden="true">
+              <use href="#sports-car"/>
+            </svg>
+            <span>
+              UTÁNA / DEMÓ
+            </span>
+          </div>
+          <div class="compare-line" id="compare-line">
+            <i>
+              ↔
+            </i>
+          </div>
+          <input id="comparison-range" type="range" min="0" max="100" value="52" aria-label="Előtte és utána illusztrációk összehasonlítása">
+        </div>
+        <p class="note">
+          Illusztrációs összehasonlítás – nem valódi ügyfélfotó vagy igazolt eredmény.
+        </p>
+      </section>
+      <section class="section packages reveal" id="csomagok">
+        <div class="section-heading">
+          <div>
+            <div class="overline">
+              03 / CSOMAGOK
+            </div>
+            <h2>
+              Te választasz.
+              <br>
+              <span>
+                Mi finomítunk.
+              </span>
+            </h2>
+          </div>
+          <p>
+            Válaszd ki a neked megfelelő mintacsomagot. A feltüntetett árak nem valós ajánlatok.
+          </p>
+        </div>
+        <div class="package-layout">
+          <div class="package-tabs" role="group" aria-label="Csomagválasztás">
+            <button type="button" class="package-tab active" data-plan="essential" aria-pressed="true">
+              <span>
+                01
+              </span>
+              <strong>
+                Essential Detail
+              </strong>
+              <small>
+                Alapos alapápolás
+              </small>
+              <b>
+                ↗
+              </b>
+            </button>
+            <button type="button" class="package-tab" data-plan="signature" aria-pressed="false">
+              <span>
+                02
+              </span>
+              <strong>
+                Signature Care
+              </strong>
+              <small>
+                Kívül-belül prémium
+              </small>
+              <b>
+                ↗
+              </b>
+            </button>
+            <button type="button" class="package-tab" data-plan="ultimate" aria-pressed="false">
+              <span>
+                03
+              </span>
+              <strong>
+                Ultimate Shield
+              </strong>
+              <small>
+                Ápolás és védelem
+              </small>
+              <b>
+                ↗
+              </b>
+            </button>
+          </div>
+          <div class="package-detail">
+            <span class="detail-label">
+              KIVÁLASZTOTT CSOMAG
+            </span>
+            <h3 id="plan-name">
+              Essential Detail
+            </h3>
+            <p id="plan-description">
+              Az autó megjelenésének átgondolt felfrissítése.
+            </p>
+            <ul id="plan-features">
+              <li>
+                Külső kézi mosás
+              </li>
+              <li>
+                Felületek ápolása
+              </li>
+              <li>
+                Felnik tisztítása
+              </li>
+            </ul>
+            <div class="package-bottom">
+              <div>
+                <small>
+                  MINTA KEZDŐÁR
+                </small>
+                <strong id="plan-price">
+                  24 900 Ft
+                </strong>
+              </div>
+              <a href="#kapcsolat" class="button-primary">
+                Ajánlatkérés
+                <span>
+                  ↗
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="contact section" id="kapcsolat">
+        <div class="contact-copy">
+          <span class="overline">
+            04 / KAPCSOLAT
+          </span>
+          <h2>
+            Az autód
+            <br>
+            megérdemli
+            <span>
+              a törődést.
+            </span>
+          </h2>
+          <p>
+            Írd meg az elképzelésed az interaktív mintalapon! Ez a demó nem tárolja vagy továbbítja az adataidat.
+          </p>
+        </div>
+        <form id="contact-form" class="contact-form">
+          <label>
+            Név
+            <input name="name" autocomplete="name" placeholder="Teljes neved" required>
+          </label>
+          <label>
+            E-mail
+            <input name="email" type="email" autocomplete="email" placeholder="email@pelda.hu" required>
+          </label>
+          <label>
+            Autó / szolgáltatás
+            <textarea name="request" rows="3" required minlength="10" placeholder="Milyen autóhoz és milyen szolgáltatást keresel?">
+            </textarea>
+          </label>
+          <button type="submit" class="button-primary">
+            Minta ajánlatkérés
+            <span>
+              ↗
+            </span>
+          </button>
+          <p id="form-status" role="status" aria-live="polite">
+          </p>
+          <small>
+            Portfóliódemó – nincs szerveroldali feldolgozás.
+          </small>
+        </form>
+      </section>
+    </main>
+    <footer>
+      <a class="logo" href="#top">
+        <span class="logo-symbol">
+          //
+        </span>
+        AXIS
+        <span class="point">
+          .
+        </span>
+      </a>
+      <p>
+        Fiktív márka · Design & fejlesztés: Megyeri Márk Máté
+      </p>
+      <a href="#top">
+        Vissza a tetejére ↑
+      </a>
+    </footer>
+  </body>
+</html>
