@@ -1,0 +1,10 @@
+<header class="nav-wrap"><div class="navbar container">
+ <a routerLink="/" class="brand" (click)="close()" aria-label="Megyeri Márk főoldal">
+  <span class="brand-monogram">M<span>.</span></span><span class="brand-text"><strong>MEGYERI MÁRK</strong><small>WEBFEJLESZTÉS</small></span>
+ </a>
+ <nav class="nav-links" [class.open]="menuOpen()" aria-label="Fő navigáció">
+  <a routerLink="/" (click)="close()">Főoldal</a><a routerLink="/" fragment="szolgaltatasok" (click)="close()">Szolgáltatások</a><a routerLink="/" fragment="munkak" (click)="close()">Munkáim</a><a routerLink="/" fragment="rolam" (click)="close()">Rólam</a>
+  <a routerLink="/ajanlatkeres" class="mobile-quote" (click)="close()">Ajánlatot kérek ↗</a>
+ </nav>
+ <div class="nav-actions"><button type="button" class="theme-btn" (click)="toggleTheme()" [attr.aria-label]="isDark()?'Világos téma':'Sötét téma'" [title]="isDark()?'Világos téma':'Sötét téma'">{{isDark()?'☼':'☾'}}</button><a class="nav-cta" routerLink="/ajanlatkeres" (click)="close()">Ajánlatkérés <span>↗</span></a><button class="menu-btn" type="button" (click)="menuOpen.set(!menuOpen())" [attr.aria-expanded]="menuOpen()" aria-label="Menü">{{menuOpen()?'✕':'☰'}}</button></div>
+</div></header>

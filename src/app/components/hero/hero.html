@@ -1,0 +1,20 @@
+<section class="hero" id="fooldal" aria-labelledby="hero-title">
+ <div class="hero-glow glow1"></div><div class="hero-glow glow2"></div><div class="hero-grid"></div>
+ <div class="container hero-layout">
+  <div class="hero-copy"><span class="hero-tag"><span class="alive"></span> EGYEDI WEBFEJLESZTÉS · DIGITÁLIS ÉLMÉNYEK</span>
+   <h1 id="hero-title">{{headline}}</h1>
+   <p class="hero-description">{{description}}</p>
+   <div class="hero-actions"><a routerLink="/ajanlatkeres" class="btn btn-primary">Beszéljünk a projektedről <span aria-hidden="true">↗</span></a><a routerLink="/" fragment="munkak" class="btn btn-outline">Munkáim megtekintése <span aria-hidden="true">↘</span></a></div>
+   <div class="hero-proof"><span><i>✦</i> Egyedi megoldások</span><span><i>✦</i> Mobilbarát kivitelezés</span><span><i>✦</i> Közvetlen kapcsolattartás</span></div>
+  </div>
+  <div class="hero-stage" (mousemove)="move($event)" (mouseleave)="reset()" aria-label="Animált, háromdimenziós hatású illusztráció weboldal-előnézetekkel">
+   <div class="stage-world" [style.transform]="'rotateX('+tiltX+'deg) rotateY('+tiltY+'deg)'">
+    <div class="orb-blur"></div><div class="orb"><div class="orb-shine"></div></div><div class="ring ring-one"></div><div class="ring ring-two"></div>
+    <div class="floating-site site-one"><div class="browser-top"><span class="dots">● ● ●</span><small>PREVIEW / 01</small></div><div class="site-one-body"><div class="site-mini-nav"><strong>NOIR.</strong><span>☰</span></div><div class="site-eyebrow">THE ART OF PRESENCE</div><b>Design that<br>speaks for you.</b><div class="site-mini-button">Explore ↗</div><div class="mini-circle"></div></div></div>
+    <div class="floating-site site-two"><div class="browser-top"><span class="dots">● ● ●</span><small>PREVIEW / 02</small></div><div class="site-two-body"><div class="studio-label">STUDIO / 24</div><strong>Think bigger.<br>Build better.</strong><div class="site-progress"></div><div class="site-progress short"></div></div></div>
+    <div class="float-tag"><span>✳</span><b>Creative development</b></div>
+   </div>
+  </div>
+ </div>
+ <div class="container hero-bottom"><span>DESIGN × TECH × STRATEGY</span><a routerLink="/" fragment="szolgaltatasok">FEDEZD FEL <span>↓</span></a></div>
+</section>
