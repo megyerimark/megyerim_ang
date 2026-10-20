@@ -350,3 +350,143 @@ h1 {
     animation: none;
   }
 }
+
+/* Saját CSS-es UI-koncepciók a korábbi, fiktív referenciafotók helyett. */
+.site-design-preview,
+.site-system-preview {
+  position: relative;
+  height: calc(100% - 32px);
+  overflow: hidden;
+  padding: 17px 19px;
+}
+
+.site-design-preview {
+  background: #f1eee7;
+  color: #20252a;
+}
+
+.site-preview-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.site-preview-overline {
+  margin-top: 25px;
+  color: #655c55;
+  font-size: 7px;
+  font-weight: 750;
+  letter-spacing: 2px;
+}
+
+.site-design-preview strong {
+  position: relative;
+  z-index: 2;
+  display: block;
+  margin-top: 8px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 23px;
+  line-height: 1.03;
+  letter-spacing: -1px;
+}
+
+.site-preview-button {
+  position: relative;
+  z-index: 2;
+  display: inline-block;
+  margin-top: 13px;
+  padding: 8px 10px;
+  background: #171e27;
+  color: #fff;
+  font-size: 7px;
+  font-weight: 750;
+  letter-spacing: .6px;
+}
+
+.site-preview-decoration {
+  position: absolute;
+  right: -33px;
+  bottom: -65px;
+  width: 155px;
+  height: 155px;
+  border: 22px solid #b8b2a8;
+  border-radius: 50%;
+  box-shadow: -9px -9px 0 #bca185;
+}
+
+.site-system-preview {
+  background: #151e31;
+  color: #f8f8fb;
+}
+
+.site-system-label {
+  color: #84a8ff;
+  font-size: 8px;
+  font-weight: 750;
+  letter-spacing: 1.5px;
+}
+
+.site-system-title {
+  margin-top: 15px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 22px;
+  font-weight: 650;
+  line-height: 1.15;
+  letter-spacing: -.5px;
+}
+
+.site-system-swatches {
+  display: flex;
+  gap: 5px;
+  margin-top: 16px;
+}
+
+.site-system-swatches i {
+  width: 28px;
+  height: 20px;
+  border-radius: 2px;
+  background: #4e608b;
+}
+
+.site-system-swatches i:nth-child(2) { background: #7b99b7; }
+.site-system-swatches i:nth-child(3) { background: #ddd8cc; }
+.site-system-swatches i:nth-child(4) { background: #879d80; }
+
+.site-system-rows {
+  display: grid;
+  gap: 6px;
+  margin-top: 15px;
+}
+
+.site-system-rows i {
+  width: 100%;
+  height: 5px;
+  border-radius: 5px;
+  background: #47526a;
+}
+
+.site-system-rows i:nth-child(2) { width: 80%; }
+.site-system-rows i:nth-child(3) { width: 58%; }
+
+@media (max-width: 620px) {
+  .site-design-preview,
+  .site-system-preview {
+    height: calc(100% - 25px);
+    padding: 11px 13px;
+  }
+
+  .site-preview-overline {
+    margin-top: 15px;
+  }
+
+  .site-design-preview strong,
+  .site-system-title {
+    font-size: 17px;
+  }
+
+  .site-system-swatches {
+    margin-top: 9px;
+  }
+}

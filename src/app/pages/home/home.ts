@@ -1,17 +1,25 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Hero } from '../../components/hero/hero';
 import { ApiService } from '../../core/api.service';
 import { Project, Service, SiteSettings, SITE_DEFAULTS } from '../../core/models';
-interface DemoProject {
-    number: string;
-    name: string;
-    type: string;
-    summary: string;
-    image: string;
-    url: string;
-    tools: string[];
+type PreviewPurpose = 'business' | 'booking' | 'system';
+type PreviewStyle = 'graphite' | 'ivory' | 'ocean';
+
+interface PreviewMode {
+    value: PreviewPurpose;
+    label: string;
+    eyebrow: string;
+    headline: string;
+    description: string;
+    cta: string;
 }
+
+interface PreviewPalette {
+    value: PreviewStyle;
+    label: string;
+}
+
 @Component({
     selector: 'app-home',
     standalone: true,
@@ -29,40 +37,47 @@ export class Home implements OnInit {
     settingsUnavailable = signal(false);
     openFaq = signal<number | null>(0);
     readonly year = new Date().getFullYear();
-    readonly demoProjects: DemoProject[] = [
+    readonly selectedPurpose = signal<PreviewPurpose>('business');
+    readonly selectedStyle = signal<PreviewStyle>('graphite');
+    readonly realProjects = computed(() => this.projects().filter(project => !project.is_demo));
+
+    readonly previewModes: PreviewMode[] = [
         {
-            number: '01',
-            name: 'VÁGAT',
-            type: 'Barber Studio / Demo',
-            summary: 'Karakteres tipográfia és elegáns, sötét webes megjelenés.',
-            
-image: '/demos/photos/vagat.jpg',
-            url: '/demos/vagat-barber/index.html',
-            tools: ['HTML', 'CSS', 'JavaScript']
+            value: 'business',
+            label: 'Céges weboldal',
+            eyebrow: 'EGYEDI WEBOLDAL / MÁRKAÉPÍTÉS',
+            headline: 'Az első benyomás számít.',
+            description: 'Letisztult bemutatkozás, jól felépített szolgáltatások és világos következő lépés az ügyfeleidnek.',
+            cta: 'Ismerj meg minket'
         },
         {
-            number: '02',
-            name: 'AXIS',
-            type: 'Auto Detailing / Demo',
-            summary: 'Kontrasztos, dinamikus felület prémium szolgáltatásokhoz.',
-            
-image: '/demos/photos/axis.jpg',
-
-            url: '/demos/axis-detailing/index.html',
-            tools: ['HTML', 'CSS', 'JavaScript']
+            value: 'booking',
+            label: 'Időpontfoglalás',
+            eyebrow: 'SZOLGÁLTATÁS / ONLINE FOGLALÁS',
+            headline: 'Kevesebb egyeztetés. Több idő.',
+            description: 'A szolgáltatások és a foglalási lehetőségek egy átlátható, könnyen használható felületen.',
+            cta: 'Időpontot választok'
         },
         {
-            number: '03',
-            name: 'PULSE',
-            type: 'Personal Training / Demo',
-            summary: 'Energikus arculat, programválasztás és reszponzív kialakítás.',
-
-image: '/demos/photos/pulse.jpg',
-
-            url: '/demos/pulse-fitness/index.html',
-            tools: ['HTML', 'CSS', 'JavaScript']
+            value: 'system',
+            label: 'Egyedi webes rendszer',
+            eyebrow: 'WEBALKALMAZÁS / EGYEDI MŰKÖDÉS',
+            headline: 'Digitális eszköz. A te folyamataidra.',
+            description: 'Ügyféladatok, feladatok vagy szolgáltatások kezelése egy célra szabott webes felületen.',
+            cta: 'Megnézem a lehetőségeket'
         }
     ];
+
+    readonly previewPalettes: PreviewPalette[] = [
+        { value: 'graphite', label: 'Grafit' },
+        { value: 'ivory', label: 'Világos' },
+        { value: 'ocean', label: 'Éjkék' }
+    ];
+
+    readonly activePreview = computed(() =>
+        this.previewModes.find(mode => mode.value === this.selectedPurpose()) ?? this.previewModes[0]
+    );
+
     readonly processSteps = [
         {
             number: '01',

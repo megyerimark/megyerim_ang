@@ -1,6 +1,6 @@
 @if (settingsUnavailable() || servicesUnavailable() || projectsUnavailable()) {
 <div class="backend-warning" role="status">
-  Egyes élő adatok jelenleg nem tölthetők be. A bemutatóprojektek ettől függetlenül megtekinthetők.
+  Egyes élő adatok jelenleg nem tölthetők be. Az ajánlatkéréshez továbbra is használhatod az űrlapot.
 </div>
 }
 <app-hero
@@ -194,142 +194,189 @@
     </div>
   </div>
 </section>
-<section class="section work" id="munkak">
+<section class="section concept-lab" id="megoldas" aria-labelledby="concept-title">
   <div class="container">
     <div class="section-heading-row">
       <div>
-        <span class="overline">
-          02 / KIVÁLASZTOTT MUNKÁK
-        </span>
-        <h2 class="section-title">
-          Kézzelfogható
-          <span class="subtle-heading">
-            elképzelések.
-          </span>
+        <span class="overline">02 / INTERAKTÍV TERVEZŐASZTAL</span>
+        <h2 class="section-title" id="concept-title">
+          És a te weboldalad
+          <span class="subtle-heading">milyen lehetne?</span>
         </h2>
       </div>
       <p class="lead">
-        Három eltérő karakter, három eltérő vállalkozási világ.
-        Valódi, megnyitható demóoldalak — egyértelműen demóként jelölve.
+        Válassz egy célt és egy vizuális világot. Az előnézet azonnal változik.
+        Ez egy interaktív koncepcióbemutató, nem korábbi ügyfélmunka.
       </p>
     </div>
-    @if (projects().length) {
-    <div class="portfolio-grid">
-      @for (project of projects(); track project.id) {
-      <article class="portfolio-card">
-        <div class="portfolio-cover">
-          @if (project.cover_image_url) {
-          <img
+
+    <div class="lab-layout">
+      <div class="lab-controls">
+        <div class="lab-progress" aria-hidden="true">
+          <span>01</span>
+          <span class="lab-progress-line"></span>
+          <span>02</span>
+          <span class="lab-progress-line lab-progress-line--muted"></span>
+          <span>03</span>
+        </div>
+
+        <div class="lab-control-group">
+          <span class="lab-step-label">01 / MIRE VAN SZÜKSÉGED?</span>
+          <h3>Mi legyen a weboldal célja?</h3>
+          <div class="lab-choices" role="group" aria-label="Weboldal típusának kiválasztása">
+            @for (mode of previewModes; track mode.value) {
+              <button
+                type="button"
+                class="lab-choice"
+                [class.active]="selectedPurpose() === mode.value"
+                [attr.aria-pressed]="selectedPurpose() === mode.value"
+                (click)="selectedPurpose.set(mode.value)"
+              >
+                <span>{{ mode.label }}</span>
+                <span aria-hidden="true">{{ selectedPurpose() === mode.value ? '●' : '↗' }}</span>
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="lab-control-group">
+          <span class="lab-step-label">02 / MILYEN LEGYEN A HANGULATA?</span>
+          <h3>Válassz vizuális irányt.</h3>
+          <div class="lab-palettes" role="group" aria-label="Arculati stílus kiválasztása">
+            @for (palette of previewPalettes; track palette.value) {
+              <button
+                type="button"
+                class="lab-palette"
+                [class.active]="selectedStyle() === palette.value"
+                [attr.aria-pressed]="selectedStyle() === palette.value"
+                (click)="selectedStyle.set(palette.value)"
+              >
+                <span [class]="'lab-palette-dot lab-palette-dot--' + palette.value" aria-hidden="true"></span>
+                {{ palette.label }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="lab-next-step">
+          <span class="lab-step-label">03 / A KÖVETKEZŐ LÉPÉS</span>
+          <p>
+            Tetszik az irány? Mondd el, mire van szükséged, és kialakítjuk a saját
+            vállalkozásodhoz illő megoldást.
+          </p>
+          <a class="btn btn-primary" routerLink="/ajanlatkeres">
+            Megterveztetem a sajátomat
+            <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="lab-stage">
+        <div class="lab-stage-top">
+          <span><span class="lab-live-dot" aria-hidden="true"></span> ÉLŐ VIZUÁLIS ELŐNÉZET</span>
+          <span>INTERAKTÍV KONCEPCIÓ / MMM</span>
+        </div>
+        <div class="lab-browser" [attr.data-style]="selectedStyle()">
+          <div class="lab-browser-chrome">
+            <span class="lab-window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span>SAJÁT MÁRKÁD / KONCEPCIÓ</span>
+            <span aria-hidden="true">↗</span>
+          </div>
+          <div class="lab-browser-content">
+            <div class="lab-site-nav">
+              <strong>MÁRKANÉV<span>®</span></strong>
+              <span>Szolgáltatások</span>
+              <span>Rólunk</span>
+              <span class="lab-nav-contact">Kapcsolat ↗</span>
+            </div>
+            <div class="lab-site-hero">
+              <div class="lab-site-copy">
+                <span class="lab-site-kicker">{{ activePreview().eyebrow }}</span>
+                <h3>{{ activePreview().headline }}</h3>
+                <p>{{ activePreview().description }}</p>
+                <span class="lab-site-cta">{{ activePreview().cta }} <span aria-hidden="true">↗</span></span>
+              </div>
+              <div class="lab-site-art" aria-hidden="true">
+                <span class="lab-art-rim"></span>
+                <span class="lab-art-panel lab-art-panel--top"></span>
+                <span class="lab-art-panel lab-art-panel--bottom"></span>
+                <span class="lab-art-symbol">M<span>.</span></span>
+              </div>
+            </div>
+            <div class="lab-site-footer" aria-hidden="true">
+              <span>EGYEDI MEGJELENÉS</span>
+              <span>ÁTGONDOLT FELÉPÍTÉS</span>
+              <span>MOBILBARÁT</span>
+            </div>
+          </div>
+        </div>
+        <div class="lab-stage-bottom">
+          <span>Az előnézet szemléltetés; a végleges oldal egyedi tervezésű.</span>
+          <span>DESIGN SYSTEM / LIVE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+@if (realProjects().length) {
+  <section class="section work" id="munkak" aria-label="Valódi referenciák">
+    <div class="container">
+      <div class="section-heading-row">
+        <div>
+          <span class="overline">VALÓDI REFERENCIÁK</span>
+          <h2 class="section-title">
+            Megvalósult
+            <span class="subtle-heading">projektek.</span>
+          </h2>
+        </div>
+        <p class="lead">A közzétett, tényleges munkák. Demóprojektek nélkül.</p>
+      </div>
+      <div class="portfolio-grid">
+        @for (project of realProjects(); track project.id) {
+          <article class="portfolio-card">
+            <div class="portfolio-cover">
+              @if (project.cover_image_url) {
+                <img
                   [src]="project.cover_image_url"
                   [alt]="project.title + ' projekt előnézete'"
                   loading="lazy"
                 />
-          } @else {
-          <div class="portfolio-cover-placeholder">
-            <span>
-              MEGYERI MÁRK MÁTÉ
-            </span>
-            <strong>
-              {{ project.title }}
-            </strong>
-          </div>
-          }
-          <span class="portfolio-badge">
-            {{ project.is_demo ? 'DEMÓPROJEKT' : 'REFERENCIA' }}
-          </span>
-        </div>
-        <div class="portfolio-meta">
-          <div>
-            <span class="portfolio-type">
-              {{ project.category || 'WEBFEJLESZTÉS' }}
-            </span>
-            <h3>
-              {{ project.title }}
-            </h3>
-            <p>
-              {{ project.summary }}
-            </p>
-            <div class="portfolio-tags">
-              @for (technology of (project.technologies || []); track $index) {
-              <span>
-                {{ technology }}
-              </span>
+              } @else {
+                <div class="portfolio-cover-placeholder">
+                  <span>MEGYERI MÁRK MÁTÉ</span>
+                  <strong>{{ project.title }}</strong>
+                </div>
               }
+              <span class="portfolio-badge">REFERENCIA</span>
             </div>
-          </div>
-          @if (project.project_url) {
-          <a
+            <div class="portfolio-meta">
+              <div>
+                <span class="portfolio-type">{{ project.category || 'WEBFEJLESZTÉS' }}</span>
+                <h3>{{ project.title }}</h3>
+                <p>{{ project.summary }}</p>
+                <div class="portfolio-tags">
+                  @for (technology of (project.technologies || []); track $index) {
+                    <span>{{ technology }}</span>
+                  }
+                </div>
+              </div>
+              @if (project.project_url) {
+                <a
                   class="portfolio-open"
                   [href]="project.project_url"
                   target="_blank"
                   rel="noopener noreferrer"
                   [attr.aria-label]="project.title + ' megtekintése'"
-                >
-            ↗
-          </a>
-          }
-        </div>
-      </article>
-      }
-    </div>
-    } @else {
-    <div class="portfolio-grid">
-      @for (project of demoProjects; track project.number) {
-      <article class="portfolio-card">
-        <a
-              class="portfolio-cover"
-              [href]="project.url"
-              target="_blank"
-              rel="noopener noreferrer"
-              [attr.aria-label]="project.name + ' demóprojekt megnyitása'"
-            >
-          <img
-                [src]="project.image"
-                [alt]="project.name + ' demóoldal előnézete'"
-                loading="lazy"
-              />
-          <span class="portfolio-badge">
-            DEMÓPROJEKT
-          </span>
-          <span class="portfolio-overlay">
-            Oldal megtekintése ↗
-          </span>
-        </a>
-        <div class="portfolio-meta">
-          <div>
-            <span class="portfolio-type">
-              {{ project.number }} / {{ project.type }}
-            </span>
-            <h3>
-              {{ project.name }}
-            </h3>
-            <p>
-              {{ project.summary }}
-            </p>
-            <div class="portfolio-tags">
-              @for (technology of project.tools; track technology) {
-              <span>
-                {{ technology }}
-              </span>
+                >↗</a>
               }
             </div>
-          </div>
-          <a
-                class="portfolio-open"
-                [href]="project.url"
-                target="_blank"
-                rel="noopener noreferrer"
-                [attr.aria-label]="project.name + ' projekt megtekintése'"
-              >
-            ↗
-          </a>
-        </div>
-      </article>
-      }
+          </article>
+        }
+      </div>
     </div>
-    }
-  </div>
-</section>
+  </section>
+}
 <section class="section process" id="folyamat">
   <div class="container process-layout">
     <div class="process-intro">
@@ -529,8 +576,8 @@
       <a routerLink="/" fragment="szolgaltatasok">
         Szolgáltatások
       </a>
-      <a routerLink="/" fragment="munkak">
-        Munkáim
+      <a routerLink="/" fragment="megoldas">
+        Tervezőasztal
       </a>
       <a routerLink="/" fragment="folyamat">
         Munkafolyamat

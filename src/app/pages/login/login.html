@@ -38,7 +38,7 @@
         Jelentkezz be, és kezeld a beérkező ajánlatokat, szolgáltatásokat és referenciákat.
       </p>
       <div class="api-status" [class.online]="apiState()==='online'" [class.offline]="apiState()==='offline'" role="status">
-        @switch(apiState()){@case('online'){● Laravel API elérhető}@case('offline'){● Nem érhető el a Laravel API. Indítsd el a backendet és ellenőrizd az Angular proxyt.}@default{○ Laravel kapcsolat ellenőrzése…}}
+        @switch(apiState()){@case('online'){● Online }@case('offline'){● Nem érhető el a Laravel API. Indítsd el a backendet és ellenőrizd az Angular proxyt.}@default{○ Laravel kapcsolat ellenőrzése…}}
       </div>
       <form (ngSubmit)="submit()">
         <div class="form-field">
@@ -63,7 +63,7 @@
         </button>
       </form>
       <div class="login-foot">
-        Védett adminfelület · Laravel Sanctum
+        🌌
       </div>
     </div>
   </div>

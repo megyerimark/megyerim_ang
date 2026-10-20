@@ -17,7 +17,6 @@
           MEGYERI MÁRK MÁTÉ
         </strong>
         <small>
-          FÜGGETLEN WEBFEJLESZTŐ
         </small>
       </span>
     </a>
@@ -32,8 +31,8 @@
       <a routerLink="/" fragment="szolgaltatasok" (click)="close()">
         Szolgáltatások
       </a>
-      <a routerLink="/" fragment="munkak" (click)="close()">
-        Munkáim
+      <a routerLink="/" fragment="megoldas" (click)="close()">
+        Tervezőasztal
       </a>
       <a routerLink="/" fragment="folyamat" (click)="close()">
         Folyamat
@@ -61,7 +60,7 @@
         [title]="isDark() ? 'Világos téma' : 'Sötét téma'"
       >
         <span aria-hidden="true">
-          {{ isDark() ? '☀' : '☾' }}
+          {{ isDark() ? '🌓' : '🌗' }}
         </span>
       </button>
       <a class="nav-cta" routerLink="/ajanlatkeres" (click)="close()">
