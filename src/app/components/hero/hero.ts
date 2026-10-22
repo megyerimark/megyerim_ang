@@ -10,7 +10,9 @@ import { HeroSculpture } from '../hero-sculpture/hero-sculpture';
 })
 export class Hero {
     @Input()
-    headline = 'Prémium weboldalak, amelyek nemcsak szépek.';
+    headline = 'Ne csak jelen legyél online. Emelkedj ki.';
     @Input()
-    description = 'Egyedi digitális megoldások vállalkozásoknak, modern megjelenéssel és átgondolt felhasználói élménnyel.';
+    description = 'Egyedi weboldalakat és prémium digitális megoldásokat készítek vállalkozásoknak – hogy a megjelenésed bizalmat építsen, és támogassa az ügyfélszerzést.';
+    get titleLead(): string { const idx = this.headline.lastIndexOf('. '); return idx > 0 ? this.headline.slice(0, idx + 1) : this.headline; }
+    get titleAccent(): string { const idx = this.headline.lastIndexOf('. '); return idx > 0 ? this.headline.slice(idx + 2) : ''; }
 }

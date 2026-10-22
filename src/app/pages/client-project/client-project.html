@@ -1,0 +1,85 @@
+<main class="client-project-page">
+  <div class="client-container">
+    <header class="client-heading">
+      <div><span class="client-eyebrow">MEGYERI MÁRK MÁTÉ / PRIVÁT FELÜLET</span><h1>Ajánlatod és projekted állapota.</h1><p>Átlátható következő lépések, egyetlen helyen.</p></div>
+      <a routerLink="/" class="client-back">← Vissza a főoldalra</a>
+    </header>
+    @if(loading()) {<section class="client-panel" role="status">Projektadatok betöltése…</section>}
+    @if(error()) {<div class="client-alert" role="alert">{{error()}}</div>}
+    @if(project();as p){
+      <div class="client-hero client-panel">
+        <div><span class="client-eyebrow">AJÁNLATKÉRÉS #{{p.reference}}</span><h2>Kedves {{p.customer_name}}!</h2><p>Megkeresés dátuma: {{date(p.created_at)}}</p></div>
+        <span class="client-status">{{status(p.status)}}</span>
+      </div>
+      <section class="client-panel">
+        <div class="client-section-title"><div><span class="client-eyebrow">FOLYAMAT</span><h2>Hol tartunk most?</h2></div></div>
+        <div class="client-steps">
+          @for(step of steps;track $index){
+            <div class="client-step" [class.is-done]="stages[p.status]>$index">
+              <span class="client-step-number">{{stages[p.status]>$index?'✓':($index+1)}}</span>
+              <strong>{{step.label}}</strong><small>{{step.text}}</small>
+            </div>
+          }
+        </div>
+        @if(p.status==='reviewing'||p.status==='new'){<p class="client-note">Átnézem az igényeidet, és az egyeztetett módon jelentkezem. A következő állomás a személyre szabott ajánlat.</p>}
+        @if(p.status==='rejected'){<p class="client-note">A megkeresés lezárult. Ha új elképzelésed van, kérhetsz egy új ajánlatot.</p>}
+      </section>
+      @if(p.quoted_at && p.proposal_summary && p.quoted_price_huf!==null){
+        <section class="client-panel client-proposal" id="ajanlat">
+          <div class="client-section-title"><div><span class="client-eyebrow">SZEMÉLYRE SZABOTT AJÁNLAT</span><h2>Az ajánlat részletei</h2></div><button class="client-print" type="button" (click)="printProposal()">Nyomtatás / PDF ↗</button></div>
+          <div class="proposal-meta"><div><small>Ajánlati díj</small><strong>{{money(p.quoted_price_huf)}}</strong></div><div><small>Érvényesség</small><strong>{{date(p.proposal_valid_until)}}</strong></div></div>
+          <div class="proposal-letterhead"><span>MEGYERI MÁRK MÁTÉ / WEBFEJLESZTÉS</span><strong>SZEMÉLYRE SZABOTT AJÁNLAT</strong><small>Hivatkozás: #{{p.reference}} · Készült: {{date(p.quoted_at)}}</small></div>
+          <h3>Az ajánlat tartalma</h3><p class="proposal-text">{{p.proposal_summary}}</p>
+          @if(p.proposal_schedule){<h3>Tervezett ütemezés</h3><p class="proposal-text">{{p.proposal_schedule}}</p>}
+          @if(p.proposal_terms){<h3>Vállalási és fizetési feltételek</h3><p class="proposal-text">{{p.proposal_terms}}</p>}
+          <p class="proposal-fineprint">Az ajánlat kizárólag a fent meghatározott tartalomra és a feltüntetett érvényességi időre vonatkozik. A részleteket a tényleges megrendelés előtt egyeztetjük.</p>
+          @if(p.status==='accepted') {<div class="client-success" role="status">{{p.proposal_accepted_at?'Az ajánlat elfogadását rögzítettük: '+date(p.proposal_accepted_at):'Az ajánlat elfogadott állapotban van.'}}</div>}
+          @else if(canAccept(p)){
+            <div class="accept-area">
+              <label><input type="checkbox" [checked]="consent()" (change)="consent.set(!consent())"><span>Elolvastam a teljes ajánlatot, annak ütemezését és feltételeit (amennyiben fel vannak tüntetve), és elfogadom a megadott tartalmat és összeget.</span></label>
+              <button class="btn btn-primary" type="button" [disabled]="!consent()||accepting()" (click)="accept()">{{accepting()?'Elfogadás folyamatban…':'Ajánlat elfogadása ↗'}}</button>
+            </div>
+          } @else if(p.status==='quoted') {<p class="client-note">Az ajánlat érvényessége lejárt. Kérj aktualizált ajánlatot e-mailben.</p>}
+          @if(message()){<div class="client-success" role="status">{{message()}}</div>}
+        </section>
+      }
+      @if(p.status==='accepted'||p.status==='completed'){
+        <section class="client-panel">
+          <div class="client-section-title"><div><span class="client-eyebrow">MEGVALÓSÍTÁS</span><h2>Projektmérföldkövek</h2></div></div>
+          @if(p.milestones.length){<div class="client-milestones">
+            @for(m of p.milestones;track m.id){<article class="client-milestone" [class.finished]="m.status==='done'">
+              <span class="client-step-number">{{m.status==='done'?'✓':'•'}}</span>
+              <div><h3>{{m.title}}</h3><p>{{m.description || 'A mérföldkő részletei egyeztetés alatt.'}}</p>
+              <small>{{m.status==='pending'?'Tervezett':m.status==='in_progress'?'Folyamatban':'Elkészült'}} @if(m.due_date){ · Tervezett dátum: {{date(m.due_date)}} }</small></div>
+            </article>}
+          </div>}@else{<p class="client-note">A részletes mérföldköveket az egyeztetés után rögzítem.</p>}
+        </section>
+      }
+      <section class="client-panel project-collaboration">
+        <div class="client-section-title"><div><span class="client-eyebrow">KÖZÖS MUNKA</span><h2>Üzenetek</h2></div><button type="button" class="client-print" (click)="loadCollaboration()">Frissítés ↻</button></div>
+        <p class="client-note">Írj kérdést vagy visszajelzést a projekthez. Az üzeneteket csak te és a projekt kezelője olvashatjátok.</p>
+        <div class="project-messages" aria-live="polite">
+          @for(m of collaboration().messages; track m.id){
+            <article class="project-message" [class.mine]="m.author==='client'">
+              <span class="client-eyebrow">{{m.author==='client'?'TE':'WEBFEJLESZTŐ'}} · {{date(m.created_at)}}</span>
+              <p>{{m.body}}</p>
+            </article>
+          } @empty {<p class="client-note">Még nincs üzenet ehhez a projekthez.</p>}
+        </div>
+        <label class="project-field">Üzenet küldése
+          <textarea class="project-textarea" rows="4" maxlength="3000" [(ngModel)]="newMessage" placeholder="Írd le a kérdésedet vagy visszajelzésedet..."></textarea>
+        </label>
+        <button class="btn btn-primary" type="button" [disabled]="sendingMessage() || newMessage.trim().length<2" (click)="sendMessage()">{{sendingMessage()?'Küldés…':'Üzenet elküldése ↗'}}</button>
+      </section>
+      <section class="client-panel project-collaboration">
+        <div class="client-section-title"><div><span class="client-eyebrow">PRIVÁT FÁJLOK</span><h2>Projekt dokumentumai</h2></div></div>
+        <p class="client-note">Itt kizárólag a hozzád rendelt, privát fájlok találhatók. Letöltéshez az egyedi hozzáférési linked szükséges.</p>
+        @for(doc of collaboration().documents; track doc.id){
+          <div class="project-document"><span>▧</span><div><strong>{{doc.title}}</strong><small>{{doc.filename}} · {{(doc.size_bytes / 1024 / 1024).toFixed(2)}} MB</small></div>
+          <button type="button" class="client-print" [disabled]="downloadingId()!==null" (click)="downloadDocument(doc)">{{downloadingId()===doc.id?'Letöltés…':'Letöltés ↓'}}</button></div>
+        } @empty {<p class="client-note">Még nincs megosztott dokumentum.</p>}
+      </section>
+      <p class="client-footer-note">A hozzáférési link személyes. Ne oszd meg másokkal. A felületen csak az ajánlat és a megkeresés főbb állomásai láthatók; ez nem valós idejű fejlesztési munkanapló.</p>
+    }
+  </div>
+</main>

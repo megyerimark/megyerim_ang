@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /ugyfel
+Disallow: /demos
+Sitemap: https://megyerimarkmate.hu/sitemap.xml

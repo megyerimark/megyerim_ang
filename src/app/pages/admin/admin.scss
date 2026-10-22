@@ -702,3 +702,11 @@ td small {
     top:0
   }
 }
+
+.proposal-status,.proposal-hint{font-size:12px;line-height:1.7;color:var(--muted);margin:10px 0}.proposal-status{border-left:3px solid var(--accent);padding-left:12px}
+
+.milestone-editor{border-top:1px solid var(--border);margin-top:24px;padding:20px 0}.milestone-editor h3{font-size:17px;margin:0 0 7px}.milestone-row{display:flex;gap:12px;align-items:center;border:1px solid var(--border);border-radius:11px;padding:12px;margin:10px 0;flex-wrap:wrap}.milestone-row>div{min-width:150px;flex:1}.milestone-row strong,.milestone-row small{display:block}.milestone-row small{font-size:11px;color:var(--muted);margin-top:5px}.milestone-row select{width:auto;min-width:150px;max-width:195px}.milestone-create{display:grid;gap:10px;margin:18px 0}.milestone-create label{font-size:12px;color:var(--muted)}.milestone-create label .input{display:block;margin-top:6px}
+
+.consultations-admin{padding:28px}.consultations-admin h2{font-size:24px;margin:0 0 12px}.consultations-admin h3{margin:30px 0 16px;font-size:18px}.consultation-create{display:flex;align-items:end;flex-wrap:wrap;gap:12px;margin-top:16px}.consultation-create label{font-size:12px;display:grid;gap:8px;flex:1;min-width:190px}.consultation-admin-row{display:flex;align-items:center;gap:15px;flex-wrap:wrap;border:1px solid var(--border);border-radius:11px;padding:16px;margin:10px 0}.consultation-admin-row div:first-child{min-width:185px}.consultation-admin-row strong,.consultation-admin-row small{display:block;overflow-wrap:anywhere}.consultation-admin-row small{color:var(--muted);font-size:11px;line-height:1.6;margin-top:5px}.consultation-booked{flex:1;min-width:250px}.consultation-free{color:var(--accent);font-size:12px;font-weight:700}
+
+.admin-message-list{display:grid;gap:10px;max-height:320px;overflow-y:auto;margin:16px 0}.admin-message{background:var(--surface-alt);padding:14px;border:1px solid var(--border);border-radius:12px;max-width:95%}.admin-message.admin-reply{margin-left:auto;border-color:var(--accent)}.admin-message small{color:var(--muted);font-size:10px;letter-spacing:1px}.admin-message p{font-size:13px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere;margin:10px 0 0}

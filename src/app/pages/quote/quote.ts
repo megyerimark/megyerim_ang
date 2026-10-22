@@ -18,12 +18,42 @@ export class QuotePage {
     palette = ['#8259ee', '#4fc6e9', '#0a1530', '#F6F4ED', '#F0B08F', '#75C0A5', '#FF6583', '#F4D35E'];
     featureOptions = ['Kapcsolatfelvételi űrlap', 'Időpontfoglalás', 'Adminfelület', 'Blog / hírek', 'Többnyelvűség', 'Online fizetés', 'Keresőoptimalizálás', 'Animációk / 3D', 'Hírlevél', 'Ügyfélfiók'];
     budgets = [{ v: '', l: 'Még nem tudom' }, { v: '50000-150000', l: '50 – 150 ezer Ft' }, { v: '150000-300000', l: '150 – 300 ezer Ft' }, { v: '300000-600000', l: '300 – 600 ezer Ft' }, { v: '600000+', l: '600 ezer Ft felett' }];
-    data: QuotePayload = { customer_name: '', email: '', phone: '', company_name: '', website_type: '', design_style: '', colors: [], features: [], inspiration_urls: [], budget_range: '', desired_deadline: null, project_description: '', wants_maintenance: false, privacy_notice_acknowledged: false, website: '' };
+    data: QuotePayload = { customer_name: '', email: '', phone: '', company_name: '', website_type: '', design_style: '', industry: null, layout_style: null, font_style: null, colors: [], features: [], inspiration_urls: [], budget_range: '', desired_deadline: null, project_description: '', wants_maintenance: false, consultation_preference: 'email', privacy_notice_acknowledged: false, website: '' };
     inspiration = '';
     constructor() {
         const type = this.route.snapshot.queryParamMap.get('type');
         if (type && ['landing', 'business', 'webshop', 'custom'].includes(type))
             this.data.website_type = type;
+        // Only the existing homepage configurator's whitelisted choices are imported.
+        if (this.route.snapshot.queryParamMap.get('from') === 'studio') {
+            const params = this.route.snapshot.queryParamMap;
+            const goalMap: Record<string,string> = { business:'business', booking:'business', shop:'webshop', system:'custom' };
+            const toneMap: Record<string,string> = { midnight:'dark-premium', linen:'elegant-minimal', electric:'modern-creative', forest:'dark-premium' };
+            const colorMap: Record<string,string[]> = {midnight:['#10111f','#7858eb','#f8f7ff'],linen:['#f7f4ee','#a46a4a','#22201c'],electric:['#0a1831','#2cd6c4','#f5fbff'],forest:['#0d211b','#accb82','#f6f4e9']};
+            const goal = params.get('goal') || ''; const tone = params.get('tone') || '';
+            if(goalMap[goal]) this.data.website_type = goalMap[goal];
+            if(toneMap[tone]) this.data.design_style = toneMap[tone];
+            if(colorMap[tone]) this.data.colors = [...colorMap[tone]];
+            const rawFeatures = (params.get('features') || '').split('|');
+            this.data.features = [...new Set(rawFeatures.filter(item => this.featureOptions.includes(item)))];
+            if(goal === 'booking' && !this.data.features.includes('Időpontfoglalás')) this.data.features.push('Időpontfoglalás');
+            const industry = params.get('industry') || '';
+            const allowedIndustries = ['Szolgáltatás','Egészség és szépség','Vendéglátás','Technológia','Kereskedelem','Más terület'];
+            const layout = params.get('layout') || '';
+            const font = params.get('font') || '';
+            this.data.industry = allowedIndustries.includes(industry) ? industry : null;
+            this.data.layout_style = ['editorial','split','centered'].includes(layout) ? layout : null;
+            this.data.font_style = ['modern','elegant'].includes(font) ? font : null;
+        }
+        if (this.route.snapshot.queryParamMap.get('from') === 'tervezo') {
+            const purpose = this.route.snapshot.queryParamMap.get('purpose');
+            const style = this.route.snapshot.queryParamMap.get('style');
+            const typeMap: Record<string, string> = { business: 'business', booking: 'business', system: 'custom' };
+            const styleMap: Record<string, string> = { graphite: 'dark-premium', ivory: 'elegant-minimal', ocean: 'modern-creative' };
+            if (purpose && typeMap[purpose]) this.data.website_type = typeMap[purpose];
+            if (style && styleMap[style]) this.data.design_style = styleMap[style];
+            if (purpose === 'booking') this.data.features.push('Időpontfoglalás');
+        }
     }
     minDate() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
     toggle(list: 'colors' | 'features', value: string) { const a = this.data[list]; this.data[list] = a.includes(value) ? a.filter(v => v !== value) : [...a, value]; }

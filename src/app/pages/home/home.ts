@@ -1,5 +1,6 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { DecimalPipe } from '@angular/common';
 import { Hero } from '../../components/hero/hero';
 import { ApiService } from '../../core/api.service';
 import { Project, Service, SiteSettings, SITE_DEFAULTS } from '../../core/models';
@@ -23,7 +24,7 @@ interface PreviewPalette {
 @Component({
     selector: 'app-home',
     standalone: true,
-    imports: [Hero, RouterLink],
+    imports: [Hero, RouterLink, DecimalPipe],
     templateUrl: './home.html',
     styleUrl: './home.scss'
 })
@@ -37,6 +38,31 @@ export class Home implements OnInit {
     settingsUnavailable = signal(false);
     openFaq = signal<number | null>(0);
     readonly year = new Date().getFullYear();
+    readonly heroHeadline = computed(() => {
+        const value = this.settings().hero_headline?.trim();
+        return !value || value === 'Prémium weboldalak, amelyek nemcsak szépek.'
+            ? 'Ne csak jelen legyél online. Emelkedj ki.' : value;
+    });
+    readonly heroDescription = computed(() => {
+        const value = this.settings().hero_description?.trim();
+        return !value || ['Egyedi, modern weboldalak vállalkozásoknak.', 'Egyedi, modern weboldalakat készítek vállalkozásoknak – átgondolt dizájnnal és üzleti szemlélettel.'].includes(value)
+            ? 'Egyedi weboldalakat és prémium digitális megoldásokat készítek vállalkozásoknak – hogy a megjelenésed bizalmat építsen, és támogassa az ügyfélszerzést.' : value;
+    });
+    readonly comparisonView = signal<'before' | 'after'>('after');
+    readonly beforePoints = ['Általános, felejthető megjelenés', 'Nehézkes navigáció', 'Bizonytalan következő lépés'];
+    readonly afterPoints = ['Karakteres, hiteles arculat', 'Átlátható ügyfélút', 'Egyértelmű ajánlatkérés'];
+    readonly briefType = signal<'business' | 'landing' | 'webshop' | 'custom'>('business');
+    readonly briefOptions = [
+        { value: 'business', title: 'Céges weboldal', detail: 'Professzionális bemutatkozás és ügyfélszerzés' },
+        { value: 'landing', title: 'Landing oldal', detail: 'Egy ajánlatra vagy kampányra fókuszálva' },
+        { value: 'webshop', title: 'Webáruház', detail: 'Termékek és egyszerűbb vásárlói élmény' },
+        { value: 'custom', title: 'Egyedi webes rendszer', detail: 'Saját munkafolyamatok és speciális funkciók' }
+    ] as const;
+    readonly inquiryCount = signal(40);
+    readonly inquiryMinutes = signal(15);
+    readonly savedHours = computed(() => this.inquiryCount() * this.inquiryMinutes() * 0.4 / 60);
+    setInquiryCount(event: Event): void { this.inquiryCount.set(Number((event.target as HTMLInputElement).value)); }
+    setInquiryMinutes(event: Event): void { this.inquiryMinutes.set(Number((event.target as HTMLInputElement).value)); }
     readonly selectedPurpose = signal<PreviewPurpose>('business');
     readonly selectedStyle = signal<PreviewStyle>('graphite');
     readonly realProjects = computed(() => this.projects().filter(project => !project.is_demo));

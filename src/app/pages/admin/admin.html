@@ -71,10 +71,10 @@
             MEGYERI MÁRK MÁTÉ / DASHBOARD
           </span>
           <h1>
-            {{tab()==='dashboard'?'Áttekintés':tab()==='quotes'?'Ajánlatkérések':tab()==='clients'?'Ügyfelek':tab()==='projects'?'Referenciák':tab()==='services'?'Szolgáltatások':tab()==='settings'?'Weboldal beállításai':tab()==='activity'?'Tevékenységnapló':'Fiók és biztonság'}}
+            {{tab()==='dashboard'?'Áttekintés':tab()==='quotes'?'Ajánlatkérések':tab()==='consultations'?'Konzultációk':tab()==='clients'?'Ügyfelek':tab()==='projects'?'Referenciák':tab()==='services'?'Szolgáltatások':tab()==='settings'?'Weboldal beállításai':tab()==='activity'?'Tevékenységnapló':'Fiók és biztonság'}}
           </h1>
           <p>
-            {{tab()==='dashboard'?'Minden fontos információ egy helyen.':tab()==='quotes'?'Beérkező megkeresések és ajánlatok kezelése.':tab()==='clients'?'Korábbi érdeklődők és projektelőzmények.':tab()==='projects'?'A portfólió tartalmainak szerkesztése.':tab()==='services'?'Szolgáltatások és csomagok beállítása.':tab()==='settings'?'A nyilvános weboldal szövegei és elérhetőségei.':tab()==='activity'?'Legutóbbi adminműveletek.':'Jelszóváltoztatás és hozzáférés.'}}
+            {{tab()==='dashboard'?'Minden fontos információ egy helyen.':tab()==='quotes'?'Beérkező megkeresések és ajánlatok kezelése.':tab()==='consultations'?'Szabad és lefoglalt konzultációk kezelése.':tab()==='clients'?'Korábbi érdeklődők és projektelőzmények.':tab()==='projects'?'A portfólió tartalmainak szerkesztése.':tab()==='services'?'Szolgáltatások és csomagok beállítása.':tab()==='settings'?'A nyilvános weboldal szövegei és elérhetőségei.':tab()==='activity'?'Legutóbbi adminműveletek.':'Jelszóváltoztatás és hozzáférés.'}}
           </p>
         </div>
         <div class="head-date">
@@ -259,6 +259,31 @@
         </section>
       </div>
       }}
+@if(tab()==='consultations'){
+    <div class="admin-panel card consultations-admin">
+      <h2>Új szabad konzultációs időpont</h2>
+      <p class="proposal-hint">A meghirdetett időpontok nyilvánosan foglalhatók. A rendszer megakadályozza a dupla foglalást.</p>
+      <div class="consultation-create">
+        <label>Kezdés (a saját böngésződ helyi időzónájában)
+          <input type="datetime-local" class="input" [(ngModel)]="slotStart">
+        </label>
+        <label>Időtartam
+          <select class="input" [(ngModel)]="slotDuration"><option [ngValue]="30">30 perc</option><option [ngValue]="45">45 perc</option><option [ngValue]="60">60 perc</option></select>
+        </label>
+        <button type="button" class="btn btn-primary" [disabled]="busy()" (click)="createSlot()">Szabad időpont felvétele +</button>
+      </div>
+      <h3>Közzétett és lefoglalt időpontok</h3>
+      @if(!consultations().length){<p class="proposal-hint">Még nincs konzultációs időpont.</p>}
+      @for(slot of consultations();track slot.id){
+        <div class="consultation-admin-row">
+          <div><strong>{{consultationDate(slot.starts_at)}}</strong><small>{{slot.duration_minutes}} perc</small></div>
+          @if(slot.booking;as booking){
+            <div class="consultation-booked"><strong>Foglalt · {{booking.customer_name}}</strong><small>{{booking.email}} @if(booking.phone){ · {{booking.phone}} } @if(booking.notes){ · {{booking.notes}} }</small></div>
+          }@else{<span class="consultation-free">Szabad</span><button type="button" class="danger-text" [disabled]="busy()" (click)="removeSlot(slot)">Törlés</button>}
+        </div>
+      }
+    </div>
+}
 @if(tab()==='quotes'){
       <div class="panel-toolbar">
         <input class="input" aria-label="Ajánlat keresése" placeholder="Keresés név, e-mail vagy cég szerint" [(ngModel)]="searchQuote" (keyup.enter)="loadQuotes()">
@@ -411,6 +436,7 @@
               </span>
             </div>
           </div>
+          @if(q.industry || q.layout_style || q.font_style){<div class="detail-block"><small>A tervezőben választott arculati irány</small><p>{{q.industry || 'Iparág nélkül'}} · {{q.layout_style || 'egyedi elrendezés'}} · {{q.font_style || 'egyedi betűvilág'}}</p></div>}
           <div class="detail-block">
             <small>
               Funkciók
@@ -441,6 +467,10 @@
             }
           </div>
           <div class="detail-block">
+            <small>Első egyeztetés módja</small>
+            <p>{{q.consultation_preference==='online'?'Online konzultációt kér':q.consultation_preference==='phone'?'Telefon':'E-mail'}}</p>
+          </div>
+          <div class="detail-block">
             <small>
               Projektleírás
             </small>
@@ -455,7 +485,7 @@
             </label>
             <select id="admin-status" class="input" [(ngModel)]="selectedStatus">
               @for(s of statuses;track s.value){
-              <option [value]="s.value">
+              <option [value]="s.value" [disabled]="s.value==='quoted' && !q.quoted_at">
                 {{s.label}}
               </option>
               }
@@ -465,8 +495,21 @@
             <label for="admin-price">
               Ajánlati összeg (Ft)
             </label>
-            <input id="admin-price" class="input" type="text" inputmode="numeric" [(ngModel)]="selectedPrice" placeholder="Opcionális">
+            <input id="admin-price" class="input" type="text" inputmode="numeric" [(ngModel)]="selectedPrice" [disabled]="!!q.quoted_at" placeholder="Ajánlati összeg forintban">
           </div>
+          <div class="form-field">
+            <label for="admin-proposal">Részletes, ügyfélnek elküldendő ajánlati tartalom</label>
+            <textarea id="admin-proposal" class="input" rows="6" maxlength="7000" [(ngModel)]="selectedProposal" [disabled]="!!q.quoted_at" placeholder="A szállítandó oldalak és funkciók, várható ütemezés, átadás, a díj tartalma és a kizárások."></textarea>
+          </div>
+          <div class="form-field"><label for="admin-schedule">Ütemezés és mérföldkövek (az ajánlat része)</label><textarea id="admin-schedule" class="input" rows="3" maxlength="3000" [(ngModel)]="selectedSchedule" [disabled]="!!q.quoted_at" placeholder="Tervezés, fejlesztés, tesztelés, átadás — egyeztetett időkeretben."></textarea></div>
+          <div class="form-field"><label for="admin-terms">Egyedi vállalási és fizetési feltételek</label><textarea id="admin-terms" class="input" rows="4" maxlength="4000" [(ngModel)]="selectedTerms" [disabled]="!!q.quoted_at" placeholder="Jóváhagyott feltételek, díjfizetés ütemezése, módosítások, átadás; jogi ellenőrzés után."></textarea><small class="muted">Az elfogadás előtt pontosítsd a szolgáltatás tényleges feltételeit.</small></div>
+          <div class="form-field">
+            <label for="admin-valid-until">Ajánlat érvényessége</label>
+            <input id="admin-valid-until" class="input" type="date" [(ngModel)]="selectedValidUntil" [disabled]="!!q.quoted_at">
+          </div>
+          @if(q.quoted_at){
+          <p class="proposal-status" role="status">E-mailben elküldve: {{date(q.quoted_at)}}. Az elküldött ajánlat tartalma már nem módosítható.</p>
+          }
           <div class="form-field">
             <label for="admin-notes">
               Saját megjegyzések
@@ -477,6 +520,53 @@
           <button type="button" class="btn btn-primary" [disabled]="busy()" (click)="saveQuote()">
             Módosítások mentése
           </button>
+          @if(!q.quoted_at){
+          <button type="button" class="btn btn-outline" [disabled]="busy()" (click)="sendProposal()">
+            Ajánlat tényleges elküldése e-mailben ↗
+          </button>
+          }
+          <p class="proposal-hint">Az ajánlatküldés külön művelet. Előtte a részleteket mentsd el; SMTP-beállítás nélkül nem jelölhető elküldöttnek.</p>
+          <div class="milestone-editor">
+            <h3>Projektmérföldkövek</h3>
+            <p class="proposal-hint">Elfogadott ajánlatnál a mérföldköveket az ügyfél a privát felületén is látja.</p>
+            @for(m of milestones();track m.id){
+              <div class="milestone-row">
+                <div><strong>{{m.title}}</strong><small>{{m.description || 'Nincs leírás'}} @if(m.due_date){ · {{date(m.due_date)}} }</small></div>
+                <select class="input" aria-label="Mérföldkő állapota" [ngModel]="m.status" [disabled]="busy()" (ngModelChange)="changeMilestone(m,$event)">
+                  <option value="pending">Várakozik</option><option value="in_progress">Folyamatban</option><option value="done">Elkészült</option>
+                </select>
+                <button type="button" class="danger-text" [disabled]="busy()" (click)="removeMilestone(m)" aria-label="Mérföldkő törlése">Törlés</button>
+              </div>
+            }
+            <div class="milestone-create">
+              <input class="input" aria-label="Új mérföldkő neve" maxlength="150" [(ngModel)]="milestoneTitle" placeholder="Új mérföldkő, pl. arculattervezés">
+              <textarea class="input" aria-label="Mérföldkő rövid leírása" rows="2" maxlength="2000" [(ngModel)]="milestoneDescription" placeholder="Mivel lesz kész ez a szakasz?"></textarea>
+              <label>Tervezett határidő <input class="input" type="date" [(ngModel)]="milestoneDate"></label>
+              <button type="button" class="btn btn-outline" [disabled]="busy()" (click)="addMilestone()">Mérföldkő hozzáadása +</button>
+            </div>
+          </div>
+          <section class="milestone-editor">
+            <h3>Privát ügyfélüzenetek</h3>
+            <p class="proposal-hint">A beszélgetés csak az adott ügyfél projektportálján és itt látható. Az új üzenetek nem küldenek automatikus e-mailt.</p>
+            <div class="admin-message-list">
+              @for(m of collaboration().messages;track m.id){
+                <article class="admin-message" [class.admin-reply]="m.author==='admin'"><small>{{m.author==='client'?'ÜGYFÉL':'TE'}} · {{date(m.created_at)}}</small><p>{{m.body}}</p></article>
+              } @empty {<p class="muted">Még nincs üzenet.</p>}
+            </div>
+            <label class="form-field">Válasz az ügyfélnek<textarea class="input" rows="3" maxlength="3000" [(ngModel)]="adminMessage" placeholder="A következő lépésről tájékoztatás…"></textarea></label>
+            <button type="button" class="btn btn-outline" [disabled]="busy() || adminMessage.trim().length<2" (click)="sendProjectMessage()">Válasz közzététele ↗</button>
+          </section>
+          <section class="milestone-editor">
+            <h3>Projektfájlok – csak az ügyfélnek</h3>
+            <p class="proposal-hint">PDF, JPG, PNG vagy WebP, maximum 10 MB; a szerver privát tárhelyére kerül.</p>
+            @for(doc of collaboration().documents;track doc.id){
+              <div class="milestone-row"><div><strong>{{doc.title}}</strong><small>{{doc.filename}}</small></div><button type="button" class="mini-action" (click)="downloadDocument(doc)">Letöltés</button><button type="button" class="danger-text" (click)="removeDocument(doc)" [disabled]="busy()">Törlés</button></div>
+            } @empty {<p class="muted">Még nincs megosztott fájl.</p>}
+            <label class="form-field">Dokumentum címe<input class="input" maxlength="160" [(ngModel)]="documentTitle" placeholder="Pl. Végleges látványterv"></label>
+            <label class="form-field">Fájl<input class="input" type="file" accept=".pdf,.png,.jpg,.jpeg,.webp" (change)="pickDocument($event)"></label>
+            <button type="button" class="btn btn-outline" [disabled]="busy() || !documentFile || !documentTitle.trim()" (click)="uploadDocument()">Fájl privát feltöltése +</button>
+          </section>
+          <div class="detail-block"><small>Ügyfélportál hozzáférés</small><p>A privát link csak az ügyfélnek küldött e-mailben érhető el. Ha a link illetéktelenhez kerül, új hozzáférés küldhető.</p><button class="btn btn-outline" type="button" [disabled]="busy()" (click)="rotateClientAccess()">Új privát link küldése, régi visszavonása ↗</button></div>
           <button type="button" class="danger-text" (click)="deleteQuote()">
             Ajánlat végleges törlése
           </button>
@@ -729,7 +819,7 @@
           </div>
           }@if(!projects().length){
           <div class="empty-state">
-            Nincs még referencia. Adj hozzá egy saját projektet vagy demót!
+            Még nincs közzétett ügyfélmunka. A demók rejtve maradnak; csak valódi referenciát érdemes majd megjelentetni.
           </div>
           }
         </div>
@@ -801,13 +891,14 @@
             <input class="input" type="number" min="0" [(ngModel)]="pe.sort_order">
           </div>
           <label class="check-row">
-            <input type="checkbox" [(ngModel)]="pe.is_demo">
+            <input type="checkbox" [(ngModel)]="pe.is_demo" (ngModelChange)="pe.is_published=false">
             Demó / koncepció (nem ügyfélmunka)
           </label>
           <label class="check-row">
-            <input type="checkbox" [(ngModel)]="pe.is_published">
+            <input type="checkbox" [(ngModel)]="pe.is_published" [disabled]="pe.is_demo">
             Publikált referencia
           </label>
+          <p class="muted">A demómunkák nem tehetők nyilvánossá, és nem kerülnek fel automatikusan a weboldalra.</p>
           <label class="check-row">
             <input type="checkbox" [(ngModel)]="pe.is_featured">
             Kiemelt referencia

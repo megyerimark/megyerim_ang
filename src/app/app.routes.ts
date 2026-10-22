@@ -4,12 +4,32 @@ export const routes: Routes = [
     {
         path: '',
         loadComponent: () => import('./pages/home/home').then(module => module.Home),
-        title: 'Megyeri Márk Máté | Webfejlesztés'
+        title: 'Ne csak jelen legyél online. Emelkedj ki. | Megyeri Márk Máté'
+    },
+    {
+        path: 'tervezo',
+        loadComponent: () => import('./pages/studio/studio').then(module => module.StudioPage),
+        title: 'Interaktív weboldaltervező | Megyeri Márk Máté'
     },
     {
         path: 'ajanlatkeres',
         loadComponent: () => import('./pages/quote/quote').then(module => module.QuotePage),
         title: 'Ajánlatkérés | Megyeri Márk Máté'
+    },
+    {
+        path: 'munkak/:slug',
+        loadComponent: () => import('./pages/case-study/case-study').then(module => module.CaseStudyPage),
+        title: 'Referenciák | Megyeri Márk Máté'
+    },
+    {
+        path: 'konzultacio',
+        loadComponent: () => import('./pages/consultation/consultation').then(module => module.ConsultationPage),
+        title: 'Konzultációfoglalás | Megyeri Márk Máté'
+    },
+    {
+        path: 'ugyfel/projekt',
+        loadComponent: () => import('./pages/client-project/client-project').then(module => module.ClientProjectPage),
+        title: 'Privát ajánlatkövetés | Megyeri Márk Máté'
     },
     {
         path: 'adatkezeles',

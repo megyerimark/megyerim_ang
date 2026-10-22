@@ -4,8 +4,8 @@ import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiService } from '../../core/api.service';
 import { AuthService } from '../../core/auth.service';
-import { Activity, Client, Dashboard, Project, Quote, QuoteStatus, Service, SiteSettings, SITE_DEFAULTS, STATUS_OPTIONS } from '../../core/models';
-type Tab = 'dashboard' | 'quotes' | 'clients' | 'projects' | 'services' | 'settings' | 'activity' | 'account';
+import { Activity, Client, ConsultationSlot, Dashboard, Project, ProjectMilestone, ProjectCollaboration, ProjectDocument, Quote, QuoteStatus, Service, SiteSettings, SITE_DEFAULTS, STATUS_OPTIONS } from '../../core/models';
+type Tab = 'dashboard' | 'consultations' | 'quotes' | 'clients' | 'projects' | 'services' | 'settings' | 'activity' | 'account';
 interface ServiceEditor {
     id: number | null;
     title: string;
@@ -53,6 +53,21 @@ export class AdminPage implements OnInit {
     selectedStatus: QuoteStatus = 'new';
     selectedNotes = '';
     selectedPrice = '';
+    selectedProposal = '';
+    selectedSchedule = '';
+    selectedTerms = '';
+    selectedValidUntil = '';
+    milestones = signal<ProjectMilestone[]>([]);
+    collaboration = signal<ProjectCollaboration>({ messages: [], documents: [] });
+    adminMessage = '';
+    documentTitle = '';
+    documentFile: File | null = null;
+    milestoneTitle = '';
+    milestoneDescription = '';
+    milestoneDate = '';
+    consultations = signal<ConsultationSlot[]>([]);
+    slotStart = '';
+    slotDuration = 30;
     clients = signal<Client[]>([]);
     clientsPage = signal(1);
     clientsPages = signal(1);
@@ -75,7 +90,7 @@ export class AdminPage implements OnInit {
         value: Tab;
         title: string;
         icon: string;
-    }[] = [{ value: 'dashboard', title: 'Áttekintés', icon: '◫' }, { value: 'quotes', title: 'Ajánlatkérések', icon: '▤' }, { value: 'clients', title: 'Ügyfelek', icon: '♙' }, { value: 'projects', title: 'Referenciák', icon: '▧' }, { value: 'services', title: 'Szolgáltatások', icon: '◇' }, { value: 'settings', title: 'Weboldal beállításai', icon: '⚙' }, { value: 'activity', title: 'Tevékenységnapló', icon: '◷' }, { value: 'account', title: 'Fiók és jelszó', icon: '⌘' }];
+    }[] = [{ value: 'dashboard', title: 'Áttekintés', icon: '◫' }, { value: 'quotes', title: 'Ajánlatkérések', icon: '▤' }, { value: 'consultations', title: 'Konzultációk', icon: '◷' }, { value: 'clients', title: 'Ügyfelek', icon: '♙' }, { value: 'projects', title: 'Referenciák', icon: '▧' }, { value: 'services', title: 'Szolgáltatások', icon: '◇' }, { value: 'settings', title: 'Weboldal beállításai', icon: '⚙' }, { value: 'activity', title: 'Tevékenységnapló', icon: '◷' }, { value: 'account', title: 'Fiók és jelszó', icon: '⌘' }];
     ngOnInit() { this.loadDashboard(); }
     notify(message: string, error = false) { this.message.set(message); this.isError.set(error); }
     fail(e: unknown) { const err = e as HttpErrorResponse; const fields = err.error?.errors as Record<string, string[]> | undefined; this.notify(fields ? Object.values(fields).flat().join(' · ') : err.status === 419 ? 'Lejárt a munkamenet. Frissítsd az oldalt.' : err.status === 401 ? 'A munkamenet lejárt. Jelentkezz be újra.' : err.error?.message || 'Szerverhiba. Próbáld újra.', true); this.busy.set(false); }
@@ -91,6 +106,7 @@ export class AdminPage implements OnInit {
             this.loadDashboard();
         if (tab === 'quotes')
             this.loadQuotes();
+        if (tab === 'consultations') this.loadConsultations();
         if (tab === 'clients')
             this.loadClients();
         if (tab === 'projects')
@@ -102,9 +118,25 @@ export class AdminPage implements OnInit {
         if (tab === 'activity')
             this.loadActivities();
     }
+    consultationDate(value: string): string { return new Date(value).toLocaleString('hu-HU', {dateStyle:'medium', timeStyle:'short', timeZone:'Europe/Budapest'}); }
+    loadConsultations() { this.busy.set(true); this.api.adminConsultations().subscribe({next:r=>{this.consultations.set(r.data); this.busy.set(false);}, error:e=>this.fail(e)}); }
+    createSlot() {
+        if (!this.slotStart) {this.notify('Válassz kezdési időpontot.', true); return;}
+        const date = new Date(this.slotStart);
+        if (Number.isNaN(date.valueOf())) {this.notify('Érvénytelen időpont.', true); return;}
+        this.busy.set(true);
+        this.api.createConsultation({starts_at:date.toISOString(), duration_minutes:this.slotDuration}).subscribe({
+            next:()=>{this.slotStart=''; this.loadConsultations(); this.notify('Konzultációs időpont közzétéve.');}, error:e=>this.fail(e)
+        });
+    }
+    removeSlot(slot: ConsultationSlot) {
+        if (slot.booking || !confirm('Törlöd a közzétett szabad időpontot?')) return;
+        this.busy.set(true);
+        this.api.deleteConsultation(slot.id).subscribe({next:()=>{this.loadConsultations(); this.notify('Időpont törölve.');}, error:e=>this.fail(e)});
+    }
     loadDashboard() { this.busy.set(true); this.api.dashboard().subscribe({ next: r => { this.dashboard.set(r.data); this.busy.set(false); }, error: e => this.fail(e) }); }
     loadQuotes(page = 1) { this.busy.set(true); this.api.quotes(this.searchQuote, this.filterStatus, page).subscribe({ next: r => { this.quotes.set(r.data); this.quotePage.set(r.current_page); this.quotePages.set(r.last_page); this.quoteTotal.set(r.total); this.busy.set(false); }, error: e => this.fail(e) }); }
-    showQuote(q: Quote) { this.selectedQuote.set(q); this.selectedStatus = q.status; this.selectedNotes = q.admin_notes || ''; this.selectedPrice = q.quoted_price_huf === null ? '' : String(q.quoted_price_huf); }
+    showQuote(q: Quote) { this.selectedQuote.set(q); this.selectedStatus = q.status; this.selectedNotes = q.admin_notes || ''; this.selectedPrice = q.quoted_price_huf === null ? '' : String(q.quoted_price_huf); this.selectedProposal = q.proposal_summary || ''; this.selectedSchedule = q.proposal_schedule || ''; this.selectedTerms = q.proposal_terms || ''; this.selectedValidUntil = q.proposal_valid_until ? q.proposal_valid_until.slice(0, 10) : ''; this.loadMilestones(q.id); this.loadCollaboration(q.id); }
     saveQuote() {
         const q = this.selectedQuote();
         if (!q)
@@ -118,7 +150,80 @@ export class AdminPage implements OnInit {
             }
         }
         this.busy.set(true);
-        this.api.saveQuote(q.id, { status: this.selectedStatus, admin_notes: this.selectedNotes, quoted_price_huf: amount }).subscribe({ next: r => { this.showQuote(r.data); this.notify('Ajánlatkérés módosítva.'); this.loadQuotes(this.quotePage()); }, error: e => this.fail(e) });
+        this.api.saveQuote(q.id, { status: this.selectedStatus, admin_notes: this.selectedNotes, ...(q.quoted_at ? {} : { quoted_price_huf: amount, proposal_summary: this.selectedProposal, proposal_schedule: this.selectedSchedule || null, proposal_terms: this.selectedTerms || null, proposal_valid_until: this.selectedValidUntil || null }) }).subscribe({ next: r => { this.showQuote(r.data); this.notify('Ajánlatkérés módosítva.'); this.loadQuotes(this.quotePage()); }, error: e => this.fail(e) });
+    }
+    loadCollaboration(id: number) {
+        this.api.adminCollaboration(id).subscribe({ next: r => { if(this.selectedQuote()?.id === id) this.collaboration.set(r.data); }, error: e => this.fail(e) });
+    }
+    sendProjectMessage() {
+        const q = this.selectedQuote(); if(!q || this.adminMessage.trim().length < 2) return;
+        this.busy.set(true);
+        this.api.sendAdminMessage(q.id, this.adminMessage.trim()).subscribe({
+            next: () => { this.adminMessage=''; this.busy.set(false); this.loadCollaboration(q.id); this.notify('Üzenet rögzítve az ügyfélportálon.'); }, error: e => this.fail(e)
+        });
+    }
+    pickDocument(event: Event) {
+        const file = (event.target as HTMLInputElement).files?.[0] || null;
+        if(file && (!['application/pdf','image/jpeg','image/png','image/webp'].includes(file.type) || file.size > 10 * 1024 * 1024)) {
+            this.notify('Csak PDF, JPG, PNG vagy WebP fájl tölthető fel, legfeljebb 10 MB méretben.', true);
+            this.documentFile = null; return;
+        }
+        this.documentFile = file;
+    }
+    uploadDocument() {
+        const q = this.selectedQuote(); if(!q || !this.documentFile || !this.documentTitle.trim()) return;
+        this.busy.set(true);
+        this.api.uploadProjectDocument(q.id, this.documentFile, this.documentTitle.trim()).subscribe({
+            next: () => { this.documentTitle=''; this.documentFile=null; this.busy.set(false); this.loadCollaboration(q.id); this.notify('A privát dokumentum feltöltve.'); }, error: e => this.fail(e)
+        });
+    }
+    private saveDownloaded(blob: Blob, filename: string) {
+        const url = URL.createObjectURL(blob); const a = document.createElement('a');
+        a.href=url; a.download=filename; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+    downloadDocument(doc: ProjectDocument) {
+        const q = this.selectedQuote(); if(!q) return;
+        this.api.downloadAdminDocument(q.id, doc.id).subscribe({next: blob=>this.saveDownloaded(blob,doc.filename),error:e=>this.fail(e)});
+    }
+    removeDocument(doc: ProjectDocument) {
+        const q = this.selectedQuote(); if(!q || !confirm('Biztosan törlöd a privát dokumentumot?')) return;
+        this.busy.set(true);
+        this.api.deleteProjectDocument(q.id, doc.id).subscribe({next:()=>{this.busy.set(false);this.loadCollaboration(q.id);this.notify('Dokumentum törölve.');},error:e=>this.fail(e)});
+    }
+    loadMilestones(quoteId: number) { this.api.milestones(quoteId).subscribe({ next: r => { if(this.selectedQuote()?.id === quoteId) this.milestones.set(r.data); }, error: e => this.fail(e) }); }
+    addMilestone() {
+        const q = this.selectedQuote();
+        if (!q || !this.milestoneTitle.trim()) { this.notify('Adj címet a mérföldkőnek.', true); return; }
+        this.busy.set(true);
+        this.api.addMilestone(q.id, {title: this.milestoneTitle.trim(), description: this.milestoneDescription.trim(), due_date: this.milestoneDate || null}).subscribe({
+            next: () => { this.milestoneTitle=''; this.milestoneDescription=''; this.milestoneDate=''; this.busy.set(false); this.loadMilestones(q.id); this.notify('Mérföldkő hozzáadva.'); }, error: e => this.fail(e)
+        });
+    }
+    changeMilestone(m: ProjectMilestone, status: ProjectMilestone['status']) {
+        const q = this.selectedQuote(); if (!q) return;
+        this.busy.set(true);
+        this.api.updateMilestone(q.id, m.id, {status}).subscribe({next: () => { this.busy.set(false); this.loadMilestones(q.id); this.notify('Mérföldkő frissítve.'); }, error: e => this.fail(e)});
+    }
+    removeMilestone(m: ProjectMilestone) {
+        const q = this.selectedQuote(); if (!q || !confirm('Törlöd a mérföldkövet?')) return;
+        this.busy.set(true);
+        this.api.deleteMilestone(q.id, m.id).subscribe({next: () => { this.busy.set(false); this.loadMilestones(q.id); this.notify('Mérföldkő törölve.'); }, error: e => this.fail(e)});
+    }
+    sendProposal() {
+        const q = this.selectedQuote();
+        if (!q || !q.quoted_price_huf || !q.proposal_summary || !q.proposal_valid_until || q.quoted_at) {
+            this.notify('Előbb mentsd az ajánlati összeget, a pontos tartalmat és az érvényességet.', true);
+            return;
+        }
+        if (!confirm('Biztosan elküldöd a mentett, személyre szabott ajánlatot az ügyfél e-mail-címére?')) return;
+        this.busy.set(true);
+        this.api.sendProposal(q.id).subscribe({ next: r => { this.showQuote(r.data); this.notify('Az ajánlatot valóban elküldtem e-mailben.'); this.loadQuotes(this.quotePage()); }, error: e => this.fail(e) });
+    }
+    rotateClientAccess() {
+        const q = this.selectedQuote();
+        if (!q || !confirm('Biztosan új privát linket küldesz az ügyfélnek? A korábbi projektlink érvénytelenné válik.')) return;
+        this.busy.set(true);
+        this.api.rotateClientAccess(q.id).subscribe({next:()=>{this.busy.set(false);this.notify('Új hozzáférési link elküldve. A régi érvénytelen.');},error:e=>this.fail(e)});
     }
     deleteQuote() {
         const q = this.selectedQuote();

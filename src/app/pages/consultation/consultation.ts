@@ -1,0 +1,58 @@
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ApiService } from '../../core/api.service';
+import { ConsultationSlot } from '../../core/models';
+
+@Component({ selector: 'app-consultation', standalone: true, imports: [FormsModule, RouterLink], templateUrl: './consultation.html', styleUrl: './consultation.scss' })
+export class ConsultationPage implements OnInit {
+    private readonly api = inject(ApiService);
+    slots = signal<ConsultationSlot[]>([]);
+    loading = signal(true);
+    sending = signal(false);
+    selectedSlot = signal<number | null>(null);
+    confirmation = signal<{reference: number; starts_at: string; duration_minutes: number} | null>(null);
+    error = signal('');
+    data = {customer_name: '', email: '', phone: '', notes: '', privacy_notice_acknowledged: false, website: ''};
+    ngOnInit(): void { this.load(); }
+    load(): void {
+        this.loading.set(true);
+        this.api.availableConsultations().subscribe({
+            next: r => {this.slots.set(r.data); this.loading.set(false);},
+            error: () => { this.loading.set(false); this.error.set('Az időpontok nem tölthetők be. Próbáld újra később.'); }
+        });
+    }
+    date(date: string): string {
+        return new Date(date).toLocaleString('hu-HU', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Europe/Budapest' });
+    }
+    book(): void {
+        if (this.sending() || !this.selectedSlot()) return;
+        if (!this.data.customer_name.trim() || !/^\S+@\S+\.\S+$/.test(this.data.email) || !this.data.privacy_notice_acknowledged) {
+            this.error.set('A név, érvényes e-mail-cím és az adatkezelés tudomásulvétele kötelező.'); return;
+        }
+        this.error.set(''); this.sending.set(true);
+        this.api.bookConsultation({...this.data, consultation_slot_id: this.selectedSlot()!}).subscribe({
+            next: r => { this.confirmation.set(r); this.sending.set(false); this.slots.set([]); },
+            error: (e: HttpErrorResponse) => {
+                this.error.set(e.status === 422 ? 'Az adatok vagy az időpont nem érvényes. Frissítsd az időpontokat és próbáld újra.' : 'A foglalás nem sikerült. Próbáld újra.');
+                this.sending.set(false); this.load();
+            }
+        });
+    }
+    addToCalendar(): void {
+        const booking = this.confirmation(); if (!booking) return;
+        const start = new Date(booking.starts_at);
+        const end = new Date(start.getTime() + booking.duration_minutes * 60000);
+        const utc = (date: Date) => date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
+        const lines = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Megyeri//Konzultacio//HU','CALSCALE:GREGORIAN','BEGIN:VEVENT',
+            `UID:konzultacio-${booking.reference}@megyerimarkmate.hu`,`DTSTAMP:${utc(new Date())}`,
+            `DTSTART:${utc(start)}`,`DTEND:${utc(end)}`,'SUMMARY:Webfejlesztési konzultáció – Megyeri Márk Máté',
+            'DESCRIPTION:A konzultáció részleteit külön egyeztetjük.','END:VEVENT','END:VCALENDAR'];
+        const file = new Blob([lines.join('\r\n')+'\r\n'], {type:'text/calendar;charset=utf-8'});
+        const url = URL.createObjectURL(file); const link = document.createElement('a');
+        link.href = url; link.download = `megyeri-konzultacio-${booking.reference}.ics`; link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+}

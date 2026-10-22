@@ -300,3 +300,14 @@ hr {
     transition-duration: .01ms !important;
   }
 }
+
+/* Egyetlen ajánlatoldal nyomtatása – a böngésző PDF-ként is mentheti. */
+@media print {
+  body:has(.client-proposal) * { visibility: hidden !important; }
+  body:has(.client-proposal) .client-proposal,
+  body:has(.client-proposal) .client-proposal * { visibility: visible !important; }
+  body:has(.client-proposal) .client-proposal { display: block !important; position: absolute !important; top: 0; left: 0; width: 100%; margin: 0 !important; padding: 25px 35px !important; box-shadow: none !important; }
+  body:has(.client-proposal) .client-proposal .client-print,
+  body:has(.client-proposal) .client-proposal .accept-area,
+  body:has(.client-proposal) .client-proposal .client-success { display: none !important; }
+}

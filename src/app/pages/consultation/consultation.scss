@@ -1,0 +1,13 @@
+.consultation-page{min-height:80vh;padding:65px 0 100px;background:radial-gradient(circle at 90% 0%,#7654e81a,transparent 40%),var(--bg)}
+.consultation-header{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:30px}
+.consultation-header h1{font-size:clamp(33px,5vw,59px);letter-spacing:-2px;line-height:1.12;margin:15px 0}.consultation-header p{color:var(--muted);max-width:660px;line-height:1.8;font-size:14px}
+.back-link{color:var(--muted);white-space:nowrap;text-decoration:none;font-size:13px}
+.consultation-layout{display:grid;grid-template-columns:1.1fr 1fr;gap:24px;align-items:start}
+.consultation-card{padding:30px;border:1px solid var(--border);border-radius:18px;background:var(--surface)}
+.consultation-card h2{font-size:24px;margin:11px 0 26px;letter-spacing:-.5px}
+.slot-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.slot{border:1px solid var(--border);border-radius:12px;background:var(--bg);padding:16px;text-align:left;color:var(--text);cursor:pointer;display:grid;gap:10px}.slot.active{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}.slot strong{font-size:13px;line-height:1.6}.slot small,.time-note{color:var(--muted);font-size:11px;line-height:1.7}.time-note{margin:18px 0 0}
+.booking-field{display:grid;gap:7px;margin:0 0 15px}.booking-field label{font-size:12px;font-weight:650}.booking-consent{display:flex;gap:12px;margin:22px 0;font-size:12px;line-height:1.7}.booking-consent input{accent-color:var(--accent);margin-top:4px}.booking-consent a{color:var(--accent)}
+.booking-error{border:1px solid #c35f6b;padding:12px;border-radius:10px;font-size:13px;color:var(--text)}.book-btn{width:100%}.booking-honeypot{position:absolute;left:-9999px}.booking-success{max-width:660px;margin:auto}.booking-success p{color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:20px}.booking-success strong{color:var(--text)}
+@media(max-width:850px){.consultation-layout{grid-template-columns:1fr}.consultation-header{align-items:start;flex-direction:column}.slot-grid{grid-template-columns:1fr}}
+@media(max-width:500px){.consultation-page{padding:34px 0 70px}.consultation-card{padding:19px}}

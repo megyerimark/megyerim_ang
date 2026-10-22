@@ -20,9 +20,8 @@
           #{{sent()}}
         </strong>
       </div>
-      <a routerLink="/" class="btn btn-primary">
-        Vissza a főoldalra ↗
-      </a>
+      <a routerLink="/" class="btn btn-primary">Vissza a főoldalra ↗</a>
+      <a routerLink="/konzultacio" class="btn btn-outline">Konzultációs időpontot foglalok ↗</a>
     </section>
     }
  @else{
@@ -45,6 +44,9 @@
         ← Vissza a főoldalra
       </a>
     </div>
+    @if(data.design_style && (data.website_type || data.features.length)) {
+      <div class="prefill-note" role="status">A tervezőasztalon választott elképzelésedet áthoztam. Itt mindent módosíthatsz.</div>
+    }
     <div class="wizard-layout">
       <div class="wizard-main card">
         <div class="step-header">
@@ -246,6 +248,15 @@
               </label>
               <input class="input" id="deadline" type="date" [min]="minDate()" [(ngModel)]="data.desired_deadline">
             </div>
+          </div>
+          <div class="form-field consultation-field">
+            <label for="contact-preference">Milyen formában egyeztessünk először?</label>
+            <select class="input" id="contact-preference" [(ngModel)]="data.consultation_preference">
+              <option value="email">E-mailben</option>
+              <option value="phone">Telefonon</option>
+              <option value="online">Online konzultáción (időpont egyeztetéssel)</option>
+            </select>
+            <small>Ez kapcsolatfelvételi preferencia, nem automatikusan lefoglalt időpont.</small>
           </div>
           <div class="honeypot" aria-hidden="true">
             <label for="website-field">

@@ -54,6 +54,9 @@ export interface Quote {
     company_name: string | null;
     website_type: string;
     design_style: string | null;
+    industry?: string | null;
+    layout_style?: string | null;
+    font_style?: string | null;
     colors: string[] | null;
     features: string[] | null;
     inspiration_urls: string[] | null;
@@ -61,6 +64,13 @@ export interface Quote {
     desired_deadline: string | null;
     project_description: string;
     wants_maintenance: boolean;
+    consultation_preference: string | null;
+    proposal_summary: string | null;
+    proposal_schedule: string | null;
+    proposal_terms: string | null;
+    proposal_valid_until: string | null;
+    proposal_accepted_at: string | null;
+    quoted_at: string | null;
     status: QuoteStatus;
     admin_notes: string | null;
     quoted_price_huf: number | null;
@@ -74,6 +84,9 @@ export interface QuotePayload {
     company_name: string;
     website_type: string;
     design_style: string;
+    industry?: string | null;
+    layout_style?: string | null;
+    font_style?: string | null;
     colors: string[];
     features: string[];
     inspiration_urls: string[];
@@ -81,6 +94,7 @@ export interface QuotePayload {
     desired_deadline: string | null;
     project_description: string;
     wants_maintenance: boolean;
+    consultation_preference: string;
     privacy_notice_acknowledged: boolean;
     website: string;
 }
@@ -121,4 +135,57 @@ export const STATUS_OPTIONS: {
 }[] = [
     { value: 'new', label: 'Új' }, { value: 'reviewing', label: 'Folyamatban' }, { value: 'quoted', label: 'Ajánlat elküldve' }, { value: 'accepted', label: 'Elfogadva' }, { value: 'rejected', label: 'Elutasítva' }, { value: 'completed', label: 'Lezárva' }
 ];
-export const SITE_DEFAULTS: SiteSettings = { site_title: 'Megyeri Márk Máté | Webfejlesztés', hero_headline: 'Prémium weboldalak, amelyek nemcsak szépek.', hero_description: 'Egyedi, modern weboldalakat készítek vállalkozásoknak – átgondolt dizájnnal és üzleti szemlélettel.', contact_email: '', contact_phone: '', instagram_url: '', linkedin_url: '', github_url: '' };
+export const SITE_DEFAULTS: SiteSettings = { site_title: 'Megyeri Márk Máté | Webfejlesztés', hero_headline: 'Ne csak jelen legyél online. Emelkedj ki.', hero_description: 'Egyedi weboldalakat és prémium digitális megoldásokat készítek vállalkozásoknak – hogy a megjelenésed bizalmat építsen, és támogassa az ügyfélszerzést.', contact_email: '', contact_phone: '', instagram_url: '', linkedin_url: '', github_url: '' };
+
+export interface ProjectMilestone {
+    id: number;
+    title: string;
+    description: string | null;
+    status: 'pending' | 'in_progress' | 'done';
+    due_date: string | null;
+    sort_order: number;
+}
+export interface ClientProject {
+    reference: number;
+    customer_name: string;
+    website_type: string;
+    design_style: string | null;
+    industry?: string | null;
+    layout_style?: string | null;
+    font_style?: string | null;
+    status: QuoteStatus;
+    created_at: string;
+    updated_at: string;
+    quoted_at: string | null;
+    quoted_price_huf: number | null;
+    proposal_summary: string | null;
+    proposal_schedule: string | null;
+    proposal_terms: string | null;
+    proposal_valid_until: string | null;
+    proposal_accepted_at: string | null;
+    milestones: ProjectMilestone[];
+}
+
+export interface ConsultationBooking {
+    id: number;
+    customer_name: string;
+    email: string;
+    phone: string | null;
+    notes: string | null;
+}
+export interface ConsultationSlot {
+    id: number;
+    starts_at: string;
+    duration_minutes: number;
+    booking?: ConsultationBooking | null;
+}
+export interface ConsultationConfirmation {
+    message: string;
+    reference: number;
+    starts_at: string;
+    duration_minutes: number;
+}
+
+export interface ProjectMessage { id: number; author: 'client' | 'admin'; body: string; created_at: string; }
+export interface ProjectDocument { id: number; title: string; filename: string; mime_type: string; size_bytes: number; created_at: string; }
+export interface ProjectCollaboration { messages: ProjectMessage[]; documents: ProjectDocument[]; }
