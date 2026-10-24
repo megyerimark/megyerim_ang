@@ -331,3 +331,6 @@ hr {
 
 /* AURORA V5: shared consistency and overflow safety */
 @import "./aurora-v5";
+
+/* Print the visitor's local concept without website chrome. */
+@media print{body:has(.studio-print-brief) app-navbar{display:none!important}}

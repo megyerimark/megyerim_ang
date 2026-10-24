@@ -3,6 +3,15 @@
     <div class="studio-intro"><div><span class="studio-eyebrow">MEGYERI DESIGN STUDIO / INTERAKTÍV TERVEZŐ</span><h1>Alakítsd a saját <em>weboldalad</em> világát.</h1><p>Próbálj ki célokat, arculatokat és elrendezéseket. Az összeállításodat egy kattintással átviheted az ajánlatkérésbe.</p></div><a routerLink="/" class="studio-back">← Főoldal</a></div>
     <div class="studio-grid">
       <aside class="studio-controls">
+        <section class="studio-card studio-identity-card">
+          <span class="studio-step">00 / A TE MÁRKÁD</span>
+          <h2>Tedd személyessé a koncepciót.</h2>
+          <label class="studio-input-label" for="studio-brand">Vállalkozásod neve</label>
+          <input id="studio-brand" type="text" autocomplete="organization" maxlength="80" placeholder="Például: Aurora Studio" [value]="brandName()" (input)="updateBrand($event)" />
+          <label class="studio-input-label" for="studio-headline">Saját főcímed <small>(nem kötelező)</small></label>
+          <input id="studio-headline" type="text" maxlength="120" placeholder="Mi teszi különlegessé a vállalkozásod?" [value]="customHeadline()" (input)="updateHeadline($event)" />
+          <p class="studio-identity-hint">Az előnézet azonnal frissül. Az itt megadott adatokat nem küldjük el automatikusan.</p>
+        </section>
         <section class="studio-card"><span class="studio-step">01 / CÉL</span><h2>Mire lesz szükséged?</h2><div class="studio-choice-grid">
           @for(item of goals;track item.value){<button type="button" class="studio-choice" [class.selected]="goal()===item.value" [attr.aria-pressed]="goal()===item.value" (click)="chooseGoal(item.value)"><strong>{{item.title}}</strong><small>{{item.description}}</small></button>}
         </div></section>
@@ -17,10 +26,26 @@
       <div class="studio-right"><div class="studio-stage"><div class="studio-stage-heading"><div><span class="studio-live-dot"></span><strong>ÉLŐ KONCEPCIÓ</strong><small>Nem korábbi referencia</small></div><div class="studio-device"><button [class.selected]="device()==='desktop'" type="button" (click)="device.set('desktop')" aria-label="Asztali előnézet" [attr.aria-pressed]="device()==='desktop'">▣ Asztali</button><button [class.selected]="device()==='mobile'" type="button" (click)="device.set('mobile')" aria-label="Mobil előnézet" [attr.aria-pressed]="device()==='mobile'">▯ Mobil</button></div></div>
         <div class="studio-preview-frame" [class.mobile]="device()==='mobile'" [attr.data-tone]="tone()" [attr.data-layout]="layout()" [attr.data-font]="font()">
           <div class="preview-chrome"><span>● ● ●</span><span>SAJÁT-VÁLLALKOZÁS / KONCEPCIÓ</span><span>↗</span></div>
-          <div class="preview-body"><div class="preview-nav"><b>MONOGRAM<span>●</span></b><span>Rólunk&nbsp;&nbsp; Szolgáltatások&nbsp;&nbsp; Kapcsolat</span></div><div class="preview-hero"><div class="preview-text"><small>{{industry().toUpperCase()}} · EGYEDI MEGOLDÁS</small><h2>{{headline()}}</h2><p>{{description()}}</p><span class="preview-cta">{{cta()}} &nbsp;↗</span><div class="preview-proof"><strong>Átgondolt dizájn</strong><span>·</span><strong>Mobilbarát élmény</strong></div></div><div class="preview-visual"><div class="preview-orbit one"></div><div class="preview-orbit two"></div><div class="preview-art-card"><span>01 / IDENTITÁS</span><strong>M.</strong><small>SAJÁT VÁLLALKOZÁSOD</small></div></div></div><div class="preview-lower"><div><span>01</span><strong>Bemutatkozás</strong><small>Az értékeid jól láthatóan</small></div><div><span>02</span><strong>{{goal()==='booking'?'Foglalás':goal()==='shop'?'Termékek':goal()==='system'?'Rendszer':'Szolgáltatások'}}</strong><small>Egyszerűen és érthetően</small></div><div><span>03</span><strong>Kapcsolat</strong><small>Egyértelmű következő lépés</small></div></div></div>
+          <div class="preview-body"><div class="preview-nav"><b>{{visibleBrand()}}<span>●</span></b><span>Rólunk&nbsp;&nbsp; Szolgáltatások&nbsp;&nbsp; Kapcsolat</span></div><div class="preview-hero"><div class="preview-text"><small>{{industry().toUpperCase()}} · EGYEDI MEGOLDÁS</small><h2>{{visibleHeadline()}}</h2><p>{{description()}}</p><span class="preview-cta">{{cta()}} &nbsp;↗</span><div class="preview-proof"><strong>Átgondolt dizájn</strong><span>·</span><strong>Mobilbarát élmény</strong></div></div><div class="preview-visual"><div class="preview-orbit one"></div><div class="preview-orbit two"></div><div class="preview-art-card"><span>01 / IDENTITÁS</span><strong>{{monogram()}}.</strong><small>{{visibleBrand()}}</small></div></div></div><div class="preview-lower"><div><span>01</span><strong>Bemutatkozás</strong><small>Az értékeid jól láthatóan</small></div><div><span>02</span><strong>{{goal()==='booking'?'Foglalás':goal()==='shop'?'Termékek':goal()==='system'?'Rendszer':'Szolgáltatások'}}</strong><small>Egyszerűen és érthetően</small></div><div><span>03</span><strong>Kapcsolat</strong><small>Egyértelmű következő lépés</small></div></div></div>
         </div>
         <p class="studio-disclaimer">A vizuális koncepció szemléltető előnézet, nem kész weboldal vagy korábbi ügyfélmunka.</p>
-      </div><div class="studio-summary"><span class="studio-step">A SAJÁT TERVED</span><h2>Az elképzelésed összeállt.</h2><p>Állítsuk össze a részleteket és a személyre szabott ajánlatot.</p><div class="studio-summary-chips"><span>{{industry()}}</span><span>{{selectedFeatures().length}} kiválasztott funkció</span><span>{{theme().title}}</span></div><a class="studio-submit" routerLink="/ajanlatkeres" [queryParams]="quoteParams()">Ezzel a koncepcióval kérek ajánlatot <span aria-hidden="true">↗</span></a><small>A választásaid automatikusan bekerülnek az ajánlatkérőbe, de ott még módosíthatod őket.</small></div></div>
+      </div><div class="studio-summary"><span class="studio-step">A SAJÁT TERVED</span><h2>Az elképzelésed összeállt.</h2><p>Állítsuk össze a részleteket és a személyre szabott ajánlatot.</p><div class="studio-summary-chips"><span>{{visibleBrand()}}</span><span>{{industry()}}</span><span>{{selectedFeatures().length}} kiválasztott funkció</span><span>{{theme().title}}</span></div><a class="studio-submit" routerLink="/ajanlatkeres" [queryParams]="quoteParams()" (click)="prepareQuote()">Ezzel a koncepcióval kérek ajánlatot <span aria-hidden="true">↗</span></a><button class="studio-print-button" type="button" (click)="printBrief()">Projektösszefoglaló PDF-be mentése / nyomtatása ↗</button><small>A választásaid automatikusan bekerülnek az ajánlatkérőbe, de ott még módosíthatod őket.</small></div></div>
     </div>
   </div>
+  <article class="studio-print-brief" aria-label="Nyomtatható projektösszefoglaló">
+    <small>MEGYERI MÁRK MÁTÉ / AURORA LIVE STUDIO</small>
+    <h1>Projektösszefoglaló</h1>
+    <p>Ez az interaktív tervezőben összeállított koncepció, nem végleges árajánlat.</p>
+    <dl>
+      <dt>Vállalkozás neve</dt><dd>{{visibleBrand()}}</dd>
+      <dt>Weboldal típusa</dt><dd>{{goals[goal() === 'business' ? 0 : goal() === 'booking' ? 1 : goal() === 'shop' ? 2 : 3].title}}</dd>
+      <dt>Főcím</dt><dd>{{visibleHeadline()}}</dd>
+      <dt>Színvilág</dt><dd>{{theme().title}}</dd>
+      <dt>Elrendezés</dt><dd>{{layout()}}</dd>
+      <dt>Betűhangulat</dt><dd>{{font()}}</dd>
+      <dt>Iparág</dt><dd>{{industry()}}</dd>
+      <dt>Választott funkciók</dt><dd>{{selectedFeatures().join(', ') || 'Még nincs kiválasztva'}}</dd>
+    </dl>
+    <p>A következő lépés: megyerimarkmate.hu/ajanlatkeres</p>
+  </article>
 </main>

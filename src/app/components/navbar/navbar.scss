@@ -217,3 +217,26 @@
 .nav-cta{border-radius:12px;box-shadow:0 0 24px #5e53f588}
 [data-theme='light'] .nav-wrap{background:#101831ee}
 @media(max-width:940px){.navbar{height:74px}.nav-links{background:#0c142beb;border-bottom:1px solid #7b84d65c;backdrop-filter:blur(22px)}.nav-links a{color:#e2e7fb}.menu-btn{background:#101a35;color:#fff;border-color:#475684}}
+
+/* AURORA V6 / collapse before desktop links squeeze; preserve chosen light theme. */
+.navbar{min-width:0;gap:clamp(9px,1.35vw,22px)}
+.brand,.brand-text,.nav-actions{min-width:0}
+.nav-links{gap:clamp(9px,1.5vw,24px)}
+@media(max-width:1220px){
+  .navbar{height:74px;gap:10px}
+  .nav-links{display:none;position:absolute;top:74px;left:0;right:0;max-height:calc(100dvh - 74px);overflow-y:auto;flex-direction:column;align-items:stretch;gap:0;padding:12px max(24px,calc((100vw - 1140px)/2)) 26px;background:#0c142bf0;box-shadow:0 22px 48px #0005;border-bottom:1px solid #7b84d65c;backdrop-filter:blur(24px)}
+  .nav-links.open{display:flex}
+  .nav-links a:not(.mobile-quote){padding:15px 2px;border-bottom:1px solid #ffffff1f;font-size:14px;color:#e2e7fb}
+  .nav-links a::after{display:none}
+  .nav-cta{display:none}
+  .menu-btn,.mobile-quote{display:inline-flex}
+  .mobile-quote{margin-top:17px}
+}
+@media(max-width:510px){.brand{gap:9px}.brand-text small{display:none}.brand-text strong{font-size:10px;letter-spacing:.1px;white-space:normal;max-width:137px;line-height:1.2}.nav-actions{gap:7px}.navbar{padding-inline:14px}.brand-monogram{width:39px;height:39px;flex:none}.menu-btn,.theme-btn{width:38px;height:38px;flex:none}}
+@media(max-width:350px){.brand-text strong{max-width:102px;font-size:9px}.navbar{padding-inline:10px}}
+[data-theme='light'] .nav-wrap{background:#f9faffef;border-color:#c6cbe4;box-shadow:0 8px 25px #1a24521a}
+[data-theme='light'] .brand-text strong{color:#172147}
+[data-theme='light'] .brand-text small{color:#5f6b89}
+[data-theme='light'] .nav-links a{color:#263257}
+[data-theme='light'] .theme-btn,[data-theme='light'] .menu-btn{background:#eef0fa;border:1px solid #c7cdeb;color:#1f2a4e}
+@media(max-width:1220px){[data-theme='light'] .nav-links{background:#f9fafff5;border-color:#d8def0}[data-theme='light'] .nav-links a:not(.mobile-quote){color:#283657;border-color:#dce0f0}}

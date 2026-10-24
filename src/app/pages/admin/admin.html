@@ -1,5 +1,17 @@
 <main class="admin-shell">
-  <aside class="admin-sidebar" [class.open]="menuOpen()">
+  @if (menuOpen()) {
+    <button class="admin-menu-backdrop" type="button" aria-label="Admin menü bezárása" (click)="menuOpen.set(false)"></button>
+  }
+  <nav class="admin-mobile-rail" aria-label="Gyors admin navigáció">
+    <button class="rail-toggle" type="button" aria-label="Teljes admin menü megnyitása" aria-controls="admin-side-menu" [attr.aria-expanded]="menuOpen()" (click)="menuOpen.set(!menuOpen())"><span aria-hidden="true">☰</span></button>
+    @for (item of tabs; track item.value) {
+      <button type="button" class="rail-item" [class.active]="tab()===item.value" [attr.aria-label]="item.title" [attr.title]="item.title" [attr.aria-current]="tab()===item.value ? 'page' : null" (click)="use(item.value)">
+        <span aria-hidden="true">{{item.icon}}</span>
+        @if(item.value==='quotes' && dashboard()?.quotes_new){<i class="rail-notification" aria-hidden="true"></i>}
+      </button>
+    }
+  </nav>
+  <aside id="admin-side-menu" class="admin-sidebar" [class.open]="menuOpen()" aria-label="Admin oldalsó menü">
     <div class="side-brand">
       <span class="side-logo">
         M
@@ -7,6 +19,7 @@
           .
         </span>
       </span>
+      <button class="side-close" type="button" aria-label="Admin menü bezárása" (click)="menuOpen.set(false)">×</button>
       <span>
         <strong>
           MEGYERI MÁRK MÁTÉ
@@ -19,7 +32,7 @@
     <div class="side-section">MUNKATERÜLET <span class="side-section-indicator" aria-hidden="true">●</span></div>
     <nav aria-label="Admin navigáció">
       @for(item of tabs;track item.value){
-      <button type="button" [class.active]="tab()===item.value" (click)="use(item.value)">
+      <button type="button" [class.active]="tab()===item.value" [attr.aria-current]="tab()===item.value ? 'page' : null" (click)="use(item.value)">
         <span class="nav-ico">
           {{item.icon}}
         </span>
@@ -43,8 +56,8 @@
   <div class="admin-body">
     <header class="admin-topbar">
       <div>
-        <button class="admin-mobile-menu" type="button" (click)="menuOpen.set(!menuOpen())">
-          ☰ Menü
+        <button class="admin-mobile-menu" type="button" aria-controls="admin-side-menu" [attr.aria-expanded]="menuOpen()" (click)="menuOpen.set(!menuOpen())">
+          ☰ <span>Menü</span>
         </button>
         <span class="admin-breadcrumb">STUDIO <span aria-hidden="true">/</span> <b>{{tab().toUpperCase()}}</b></span>
       </div>

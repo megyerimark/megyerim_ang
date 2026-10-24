@@ -21,10 +21,17 @@ export class HeroSculpture implements AfterViewInit, OnDestroy {
     private startTime = 0;
     private program: WebGLProgram | null = null;
     private indexCount = 0;
+    private pointer = { x: 0, y: 0 };
+    private pointerTarget = { x: 0, y: 0 };
     private uniforms: {
         angle: WebGLUniformLocation | null;
         aspect: WebGLUniformLocation | null;
+        pointer: WebGLUniformLocation | null;
     } | null = null;
+    setPointer(x: number, y: number): void {
+        if (this.reducedMotion) return;
+        this.pointerTarget = { x, y };
+    }
     ngAfterViewInit(): void {
         const canvas = this.canvas.nativeElement;
         const gl = canvas.getContext('webgl', {
@@ -86,11 +93,12 @@ export class HeroSculpture implements AfterViewInit, OnDestroy {
       attribute vec3 aNormal;
       uniform float uAngle;
       uniform float uAspect;
+      uniform vec2 uPointer;
       varying vec3 vNormal;
       varying vec3 vPosition;
 
       void main() {
-        float a = uAngle;
+        float a = uAngle + uPointer.x * 0.26;
         mat3 ry = mat3(
           cos(a), 0.0, sin(a),
           0.0, 1.0, 0.0,
@@ -98,8 +106,8 @@ export class HeroSculpture implements AfterViewInit, OnDestroy {
         );
         mat3 rx = mat3(
           1.0, 0.0, 0.0,
-          0.0, cos(-0.32), -sin(-0.32),
-          0.0, sin(-0.32), cos(-0.32)
+          0.0, cos(-0.32 + uPointer.y * 0.24), -sin(-0.32 + uPointer.y * 0.24),
+          0.0, sin(-0.32 + uPointer.y * 0.24), cos(-0.32 + uPointer.y * 0.24)
         );
 
         vec3 position = rx * ry * aPosition;
@@ -175,7 +183,8 @@ export class HeroSculpture implements AfterViewInit, OnDestroy {
         gl.clearColor(0, 0, 0, 0);
         this.uniforms = {
             angle: gl.getUniformLocation(program, 'uAngle'),
-            aspect: gl.getUniformLocation(program, 'uAspect')
+            aspect: gl.getUniformLocation(program, 'uAspect'),
+            pointer: gl.getUniformLocation(program, 'uPointer')
         };
     }
     private compile(gl: WebGLRenderingContext, type: number, source: string): WebGLShader {
@@ -190,46 +199,27 @@ export class HeroSculpture implements AfterViewInit, OnDestroy {
         }
         return shader;
     }
-    /** Trefoil-csomó: kör keresztmetszetű, valódi 3D háromszögháló. */
+    /** Finom holografikus tórusz: letisztult gyűrű a Hero hátteréhez. */
     private buildSculpture(): {
         vertices: number[];
         indices: number[];
     } {
-        const segments = 300;
-        const sides = 16;
-        const radius = 0.19;
+        const segments = 192;
+        const sides = 24;
+        const majorRadius = 1.2;
+        const tubeRadius = 0.24;
         const vertices: number[] = [];
         const indices: number[] = [];
-        const point = (t: number): [
-            number,
-            number,
-            number
-        ] => [
-            (2 + Math.cos(3 * t)) * Math.cos(2 * t) * 0.52,
-            (2 + Math.cos(3 * t)) * Math.sin(2 * t) * 0.52,
-            Math.sin(3 * t) * 0.52
-        ];
-        const normalized = (v: number[]): number[] => {
-            const length = Math.hypot(...v) || 1;
-            return v.map(value => value / length);
-        };
-        const cross = (a: number[], b: number[]): number[] => [
-            a[1] * b[2] - a[2] * b[1],
-            a[2] * b[0] - a[0] * b[2],
-            a[0] * b[1] - a[1] * b[0]
-        ];
         for (let i = 0; i <= segments; i++) {
             const t = (i / segments) * Math.PI * 2;
-            const p = point(t);
-            const before = point(t - 0.001);
-            const after = point(t + 0.001);
-            const tangent = normalized(after.map((value, index) => value - before[index]));
-            const first = normalized(cross(tangent, [0, 0, 1]));
-            const second = normalized(cross(tangent, first));
+            const ct = Math.cos(t);
+            const st = Math.sin(t);
             for (let j = 0; j <= sides; j++) {
                 const a = (j / sides) * Math.PI * 2;
-                const normal = first.map((v, index) => v * Math.cos(a) + second[index] * Math.sin(a));
-                vertices.push(p[0] + normal[0] * radius, p[1] + normal[1] * radius, p[2] + normal[2] * radius, ...normal);
+                const ca = Math.cos(a);
+                const sa = Math.sin(a);
+                const radial = majorRadius + tubeRadius * ca;
+                vertices.push(radial * ct, radial * st, tubeRadius * sa, ca * ct, ca * st, sa);
             }
         }
         for (let i = 0; i < segments; i++) {
@@ -276,8 +266,11 @@ export class HeroSculpture implements AfterViewInit, OnDestroy {
         if (!this.gl || !this.uniforms) {
             return;
         }
+        this.pointer.x += (this.pointerTarget.x - this.pointer.x) * .065;
+        this.pointer.y += (this.pointerTarget.y - this.pointer.y) * .065;
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
         this.gl.uniform1f(this.uniforms.angle, angle);
+        this.gl.uniform2f(this.uniforms.pointer, this.pointer.x, this.pointer.y);
         this.gl.drawElements(this.gl.TRIANGLES, this.indexCount, this.gl.UNSIGNED_SHORT, 0);
     }
 }

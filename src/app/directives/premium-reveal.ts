@@ -26,6 +26,7 @@ export class PremiumReveal implements AfterViewInit, OnDestroy {
       if (rect.top < window.innerHeight * 0.93 && rect.bottom > 0) continue;
       node.classList.add('aurora-reveal-item');
       node.style.setProperty('--aurora-stagger', `${Math.min(index % 4, 3) * 85}ms`);
+      node.style.setProperty('--aurora-reveal-x', `${index % 2 ? 18 : -18}px`);
       this.observer.observe(node);
     }
   }

@@ -619,3 +619,67 @@ h1 {
 [data-theme='light'] .hero-description,[data-theme='light'] .hero-proof{color:#c1cbe8}
 @media(max-width:880px){.hero{min-height:auto}.hero-layout{grid-template-columns:1fr;min-height:auto;padding-top:70px;padding-bottom:0}.hero-copy h1{font-size:clamp(43px,8vw,70px)}.hero-stage{min-height:390px}.premium-device{inset:38px 10% 52px 8%}}
 @media(max-width:560px){.hero-layout{padding-top:43px}.hero-copy h1{font-size:clamp(40px,11vw,57px)}.hero-description{font-size:14px}.hero-actions{gap:10px}.hero-actions .btn{min-height:51px;font-size:12px;padding:12px 15px}.hero-stage{min-height:300px;height:300px}.premium-device{inset:23px 6% 34px 5%}.hero-eyebrow{font-size:9px}.hero-proof{font-size:10px}.hero-bottom{font-size:9px}}
+
+/* AURORA V6 / real WebGL sculpture brought to the foreground */
+.hero-stage{--hero-pointer-x:0px;--hero-pointer-y:0px;transform-style:preserve-3d;}
+.hero-stage app-hero-sculpture{inset:-28px -6% 23% 35%;z-index:7;opacity:.95;filter:drop-shadow(0 0 34px #8a79ffa6);transition:opacity .4s ease;}
+.hero-stage .premium-device{animation:none;transform:perspective(1150px) rotateY(-8deg) rotateX(4deg) translate3d(var(--hero-pointer-x),var(--hero-pointer-y),0);transition:transform .24s ease-out;}
+.stage-halo{transform:translate3d(var(--hero-pointer-x),var(--hero-pointer-y),0);transition:transform .38s ease-out;}
+.stage-orbit{animation:aurora-orbit-breathe 14s ease-in-out infinite alternate;}
+.premium-hero-chip{animation:aurora-chip-float 7s ease-in-out infinite;}
+.premium-hero-chip--bottom{animation-delay:-3.5s;}
+@keyframes aurora-orbit-breathe{from{opacity:.55;transform:rotate(-28deg) scaleY(.59)}to{opacity:.95;transform:rotate(-23deg) scaleY(.65)}}
+@keyframes aurora-chip-float{0%,100%{translate:0 0}50%{translate:0 -9px}}
+@media(max-width:880px){.hero-stage app-hero-sculpture{inset:-15px 4% 27% 35%;}}
+@media(max-width:560px){.hero-stage app-hero-sculpture{inset:-8px -9% 36% 41%;opacity:.88;}.stage-coordinate--bottom{font-size:7px;letter-spacing:.8px;}}
+@media(prefers-reduced-motion:reduce){.stage-orbit,.premium-hero-chip{animation:none}.hero-stage .premium-device,.stage-halo{transition:none}}
+.hero-stage::before{content:'';position:absolute;inset:4% 0 0 13%;border-radius:50%;background:radial-gradient(circle at 56% 49%,#8373ff50,transparent 61%);filter:blur(34px);z-index:0;pointer-events:none;transform:translate3d(var(--hero-pointer-x),var(--hero-pointer-y),0);transition:transform .35s ease-out}
+
+/* AURORA V6.1 – the holographic ring is an atmospheric background detail. */
+.hero-stage app-hero-sculpture{inset:-26% -24% 39% 55%;z-index:4;opacity:.7;filter:drop-shadow(0 0 22px #947cff73);pointer-events:none}
+.hero-stage .premium-device{z-index:5}
+.hero-stage .stage-coordinate{z-index:9}
+@media(max-width:880px){.hero-stage app-hero-sculpture{inset:-22% -12% 42% 61%;opacity:.6}}
+@media(max-width:560px){.hero-stage app-hero-sculpture{inset:-16% -18% 54% 65%;opacity:.48}}
+
+/* The light theme is genuinely light while keeping the dark 3D showcase. */
+[data-theme='light'] .hero{background:linear-gradient(90deg,#f7f8ff 1%,#f7f8ffe5 38%,#e8edff85 100%),url('/aurora-landscape.svg') center 63%/cover no-repeat}
+[data-theme='light'] .hero::before{background:linear-gradient(180deg,#ffffff40,transparent 55%,#f7f8ffed)}
+[data-theme='light'] .hero::after{background:linear-gradient(0deg,#f7f8ff,transparent)}
+[data-theme='light'] .hero-copy h1{color:#182149;text-shadow:none}
+[data-theme='light'] .hero-highlight{background:linear-gradient(110deg,#6533bd,#5149c4 53%,#297bd3);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+[data-theme='light'] .hero-description,[data-theme='light'] .hero-proof,[data-theme='light'] .hero-bottom{color:#4b587b}
+[data-theme='light'] .hero-eyebrow{background:#ffffffda;color:#493e89;border-color:#aea5de}
+[data-theme='light'] .hero-eyebrow .eyebrow-index{color:#4f409e}
+[data-theme='light'] .hero-actions .btn-outline{background:#f8f9ffe8;color:#26315d;border-color:#aab4de}
+[data-theme='light'] .stage-coordinate{color:#465780}
+
+/* AURORA V7 — nyugodtabb, konverzióközpontú hero. A 3D WebGL objektum kikerült. */
+.hero{isolation:isolate;min-height:680px}
+.hero-layout{grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr);gap:clamp(18px,3vw,50px);min-height:650px}
+.hero-copy{padding-block:30px;min-width:0}
+.hero-copy h1{font-size:clamp(45px,5vw,75px);letter-spacing:-.062em;max-width:12.5ch}
+.hero-description{max-width:560px;font-size:clamp(15px,1.2vw,17px);line-height:1.75}
+.hero-actions{margin-top:30px;gap:12px}
+.hero-actions .btn{max-width:100%;text-align:center;white-space:normal;line-height:1.35}
+.hero-actions .btn-primary{box-shadow:0 12px 40px #5c4bfa45;transition:transform .25s ease,box-shadow .25s ease}
+.hero-actions .btn-primary:hover{transform:translateY(-3px);box-shadow:0 20px 48px #6250ff60}
+.hero-proof{margin-top:29px;column-gap:18px;row-gap:10px}
+.hero-stage{min-height:460px;height:500px;filter:none;--hero-pointer-x:0px;--hero-pointer-y:0px}
+.hero-stage::before{inset:13% 3% 11%;border-radius:36%;background:radial-gradient(ellipse,#806dff5c,transparent 66%);filter:blur(34px)}
+.stage-orbit{inset:16% 8%;border-color:#a5a4ff30;opacity:.52;animation:aurora-orbit-breathe 16s ease-in-out infinite alternate}
+.stage-halo{inset:14% 8%;opacity:.7}
+.hero-stage .premium-device{z-index:5;inset:63px 7% 48px 5%;transform:perspective(1150px) rotateY(-5deg) rotateX(3deg) translate3d(var(--hero-pointer-x),var(--hero-pointer-y),0);transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.premium-device-screen{min-height:315px;border-width:7px}
+.premium-device-navigation{margin-bottom:52px}
+.premium-device-content h2{font-size:clamp(26px,2.4vw,36px);max-width:400px}
+.premium-hero-chip{padding:9px 12px;border-color:#a1a0f55e;background:#121a39e8;box-shadow:0 13px 28px #0006;}
+.premium-hero-chip--top{top:25px;right:0}
+.premium-hero-chip--bottom{bottom:17px;left:0}
+.stage-tag{right:0;bottom:12%;font-size:9px;padding:9px 11px;opacity:.85}
+.stage-coordinate--bottom{bottom:0;left:7%;font-size:8px;letter-spacing:1px}
+[data-theme='light'] .hero-stage .stage-tag{color:#fff;background:#151e3e}
+@media(max-width:1120px){.hero-layout{grid-template-columns:1fr;gap:0;min-height:auto;padding-top:60px}.hero-copy h1{max-width:16ch}.hero-stage{margin:15px auto 20px;width:min(100%,600px);min-height:450px;height:475px}}
+@media(max-width:640px){.hero-layout{padding-top:35px}.hero-copy{padding:0}.hero-copy h1{font-size:clamp(39px,10.3vw,58px);max-width:16ch;margin:23px 0 19px}.hero-eyebrow{font-size:8px;letter-spacing:.7px}.hero-eyebrow .eyebrow-rule{display:none}.hero-description{font-size:14px}.hero-actions .btn{width:100%;min-height:52px}.hero-proof{margin-top:24px;gap:9px 14px;font-size:10px}.hero-stage{margin-top:16px;min-height:310px;height:330px}.hero-stage .premium-device{inset:27px 8% 45px 6%;transform:perspective(900px) rotateY(-3deg) rotateX(2deg) translate3d(var(--hero-pointer-x),var(--hero-pointer-y),0)}.premium-device-screen{min-height:255px;border-width:5px}.premium-device-content{padding:14px 15px}.premium-device-content h2{font-size:clamp(20px,6vw,27px);line-height:1.12}.premium-device-navigation{margin-bottom:24px}.premium-hero-chip--top{top:3px;right:0}.premium-hero-chip--bottom{bottom:14px;left:0}.premium-hero-chip small{display:none}.stage-tag,.stage-coordinate--top{display:none}.stage-coordinate--bottom{left:7%;bottom:5px}.hero-bottom{align-items:start}}
+@media(max-width:365px){.hero-stage{height:300px;min-height:300px}.premium-device-screen{min-height:225px}.premium-device-content h2{font-size:19px}.premium-device-navigation{margin-bottom:13px}.premium-hero-chip{padding:6px}.premium-hero-chip>span{width:22px;height:22px}.premium-hero-chip strong{font-size:8px}}
+@media(prefers-reduced-motion:reduce){.hero-stage::before,.stage-orbit,.hero-stage .premium-device,.premium-hero-chip{animation:none!important;transition:none!important;transform:none}}

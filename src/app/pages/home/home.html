@@ -3,11 +3,47 @@
 }
 <app-hero [headline]="heroHeadline()" [description]="heroDescription()"></app-hero>
 <section class="value-strip" aria-label="A közös munka alapjai">
-  <div class="container value-strip-inner">
-    <span><i aria-hidden="true">✦</i> PRÉMIUM MEGJELENÉS</span>
-    <span><i aria-hidden="true">✦</i> ÜZLETI CÉLOKRA TERVEZVE</span>
-    <span><i aria-hidden="true">✦</i> SZEMÉLYES EGYÜTTMŰKÖDÉS</span>
-    <span><i aria-hidden="true">✦</i> MODERN TECHNOLÓGIA</span>
+  <div class="value-strip-track">
+    @for (copy of [0, 1]; track copy) {
+      <div class="value-strip-group" [attr.aria-hidden]="copy === 1 ? 'true' : null">
+        <span><i aria-hidden="true">✦</i> PRÉMIUM MEGJELENÉS</span>
+        <span><i aria-hidden="true">✦</i> ÜZLETI CÉLOKRA TERVEZVE</span>
+        <span><i aria-hidden="true">✦</i> SZEMÉLYES EGYÜTTMŰKÖDÉS</span>
+        <span><i aria-hidden="true">✦</i> MODERN TECHNOLÓGIA</span>
+      </div>
+    }
+  </div>
+</section>
+<section premiumReveal class="section audience" aria-labelledby="audience-title">
+  <div class="container">
+    <div class="audience-intro">
+      <div>
+        <span class="overline">HOGYAN TUDOK SEGÍTENI?</span>
+        <h2 id="audience-title" class="section-title">A célodhoz tervezek. <span class="subtle-heading">Nem egy sablonhoz.</span></h2>
+      </div>
+      <p class="lead">Legyen szó az első céges oldaladról vagy egy összetettebb rendszerről, a közös munka mindig az üzleti célod megértésével kezdődik.</p>
+    </div>
+    <div class="audience-grid">
+      <article class="audience-card">
+        <div class="audience-card-top"><span>01 / MEGJELENÉS</span><span aria-hidden="true">↗</span></div>
+        <h3>Erősebb első benyomást szeretnél?</h3>
+        <p>Egyedi céges weboldal, amely világosan bemutatja a vállalkozásodat és megkönnyíti a kapcsolatfelvételt.</p>
+        <a routerLink="/ajanlatkeres" [queryParams]="{type:'business'}">Céges weboldalt szeretnék <span aria-hidden="true">↗</span></a>
+      </article>
+      <article class="audience-card audience-card--featured">
+        <div class="audience-card-top"><span>02 / ÜGYFÉLSZERZÉS</span><span aria-hidden="true">✦</span></div>
+        <h3>Több releváns érdeklődőt szeretnél?</h3>
+        <p>Célzott landing oldal, jól felépített üzenettel és egyértelmű ajánlatkérési útvonallal.</p>
+        <a routerLink="/ajanlatkeres" [queryParams]="{type:'landing'}">Landing oldalt szeretnék <span aria-hidden="true">↗</span></a>
+      </article>
+      <article class="audience-card">
+        <div class="audience-card-top"><span>03 / HATÉKONYSÁG</span><span aria-hidden="true">↗</span></div>
+        <h3>Egyszerűsítenéd a munkafolyamataidat?</h3>
+        <p>Rád szabott webes rendszer, adminfelület vagy automatizált folyamat a mindennapi feladataidhoz.</p>
+        <a routerLink="/ajanlatkeres" [queryParams]="{type:'custom'}">Egyedi rendszert szeretnék <span aria-hidden="true">↗</span></a>
+      </article>
+    </div>
+    <p class="audience-note">Még nem tudod, pontosan mire van szükséged? <a routerLink="/konzultacio">Beszéljük át együtt <span aria-hidden="true">↗</span></a></p>
   </div>
 </section>
 <section premiumReveal class="section transformation" id="miert-fontos" aria-labelledby="transformation-title">
@@ -20,26 +56,28 @@
       <p class="lead">Egy weboldal akkor dolgozik igazán érted, ha egyértelművé teszi, miért téged válasszanak – és megkönnyíti az első kapcsolatfelvételt.</p>
     </div>
     <div class="transformation-controls" role="group" aria-label="Előtte és utána nézet kiválasztása">
-      <button type="button" [class.is-active]="comparisonView() === 'before'" [attr.aria-pressed]="comparisonView() === 'before'" (click)="comparisonView.set('before')">Előtte <span aria-hidden="true">↙</span></button>
-      <button type="button" [class.is-active]="comparisonView() === 'after'" [attr.aria-pressed]="comparisonView() === 'after'" (click)="comparisonView.set('after')">Utána <span aria-hidden="true">↗</span></button>
-      <span class="comparison-hint">Kattints a két állapot összehasonlításához</span>
+      <button type="button" [class.is-active]="comparisonPosition() === 100" [attr.aria-pressed]="comparisonPosition() === 100" (click)="selectComparison('before')">Előtte <span aria-hidden="true">↙</span></button>
+      <button type="button" [class.is-active]="comparisonPosition() === 0" [attr.aria-pressed]="comparisonPosition() === 0" (click)="selectComparison('after')">Utána <span aria-hidden="true">↗</span></button>
+      <span class="comparison-hint">Húzd a csúszkát, és nézd meg a különbséget</span>
     </div>
     <div class="comparison-stage" [attr.data-view]="comparisonView()">
-      <div class="comparison-visual" aria-label="Szemléltető weboldal-előnézet; nem ügyfélmunka">
+      <div class="comparison-visual" [style.--comparison-split]="comparisonPosition() + '%'" aria-label="Szemléltető weboldal-előnézet; nem ügyfélmunka">
         <div class="comparison-browser-bar"><span class="browser-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>VIZUÁLIS ÖSSZEHASONLÍTÁS · KONCEPCIÓ</span><span aria-hidden="true">↗</span></div>
-        @if (comparisonView() === 'before') {
-          <div class="comparison-old">
-            <div class="comparison-old-nav">Cégem <span>Főoldal &nbsp; Rólunk &nbsp; Elérhetőség</span></div>
-            <div class="comparison-old-copy"><small>ÜDVÖZÖLJÜK WEBOLDALUNKON</small><strong>Üdvözöljük honlapunkon!</strong><p>Szolgáltatásainkkal állunk rendelkezésére. További információkért keressen minket.</p><span class="comparison-old-link">Kapcsolat</span></div>
-            <div class="comparison-old-blocks" aria-hidden="true"><i></i><i></i><i></i></div>
-          </div>
-        } @else {
+        <div class="comparison-layers" aria-hidden="true">
           <div class="comparison-new">
             <div class="comparison-new-nav"><strong>STÚDIÓ<span>.</span></strong><span>SZOLGÁLTATÁSOK &nbsp; RÓLUNK</span><b>Kapcsolat ↗</b></div>
             <div class="comparison-new-main"><span class="comparison-new-eyebrow">TUDATOS MEGJELENÉS / EGYEDI KONCEPCIÓ</span><strong>A márkád következő fejezete<span>.</span></strong><p>Határozott üzenet, letisztult élmény és világos út az érdeklődéstől a kapcsolatfelvételig.</p><span class="comparison-new-link">Beszéljünk az ötletedről ↗</span></div>
-            <div class="comparison-new-orb" aria-hidden="true"></div><div class="comparison-new-caption">PURPOSEFUL DESIGN — BUILT TO CONNECT</div>
+            <div class="comparison-new-orb"></div><div class="comparison-new-caption">PURPOSEFUL DESIGN — BUILT TO CONNECT</div>
           </div>
-        }
+          <div class="comparison-old">
+            <div class="comparison-old-nav">Cégem <span>Főoldal &nbsp; Rólunk &nbsp; Elérhetőség</span></div>
+            <div class="comparison-old-copy"><small>ÜDVÖZÖLJÜK WEBOLDALUNKON</small><strong>Üdvözöljük honlapunkon!</strong><p>Szolgáltatásainkkal állunk rendelkezésére. További információkért keressen minket.</p><span class="comparison-old-link">Kapcsolat</span></div>
+            <div class="comparison-old-blocks"><i></i><i></i><i></i></div>
+          </div>
+        </div>
+        <label class="comparison-slider-label" for="comparison-slider">Előtte és utána összehasonlítása: {{comparisonPosition()}}% régi nézet</label>
+        <div class="comparison-slider-line" aria-hidden="true"><span>‹ ›</span></div>
+        <input class="comparison-slider" id="comparison-slider" type="range" min="0" max="100" step="1" [value]="comparisonPosition()" (input)="moveComparison($event)" aria-label="Összehasonlító csúszka, balra az előtte, jobbra az utána nézet" />
       </div>
       <div class="comparison-copy" aria-live="polite">
         <span class="comparison-number">{{ comparisonView() === 'before' ? '01 / KIINDULÓ HELYZET' : '02 / AZ ÚJ MEGKÖZELÍTÉS' }}</span>
@@ -194,26 +232,6 @@
   </div>
 </section>
 
-<section premiumReveal class="section quick-brief" aria-labelledby="brief-title">
-  <div class="container brief-layout">
-    <div>
-      <span class="overline">MONDD EL, MI A CÉLOD</span>
-      <h2 class="section-title" id="brief-title">Miből legyen a <span class="subtle-heading">következő lépés?</span></h2>
-      <p class="lead">Válassz egy irányt. Az ajánlatkérőben már ennek megfelelően indulhatsz, vagy a részletes tervezőben még tovább alakíthatod az elképzelést.</p>
-      <span class="brief-footnote">Nem szükséges regisztrálnod a tervezés megkezdéséhez.</span>
-    </div>
-    <div class="brief-panel">
-      <span class="brief-label">01 / MIT SZERETNÉL MEGVALÓSÍTANI?</span>
-      <div class="brief-choices" role="group" aria-label="Projekt típusának választása">
-        @for (choice of briefOptions; track choice.value) {
-          <button type="button" [class.active]="briefType() === choice.value" [attr.aria-pressed]="briefType() === choice.value" (click)="briefType.set(choice.value)"><span class="brief-choice-indicator" aria-hidden="true">{{ briefType() === choice.value ? '●' : '○' }}</span><span><strong>{{ choice.title }}</strong><small>{{ choice.detail }}</small></span><span aria-hidden="true">↗</span></button>
-        }
-      </div>
-      <a class="btn btn-primary brief-submit" routerLink="/ajanlatkeres" [queryParams]="{ type: briefType() }">Ezzel indulok <span aria-hidden="true">↗</span></a>
-      <a class="brief-studio-link" routerLink="/tervezo">Inkább az interaktív tervezőt próbálom ki <span aria-hidden="true">→</span></a>
-    </div>
-  </div>
-</section>
 <section premiumReveal class="section services" id="szolgaltatasok">
   <div class="container">
     <div class="section-heading-row">
@@ -659,9 +677,6 @@
     </span>
     <a routerLink="/adatkezeles">
       Adatkezelési tájékoztató
-    </a>
-    <a routerLink="/admin/bejelentkezes">
-      Admin
     </a>
   </div>
 </footer>

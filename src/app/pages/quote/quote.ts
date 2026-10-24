@@ -26,6 +26,15 @@ export class QuotePage {
             this.data.website_type = type;
         // Only the existing homepage configurator's whitelisted choices are imported.
         if (this.route.snapshot.queryParamMap.get('from') === 'studio') {
+            const saved = sessionStorage.getItem('mm-studio-brief');
+            if (saved) {
+                sessionStorage.removeItem('mm-studio-brief');
+                try {
+                    const brief = JSON.parse(saved) as { brand?: unknown; headline?: unknown };
+                    if (typeof brief.brand === 'string') this.data.company_name = brief.brand.slice(0, 150);
+                    if (typeof brief.headline === 'string' && brief.headline.trim()) this.data.project_description = `A tervezőben választott főcím: ${brief.headline.slice(0, 120)}. A részletek: `;
+                } catch { /* An invalid session draft must never block quote requests. */ }
+            }
             const params = this.route.snapshot.queryParamMap;
             const goalMap: Record<string,string> = { business:'business', booking:'business', shop:'webshop', system:'custom' };
             const toneMap: Record<string,string> = { midnight:'dark-premium', linen:'elegant-minimal', electric:'modern-creative', forest:'dark-premium' };

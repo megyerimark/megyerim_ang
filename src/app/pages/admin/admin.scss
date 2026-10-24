@@ -902,3 +902,57 @@ td small {
 @media(max-width:680px){.admin-topbar{gap:7px;}.admin-top-actions{gap:6px;}.top-action{height:36px;width:36px;}.admin-heading{padding:18px;min-height:120px;}.admin-heading h1{font-size:clamp(27px,7vw,38px);}.admin-heading::after{font-size:8px;right:12px;bottom:9px;}.admin-content{padding-inline:12px;}.metric-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.metric{padding:14px;min-height:130px;}.metric strong{font-size:29px;}.admin-grid,.editor-grid,.premium-dashboard-grid{grid-template-columns:1fr!important;}.admin-panel{padding:16px;}.settings-editor{padding:16px!important;}.settings-grid{grid-template-columns:1fr;gap:17px;}.settings-grid .wide{grid-column:auto;}.settings-live-preview{width:100%;}.settings-preview-content{padding:27px 20px 95px;}.settings-preview-hologram{opacity:.45;}.admin-shell .admin-panel{max-width:100%;}.admin-shell .table-scroll{overflow-x:auto;max-width:100%;}.panel-title{align-items:start;}}
 @media(max-width:400px){.account-tag{padding:4px;}.admin-mobile-menu{font-size:12px;}.settings-preview-bottom{font-size:8px;}.settings-preview-content h2{font-size:25px;}}
 @media(prefers-reduced-motion:reduce){.settings-preview-hologram{transform:none;}}
+
+/* AURORA V7 / állandó oldalsó navigáció, mobil ikonrail és animált menü. */
+.admin-shell{grid-template-columns:252px minmax(0,1fr);overflow:visible}
+.admin-sidebar{position:sticky;top:0;height:100dvh;min-height:0;gap:16px;overflow:hidden;align-self:start;z-index:52;box-shadow:12px 0 38px #01071a30;backdrop-filter:blur(24px)}
+.admin-sidebar>nav{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding-right:3px;scrollbar-width:thin;scrollbar-color:#7770d36b transparent}
+.admin-sidebar nav button{width:100%;white-space:normal;transition:transform .22s ease,background .22s ease,border .22s ease,box-shadow .22s ease}
+.admin-sidebar nav button:hover{transform:translateX(4px)}
+.side-bottom{flex-shrink:0;margin-top:0;padding-top:12px;gap:5px}
+.admin-mobile-rail,.admin-menu-backdrop,.side-close{display:none}
+.side-brand{position:relative}
+.admin-topbar{z-index:42}
+.admin-content{width:100%}
+@media(max-width:980px){
+  .admin-shell{display:block!important;min-height:100dvh;overflow:visible}
+  .admin-sidebar{position:fixed;top:0;left:0;display:flex!important;width:min(320px,calc(100vw - 34px));height:100dvh;max-height:100dvh;overflow:hidden;z-index:90;transform:translateX(-112%);opacity:0;visibility:hidden;pointer-events:none;transition:transform .32s cubic-bezier(.2,.85,.2,1),opacity .25s ease,visibility .25s ease;box-shadow:22px 0 65px #000a}
+  .admin-sidebar.open{display:flex!important;transform:translateX(0);opacity:1;visibility:visible;pointer-events:auto}
+  .side-brand{padding-right:42px}
+  .side-close{display:grid;place-items:center;position:absolute;top:4px;right:3px;width:34px;height:34px;border:1px solid #8d91e560;border-radius:11px;color:#e9eaff;background:#6b71df22;font-size:23px;cursor:pointer}
+  .admin-menu-backdrop{display:block;position:fixed;inset:0;width:100%;height:100%;border:0;border-radius:0;background:#030615a8;backdrop-filter:blur(5px);z-index:80;cursor:pointer}
+  .admin-mobile-rail{display:flex;flex-direction:column;align-items:center;gap:6px;position:fixed;top:77px;bottom:10px;left:7px;width:53px;height:calc(100dvh - 87px);padding:7px 5px;border:1px solid #9290ee65;border-radius:17px;background:linear-gradient(160deg,#131c40f5,#0b1531ed);box-shadow:0 12px 40px #0008,inset 0 1px #ffffff1a;backdrop-filter:blur(19px);z-index:49;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
+  .admin-mobile-rail::-webkit-scrollbar{display:none}
+  .admin-mobile-rail button{position:relative;display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;padding:0;border:1px solid transparent;border-radius:12px;background:transparent;color:#b8c6e8;font:inherit;font-size:22px;cursor:pointer;transition:background .2s ease,color .2s ease,transform .2s ease}
+  .admin-mobile-rail button:hover,.admin-mobile-rail button:focus-visible{color:#fff;background:#8374ed31;outline-color:#b1a2ff;transform:translateY(-1px)}
+  .admin-mobile-rail button.active{color:#fff;background:linear-gradient(140deg,#8365ef,#546efa);border-color:#bcb2ff75;box-shadow:0 7px 20px #6659ff66}
+  .admin-mobile-rail .rail-toggle{color:#fff;border-color:#8d91e570;background:#7770e338;font-size:20px;margin-bottom:5px}
+  .rail-notification{position:absolute;right:4px;top:5px;width:7px;height:7px;border-radius:50%;background:#55e5c7;box-shadow:0 0 0 3px #111d3b,0 0 8px #55e5c7}
+  .admin-body{min-width:0;margin-left:67px}
+  .admin-topbar{min-height:69px;padding-inline:clamp(9px,2vw,20px);gap:8px}
+  .admin-mobile-menu{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 10px;border:1px solid #787ad05c;border-radius:11px;background:#171e40d1;color:#e7eaff;white-space:nowrap;font-weight:700}
+  .admin-content{padding:18px clamp(9px,2vw,22px) 68px}
+}
+@media(max-width:520px){
+  .admin-mobile-rail{width:47px;left:4px;padding-inline:3px;top:73px;height:calc(100dvh - 79px)}
+  .admin-mobile-rail button{width:39px;height:39px;flex-basis:39px;font-size:19px}
+  .admin-body{margin-left:55px}
+  .admin-topbar{padding:9px 8px;gap:5px}
+  .admin-top-actions{gap:4px}
+  .admin-top-actions .top-action{width:32px;height:32px}
+  .admin-mobile-menu{font-size:12px;padding:7px 8px}
+  .admin-mobile-menu span{display:none}
+  .admin-content{padding:15px 8px 60px}
+  .admin-heading{padding:17px 13px}
+  .admin-heading h1{font-size:clamp(24px,7vw,33px);overflow-wrap:anywhere}
+  .admin-heading p{font-size:12px;line-height:1.5}
+  .admin-panel{padding:13px}
+  .metric-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .metric{min-width:0;padding:12px;min-height:120px}
+  .metric strong{font-size:27px}
+  .metric>span{overflow-wrap:anywhere;font-size:10px}
+  .account-tag{padding:0}
+  .account-dot{width:30px;height:30px}
+}
+@media(max-width:365px){.admin-top-actions .top-action:last-child{display:none}.admin-heading h1{font-size:23px}.metric-grid{grid-template-columns:1fr 1fr}.metric{min-height:114px}.metric strong{font-size:25px}}
+@media(prefers-reduced-motion:reduce){.admin-sidebar,.admin-mobile-rail button,.admin-sidebar nav button{transition:none!important}}

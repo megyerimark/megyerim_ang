@@ -47,9 +47,10 @@ export class Home implements OnInit {
     readonly heroDescription = computed(() => {
         const value = this.settings().hero_description?.trim();
         return !value || ['Egyedi, modern weboldalak vállalkozásoknak.', 'Egyedi, modern weboldalakat készítek vállalkozásoknak – átgondolt dizájnnal és üzleti szemlélettel.'].includes(value)
-            ? 'Egyedi weboldalakat és prémium digitális megoldásokat készítek vállalkozásoknak – hogy a megjelenésed bizalmat építsen, és támogassa az ügyfélszerzést.' : value;
+            ? 'Prémium weboldalakat és egyedi webes rendszereket készítek vállalkozásoknak. Átgondolt megjelenés, könnyű kapcsolatfelvétel, személyes együttműködés.' : value;
     });
     readonly comparisonView = signal<'before' | 'after'>('after');
+    readonly comparisonPosition = signal(42);
     readonly beforePoints = ['Általános, felejthető megjelenés', 'Nehézkes navigáció', 'Bizonytalan következő lépés'];
     readonly afterPoints = ['Karakteres, hiteles arculat', 'Átlátható ügyfélút', 'Egyértelmű ajánlatkérés'];
     readonly briefType = signal<'business' | 'landing' | 'webshop' | 'custom'>('business');
@@ -169,5 +170,14 @@ export class Home implements OnInit {
     }
     toggleFaq(index: number): void {
         this.openFaq.update(current => current === index ? null : index);
+    }
+    selectComparison(view: 'before' | 'after'): void {
+        this.comparisonView.set(view);
+        this.comparisonPosition.set(view === 'before' ? 100 : 0);
+    }
+    moveComparison(event: Event): void {
+        const position = Number((event.target as HTMLInputElement).value);
+        this.comparisonPosition.set(position);
+        this.comparisonView.set(position > 50 ? 'before' : 'after');
     }
 }

@@ -34,6 +34,10 @@ export class StudioPage {
     readonly font = signal<Font>('modern');
     readonly device = signal<Device>('desktop');
     readonly industry = signal('Szolgáltatás');
+    readonly brandName = signal('');
+    readonly customHeadline = signal('');
+    readonly visibleBrand = computed(() => this.brandName().trim() || 'MÁRKANEVED');
+    readonly monogram = computed(() => this.visibleBrand().slice(0, 1).toLocaleUpperCase('hu-HU'));
     readonly selectedFeatures = signal<string[]>(['Kapcsolatfelvételi űrlap', 'Keresőoptimalizálás']);
     readonly theme = computed(() => this.palettes.find(p => p.value === this.tone())!);
     readonly headline = computed(() => {
@@ -44,6 +48,7 @@ export class StudioPage {
         const labels: Record<SiteGoal,string> = {business:'Egyedi online jelenlét, amely tisztán mutatja az értékeidet.',booking:'Átlátható szolgáltatások és gyors időpontválasztás.',shop:'Átgondolt vásárlói élmény a felfedezéstől a fizetésig.',system:'Egy felület, amely pontosan a vállalkozásodhoz igazodik.'};
         return labels[this.goal()];
     });
+    readonly visibleHeadline = computed(() => this.customHeadline().trim() || this.headline());
     readonly cta = computed(() => ({business:'Beszéljünk',booking:'Időpontot foglalok',shop:'Felfedezem',system:'Belépés'})[this.goal()]);
     readonly quoteParams = computed(() => ({
         from:'studio', goal:this.goal(), tone:this.tone(), layout:this.layout(), font:this.font(),
@@ -57,4 +62,11 @@ export class StudioPage {
         if(value === 'booking' && !this.selectedFeatures().includes('Időpontfoglalás')) this.toggleFeature('Időpontfoglalás');
         if(value === 'shop' && !this.selectedFeatures().includes('Online fizetés')) this.toggleFeature('Online fizetés');
     }
+    updateBrand(event: Event): void { this.brandName.set((event.target as HTMLInputElement).value.slice(0, 80)); }
+    updateHeadline(event: Event): void { this.customHeadline.set((event.target as HTMLInputElement).value.slice(0, 120)); }
+    prepareQuote(): void {
+        // Session-only bridge: private custom text is not added to a shareable URL.
+        sessionStorage.setItem('mm-studio-brief', JSON.stringify({brand: this.brandName().trim(), headline: this.customHeadline().trim()}));
+    }
+    printBrief(): void { window.print(); }
 }

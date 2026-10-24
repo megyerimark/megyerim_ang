@@ -1,5 +1,7 @@
 # Megyeri Márk | Webfejlesztés – Angular frontend
 
+**Aurora V6:** az interaktív 3D Hero, mozgó értéksáv, filmes görgetés, húzható összehasonlítás, személyre szabható tervező és nyomtatható brief használatához lásd az [Aurora V6 útmutatót](AURORA_V6_UTMUTATO.md).
+
 Ez a **felhasználó által küldött Angular 20 projekt továbbfejlesztett változata**, a korábban közösen elkészített Laravel backend API-jához igazítva.
 
 ## Funkciók
