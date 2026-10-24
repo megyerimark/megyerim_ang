@@ -956,3 +956,17 @@ td small {
 }
 @media(max-width:365px){.admin-top-actions .top-action:last-child{display:none}.admin-heading h1{font-size:23px}.metric-grid{grid-template-columns:1fr 1fr}.metric{min-height:114px}.metric strong{font-size:25px}}
 @media(prefers-reduced-motion:reduce){.admin-sidebar,.admin-mobile-rail button,.admin-sidebar nav button{transition:none!important}}
+
+/* Aurora-kvízből érkező ajánlatok jól olvasható, kiemelt összesítése. */
+.admin-quiz-summary{position:relative;border:1px solid #9a88f47a!important;border-radius:17px;background:radial-gradient(ellipse at 100% 0,#6654cc4a,transparent 55%),linear-gradient(145deg,#1a2552,#111c3d);padding:22px!important;box-shadow:inset 0 1px #fff2,0 10px 30px #070a1d55}
+.admin-quiz-eyebrow{display:block;color:#c3b1ff;font-size:10px;font-weight:850;letter-spacing:1.45px}
+.admin-quiz-summary h3{color:#fff!important;font-family:'Space Grotesk',sans-serif;font-size:22px;margin:14px 0 20px;letter-spacing:-.04em}
+.admin-quiz-answer{display:grid;grid-template-columns:minmax(110px,.8fr) minmax(0,1.2fr);gap:13px;border-top:1px solid #8a93ca36;padding:12px 0;font-size:12px;line-height:1.55}
+.admin-quiz-answer span{color:#aabbe3}
+.admin-quiz-answer strong{color:#f0ecff;overflow-wrap:anywhere}
+[data-theme='light'] .admin-quiz-summary{background:linear-gradient(145deg,#eeeaff,#e3ebff);border-color:#afa5ed!important}
+[data-theme='light'] .admin-quiz-summary h3{color:#182044!important}
+[data-theme='light'] .admin-quiz-answer span{color:#536280}
+[data-theme='light'] .admin-quiz-answer strong{color:#22305a}
+@media(max-width:520px){.admin-quiz-summary{padding:14px!important}.admin-quiz-answer{grid-template-columns:1fr;gap:3px;padding:10px 0}}
+.quote-quiz-badge{align-self:start;display:inline-flex;align-items:center;max-width:max-content;margin-top:5px;padding:4px 7px;border:1px solid #9884f17a;border-radius:6px;background:#7357e82c;color:#c8b6ff;font-size:9px;font-weight:850;letter-spacing:1px}

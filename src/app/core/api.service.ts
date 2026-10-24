@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, switchMap } from 'rxjs';
-import { AdminUser, Activity, Client, ClientProject, ConsultationConfirmation, ConsultationSlot, Dashboard, Envelope, Paged, Project, ProjectMilestone, ProjectMessage, ProjectDocument, ProjectCollaboration, Quote, QuotePayload, Service, SiteSettings } from './models';
+import { AdminUser, Activity, Client, ClientProject, ConsultationConfirmation, ConsultationSlot, Dashboard, Envelope, Paged, Project, ProjectMilestone, ProjectMessage, ProjectDocument, ProjectCollaboration, Quote, QuotePayload, QuoteBoard, Service, SiteSettings, StudioTask, StudioClientNote, WorkspaceProject, CommunicationCenter } from './models';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
     private http = inject(HttpClient);
@@ -75,6 +75,16 @@ export class ApiService {
     }
     me() { return this.http.get<Envelope<AdminUser>>('/api/admin/me', this.opts); }
     dashboard() { return this.http.get<Envelope<Dashboard>>('/api/admin/dashboard', this.opts); }
+    quoteBoard() { return this.http.get<Envelope<QuoteBoard>>('/api/admin/quote-board', this.opts); }
+    workspaceProjects() { return this.http.get<Envelope<WorkspaceProject[]>>('/api/admin/workspace/projects', this.opts); }
+    communications() { return this.http.get<Envelope<CommunicationCenter>>('/api/admin/workspace/communications', this.opts); }
+    studioTasks(state: 'open' | 'done' | 'all' = 'all') { return this.http.get<Envelope<StudioTask[]>>('/api/admin/workspace/tasks', { ...this.opts, params: this.params({state}) }); }
+    createStudioTask(data: {title:string; description?:string|null; due_date?:string|null; quote_request_id?:number|null}) { return this.http.post<Envelope<StudioTask>>('/api/admin/workspace/tasks', data, this.opts); }
+    updateStudioTask(id:number, data:Partial<Pick<StudioTask,'title'|'description'|'due_date'|'is_done'>>) { return this.http.patch<Envelope<StudioTask>>(`/api/admin/workspace/tasks/${id}`, data, this.opts); }
+    deleteStudioTask(id:number) { return this.http.delete(`/api/admin/workspace/tasks/${id}`, this.opts); }
+    studioClientNotes(email:string) { return this.http.get<Envelope<StudioClientNote[]>>('/api/admin/workspace/client-notes', { ...this.opts, params: this.params({email}) }); }
+    createStudioClientNote(email:string, body:string) { return this.http.post<Envelope<StudioClientNote>>('/api/admin/workspace/client-notes', {email,body}, this.opts); }
+    deleteStudioClientNote(id:number) { return this.http.delete(`/api/admin/workspace/client-notes/${id}`, this.opts); }
     quotes(q = '', status = '', page = 1) { return this.http.get<Paged<Quote>>('/api/admin/quote-requests', { ...this.opts, params: this.params({ q, status, page, per_page: 15 }) }); }
     quote(id: number) { return this.http.get<Envelope<Quote>>('/api/admin/quote-requests/' + id, this.opts); }
     saveQuote(id: number, data: Partial<Pick<Quote, 'status' | 'admin_notes' | 'quoted_price_huf' | 'proposal_summary' | 'proposal_schedule' | 'proposal_terms' | 'proposal_valid_until'>>) { return this.http.patch<Envelope<Quote>>('/api/admin/quote-requests/' + id, data, this.opts); }

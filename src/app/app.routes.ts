@@ -17,6 +17,11 @@ export const routes: Routes = [
         title: 'Ajánlatkérés | Megyeri Márk Máté'
     },
     {
+        path: 'projekt-kviz',
+        loadComponent: () => import('./pages/quiz/quiz').then(module => module.QuizPage),
+        title: '2 perces weboldal igényfelmérő | Megyeri Márk Máté'
+    },
+    {
         path: 'munkak/:slug',
         loadComponent: () => import('./pages/case-study/case-study').then(module => module.CaseStudyPage),
         title: 'Referenciák | Megyeri Márk Máté'

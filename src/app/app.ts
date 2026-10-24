@@ -1,7 +1,9 @@
 import { Component, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
-import { Meta } from '@angular/platform-browser';
+import { Meta, Title } from '@angular/platform-browser';
+import { ApiService } from './core/api.service';
+import { SiteSettings } from './core/models';
 import { Navbar } from './components/navbar/navbar';
 @Component({
     selector: 'app-root',
@@ -13,6 +15,9 @@ import { Navbar } from './components/navbar/navbar';
 export class App {
     private readonly router = inject(Router);
     private readonly meta = inject(Meta);
+    private readonly title = inject(Title);
+    private readonly api = inject(ApiService);
+    private seoSettings: SiteSettings | null = null;
     readonly showNavbar = signal(!this.router.url.startsWith('/admin'));
     constructor() {
         // AURORA V4: switch existing installations to the approved dark presentation once.
@@ -23,6 +28,10 @@ export class App {
         const theme = localStorage.getItem('mm-theme') === 'light' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', theme);
         this.updateRouteMeta(this.router.url);
+        this.api.publicSettings().subscribe({
+            next: response => { this.seoSettings = response.data; this.updateRouteMeta(this.router.url); },
+            error: () => { /* Static metadata is a safe fallback when the API is unavailable. */ }
+        });
         this.router.events
             .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
             .subscribe(event => {
@@ -40,7 +49,13 @@ export class App {
             '/ajanlatkeres': 'Állítsd össze weboldalad elképzelését, és kérj személyre szabott ajánlatot Megyeri Márk Mátétól.',
             '/konzultacio': 'Foglalj időpontot online konzultációra a weboldalad megtervezéséhez.'
         };
-        this.meta.updateTag({ name: 'description', content: descriptions[path] || 'Megyeri Márk Máté | Webfejlesztés' });
+        const homeTitle = this.seoSettings?.meta_title || 'Megyeri Márk | Prémium webfejlesztés vállalkozásoknak';
+        const description = path === '/' ? (this.seoSettings?.meta_description || descriptions['/']) : (descriptions[path] || 'Megyeri Márk Máté | Webfejlesztés');
+        this.meta.updateTag({ name: 'description', content: description });
+        this.title.setTitle(path === '/' ? homeTitle : 'Megyeri Márk | Webfejlesztés');
+        this.meta.updateTag({ property: 'og:title', content: homeTitle });
+        this.meta.updateTag({ property: 'og:description', content: description });
+        if (this.seoSettings?.og_image_url) this.meta.updateTag({ property: 'og:image', content: this.seoSettings.og_image_url });
         const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
         const publicPath = ['/tervezo', '/ajanlatkeres', '/konzultacio'].includes(path) ? path : '/';
         if (canonical) canonical.href = 'https://megyerimarkmate.hu' + publicPath;

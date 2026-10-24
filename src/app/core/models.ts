@@ -13,6 +13,9 @@ export interface SiteSettings {
     site_title: string;
     hero_headline: string;
     hero_description: string;
+    meta_title: string;
+    meta_description: string;
+    og_image_url: string;
     contact_email: string;
     contact_phone: string;
     instagram_url: string;
@@ -114,6 +117,49 @@ export interface Dashboard {
     portfolio_total: number;
     services_total: number;
     recent_quotes: Quote[];
+    tasks_open: number;
+    tasks_overdue: number;
+    quotes_quoted: number;
+    quotes_completed: number;
+    accepted_proposals_value_huf: number;
+    upcoming_tasks: StudioTask[];
+}
+export interface StudioTask {
+    id: number;
+    title: string;
+    description: string | null;
+    due_date: string | null;
+    is_done: boolean;
+    quote_request_id: number | null;
+    created_at: string;
+}
+export interface StudioClientNote {
+    id: number;
+    client_email: string;
+    body: string;
+    created_at: string;
+}
+export interface QuoteBoard {
+    columns: Record<QuoteStatus, Quote[]>;
+    totals: Record<QuoteStatus, number>;
+    limit_per_column: number;
+}
+export interface WorkspaceProject {
+    id: number;
+    customer_name: string;
+    company_name: string | null;
+    email: string;
+    website_type: string;
+    quoted_price_huf: number | null;
+    status: QuoteStatus;
+    proposal_accepted_at: string | null;
+    created_at: string;
+    milestones_count: number;
+    milestones_done_count: number;
+}
+export interface CommunicationCenter {
+    proposals: Pick<Quote, 'id' | 'customer_name' | 'email' | 'status' | 'quoted_at' | 'proposal_valid_until'>[];
+    events: {id:number;action:string;entity_id:number|null;created_at:string}[];
 }
 export interface Client {
     email: string;
@@ -128,6 +174,8 @@ export interface Activity {
     event?: string;
     subject_type?: string;
     subject_id?: number;
+    entity_type?: string;
+    entity_id?: number;
     created_at: string;
 }
 export const STATUS_OPTIONS: {
@@ -136,7 +184,7 @@ export const STATUS_OPTIONS: {
 }[] = [
     { value: 'new', label: 'Új' }, { value: 'reviewing', label: 'Folyamatban' }, { value: 'quoted', label: 'Ajánlat elküldve' }, { value: 'accepted', label: 'Elfogadva' }, { value: 'rejected', label: 'Elutasítva' }, { value: 'completed', label: 'Lezárva' }
 ];
-export const SITE_DEFAULTS: SiteSettings = { site_title: 'Megyeri Márk Máté | Webfejlesztés', hero_headline: 'Ne csak jelen legyél online. Emelkedj ki.', hero_description: 'Egyedi weboldalakat és prémium digitális megoldásokat készítek vállalkozásoknak – hogy a megjelenésed bizalmat építsen, és támogassa az ügyfélszerzést.', contact_email: '', contact_phone: '', instagram_url: '', linkedin_url: '', github_url: '' };
+export const SITE_DEFAULTS: SiteSettings = { site_title: 'Megyeri Márk Máté | Webfejlesztés', hero_headline: 'Ne csak jelen legyél online. Emelkedj ki.', hero_description: 'Egyedi weboldalakat és prémium digitális megoldásokat készítek vállalkozásoknak – hogy a megjelenésed bizalmat építsen, és támogassa az ügyfélszerzést.', meta_title: 'Megyeri Márk | Prémium webfejlesztés vállalkozásoknak', meta_description: 'Prémium, egyedi weboldalak vállalkozásoknak. Megyeri Márk webfejlesztés: modern megjelenés, reszponzív kivitelezés és ügyfélszerzést támogató megoldások.', og_image_url: '', contact_email: '', contact_phone: '', instagram_url: '', linkedin_url: '', github_url: '' };
 
 export interface ProjectMilestone {
     id: number;

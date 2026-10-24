@@ -368,6 +368,7 @@
                 <small>
                   {{q.email}} · {{date(q.created_at)}}
                 </small>
+                @if(isQuizQuote(q.project_description)){<span class="quote-quiz-badge">✦ KITÖLTÖTT KVÍZ</span>}
               </span>
               <span class="status" [attr.data-status]="q.status">
                 {{statusLabel(q.status)}}
@@ -513,14 +514,17 @@
             <small>Első egyeztetés módja</small>
             <p>{{q.consultation_preference==='online'?'Online konzultációt kér':q.consultation_preference==='phone'?'Telefon':'E-mail'}}</p>
           </div>
-          <div class="detail-block">
-            <small>
-              Projektleírás
-            </small>
-            <p class="description">
-              {{q.project_description}}
-            </p>
-          </div>
+          @if(isQuizQuote(q.project_description)){
+            <div class="detail-block admin-quiz-summary">
+              <span class="admin-quiz-eyebrow">✦ AURORA / INTERAKTÍV IGÉNYFELMÉRŐ</span>
+              <h3>A látogató kvízválaszai</h3>
+              @for(answer of quizSummary(q.project_description);track answer.label){
+                <div class="admin-quiz-answer"><span>{{answer.label}}</span><strong>{{answer.value}}</strong></div>
+              }
+            </div>
+          } @else {
+            <div class="detail-block"><small>Projektleírás</small><p class="description">{{q.project_description}}</p></div>
+          }
           <hr>
           <div class="form-field">
             <label for="admin-status">
@@ -1067,21 +1071,6 @@
       </section>
       }
 @if(tab()==='account'){
-      <section class="admin-panel card settings-editor">
-        <div class="panel-title"><h2>Biztonsági központ</h2></div>
-        <p class="muted">Védd az adminfiókodat egy e-mailben érkező, egyszer használatos bejelentkezési kóddal. A bekapcsoláshoz működő SMTP szükséges.</p>
-        <p><strong>Kétlépcsős belépés:</strong> {{security()?.two_factor_email_enabled?'Bekapcsolva':'Kikapcsolva'}}</p>
-        <div class="form-field"><label for="security-password">Jelenlegi jelszó a beállítás megváltoztatásához</label>
-          <input class="input" id="security-password" type="password" autocomplete="current-password" [(ngModel)]="securityPassword"></div>
-        <button type="button" class="btn btn-primary" [disabled]="busy()||!security()" (click)="toggleTwoFactor()">{{security()?.two_factor_email_enabled?'Kétlépcsős belépés kikapcsolása':'E-mailes kétlépcsős belépés bekapcsolása'}}</button>
-        <h3>Aktív munkamenetek</h3>
-        <p class="muted">Ismeretlen eszköz esetén jelentkeztesd ki a többi munkamenetet, majd változtass jelszót.</p>
-        @for(session of adminSessions();track session.id){
-          <div class="form-field"><strong>{{session.current?'Ez az eszköz':'Másik munkamenet'}}</strong>
-            <small>{{session.ip_address||'Ismeretlen IP'}} · {{session.user_agent||'Ismeretlen böngésző'}}</small></div>
-        }
-        <button type="button" class="btn btn-outline" [disabled]="busy()||security()?.session_driver!=='database'" (click)="revokeOtherSessions()">Más eszközök kijelentkeztetése</button>
-      </section>
       <section class="admin-panel card settings-editor">
         <div class="panel-title">
           <h2>
