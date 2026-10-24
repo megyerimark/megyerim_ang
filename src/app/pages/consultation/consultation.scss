@@ -11,3 +11,13 @@
 .booking-error{border:1px solid #c35f6b;padding:12px;border-radius:10px;font-size:13px;color:var(--text)}.book-btn{width:100%}.booking-honeypot{position:absolute;left:-9999px}.booking-success{max-width:660px;margin:auto}.booking-success p{color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:20px}.booking-success strong{color:var(--text)}
 @media(max-width:850px){.consultation-layout{grid-template-columns:1fr}.consultation-header{align-items:start;flex-direction:column}.slot-grid{grid-template-columns:1fr}}
 @media(max-width:500px){.consultation-page{padding:34px 0 70px}.consultation-card{padding:19px}}
+
+/* MEGYERI AURORA — booking */
+.consultation-page{background:radial-gradient(ellipse at 70% 0%,color-mix(in srgb,var(--accent) 21%,transparent),transparent 65%),var(--bg)}
+.consultation-header h1{font-family:'Space Grotesk',sans-serif;letter-spacing:-.06em}
+.consultation-card{border-color:var(--premium-rim);border-radius:22px;background:var(--premium-panel);box-shadow:0 19px 60px #0003,inset 0 1px #fff1;backdrop-filter:blur(16px)}
+.slot{background:var(--premium-glass);border-color:var(--premium-rim);border-radius:13px}
+.slot:hover{border-color:var(--accent);box-shadow:0 8px 26px var(--premium-halo);transform:translateY(-2px)}
+.slot.active{background:color-mix(in srgb,var(--accent) 14%,var(--surface));border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 9px 28px var(--premium-halo)}
+.consultation-card h2{font-family:'Space Grotesk',sans-serif;letter-spacing:-.05em}
+.booking-success{border-color:#7bdbbf65}

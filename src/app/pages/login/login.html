@@ -53,6 +53,7 @@
           </label>
           <input class="input" type="password" id="login-password" name="password" [(ngModel)]="password" autocomplete="current-password" required>
         </div>
+        <div class="forgot-line"><a routerLink="/admin/elfelejtett-jelszo">Elfelejtetted a jelszavad? →</a></div>
         @if(error()){
         <div class="notice error" role="alert">
           {{error()}}

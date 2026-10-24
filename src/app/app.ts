@@ -15,11 +15,12 @@ export class App {
     private readonly meta = inject(Meta);
     readonly showNavbar = signal(!this.router.url.startsWith('/admin'));
     constructor() {
-        const savedTheme = localStorage.getItem('mm-theme');
-        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const theme = savedTheme
-            ? (savedTheme === 'dark' ? 'dark' : 'light')
-            : (systemTheme ? 'dark' : 'light');
+        // AURORA V4: switch existing installations to the approved dark presentation once.
+        if (localStorage.getItem('mm-aurora-v4') !== '1') {
+            localStorage.setItem('mm-theme', 'dark');
+            localStorage.setItem('mm-aurora-v4', '1');
+        }
+        const theme = localStorage.getItem('mm-theme') === 'light' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', theme);
         this.updateRouteMeta(this.router.url);
         this.router.events

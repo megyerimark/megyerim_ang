@@ -104,6 +104,7 @@ export interface AdminUser {
     email: string;
 }
 export interface Dashboard {
+    quotes_monthly?: { label: string; count: number }[];
     quotes_total: number;
     quotes_new: number;
     quotes_reviewing: number;

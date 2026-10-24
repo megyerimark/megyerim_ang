@@ -42,6 +42,16 @@ export const routes: Routes = [
         title: 'Admin bejelentkezés | Megyeri Márk Máté'
     },
     {
+        path: 'admin/elfelejtett-jelszo',
+        loadComponent: () => import('./pages/password-recovery/password-recovery').then(m => m.PasswordRecoveryPage),
+        title: 'Elfelejtett adminjelszó | Megyeri Márk Máté'
+    },
+    {
+        path: 'admin/jelszo-visszaallitas',
+        loadComponent: () => import('./pages/password-recovery/password-recovery').then(m => m.PasswordRecoveryPage),
+        title: 'Admin jelszó-visszaállítás | Megyeri Márk Máté'
+    },
+    {
         path: 'admin',
         canActivate: [adminGuard],
         loadComponent: () => import('./pages/admin/admin').then(module => module.AdminPage),

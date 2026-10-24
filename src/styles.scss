@@ -311,3 +311,23 @@ hr {
   body:has(.client-proposal) .client-proposal .accept-area,
   body:has(.client-proposal) .client-proposal .client-success { display: none !important; }
 }
+
+/* Shared brand layer – applied after the original component tokens. */
+@import './premium-theme';
+
+/* AURORA V4 / high fidelity dark art direction */
+:root,[data-theme='dark']{--bg:#050916;--surface:#0b1328;--surface-alt:#111d37;--text:#f6f7ff;--muted:#a3afd1;--border:#25325a;--accent:#ad96ff;--accent2:#5793ff;--premium-panel:#0c1530e8;--premium-glass:#0d1834e3;--premium-rim:#7e87ea3d;--premium-halo:#6658ff48;--premium-primary:linear-gradient(105deg,#8e4dfd 0%,#6954f3 48%,#2d71f9 100%);}
+[data-theme='light']{--bg:#f5f6fd;--surface:#fff;--surface-alt:#edf0fb;--text:#131b3e;--muted:#52617c;--border:#d4dcf3;--accent:#7053e4;--accent2:#286ded;--premium-panel:#fffd;--premium-glass:#fffE;--premium-rim:#6a75ce3d;--premium-halo:#7455e022;}
+[data-theme='dark'] body{background-color:#050916;background-image:radial-gradient(ellipse at 52% -12%,#28377890,transparent 56%);}
+[data-theme='dark'] .section{isolation:isolate;}
+[data-theme='dark'] .card,.admin-panel,.promise-card,.service-card,.comparison-stage{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+:where(.card,.promise-card,.service-card,.feature-card,.admin-panel,.lab-controls,.lab-preview){transition:transform .28s cubic-bezier(.2,.8,.2,1),border-color .25s ease,box-shadow .3s ease;}
+:where(.card,.promise-card,.service-card,.feature-card,.admin-panel):hover{border-color:#a399ff69;box-shadow:0 16px 48px #07071866,0 0 25px #6253f520;}
+.btn-primary,.nav-cta{box-shadow:0 11px 28px #6055fb56,0 0 25px #684fff35,inset 0 1px #fffc;}
+[data-theme='dark'] .section-title{color:#f3f5ff;}
+[data-theme='dark'] .subtle-heading{color:#b39aff;}
+::-webkit-scrollbar{width:11px;height:10px}::-webkit-scrollbar-track{background:#0b1124}::-webkit-scrollbar-thumb{background:#48558a;border:3px solid #0b1124;border-radius:20px}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* AURORA V5: shared consistency and overflow safety */
+@import "./aurora-v5";

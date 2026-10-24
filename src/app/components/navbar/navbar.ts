@@ -18,7 +18,7 @@ export class Navbar implements OnInit {
         const savedTheme = localStorage.getItem('mm-theme');
         this.isDark.set(savedTheme
             ? savedTheme === 'dark'
-            : window.matchMedia('(prefers-color-scheme: dark)').matches);
+            : true);
         this.applyTheme();
     }
     toggleTheme(): void {

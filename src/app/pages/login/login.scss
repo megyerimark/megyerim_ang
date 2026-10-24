@@ -131,3 +131,15 @@
   color: #cf6d5c;
   border-color: rgba(207,109,92,.45);
 }
+
+/* MEGYERI AURORA — private entry */
+.login-page{background:radial-gradient(ellipse at 22% 30%,#5558f22a,transparent 58%),var(--bg)}
+.login-art{background:radial-gradient(circle at 76% 74%,#8962ff7a,transparent 50%),linear-gradient(140deg,#0d1430,#25255b 61%,#0d1b42);border:1px solid #9b8ff358;box-shadow:0 35px 75px #0005,inset 0 1px #fff2}
+.login-orb{background:radial-gradient(circle at 23% 17%,#d1c3ff,#896fff 40%,#3446ac 76%);box-shadow:0 0 75px #7768fb86}
+.login-card{background:var(--premium-panel);border:1px solid var(--premium-rim);border-radius:23px;box-shadow:0 18px 65px #0003;backdrop-filter:blur(12px)}
+.login-card h1{font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:-.055em}
+.lock-icon{border-color:var(--premium-rim);background:var(--premium-glass);box-shadow:0 0 20px var(--premium-halo)}
+@media(max-width:600px){.login-shell{grid-template-columns:1fr}.login-art{display:none}.login-page{padding:35px 16px}.login-card{padding:25px}}
+
+
+.forgot-line{text-align:right;margin-top:-8px}.forgot-line a{color:#aea4ff;text-decoration:none;font-size:12px;font-weight:700}.forgot-line a:hover{color:white;text-shadow:0 0 13px #9182ff}.login-page .login-art{background:#0b1227 url('/aurora-landscape.svg') center / cover no-repeat}.login-card{box-shadow:0 26px 80px #0008,0 0 45px #5750e521}

@@ -176,3 +176,44 @@
     letter-spacing: .8px;
   }
 }
+
+/* AURORA navbar */
+:host { z-index: 120; }
+.nav-wrap {
+  background: color-mix(in srgb,var(--bg) 80%,transparent);
+  border-color: var(--premium-rim);
+  box-shadow: 0 8px 35px #03091836;
+}
+.navbar { height: 82px; }
+.brand-monogram {
+  background: linear-gradient(145deg,#a68bff,#5e6aff 55%,#45a5ff);
+  box-shadow: 0 8px 22px #5553f54d;
+  border-radius: 13px;
+  color: #fff;
+}
+.brand-monogram span { color: #cce1ff; }
+.brand-text strong { color: var(--text); letter-spacing: .35px; font-size: 12px; }
+.brand-text small { color: var(--muted); letter-spacing: .7px; }
+.nav-links a { position: relative; }
+.nav-links a::after { content: ''; position: absolute; height: 2px; border-radius: 6px; bottom: -12px; left: 0; right: 100%; background: linear-gradient(90deg,#8a67f9,#568cff); transition: right .25s ease; }
+.nav-links a:hover { color: var(--text); }
+.nav-links a:hover::after { right: 0; }
+.theme-btn, .menu-btn { background: var(--premium-glass); border-color: var(--premium-rim); box-shadow: inset 0 1px #fff1; border-radius: 13px; }
+.theme-btn:hover,.menu-btn:hover { color: var(--accent); border-color: var(--accent); box-shadow: 0 0 18px var(--premium-halo); }
+.nav-cta,.mobile-quote { border-radius: 12px; background: var(--premium-primary); color: white !important; border: 1px solid #ffffff2d; box-shadow: 0 7px 22px #5457e653; }
+@media(max-width:940px){ .navbar {height:72px;} .nav-links { top:72px; background: var(--premium-panel); backdrop-filter: blur(25px); border-color:var(--premium-rim); } .nav-links a::after {display:none;} }
+@media(max-width:430px){.brand-text small{letter-spacing:.1px}.nav-actions{gap:7px}.theme-btn,.menu-btn{width:37px;height:37px}.navbar{gap:6px}}
+
+/* AURORA V4 / elegant midnight navbar */
+.nav-wrap{background:#060c1be8;border-bottom:1px solid #6c76cd3d;box-shadow:0 6px 38px #0006;backdrop-filter:blur(24px)}
+.navbar{height:76px;max-width:1490px}
+.brand-monogram{width:45px;height:45px;border-radius:12px;background:linear-gradient(125deg,#8156f9,#357cf7);color:#fff;box-shadow:0 0 23px #7765fb7e}
+.brand-monogram span{color:#e5dcff}
+.brand-text strong{color:#fff;letter-spacing:.4px;font-size:12px}
+.brand-text small{color:#a7b9ec;letter-spacing:1.1px}
+.nav-links a{color:#bac8e8}.nav-links a:hover{color:#fff;text-shadow:0 0 14px #a69dff}
+.theme-btn{background:#161e3b;border:1px solid #5b669951;border-radius:13px;color:#e8eaff;box-shadow:inset 0 1px #fff1}
+.theme-btn:hover{border-color:#aca2ff;box-shadow:0 0 19px #6456f95c}
+.nav-cta{border-radius:12px;box-shadow:0 0 24px #5e53f588}
+[data-theme='light'] .nav-wrap{background:#101831ee}
+@media(max-width:940px){.navbar{height:74px}.nav-links{background:#0c142beb;border-bottom:1px solid #7b84d65c;backdrop-filter:blur(22px)}.nav-links a{color:#e2e7fb}.menu-btn{background:#101a35;color:#fff;border-color:#475684}}

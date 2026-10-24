@@ -456,3 +456,19 @@
 .prefill-note { padding:14px 18px; margin:0 0 18px; border:1px solid var(--border); border-radius:12px; background:var(--surface); color:var(--text); font-size:13px; }
 .consultation-field { margin:20px 0; }
 .consultation-field small { display:block; margin-top:8px; color:var(--muted); }
+
+/* MEGYERI AURORA — polished inquiry wizard */
+.quote-page { background: radial-gradient(ellipse 55% 28% at 73% 8%,color-mix(in srgb,var(--accent) 19%,transparent),transparent 77%),var(--bg); min-height:100vh; }
+.quote-heading h1 {font-family:'Space Grotesk',sans-serif;letter-spacing:-.065em;}
+.quote-heading .overline {color:var(--accent);}
+.wizard-main,.wizard-side,.wizard-layout .card,.sent-card {background:var(--premium-panel);border-color:var(--premium-rim);border-radius:22px;box-shadow:0 18px 65px #0105183d,inset 0 1px #ffffff0e;backdrop-filter:blur(13px);}
+.step-header {color:var(--muted);}
+.progress-bar {background:var(--premium-rim);border-radius:30px;overflow:hidden;}
+.progress-bar>span {background:var(--premium-primary);border-radius:30px;box-shadow:0 0 15px #6266ff8a;transition:width .4s ease;}
+.type-card,.style-card,.color-option,.feature-option,.option-card,.budget-card {background:var(--premium-glass);border-color:var(--premium-rim);border-radius:15px;transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease,background .25s ease;}
+.type-card:hover,.style-card:hover,.budget-card:hover {transform:translateY(-3px);border-color:var(--accent);box-shadow:0 12px 28px var(--premium-halo);}
+.type-card.selected,.style-card.selected,.budget-card.selected {background:color-mix(in srgb,var(--accent) 12%,var(--surface));border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 12px 32px var(--premium-halo);}
+.step-content h2 {letter-spacing:-.045em;}
+.sent-icon {background:var(--premium-primary);border-radius:50%;box-shadow:0 0 40px #6664fd50;color:#fff;}
+.prefill-note {border-color:var(--premium-rim);background:var(--premium-panel);}
+@media(max-width:640px){.quote-heading h1{font-size:clamp(38px,9vw,51px)}.wizard-main,.sent-card{border-radius:17px}}

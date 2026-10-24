@@ -16,9 +16,7 @@
         </small>
       </span>
     </div>
-    <div class="side-section">
-      MUNKATERÜLET
-    </div>
+    <div class="side-section">MUNKATERÜLET <span class="side-section-indicator" aria-hidden="true">●</span></div>
     <nav aria-label="Admin navigáció">
       @for(item of tabs;track item.value){
       <button type="button" [class.active]="tab()===item.value" (click)="use(item.value)">
@@ -48,12 +46,11 @@
         <button class="admin-mobile-menu" type="button" (click)="menuOpen.set(!menuOpen())">
           ☰ Menü
         </button>
-        <span>
-          ADMINISZTRÁCIÓ /
-          <b>
-            {{tab().toUpperCase()}}
-          </b>
-        </span>
+        <span class="admin-breadcrumb">STUDIO <span aria-hidden="true">/</span> <b>{{tab().toUpperCase()}}</b></span>
+      </div>
+      <div class="admin-top-actions">
+        <button type="button" class="top-action" (click)="use('quotes')" aria-label="Ajánlatkérések megnyitása" title="Ajánlatkérések">▤ @if(dashboard()?.quotes_new){<span class="top-action-notify">{{dashboard()?.quotes_new}}</span>}</button>
+        <a class="top-action" routerLink="/" target="_blank" rel="noopener noreferrer" aria-label="Nyilvános oldal megnyitása" title="Nyilvános weboldal">↗</a>
       </div>
       <div class="account-tag">
         <span class="account-dot">
@@ -71,7 +68,7 @@
             MEGYERI MÁRK MÁTÉ / DASHBOARD
           </span>
           <h1>
-            {{tab()==='dashboard'?'Áttekintés':tab()==='quotes'?'Ajánlatkérések':tab()==='consultations'?'Konzultációk':tab()==='clients'?'Ügyfelek':tab()==='projects'?'Referenciák':tab()==='services'?'Szolgáltatások':tab()==='settings'?'Weboldal beállításai':tab()==='activity'?'Tevékenységnapló':'Fiók és biztonság'}}
+            {{tab()==='dashboard'?'Üdv újra!':tab()==='quotes'?'Ajánlatkérések':tab()==='consultations'?'Konzultációk':tab()==='clients'?'Ügyfelek':tab()==='projects'?'Referenciák':tab()==='services'?'Szolgáltatások':tab()==='settings'?'Weboldal beállításai':tab()==='activity'?'Tevékenységnapló':'Fiók és biztonság'}}
           </h1>
           <p>
             {{tab()==='dashboard'?'Minden fontos információ egy helyen.':tab()==='quotes'?'Beérkező megkeresések és ajánlatok kezelése.':tab()==='consultations'?'Szabad és lefoglalt konzultációk kezelése.':tab()==='clients'?'Korábbi érdeklődők és projektelőzmények.':tab()==='projects'?'A portfólió tartalmainak szerkesztése.':tab()==='services'?'Szolgáltatások és csomagok beállítása.':tab()==='settings'?'A nyilvános weboldal szövegei és elérhetőségei.':tab()==='activity'?'Legutóbbi adminműveletek.':'Jelszóváltoztatás és hozzáférés.'}}
@@ -152,6 +149,39 @@
             ♙
           </b>
         </div>
+      </div>
+      <div class="premium-dashboard-grid">
+        <section class="admin-panel card premium-chart-panel" aria-label="Beérkező ajánlatkérések havi alakulása">
+          <div class="panel-title">
+            <div><span class="panel-eyebrow">AKTIVITÁS / VALÓS ADATOK</span><h2>Beérkező ajánlatkérések</h2><p>Az elmúlt hat naptári hónap alakulása</p></div>
+            <span class="chart-legend"><i aria-hidden="true"></i> Ajánlatkérések</span>
+          </div>
+          @if(dash.quotes_monthly?.length){
+            <div class="aurora-chart" role="img" aria-label="Ajánlatkérések havonként, valós adatokból">
+              <svg viewBox="0 0 600 180" aria-hidden="true" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="auroraChartFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#726cfb" stop-opacity=".48"/><stop offset="100%" stop-color="#4265db" stop-opacity="0"/></linearGradient>
+                  <linearGradient id="auroraChartLine"><stop stop-color="#916dff"/><stop offset="100%" stop-color="#56a2ff"/></linearGradient>
+                </defs>
+                <path d="M20 32H580 M20 72H580 M20 112H580 M20 152H580" fill="none" stroke="#7792d1" stroke-opacity=".15" stroke-width="1" stroke-dasharray="3 7"/>
+                <path [attr.d]="activityChart().area" fill="url(#auroraChartFill)"/>
+                <path [attr.d]="activityChart().line" fill="none" stroke="url(#auroraChartLine)" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+                @for(point of activityChart().points;track $index){
+                  <circle [attr.cx]="point.x" [attr.cy]="point.y" r="5.5" fill="#a58cff" stroke="#0c1531" stroke-width="3"><title>{{point.label}}: {{point.count}} ajánlatkérés</title></circle>
+                }
+              </svg>
+              <div class="aurora-chart-labels">@for(month of dash.quotes_monthly;track $index){<span [title]="month.count + ' ajánlatkérés'">{{month.label}}</span>}</div>
+            </div>
+          } @else {<div class="empty-state">A havi összesítés még nem érhető el.</div>}
+        </section>
+        <section class="admin-panel card premium-action-panel">
+          <span class="panel-eyebrow">MAI FÓKUSZ</span>
+          <h2>Vidd előre a projektjeidet.</h2>
+          <p>Gyors elérés a leggyakoribb teendőkhöz.</p>
+          <button type="button" (click)="use('quotes')"><span class="quick-icon">✉</span><span>Új ajánlatkérések <small>{{dash.quotes_new}} feldolgozásra váró megkeresés</small></span><b>↗</b></button>
+          <button type="button" (click)="use('consultations')"><span class="quick-icon">◷</span><span>Konzultációk <small>Szabad időpontok és foglalások</small></span><b>↗</b></button>
+          <button type="button" (click)="use('clients')"><span class="quick-icon">♧</span><span>Ügyfelek <small>Kapcsolatok és projektelőzmények</small></span><b>↗</b></button>
+        </section>
       </div>
       <div class="admin-grid">
         <section class="admin-panel card">
@@ -911,7 +941,12 @@
       </div>
       }
 @if(tab()==='settings'){
+      <div class="settings-workspace">
       <section class="admin-panel card settings-editor">
+        <div class="settings-introduction">
+          <span class="settings-kicker"><span class="settings-live-dot"></span> AURORA / ÉLŐ SZERKESZTÉS</span>
+          <p>A módosításokat mentés után látják a látogatók. A jobb oldali panel itt, azonnal mutatja a szövegek előnézetét.</p>
+        </div>
         <div class="panel-title">
           <h2>
             Weboldal szövegei és kapcsolati adatok
@@ -972,6 +1007,20 @@
           Beállítások mentése ↗
         </button>
       </section>
+      <aside class="settings-live-preview" aria-label="Weboldal beállításainak előnézete">
+        <div class="settings-preview-top"><span><span class="settings-live-dot"></span> ELŐNÉZET / NEM PUBLIKÁLT</span><span aria-hidden="true">✧</span></div>
+        <div class="settings-preview-window" aria-hidden="true"><i></i><i></i><i></i><span>MEGYERI / WEB EXPERIENCE</span></div>
+        <div class="settings-preview-content">
+          <span class="settings-preview-eyebrow">PRÉMIUM WEBFEJLESZTÉS</span>
+          <h2>{{ settings.hero_headline || 'Ne csak jelen legyél online. Emelkedj ki.' }}</h2>
+          <p>{{ settings.hero_description || 'Egyedi, modern digitális megoldások vállalkozásoknak.' }}</p>
+          <span class="settings-preview-button">Indítsuk el a projekted <span>↗</span></span>
+          <div class="settings-preview-hologram" aria-hidden="true"><i></i><b>M<span>.</span></b><i></i></div>
+        </div>
+        <div class="settings-preview-bottom"><span>{{ settings.site_title || 'Megyeri Márk Máté | Webfejlesztés' }}</span><span>DESIGN THAT CONNECTS</span></div>
+        <a class="settings-public-link" routerLink="/" target="_blank" rel="noopener noreferrer">Nyilvános weboldal megnyitása ↗</a>
+      </aside>
+      </div>
       }
 @if(tab()==='activity'){
       <section class="admin-panel card">

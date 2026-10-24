@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -91,6 +91,24 @@ export class AdminPage implements OnInit {
         title: string;
         icon: string;
     }[] = [{ value: 'dashboard', title: 'Áttekintés', icon: '◫' }, { value: 'quotes', title: 'Ajánlatkérések', icon: '▤' }, { value: 'consultations', title: 'Konzultációk', icon: '◷' }, { value: 'clients', title: 'Ügyfelek', icon: '♙' }, { value: 'projects', title: 'Referenciák', icon: '▧' }, { value: 'services', title: 'Szolgáltatások', icon: '◇' }, { value: 'settings', title: 'Weboldal beállításai', icon: '⚙' }, { value: 'activity', title: 'Tevékenységnapló', icon: '◷' }, { value: 'account', title: 'Fiók és jelszó', icon: '⌘' }];
+    readonly chartHeight = (count: number): number => {
+        const values = this.dashboard()?.quotes_monthly ?? [];
+        const highest = Math.max(1, ...values.map(item => item.count));
+        return count === 0 ? 3 : Math.max(12, Math.round((count / highest) * 100));
+    };
+    readonly activityChart = computed(() => {
+        const months = this.dashboard()?.quotes_monthly ?? [];
+        if (!months.length) return {line:'', area:'', points: [] as {x:number;y:number;count:number;label:string}[]};
+        const top = Math.max(1, ...months.map(m => m.count));
+        const pts = months.map((m, i) => ({
+            x: 20 + (i * 560) / Math.max(1, months.length - 1),
+            y: 150 - (m.count / top) * 120,
+            count: m.count,
+            label: m.label
+        }));
+        const line = pts.map((pt, i) => `${i === 0 ? 'M' : 'L'} ${pt.x.toFixed(1)} ${pt.y.toFixed(1)}`).join(' ');
+        return {line, area: line + ` L ${pts.at(-1)!.x.toFixed(1)} 162 L ${pts[0].x.toFixed(1)} 162 Z`, points: pts};
+    });
     ngOnInit() { this.loadDashboard(); }
     notify(message: string, error = false) { this.message.set(message); this.isError.set(error); }
     fail(e: unknown) { const err = e as HttpErrorResponse; const fields = err.error?.errors as Record<string, string[]> | undefined; this.notify(fields ? Object.values(fields).flat().join(' · ') : err.status === 419 ? 'Lejárt a munkamenet. Frissítsd az oldalt.' : err.status === 401 ? 'A munkamenet lejárt. Jelentkezz be újra.' : err.error?.message || 'Szerverhiba. Próbáld újra.', true); this.busy.set(false); }

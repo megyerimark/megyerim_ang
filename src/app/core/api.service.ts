@@ -55,6 +55,12 @@ export class ApiService {
             user: AdminUser;
         }>('/admin/login', { email, password }, this.opts)));
     }
+    forgotAdminPassword(email: string) {
+        return this.csrf().pipe(switchMap(() => this.http.post<{message: string}>('/admin/forgot-password', {email}, this.opts)));
+    }
+    resetAdminPassword(email: string, token: string, password: string, password_confirmation: string) {
+        return this.csrf().pipe(switchMap(() => this.http.post<{message: string}>('/admin/reset-password', {email, token, password, password_confirmation}, this.opts)));
+    }
     logout() {
         return this.http.post<{
             message: string;

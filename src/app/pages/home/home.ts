@@ -2,6 +2,7 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
 import { Hero } from '../../components/hero/hero';
+import { PremiumReveal } from '../../directives/premium-reveal';
 import { ApiService } from '../../core/api.service';
 import { Project, Service, SiteSettings, SITE_DEFAULTS } from '../../core/models';
 type PreviewPurpose = 'business' | 'booking' | 'system';
@@ -24,7 +25,7 @@ interface PreviewPalette {
 @Component({
     selector: 'app-home',
     standalone: true,
-    imports: [Hero, RouterLink, DecimalPipe],
+    imports: [Hero, RouterLink, DecimalPipe, PremiumReveal],
     templateUrl: './home.html',
     styleUrl: './home.scss'
 })
