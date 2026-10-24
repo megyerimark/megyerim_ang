@@ -11,6 +11,7 @@
         <div><span class="client-eyebrow">AJÁNLATKÉRÉS #{{p.reference}}</span><h2>Kedves {{p.customer_name}}!</h2><p>Megkeresés dátuma: {{date(p.created_at)}}</p></div>
         <span class="client-status">{{status(p.status)}}</span>
       </div>
+      @if(p.access_expires_at){<p class="client-note">A személyes hozzáférésed lejár: {{date(p.access_expires_at)}}. Ha utána is szükséged van rá, kérj új linket e-mailben.</p>}
       <section class="client-panel">
         <div class="client-section-title"><div><span class="client-eyebrow">FOLYAMAT</span><h2>Hol tartunk most?</h2></div></div>
         <div class="client-steps">

@@ -52,9 +52,16 @@ export class ApiService {
     login(email: string, password: string) {
         return this.csrf().pipe(switchMap(() => this.http.post<{
             message: string;
-            user: AdminUser;
+            user?: AdminUser;
+            requires_two_factor?: boolean;
         }>('/admin/login', { email, password }, this.opts)));
     }
+    verifyAdminLogin(code: string) { return this.http.post<{message: string; user: AdminUser}>('/admin/verify-login', {code}, this.opts); }
+    resendAdminLoginCode() { return this.http.post<{message: string}>('/admin/resend-login-code', {}, this.opts); }
+    adminSecurity() { return this.http.get<Envelope<{two_factor_email_enabled: boolean; session_driver: string}>>('/api/admin/security', this.opts); }
+    setAdminTwoFactor(enabled: boolean, current_password: string) { return this.http.put<Envelope<{two_factor_email_enabled: boolean}>>('/api/admin/security/two-factor', {enabled, current_password}, this.opts); }
+    adminSessions() { return this.http.get<Envelope<{id:string;ip_address:string|null;user_agent:string;last_activity:number;current:boolean}[]>>('/api/admin/security/sessions', this.opts); }
+    revokeOtherAdminSessions() { return this.http.delete<{message:string;removed:number}>('/api/admin/security/sessions/others', this.opts); }
     forgotAdminPassword(email: string) {
         return this.csrf().pipe(switchMap(() => this.http.post<{message: string}>('/admin/forgot-password', {email}, this.opts)));
     }

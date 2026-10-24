@@ -20,6 +20,7 @@
       </span>
     </a>
     <nav
+      id="site-navigation"
       class="nav-links"
       [class.open]="menuOpen()"
       aria-label="Fő navigáció"
@@ -60,7 +61,7 @@
         [title]="isDark() ? 'Világos téma' : 'Sötét téma'"
       >
         <span aria-hidden="true">
-          {{ isDark() ? '☼' : '☾' }}
+          {{ isDark() ? '🌒' : '🌘' }}
         </span>
       </button>
       <a class="nav-cta" routerLink="/ajanlatkeres" (click)="close()">
@@ -71,6 +72,7 @@
       </a>
       <button
         class="menu-btn"
+        aria-controls="site-navigation"
         type="button"
         (click)="menuOpen.set(!menuOpen())"
         [attr.aria-expanded]="menuOpen()"

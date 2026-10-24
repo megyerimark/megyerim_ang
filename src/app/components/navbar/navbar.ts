@@ -1,5 +1,7 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Component, HostListener, OnInit, inject, signal } from '@angular/core';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { filter } from 'rxjs';
 @Component({
     selector: 'app-navbar',
     standalone: true,
@@ -11,6 +13,12 @@ export class Navbar implements OnInit {
     private readonly router = inject(Router);
     isDark = signal(true);
     menuOpen = signal(false);
+    constructor() {
+        this.router.events.pipe(filter(event => event instanceof NavigationEnd), takeUntilDestroyed())
+            .subscribe(() => this.close());
+    }
+    @HostListener('document:keydown.escape')
+    onEscape(): void { this.close(); }
     get isAdmin(): boolean {
         return this.router.url.startsWith('/admin');
     }

@@ -85,6 +85,9 @@ export class AdminPage implements OnInit {
     oldPassword = '';
     newPassword = '';
     confirmPassword = '';
+    securityPassword = '';
+    security = signal<{two_factor_email_enabled: boolean; session_driver: string} | null>(null);
+    adminSessions = signal<{id:string;ip_address:string|null;user_agent:string;last_activity:number;current:boolean}[]>([]);
     statuses = STATUS_OPTIONS;
     tabs: {
         value: Tab;
@@ -137,6 +140,7 @@ export class AdminPage implements OnInit {
             this.loadSettings();
         if (tab === 'activity')
             this.loadActivities();
+        if (tab === 'account') this.loadSecurity();
     }
     consultationDate(value: string): string { return new Date(value).toLocaleString('hu-HU', {dateStyle:'medium', timeStyle:'short', timeZone:'Europe/Budapest'}); }
     loadConsultations() { this.busy.set(true); this.api.adminConsultations().subscribe({next:r=>{this.consultations.set(r.data); this.busy.set(false);}, error:e=>this.fail(e)}); }
@@ -332,6 +336,27 @@ export class AdminPage implements OnInit {
         }
         this.busy.set(true);
         this.api.changePassword(this.oldPassword, this.newPassword, this.confirmPassword).subscribe({ next: () => { this.busy.set(false); this.oldPassword = ''; this.newPassword = ''; this.confirmPassword = ''; this.notify('Jelszó módosítva.'); }, error: e => this.fail(e) });
+    }
+    loadSecurity() {
+        this.api.adminSecurity().subscribe({next:r=>this.security.set(r.data),error:e=>this.fail(e)});
+        this.api.adminSessions().subscribe({next:r=>this.adminSessions.set(r.data),error:e=>this.fail(e)});
+    }
+    toggleTwoFactor() {
+        if (!this.securityPassword) {this.notify('A módosításhoz add meg a jelenlegi jelszavadat.',true);return;}
+        const enabled = !this.security()?.two_factor_email_enabled;
+        this.busy.set(true);
+        this.api.setAdminTwoFactor(enabled,this.securityPassword).subscribe({
+            next:r=>{this.busy.set(false);this.securityPassword='';this.notify(r.message || 'Biztonsági beállítás módosítva.');this.loadSecurity();},
+            error:e=>this.fail(e)
+        });
+    }
+    revokeOtherSessions() {
+        if (!confirm('Kijelentkezteted a többi eszközt?')) return;
+        this.busy.set(true);
+        this.api.revokeOtherAdminSessions().subscribe({
+            next:r=>{this.busy.set(false);this.notify(r.message);this.loadSecurity();},
+            error:e=>this.fail(e)
+        });
     }
     logout() { this.api.logout().subscribe({ next: () => { this.auth.user.set(null); this.router.navigateByUrl('/admin/bejelentkezes'); }, error: e => this.fail(e) }); }
     money(n: number | null | undefined) { return n === null || n === undefined ? '—' : new Intl.NumberFormat('hu-HU').format(n) + ' Ft'; }

@@ -164,6 +164,7 @@ export interface ClientProject {
     proposal_terms: string | null;
     proposal_valid_until: string | null;
     proposal_accepted_at: string | null;
+    access_expires_at?: string | null;
     milestones: ProjectMilestone[];
 }
 

@@ -33,5 +33,11 @@
     "target": "http://localhost:8000",
     "secure": false,
     "changeOrigin": false
+  },
+  "/admin/verify-login": {
+    "target": "http://localhost:8000", "secure": false, "changeOrigin": false
+  },
+  "/admin/resend-login-code": {
+    "target": "http://localhost:8000", "secure": false, "changeOrigin": false
   }
 }

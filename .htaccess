@@ -3,11 +3,19 @@
     RewriteEngine On
 
     RewriteRule ^(api|sanctum)(/|$) - [L]
-    RewriteRule ^admin/(login|logout)$ - [L]
+    RewriteRule ^admin/(login|logout|forgot-password|reset-password|verify-login|resend-login-code)$ - [L]
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
 
     RewriteRule ^ index.html [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "DENY"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+    Header always set Content-Security-Policy "frame-ancestors 'none'; object-src 'none'; base-uri 'self'"
 </IfModule>
 
