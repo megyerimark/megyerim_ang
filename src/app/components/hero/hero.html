@@ -1,44 +1,97 @@
-<section class="hero-cinematic" id="fooldal" aria-labelledby="hero-title">
-  <div class="hero-sky" aria-hidden="true"><i></i><i></i><i></i></div>
-  <div class="container hero-content">
-    <div class="hero-copy">
-      <div class="hero-eyebrow"><span></span> EGYEDI DIGITÁLIS ÉLMÉNYEK <span class="eyebrow-index">/ 001</span></div>
-      <h1 id="hero-title">{{ titleLead }} <em>{{ titleAccent }}</em></h1>
-      <p>{{ description }}</p>
-      <div class="hero-actions">
-        <a class="hero-cta hero-cta--primary" routerLink="/ajanlatkeres">Kérj ajánlatot <span aria-hidden="true">↗</span></a>
-        <a class="hero-cta hero-cta--secondary" routerLink="/" fragment="munkak">Munkáim megtekintése <span aria-hidden="true">→</span></a>
-      </div>
-      <div class="hero-benefits" aria-label="A közös munka előnyei"><span><i>✦</i> Egyedi tervezés</span><span><i>✦</i> Mobilra optimalizálva</span><span><i>✦</i> Üzleti szemlélettel</span></div>
+<section #heroSection class="hero" id="fooldal" aria-labelledby="hero-title">
+  <div class="hero-pin">
+    <div class="hero-bg" aria-hidden="true">
+      <div class="hero-bg-photo"></div>
+      <div class="hero-bg-shade"></div>
+      <div class="hero-aurora"></div>
     </div>
-    <div class="hero-visual" (pointermove)="moveScene($event)" (pointerleave)="resetScene($event)" aria-label="Interaktív, térbeli weboldal-előnézet">
-      <div class="visual-aura" aria-hidden="true"></div>
-      <div class="visual-ring visual-ring--one" aria-hidden="true"></div>
-      <div class="visual-ring visual-ring--two" aria-hidden="true"></div>
-      <div class="scene-world" aria-hidden="true">
-        <div class="scene-backplate"></div>
-        <div class="scene-glass scene-glass--rear"><div class="rear-line"></div><div class="rear-line"></div></div>
-        <div class="scene-browser">
-          <div class="browser-top"><span class="browser-dots"><i></i><i></i><i></i></span><span>DESIGN STUDIO / KONCEPCIÓ</span><span>↗</span></div>
-          <div class="browser-inner">
-            <div class="browser-nav"><strong>STUDIO<span>.</span></strong><span>SZOLGÁLTATÁSOK &nbsp;&nbsp; RÓLUNK</span><b>KAPCSOLAT ↗</b></div>
-            <div class="browser-grid">
-              <div class="browser-copy"><span>AZ ELSŐ BENYOMÁS SZÁMÍT</span><strong>Időtálló<br><em>weboldalak.</em></strong><p>Arculat és technológia, amely együtt dolgozik a céljaidért.</p><b>Fedezd fel ↗</b></div>
-              <div class="browser-landscape"><span class="landscape-ridge landscape-ridge--back"></span><span class="landscape-ridge landscape-ridge--front"></span><span class="landscape-star"></span></div>
-            </div>
-            <div class="browser-caption"><span>01 / STRATÉGIA</span><span>02 / DIZÁJN</span><span>03 / FEJLESZTÉS</span></div>
-          </div>
+
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <div class="hero-eyebrow"><span class="hero-eyebrow-line"></span>MODERN WEBOLDALAK</div>
+        <h1 id="hero-title" [attr.aria-label]="headline">
+          @for (line of leadLines; track $index) {<span class="hero-line">{{ line }}</span>}
+          <em class="hero-line hero-line--accent">{{ titleAccent }}</em>
+        </h1>
+        <p class="hero-sub">{{ description }}</p>
+        <div class="hero-actions">
+          <a class="hero-btn hero-btn--fill" routerLink="/ajanlatkeres">Kérj ajánlatot <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a>
+          <a class="hero-btn hero-btn--ghost" routerLink="/" fragment="munkak">Munkáim megtekintése <svg class="play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg></a>
         </div>
-        <div class="scene-phone"><div class="phone-notch"></div><div class="phone-screen"><span>STUDIO.</span><small>PRÉMIUM WEBOLDALAK</small><strong>Időtálló<br>weboldalak.</strong><i></i><b>Felfedezem ↗</b></div></div>
-        <div class="scene-tool scene-tool--type"><span>↗</span><span>□</span><span>T</span><span>◇</span></div>
-        <div class="scene-panel"><small>MEGJELENÉS</small><span class="swatches"><i></i><i></i><i></i><i></i></span><small>TIPOGRÁFIA</small><b>Aa</b><small>ELRENDEZÉS</small><span class="layouts">▤ &nbsp; ▦ &nbsp; ▥</span></div>
-        <div class="scene-chip scene-chip--top">✦ <span>SAJÁT ARCULAT</span></div>
-        <div class="scene-chip scene-chip--bottom">◈ <span>RESPONZÍV ÉLMÉNY</span></div>
-        <div class="scene-base"></div>
       </div>
-      <span class="stage-top-label">INTERAKTÍV KONCEPCIÓ &nbsp; / &nbsp; 3D</span>
-      <span class="stage-bottom-label">MOZGASD AZ EGERET &nbsp; ✧</span>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="rig">
+          <div class="aura aura--frame"></div>
+          <div class="aura aura--pane"></div>
+
+          <div class="tools">
+            <svg viewBox="0 0 24 24"><path d="M6 3l12 9-5.2 1.1L10.5 19z"/></svg>
+            <svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="1"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M5 5h14M12 5v15"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9zM4 7.5l8 4.5 8-4.5M12 12v9"/></svg>
+          </div>
+
+          <div class="monitor">
+            <div class="monitor-bar"><i></i><i></i><i></i></div>
+            <div class="screen">
+              <div class="screen-photo"></div>
+              <div class="screen-nav"><span>Rólam</span><span>Szolgáltatások</span><span>Munkáim</span><span>Kapcsolat</span></div>
+              <div class="slide slide--a">
+                <strong>Időtálló<br>weboldalak</strong>
+                <p>Stratégia, design és technológia együtt, hogy vállalkozásod magasabb szintre lépjen.</p>
+                <span class="slide-btn">Továbbiak <svg viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></svg></span>
+              </div>
+              <div class="slide slide--b">
+                <small>MEGGYŐZŐ ELSŐ BENYOMÁS</small>
+                <strong>Egyedi arculat,<br>stabil alap.</strong>
+                <p>Minden réteg a céljaidat szolgálja – a tartalomtól a kódig.</p>
+              </div>
+              <div class="screen-strip"><i></i><i></i><i></i></div>
+            </div>
+          </div>
+
+          <div class="phone">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="phone-photo"></div>
+              <div class="phone-menu"><b></b><b></b><b></b></div>
+              <strong>Időtálló<br>weboldalak</strong>
+              <p>Stratégia, design és technológia együtt, hogy vállalkozásod magasabb szintre lépjen.</p>
+              <span class="phone-btn">Továbbiak →</span>
+            </div>
+          </div>
+
+          <div class="panel">
+            <small>Színek</small>
+            <div class="dots"><i></i><i></i><i></i><i></i></div>
+            <small>Betűtípus</small>
+            <div class="type"><b>Aa</b><span><u></u><u></u></span></div>
+            <small>Elrendezés</small>
+            <div class="cols"><i></i><i></i><i></i></div>
+          </div>
+
+          <div class="code">
+            <u style="--w:44%;--c:#b79cff"></u><u style="--w:70%;--c:#7cc4ff"></u><u style="--w:56%;--c:#d28cff"></u>
+            <u style="--w:34%;--c:#b79cff"></u><u style="--w:62%;--c:#8fa4ff"></u><u style="--w:48%;--c:#d28cff"></u>
+            <u style="--w:26%;--c:#7cc4ff"></u>
+          </div>
+
+          <div class="card"><div class="card-photo"></div></div>
+          <div class="platform"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-foot">
+      <span class="hero-chapter">01 / AZ ELSŐ BENYOMÁS</span>
+      <div class="hero-bar" aria-hidden="true">
+        @for (seg of segments; track $index) {<i [class.is-first]="$index === 0"></i>}
+      </div>
+      <div class="hero-arrows">
+        <button type="button" class="hero-arrow" disabled aria-label="Előző fejezet"><svg viewBox="0 0 24 24"><path d="M20 12H5M11 6l-6 6 6 6"/></svg></button>
+        <button type="button" class="hero-arrow is-next" (click)="next()" aria-label="Következő fejezet"><svg viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button>
+      </div>
     </div>
   </div>
-  <div class="container hero-foot"><span>MEGYERI MÁRK · WEBFEJLESZTÉS</span><a routerLink="/" fragment="cinematic-story">FEDEZD FEL AZ ÉLMÉNYT <span aria-hidden="true">↓</span></a><span>01 / 06</span></div>
 </section>

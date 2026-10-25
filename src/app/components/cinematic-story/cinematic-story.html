@@ -1,62 +1,80 @@
-<section #storySection class="cinematic-story" id="cinematic-story" aria-labelledby="story-title">
+<section #storySection class="story" [attr.data-step]="activeIndex()" id="cinematic-story" aria-labelledby="story-title">
   <div class="story-pin">
-    <div class="story-aura" aria-hidden="true"></div>
-    <div class="container story-layout">
+    <div class="story-bg" aria-hidden="true"><i class="story-stars"></i><i class="story-nebula"></i><i class="story-floor"></i></div>
+
+    <div class="story-grid">
       <div class="story-copy">
-        <span class="story-kicker"><span class="story-kicker-line"></span> 02 / TERVEZÉSTŐL AZ ÉLMÉNYIG</span>
-        <h2 id="story-title">Így kel életre <em>egy weboldal.</em></h2>
+        <span class="story-kicker">02 / TERVEZÉSTŐL AZ ÉLMÉNYIG</span>
+        <h2 id="story-title"><span>Így kel életre</span> <span>egy <em>weboldal.</em></span></h2>
         <p class="story-intro">Egy jól felépített weboldal nem véletlen eredménye, hanem tudatos tervezés, kreatív dizájn és precíz fejlesztés folyamata. Az ötlettől a működő élményig minden rétegnek megvan a maga szerepe.</p>
-        <div class="story-current" aria-live="off">
-          <span class="story-current-number">{{ chapter().number }} <span>/ 04</span></span>
-          <div><strong>{{ chapter().title }}</strong><p>{{ chapter().description }}</p></div>
-        </div>
-        <a routerLink="/tervezo" class="story-link">Tervezd meg a sajátodat <span aria-hidden="true">↗</span></a>
+        <a routerLink="/ajanlatkeres" class="story-cta">Kérj ajánlatot <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a>
       </div>
-      <div class="story-scene" role="img" aria-label="Görgetésre egymásba rendeződő weboldalrétegek és mobil előnézet">
+
+      <div class="story-scene" role="img" aria-label="Görgetésre szétváló weboldalrétegek és mobil előnézet">
         <div class="story-glow" aria-hidden="true"></div>
-        <div class="story-stage" [style.transform]="stageTransform()" aria-hidden="true">
-          <div class="story-depth story-depth--back"></div>
-          <div class="story-layer story-layer--wire" [style.transform]="wireTransform()">
-            <div class="story-wire-title"></div><div class="story-wire-line"></div>
-            <div class="story-wire-grid"><i></i><i></i><i></i></div>
-            <div class="story-wire-button"></div>
+        <div class="iso" aria-hidden="true">
+          <div class="iso-stage">
+            <div class="plane plane--code"><pre>&lt;main class="site"&gt;
+  &lt;Hero responsive /&gt;
+  &lt;Gallery lazy /&gt;
+  experience: "premium";
+  performance: 100;
+&lt;/main&gt;</pre></div>
+            <div class="plane plane--wire"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="plane plane--gallery"><i></i><i></i><i></i><i></i></div>
+            <div class="plane plane--content">
+              <div class="pc-text"><strong>Modern weboldalak,<br>valódi eredmények.</strong><p>Stratégia, Dizájn, Fejlesztés, Együtt.</p><span>Kérj ajánlatot →</span></div>
+              <div class="pc-photo"></div>
+            </div>
+            <div class="plane plane--nav"><b>M</b><span>Kezdőlap</span><span>Szolgáltatások</span><span>Rólam</span><span>Kapcsolat</span><u>Kérj ajánlatot →</u></div>
+            <div class="plane plane--frame"><i></i><i></i><i></i></div>
           </div>
-          <div class="story-layer story-layer--visual" [style.transform]="visualTransform()">
-            <div class="story-visual-art"><span class="art-sun"></span><span class="art-shore art-shore--one"></span><span class="art-shore art-shore--two"></span></div>
-            <div class="story-visual-bubbles"><i></i><i></i><i></i></div>
-          </div>
-          <div class="story-layer story-layer--content" [style.transform]="contentTransform()">
-            <span>EGYEDI DIGITÁLIS ÉLMÉNY</span>
-            <strong>Modern weboldalak,<br><em>valódi eredmények.</em></strong>
-            <p>Stratégia, tervezés és technológia.</p>
-            <div class="story-faux-button">Kezdjük el ↗</div>
-            <div class="story-content-window" aria-hidden="true"></div>
-          </div>
-          <div class="story-layer story-layer--menu" [style.transform]="menuTransform()">
-            <strong>M<span>.</span></strong><span>Szolgáltatások</span><span>Rólam</span><span>Kapcsolat</span>
-          </div>
-          <div class="story-layer story-layer--gallery" [style.transform]="galleryTransform()">
-            <span>VIZUÁLIS RÉTEG / RESPONSIVE GRID</span>
-            <div class="story-gallery-grid"><i></i><i></i><i></i></div>
-          </div>
-          <div class="story-layer story-layer--code"><span>&lt;main&gt;</span><span> responsive: true</span><span> experience: premium</span><span>&lt;/main&gt;</span></div>
-          <div class="story-scene-shadow"></div>
         </div>
-        <div class="story-phone" [style.transform]="mobileTransform()" [style.opacity]="phoneOpacity()" aria-hidden="true">
-          <div class="story-phone-notch"></div><strong>M.</strong><span>PRÉMIUM MEGJELENÉS</span><h3>Modern weboldalak,<br>valódi eredmények.</h3><i></i><small>Kérj ajánlatot ↗</small>
+
+        <div class="story-phone" aria-hidden="true">
+          <div class="sp-notch"></div>
+          <div class="sp-body">
+            <b>M</b><span class="sp-menu"><i></i><i></i><i></i></span>
+            <strong>Modern<br>weboldalak,<br>valódi<br>eredmények.</strong>
+            <p>Stratégia, Dizájn, Fejlesztés, Együtt.</p>
+            <u>Kérj ajánlatot →</u>
+            <div class="sp-photo"></div>
+          </div>
         </div>
-        <div class="story-callout story-callout--one" aria-hidden="true"><i></i><span><strong>NAVIGÁCIÓ</strong><small>Irány és struktúra</small></span></div>
-        <div class="story-callout story-callout--two" aria-hidden="true"><i></i><span><strong>TARTALOM</strong><small>Üzenet és érték</small></span></div>
-        <div class="story-callout story-callout--three" aria-hidden="true"><i></i><span><strong>VIZUÁLIS RÉTEG</strong><small>Hangulat és identitás</small></span></div>
-        <div class="story-callout story-callout--four" aria-hidden="true"><i></i><span><strong>FELÉPÍTÉS</strong><small>Rugalmas megjelenés</small></span></div>
-        <div class="story-callout story-callout--five" aria-hidden="true"><i></i><span><strong>FEJLESZTÉS</strong><small>Stabil és gyors működés</small></span></div>
+
+        <div class="call call--1" aria-hidden="true"><span><strong>Navigáció</strong><small>Irány és struktúra</small></span><i></i></div>
+        <div class="call call--2" aria-hidden="true"><span><strong>Tartalom</strong><small>Üzenet és érték</small></span><i></i></div>
+        <div class="call call--3" aria-hidden="true"><span><strong>Vizuális réteg</strong><small>Hangulat és identitás</small></span><i></i></div>
+        <div class="call call--4" aria-hidden="true"><span><strong>Felépítés</strong><small>Rugalmasság<br>több eszközön</small></span><i></i></div>
+        <div class="call call--5" aria-hidden="true"><span><strong>Fejlesztés</strong><small>Stabil, gyors<br>és biztonságos alap</small></span><i></i></div>
       </div>
-      <div class="story-meter" aria-hidden="true"><span>SCROLL EXPERIENCE</span><div><i [style.height.%]="progress() * 100"></i></div><span>{{ percentage() }}%</span></div>
+
+      <nav class="story-rail" aria-label="Fejezetek">
+        <button type="button" class="rail-dot" [class.is-active]="activeIndex() === 0" (click)="goTo(0)" aria-label="01 – Stratégia"><span>01</span></button>
+        <button type="button" class="rail-dot" [class.is-active]="activeIndex() === 1" (click)="goTo(1)" aria-label="02 – Dizájn"><span>02</span></button>
+        <button type="button" class="rail-dot" [class.is-active]="activeIndex() === 2" (click)="goTo(2)" aria-label="03 – Fejlesztés"><span>03</span></button>
+        <button type="button" class="rail-dot" [class.is-active]="activeIndex() === 3" (click)="goTo(3)" aria-label="04 – Minden eszközön"><span>04</span></button>
+        <span class="rail-mouse" aria-hidden="true"><i></i></span>
+        <svg class="rail-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v15M6 13l6 6 6-6"/></svg>
+      </nav>
     </div>
-    <div class="container story-footer" aria-label="A fejlesztés három lépése">
-      <div class="story-footer-step"><span>01</span><i aria-hidden="true">◎</i><div><strong>Stratégia</strong><small>Megértjük a céljaidat, a közönségedet és a lehetőségeket.</small></div></div>
-      <div class="story-footer-step"><span>02</span><i aria-hidden="true">✧</i><div><strong>Dizájn</strong><small>Egyedi, letisztult megjelenést tervezünk a márkádhoz.</small></div></div>
-      <div class="story-footer-step"><span>03</span><i aria-hidden="true">⌘</i><div><strong>Fejlesztés</strong><small>Reszponzív, megbízható élménnyé építjük a terveket.</small></div></div>
+
+    <div class="story-steps">
+      <div class="step" [class.is-active]="activeIndex() === 0">
+        <span class="step-no">01</span>
+        <svg class="step-ico" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="14"/><circle cx="24" cy="24" r="6.5"/><circle cx="24" cy="24" r="1.2"/><path d="M24 5v6M24 37v6M5 24h6M37 24h6"/></svg>
+        <div><strong>Stratégia</strong><small>Megértjük a céljaidat, a közönségedet és a lehetőségeket.</small></div>
+      </div>
+      <div class="step" [class.is-active]="activeIndex() === 1">
+        <span class="step-no">02</span>
+        <svg class="step-ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M10 38l2-9L33 8l7 7-21 21zM28 13l7 7M12 29l7 7"/></svg>
+        <div><strong>Dizájn</strong><small>Egyedi, letisztult megjelenést tervezünk, ami tükrözi a márkád értékeit.</small></div>
+      </div>
+      <div class="step" [class.is-active]="activeIndex() >= 2">
+        <span class="step-no">03</span>
+        <svg class="step-ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M17 14L7 24l10 10M31 14l10 10-10 10M27 9l-6 30"/></svg>
+        <div><strong>Fejlesztés</strong><small>Modern technológiákkal, reszponzívan, megbízhatóan építjük meg az oldalt.</small></div>
+      </div>
     </div>
   </div>
 </section>

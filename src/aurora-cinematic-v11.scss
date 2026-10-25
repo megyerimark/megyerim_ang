@@ -187,3 +187,20 @@ body .admin-shell .admin-content :where(.metric,.admin-panel,.card,.aurora-insig
 [data-theme='light'] body :is(.quote-page,.studio-page,.consultation-page,.case-page,.client-project-page,.quiz-page) :where(.card,.panel,.quiz-card,.service-card,.form-card,.summary-card){background:#ffffffea;border-color:#c8c5ea;box-shadow:0 18px 45px #1e285027}
 [data-theme='light'] .admin-shell{background:#f6f7ff}
 [data-theme='light'] .admin-content :where(.metric,.admin-panel,.card,.aurora-insight,.care-record){background:#fff;border-color:#d5d6eb;box-shadow:0 14px 35px #1e285022}
+
+/* V13 – referencia-koncepciók (ha még nincs publikált valódi projekt) */
+.concept-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-top:44px}
+.concept-card{position:relative;display:flex;flex-direction:column;overflow:hidden;border:1px solid #9b94e440;border-radius:22px;text-decoration:none;color:inherit;
+  background:linear-gradient(160deg,#121a39d9,#0a1024e6);box-shadow:0 24px 70px #0007,inset 0 1px #ffffff12;transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .3s,box-shadow .3s}
+.concept-card:hover{transform:translateY(-8px);border-color:#c1b3ff99;box-shadow:0 34px 90px #000a,0 0 40px #7c68e540}
+.concept-shot{display:block;aspect-ratio:8/5;overflow:hidden;border-bottom:1px solid #9b94e433;background:#080d1f}
+.concept-shot img{display:block;width:100%;height:100%;object-fit:cover;object-position:top;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.concept-card:hover .concept-shot img{transform:scale(1.05)}
+.concept-meta{display:grid;gap:8px;padding:22px 26px 28px}
+.concept-meta small{font-size:10px;font-weight:700;letter-spacing:.2em;color:#b9acf4}
+.concept-meta strong{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(28px,2.2vw,36px);line-height:1}
+.concept-meta span{font-size:14px;line-height:1.6;color:#aebcd5}
+.concept-arrow{position:absolute;top:16px;right:16px;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:#0b1126cc;border:1px solid #b5a9ff66;backdrop-filter:blur(10px);transition:transform .3s,background .3s}
+.concept-card:hover .concept-arrow{transform:rotate(45deg);background:#b19cff;color:#10102c}
+@media(max-width:980px){.concept-grid{grid-template-columns:1fr;max-width:620px;margin-inline:auto}}
+[data-theme='light'] .concept-card{background:#fff;border-color:#d4d6ef}[data-theme='light'] .concept-meta span{color:#4b587c}

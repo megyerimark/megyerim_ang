@@ -8,7 +8,9 @@ describe('Hero', () => {
     const fixture = TestBed.createComponent(Hero);
     fixture.detectChanges();
     const html = fixture.nativeElement as HTMLElement;
-    expect(html.querySelector('h1')?.textContent).toContain('Ne csak jelen legyél online.');
+    const title = html.querySelector('h1');
+    expect(title?.getAttribute('aria-label')).toBe('Ne csak jelen legyél online. Emelkedj ki.');
+    expect(title?.textContent).toContain('Emelkedj ki.');
     expect(html.querySelector('a[href="/ajanlatkeres"]')).toBeTruthy();
   });
 });

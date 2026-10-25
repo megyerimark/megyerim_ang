@@ -69,6 +69,11 @@ export class Home implements OnInit {
     readonly selectedPurpose = signal<PreviewPurpose>('business');
     readonly selectedStyle = signal<PreviewStyle>('graphite');
     readonly selectedDevice = signal<'desktop' | 'mobile'>('desktop');
+    readonly demoSites = [
+        { slug: 'vagat-barber', preview: 'vagat', title: 'VÁGAT Barber Studio', kind: 'BARBER SHOP / DEMÓ', text: 'Fiktív barber shop weboldal prémium megjelenéssel.' },
+        { slug: 'axis-detailing', preview: 'axis', title: 'AXIS Auto Detailing', kind: 'AUTÓKOZMETIKA / DEMÓ', text: 'Prémium autókozmetikai oldal interaktív csomagokkal.' },
+        { slug: 'pulse-fitness', preview: 'pulse', title: 'PULSE Training', kind: 'SZEMÉLYI EDZŐ / DEMÓ', text: 'Modern bemutatóoldal programválasztóval.' }
+    ];
     readonly realProjects = computed(() => this.projects().filter(project => !project.is_demo));
 
     readonly previewModes: PreviewMode[] = [

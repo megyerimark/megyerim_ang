@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, HostListener, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { Meta, Title } from '@angular/platform-browser';
@@ -19,13 +19,23 @@ export class App {
     private readonly api = inject(ApiService);
     private seoSettings: SiteSettings | null = null;
     readonly showNavbar = signal(!this.router.url.startsWith('/admin'));
+    readonly showTop = signal(false);
+    @HostListener('window:scroll')
+    onScroll(): void { const visible = window.scrollY > 900; if (visible !== this.showTop()) this.showTop.set(visible); }
+    scrollTop(): void { window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); }
     constructor() {
         // AURORA V4: switch existing installations to the approved dark presentation once.
-        if (localStorage.getItem('mm-aurora-v4') !== '1') {
-            localStorage.setItem('mm-theme', 'dark');
-            localStorage.setItem('mm-aurora-v4', '1');
+        // A tárolás privát böngészési módban vagy tiltott sütiknél kivételt dobhat – ez nem törheti el az oldalt.
+        let storedTheme: string | null = null;
+        try {
+            if (localStorage.getItem('mm-aurora-v4') !== '1') {
+                localStorage.setItem('mm-theme', 'dark');
+                localStorage.setItem('mm-aurora-v4', '1');
+            }
+            storedTheme = localStorage.getItem('mm-theme');
         }
-        const theme = localStorage.getItem('mm-theme') === 'light' ? 'light' : 'dark';
+        catch { /* alapértelmezett sötét téma */ }
+        const theme = storedTheme === 'light' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', theme);
         this.updateRouteMeta(this.router.url);
         this.api.publicSettings().subscribe({

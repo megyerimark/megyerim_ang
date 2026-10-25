@@ -1,265 +1,42 @@
-:host {
-  display: block;
-  position: sticky;
-  top: 0;
-  z-index: 100;
+/* Lapos, áttetsző navigáció a referenciaképek szerint: szélesen szórt wordmark, serif menü, lila gradiens gomb. */
+:host{display:block;position:sticky;top:0;z-index:120}
+/* A főoldalon a nyitójelenet a navigáció mögé nyúlik. */
+:host(.overlay){margin-bottom:-78px}
+.nav-wrap{position:relative;border-bottom:1px solid #ffffff1c;background:linear-gradient(180deg,#040714cc,#04071400);transition:background .3s,backdrop-filter .3s,border-color .3s}
+.nav-wrap.is-compact{background:#050818dd;backdrop-filter:blur(20px) saturate(1.3);-webkit-backdrop-filter:blur(20px) saturate(1.3);border-bottom-color:#a99cf033}
+.navbar{height:78px;display:flex;align-items:center;justify-content:space-between;gap:clamp(14px,2vw,30px);padding:0 clamp(24px,4.6vw,88px)}
+.brand{text-decoration:none;flex:none}
+.brand strong{font:600 clamp(15px,1.25vw,19px)/1 'DM Sans',sans-serif;letter-spacing:.34em;color:#fff;white-space:nowrap}
+.brand strong span{background:linear-gradient(100deg,#b79cff,#9fa6ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.nav-links{display:flex;align-items:center;gap:clamp(22px,3.4vw,64px);margin-inline:auto}
+.nav-links a:not(.mobile-quote){position:relative;padding:10px 0;font:600 clamp(15px,1.25vw,19px)/1 'Cormorant Garamond',Georgia,serif;color:#e7e9f7;text-decoration:none;white-space:nowrap;transition:color .2s}
+.nav-links a:not(.mobile-quote)::after{content:'';position:absolute;left:0;right:0;bottom:-2px;height:1px;background:linear-gradient(90deg,transparent,#c8b8ff,transparent);transform:scaleX(0);transition:transform .3s}
+.nav-links a:not(.mobile-quote):hover{color:#fff}.nav-links a:hover::after,.nav-links a.is-active::after{transform:scaleX(1)}
+.nav-links a.is-active{color:#fff}
+.only-mobile,.mobile-quote{display:none!important}
+.nav-actions{display:flex;align-items:center;gap:14px;flex:none}
+.nav-cta{display:inline-flex;align-items:center;gap:14px;height:48px;padding:0 24px;border-radius:999px;text-decoration:none;font:600 clamp(14px,1.1vw,17px)/1 'Cormorant Garamond',Georgia,serif;color:#14123a;
+  background:linear-gradient(100deg,#a98bff,#9aa3ff 60%,#8bc5ff);box-shadow:0 8px 30px #8e78ff55,inset 0 1px #ffffff55;transition:transform .25s,box-shadow .25s}
+.nav-cta svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 12px 40px #9b86ff99,inset 0 1px #ffffff66}
+.theme-btn,.menu-btn{width:40px;height:40px;border-radius:50%;border:1px solid #ffffff2e;background:#070b1d88;color:#e8e6ff;font-size:17px;cursor:pointer;transition:border-color .2s,color .2s}
+.theme-btn:hover,.menu-btn:hover{border-color:#b79cff;color:#fff}
+.menu-btn{display:none}
+.scroll-progress{position:absolute;left:0;right:0;bottom:-1px;height:2px;pointer-events:none}
+.scroll-progress i{display:block;height:100%;transform-origin:left;transform:scaleX(0);background:linear-gradient(90deg,#b79cff,#8bc5ff);box-shadow:0 0 12px #a98bff}
+@media(max-width:1020px){
+  .navbar{height:70px;padding:0 18px}:host(.overlay){margin-bottom:-70px}
+  .menu-btn{display:inline-grid;place-items:center}.nav-cta{display:none}
+  .nav-links{position:fixed;inset:70px 0 auto 0;max-height:calc(100dvh - 70px);overflow-y:auto;margin:0;padding:10px 22px 26px;flex-direction:column;align-items:stretch;gap:0;
+    background:#060a1cf7;backdrop-filter:blur(24px);border-bottom:1px solid #a99cf040;transform:translateY(-8px);opacity:0;visibility:hidden;transition:opacity .25s,transform .25s,visibility .25s}
+  .nav-links.open{opacity:1;transform:none;visibility:visible}
+  .nav-links a:not(.mobile-quote){padding:17px 2px;font-size:21px;border-bottom:1px solid #ffffff14}.nav-links a::after{display:none}
+  .only-mobile{display:block!important}
+  .mobile-quote{display:flex!important;align-items:center;justify-content:space-between;margin-top:18px;padding:17px 22px;border-radius:999px;text-decoration:none;font:600 19px/1 'Cormorant Garamond',Georgia,serif;color:#14123a;background:linear-gradient(100deg,#a98bff,#9aa3ff 60%,#8bc5ff)}
 }
-.nav-wrap {
-  background: color-mix(in srgb, var(--bg) 88%, transparent);
-  border-bottom: 1px solid var(--border);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-}
-.navbar {
-  height: 90px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 22px;
-}
-.brand {
-  display: inline-flex;
-  align-items: center;
-  flex-shrink: 0;
-  gap: 13px;
-  text-decoration: none;
-}
-.brand-monogram {
-  width: 47px;
-  height: 47px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  white-space: nowrap;
-  background: var(--text);
-  color: var(--bg);
-  border-radius: 13px;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 23px;
-  font-weight: 700;
-  letter-spacing: -2px;
-  line-height: 1;
-  span {
-    color: var(--accent);
-  }
-}
-.brand-text {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  strong {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    white-space: nowrap;
-  }
-  small {
-    font-size: 9px;
-    font-weight: 600;
-    color: var(--muted);
-    letter-spacing: 1.5px;
-    white-space: nowrap;
-  }
-}
-.nav-links,
-.nav-actions {
-  display: flex;
-  align-items: center;
-}
-.nav-links {
-  gap: clamp(14px, 2.3vw, 32px);
-  a {
-    color: var(--muted);
-    text-decoration: none;
-    font-size: 12px;
-    font-weight: 600;
-    white-space: nowrap;
-    transition: color 180ms ease;
-    &:hover {
-      color: var(--text);
-    }
-  }
-}
-.nav-actions {
-  gap: 12px;
-}
-.theme-btn,
-.menu-btn {
-  width: 41px;
-  height: 41px;
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  background: var(--surface);
-  color: var(--text);
-  font-size: 21px;
-}
-.nav-cta,
-.mobile-quote {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  gap: 14px;
-  border-radius: 9px;
-  padding: 14px 19px;
-  background: var(--text);
-  color: var(--bg);
-  text-decoration: none;
-  font-size: 12px;
-  font-weight: 750;
-  white-space: nowrap;
-  transition: transform 200ms ease;
-  &:hover {
-    transform: translateY(-2px);
-  }
-}
-.menu-btn,
-.mobile-quote {
-  display: none;
-}
-@media (max-width: 1060px) {
-  .nav-links {
-    gap: 15px;
-  }
-  .brand-text strong {
-    font-size: 11px;
-  }
-}
-@media (max-width: 940px) {
-  .navbar {
-    height: 74px;
-  }
-  .nav-links {
-    display: none;
-    position: absolute;
-    top: 74px;
-    left: 0;
-    right: 0;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0;
-    padding: 12px 24px 26px;
-    border-bottom: 1px solid var(--border);
-    background: var(--bg);
-    box-shadow: 0 22px 48px var(--shadow);
-    &.open {
-      display: flex;
-    }
-    a:not(.mobile-quote) {
-      padding: 15px 2px;
-      border-bottom: 1px solid var(--border);
-      font-size: 14px;
-    }
-  }
-  .nav-cta {
-    display: none;
-  }
-  .menu-btn,
-  .mobile-quote {
-    display: inline-flex;
-  }
-  .mobile-quote {
-    margin-top: 17px;
-    color: var(--bg) !important;
-  }
-}
-@media (max-width: 400px) {
-  .brand-monogram {
-    width: 41px;
-    height: 41px;
-  }
-  .brand-text strong {
-    font-size: 10px;
-    letter-spacing: .4px;
-  }
-  .brand-text small {
-    font-size: 8px;
-    letter-spacing: .8px;
-  }
-}
-
-/* AURORA navbar */
-:host { z-index: 120; }
-.nav-wrap {
-  background: color-mix(in srgb,var(--bg) 80%,transparent);
-  border-color: var(--premium-rim);
-  box-shadow: 0 8px 35px #03091836;
-}
-.navbar { height: 82px; }
-.brand-monogram {
-  background: linear-gradient(145deg,#a68bff,#5e6aff 55%,#45a5ff);
-  box-shadow: 0 8px 22px #5553f54d;
-  border-radius: 13px;
-  color: #fff;
-}
-.brand-monogram span { color: #cce1ff; }
-.brand-text strong { color: var(--text); letter-spacing: .35px; font-size: 12px; }
-.brand-text small { color: var(--muted); letter-spacing: .7px; }
-.nav-links a { position: relative; }
-.nav-links a::after { content: ''; position: absolute; height: 2px; border-radius: 6px; bottom: -12px; left: 0; right: 100%; background: linear-gradient(90deg,#8a67f9,#568cff); transition: right .25s ease; }
-.nav-links a:hover { color: var(--text); }
-.nav-links a:hover::after { right: 0; }
-.theme-btn, .menu-btn { background: var(--premium-glass); border-color: var(--premium-rim); box-shadow: inset 0 1px #fff1; border-radius: 13px; }
-.theme-btn:hover,.menu-btn:hover { color: var(--accent); border-color: var(--accent); box-shadow: 0 0 18px var(--premium-halo); }
-.nav-cta,.mobile-quote { border-radius: 12px; background: var(--premium-primary); color: white !important; border: 1px solid #ffffff2d; box-shadow: 0 7px 22px #5457e653; }
-@media(max-width:940px){ .navbar {height:72px;} .nav-links { top:72px; background: var(--premium-panel); backdrop-filter: blur(25px); border-color:var(--premium-rim); } .nav-links a::after {display:none;} }
-@media(max-width:430px){.brand-text small{letter-spacing:.1px}.nav-actions{gap:7px}.theme-btn,.menu-btn{width:37px;height:37px}.navbar{gap:6px}}
-
-/* AURORA V4 / elegant midnight navbar */
-.nav-wrap{background:#060c1be8;border-bottom:1px solid #6c76cd3d;box-shadow:0 6px 38px #0006;backdrop-filter:blur(24px)}
-.navbar{height:76px;max-width:1490px}
-.brand-monogram{width:45px;height:45px;border-radius:12px;background:linear-gradient(125deg,#8156f9,#357cf7);color:#fff;box-shadow:0 0 23px #7765fb7e}
-.brand-monogram span{color:#e5dcff}
-.brand-text strong{color:#fff;letter-spacing:.4px;font-size:12px}
-.brand-text small{color:#a7b9ec;letter-spacing:1.1px}
-.nav-links a{color:#bac8e8}.nav-links a:hover{color:#fff;text-shadow:0 0 14px #a69dff}
-.theme-btn{background:#161e3b;border:1px solid #5b669951;border-radius:13px;color:#e8eaff;box-shadow:inset 0 1px #fff1}
-.theme-btn:hover{border-color:#aca2ff;box-shadow:0 0 19px #6456f95c}
-.nav-cta{border-radius:12px;box-shadow:0 0 24px #5e53f588}
-[data-theme='light'] .nav-wrap{background:#101831ee}
-@media(max-width:940px){.navbar{height:74px}.nav-links{background:#0c142beb;border-bottom:1px solid #7b84d65c;backdrop-filter:blur(22px)}.nav-links a{color:#e2e7fb}.menu-btn{background:#101a35;color:#fff;border-color:#475684}}
-
-/* AURORA V6 / collapse before desktop links squeeze; preserve chosen light theme. */
-.navbar{min-width:0;gap:clamp(9px,1.35vw,22px)}
-.brand,.brand-text,.nav-actions{min-width:0}
-.nav-links{gap:clamp(9px,1.5vw,24px)}
-@media(max-width:1220px){
-  .navbar{height:74px;gap:10px}
-  .nav-links{display:none;position:absolute;top:74px;left:0;right:0;max-height:calc(100dvh - 74px);overflow-y:auto;flex-direction:column;align-items:stretch;gap:0;padding:12px max(24px,calc((100vw - 1140px)/2)) 26px;background:#0c142bf0;box-shadow:0 22px 48px #0005;border-bottom:1px solid #7b84d65c;backdrop-filter:blur(24px)}
-  .nav-links.open{display:flex}
-  .nav-links a:not(.mobile-quote){padding:15px 2px;border-bottom:1px solid #ffffff1f;font-size:14px;color:#e2e7fb}
-  .nav-links a::after{display:none}
-  .nav-cta{display:none}
-  .menu-btn,.mobile-quote{display:inline-flex}
-  .mobile-quote{margin-top:17px}
-}
-@media(max-width:510px){.brand{gap:9px}.brand-text small{display:none}.brand-text strong{font-size:10px;letter-spacing:.1px;white-space:normal;max-width:137px;line-height:1.2}.nav-actions{gap:7px}.navbar{padding-inline:14px}.brand-monogram{width:39px;height:39px;flex:none}.menu-btn,.theme-btn{width:38px;height:38px;flex:none}}
-@media(max-width:350px){.brand-text strong{max-width:102px;font-size:9px}.navbar{padding-inline:10px}}
-[class*="nav"]:focus-visible,.brand:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
-@media(max-width:1220px){.nav-links{overscroll-behavior:contain}}
-@media(max-width:360px){.brand-monogram{width:35px;height:35px}.brand-text strong{max-width:100px;font-size:9px}.nav-actions{gap:5px}.navbar{gap:5px}}
-[data-theme='light'] .nav-wrap{background:#f9faffef;border-color:#c6cbe4;box-shadow:0 8px 25px #1a24521a}
-[data-theme='light'] .brand-text strong{color:#172147}
-[data-theme='light'] .brand-text small{color:#5f6b89}
-[data-theme='light'] .nav-links a{color:#263257}
-[data-theme='light'] .theme-btn,[data-theme='light'] .menu-btn{background:#eef0fa;border:1px solid #c7cdeb;color:#1f2a4e}
-@media(max-width:1220px){[data-theme='light'] .nav-links{background:#f9fafff5;border-color:#d8def0}[data-theme='light'] .nav-links a:not(.mobile-quote){color:#283657;border-color:#dce0f0}}
-
-/* Aurora Cinematic responsive glass navigation. */
-.nav-wrap{background:#070c1aea;border-bottom:1px solid #8c86d041;box-shadow:0 10px 36px #03050d6e;backdrop-filter:blur(24px)}
-.navbar{max-width:1500px;height:77px}
-.brand-monogram{background:linear-gradient(135deg,#d7c7ff,#a189ec 62%,#84dcec);color:#10162a;border-radius:13px;box-shadow:0 0 24px #a28cfa59}
-.brand-monogram span{color:#32316f}
-.brand-text strong{font-size:12px;letter-spacing:.14em;color:#fff}
-.brand-text small{font-size:9px;letter-spacing:.11em;color:#aebbdc}
-.nav-links a{color:#d2dcf1;font-size:12px}
-.nav-links a:hover{color:#fff}
-.nav-links a::after{bottom:-10px;background:linear-gradient(90deg,#bb9bff,#89e2eb)}
-.nav-cta,.mobile-quote{border-radius:99px;background:linear-gradient(108deg,#b58aff,#aaa7ff 55%,#8adfec);color:#11142e!important;border:1px solid #d0c5ff;box-shadow:0 8px 31px #826de373;font-weight:800}
-.nav-cta:hover{box-shadow:0 12px 40px #826de38c}
-.theme-btn,.menu-btn{border-radius:13px;background:#121a33d9;color:#e6e7ff;border:1px solid #7d84bc7a}
-.theme-btn:hover,.menu-btn:hover{border-color:#b9abff;color:#fff}
-[data-theme='light'] .nav-wrap{background:#fafbfff1;border-color:#c6cbec}
-[data-theme='light'] .nav-links a{color:#2e3c64}
-[data-theme='light'] .brand-text strong{color:#172147}
-@media(max-width:1220px){.navbar{height:74px}.nav-links{top:74px;background:#0a122aee;border-color:#8175d66a;padding-bottom:max(26px,env(safe-area-inset-bottom))}.nav-links a:not(.mobile-quote){color:#e5ebff}.menu-btn{display:inline-flex}.mobile-quote{color:#10142f!important}.nav-wrap{isolation:isolate}}
-@media(max-width:440px){.navbar{padding-inline:13px}.brand{gap:9px}.brand-monogram{width:38px;height:38px}.brand-text strong{font-size:10px;letter-spacing:.04em}.brand-text small{display:none}.nav-actions{gap:7px}.theme-btn,.menu-btn{width:38px;height:38px}}
+[data-theme='light'] .nav-wrap.is-compact{background:#f7f8ffee;border-bottom-color:#2a2f6a1f}
+[data-theme='light'] .nav-wrap.is-compact .brand strong{color:#171c3c}
+[data-theme='light'] .nav-wrap.is-compact .nav-links a:not(.mobile-quote){color:#2b3360}
+[data-theme='light'] .nav-wrap.is-compact .theme-btn,[data-theme='light'] .nav-wrap.is-compact .menu-btn{background:#fff;color:#2b3360;border-color:#cfd0ee}
+@media(max-width:1020px){[data-theme='light'] .nav-wrap.is-compact .nav-links{background:#fffffff7}}
+@media(prefers-reduced-motion:reduce){.nav-wrap,.nav-links,.nav-links a::after{transition:none}}
