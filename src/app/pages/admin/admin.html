@@ -104,7 +104,22 @@
         Feldolgozás…
       </div>
       }
-@if(tab()==='dashboard'){@if(dashboard();as dash){
+@if(tab()==='dashboard'){
+      <section class="admin-cinematic-intro" aria-label="Aurora Studio admin áttekintés">
+        <div class="admin-cinematic-copy">
+          <span>MEGYERI MÁRK / AURORA STUDIO</span>
+          <h2>Az ötletekből <em>valós projektek.</em></h2>
+          <p>Az érdeklődésektől a megvalósításig: minden fontos folyamat egy helyen.</p>
+          <button type="button" (click)="use('quotes')">Beérkező megkeresések <span aria-hidden="true">↗</span></button>
+        </div>
+        <div class="admin-cinematic-visual" aria-hidden="true">
+          <div class="admin-cinematic-orbit"></div>
+          <div class="admin-cinematic-window admin-cinematic-window--rear"></div>
+          <div class="admin-cinematic-window admin-cinematic-window--main"><span>STUDIO / ANALYTICS</span><i></i><i></i><i></i><b>AURORA</b></div>
+          <div class="admin-cinematic-phone"><span>MM.</span><i></i><i></i><i></i></div>
+        </div>
+      </section>
+      @if(dashboard();as dash){
       <div class="metric-grid">
         <div class="metric card">
           <span>

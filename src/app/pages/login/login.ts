@@ -4,7 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../core/auth.service';
 import { ApiService } from '../../core/api.service';
-@Component({ selector: 'app-login', standalone: true, imports: [FormsModule, RouterLink], templateUrl: './login.html', styleUrl: './login.scss' })
+@Component({ selector: 'app-login', standalone: true, imports: [FormsModule, RouterLink], templateUrl: './login.html', styleUrls: ['./login.scss', './login-v11.scss'] })
 export class LoginPage implements OnInit {
     private auth = inject(AuthService);
     private router = inject(Router);

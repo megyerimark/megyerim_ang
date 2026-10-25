@@ -1,0 +1,66 @@
+/* Aurora Cinematic V11 private studio entrance. */
+:host{display:block}
+.login-page{min-height:calc(100svh - 77px);padding:clamp(28px,4vw,72px) 24px;
+  background:radial-gradient(ellipse 55% 60% at 18% 38%,#322c744a,transparent 74%),
+    linear-gradient(90deg,#050a18ed,#050916ec),url('/aurora-cinematic-coast.webp') center 42% / cover no-repeat}
+.login-shell{max-width:1380px;grid-template-columns:minmax(0,1.13fr) minmax(370px,.87fr);gap:clamp(26px,4.2vw,76px)}
+.login-art{position:relative;min-height:660px;height:min(74vh,780px);padding:clamp(29px,3vw,49px);
+  border:1px solid #c1b5ff80;border-radius:27px;
+  background:linear-gradient(180deg,#0a1128b8 0%,#0b1029b0 48%,#050819ec 100%),
+    url('/aurora-cinematic-coast.webp') 57% center / cover no-repeat;
+  box-shadow:0 35px 100px #000a,inset 0 1px #ffffff38;isolation:isolate}
+.login-art::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 64% 55% at 70% 64%,#976bfd60,transparent 77%);filter:blur(15px)}
+.login-art>span,.login-art small{font-size:10px;letter-spacing:.23em;color:#d9ddfa}
+.login-art>strong{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(58px,6.4vw,114px);
+  font-weight:500;letter-spacing:-.055em;line-height:.83;text-shadow:0 13px 37px #02030a9c;align-self:flex-start}
+.login-art>strong em{font-weight:500;font-style:italic;color:#ceb0ff}
+.login-art small{align-self:flex-start}
+.login-orb{z-index:0;opacity:.4;filter:blur(36px);right:-150px;bottom:-180px;pointer-events:none}
+.login-cinematic-preview{position:absolute;z-index:1;right:7%;bottom:16%;width:64%;height:46%;perspective:800px;
+  transform:rotateY(-14deg) rotateX(8deg);transform-style:preserve-3d;pointer-events:none;
+  animation:login-cinematic-float 8s ease-in-out infinite alternate}
+.login-preview-layer{position:absolute;border:1px solid #c1b7ffb0;border-radius:19px;
+  box-shadow:0 35px 80px #020413c4,0 0 38px #967bed68,inset 0 1px #ffffff2b}
+.login-preview-layer--back{inset:1% 5% 11% 13%;background:#5852ac35;transform:translate3d(22px,-24px,-100px) rotateZ(8deg)}
+.login-preview-layer--middle{inset:7% 4% 6% 9%;background:#151d43cb;transform:translate3d(-18px,14px,-32px) rotateZ(-7deg)}
+.login-preview-layer--front{inset:5% 5% 9% 3%;padding:25px 24px;
+  background:linear-gradient(90deg,#080e24eb,#11183abb 65%,#152b489d),
+    url('/aurora-cinematic-coast.webp') 75% center / cover;transform:translateZ(45px)}
+.login-preview-window{position:absolute;inset:0 0 auto;height:31px;border-bottom:1px solid #bdc4fa5c;
+  display:flex;align-items:center;gap:5px;padding:0 14px;background:#0b1123df;border-radius:19px 19px 0 0}
+.login-preview-window i{width:7px;height:7px;background:#cfb1ffbd;border-radius:50%}
+.login-preview-window i:nth-child(2){background:#a2b2fc}.login-preview-window i:nth-child(3){background:#a8e1f2}
+.login-preview-wordmark{display:block;color:#c0d5f6;letter-spacing:.18em;font-size:8px;margin-top:36px}
+.login-preview-layer--front strong{display:block;font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:clamp(31px,3vw,56px);line-height:.92;font-weight:500;margin-top:19px;color:#fff}
+.login-preview-layer--front strong em{font-style:italic;color:#cbb1ff}
+.login-preview-divider{position:absolute;bottom:18px;left:24px;right:24px;border-top:1px solid #ffffff5c}
+.login-preview-glow{position:absolute;z-index:-1;inset:35% -18% -12%;background:#8d70efab;filter:blur(70px);border-radius:50%}
+.login-card{padding:clamp(30px,4vw,67px);border-radius:27px;
+  background:linear-gradient(145deg,#141d3ae8,#090f23ee 78%);
+  border:1px solid #a9a3f271;box-shadow:0 34px 85px #020413a8,inset 0 1px #ffffff23;
+  backdrop-filter:blur(24px)}
+.login-card .overline{letter-spacing:.25em;color:#bcaaff}
+.login-card h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(55px,5vw,85px);
+  font-weight:500;letter-spacing:-.048em;line-height:.9;color:#fff;margin:24px 0}
+.login-card>p{font-size:14px;color:#b8c5e0;line-height:1.8;max-width:425px}
+.login-card .lock-icon{border:1px solid #c1adff78;border-radius:18px;
+  background:linear-gradient(135deg,#2a245d,#142347);box-shadow:0 0 39px #8671ef4b;color:#ddd0ff}
+.login-card .form-field label{color:#e4e4fc}
+.login-card .input{min-height:54px;border-radius:12px;border-color:#858bc180;background:#0a1127ed;color:white}
+.login-card form .btn-primary{min-height:54px;border-radius:99px;background:linear-gradient(110deg,#bd98ff,#aaa7ff 55%,#86ddec);
+  color:#111431;box-shadow:0 12px 34px #8a72f267;font-weight:800}
+.login-card .api-status{background:#0e1b31c4;border-color:#6579a172}
+.login-card .forgot-line a{color:#cbb6ff}
+@keyframes login-cinematic-float{from{translate:0 2px}to{translate:0 -12px}}
+@media(max-width:1050px){.login-shell{grid-template-columns:minmax(0,1fr) minmax(340px,.92fr);gap:23px}.login-art{min-height:580px;height:660px}.login-art>strong{font-size:70px}}
+@media(max-width:780px){.login-shell{grid-template-columns:1fr;max-width:620px}.login-brand{display:none}.login-card{padding:clamp(26px,6vw,49px)}.login-page{padding:45px 16px 70px}}
+@media(max-width:420px){.login-card h1{font-size:60px}.login-card{padding:27px 21px}.login-page{padding:25px 13px 45px}}
+@media(prefers-reduced-motion:reduce){.login-cinematic-preview{animation:none}}
+[data-theme='light'] .login-page{background:linear-gradient(#f1f2fbd5,#f8f9ffeb),url('/aurora-cinematic-coast.webp') center / cover}
+[data-theme='light'] .login-card{background:#fff;border-color:#c6b9ed;box-shadow:0 22px 60px #2028462f}
+[data-theme='light'] .login-card h1{color:#1c2442}
+[data-theme='light'] .login-card>p{color:#485b7d}
+[data-theme='light'] .login-card .form-field label{color:#273454}
+[data-theme='light'] .login-card .input{background:#f4f4fe;border-color:#9a9ec5;color:#182244}

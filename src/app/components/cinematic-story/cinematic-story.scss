@@ -50,3 +50,26 @@
 @media(max-width:560px){.story-pin{padding-top:70px}.story-copy h2{font-size:clamp(50px,12vw,67px);margin:23px 0}.story-kicker{font-size:8px;letter-spacing:.13em}.story-intro{font-size:14px}.story-scene{height:380px}.story-stage{inset:17% 12% 12% 4%;transform:rotateX(5deg) rotateY(-8deg)!important}.story-layer--menu{height:40px;gap:8px;padding:0 13px}.story-layer--menu>span{font-size:7px}.story-layer--menu strong{font-size:16px}.story-layer--content{padding-top:30%}.story-layer--content strong{font-size:34px}.story-layer--content p{font-size:9px}.story-layer--content>span{font-size:7px}.story-wire-grid i{height:38px}.story-phone{width:105px;min-width:0;height:220px;min-height:0;border-width:5px;border-radius:19px;padding:22px 8px 8px;right:0;bottom:-3%;transform:rotateY(-8deg)!important}.story-phone>span{margin-top:18px}.story-phone h3{font-size:15px}.story-phone small{font-size:7px;margin-top:9px}.story-footer{font-size:8px}.story-layer--code{display:none}}
 @media(max-width:380px){.story-scene{height:325px}.story-phone{transform:scale(.82) rotateY(-8deg)!important;transform-origin:right bottom}.story-layer--content strong{font-size:27px}.story-faux-button{padding:7px 10px}.story-layer--menu>span:last-child{display:none}}
 @media(prefers-reduced-motion:reduce){.cinematic-story{min-height:auto}.story-pin{position:relative;height:auto;min-height:680px;top:0}.story-stage,.story-layer,.story-phone{transition:none!important;will-change:auto}.story-layout{min-height:620px}}
+
+/* V11: visual layers now use the real cinematic art asset; transforms remain scroll-driven. */
+.story-pin{background:radial-gradient(ellipse at 72% 42%,#2c2b6e8a,transparent 68%),#050916}
+.story-aura{background:linear-gradient(90deg,#050916f5 3%,#080e24d0 48%,#0509168c),
+  url('/aurora-cinematic-coast.webp') center 55% / cover no-repeat;opacity:.53;filter:blur(0)}
+.story-copy h2{font-size:clamp(58px,6vw,107px);line-height:.89;letter-spacing:-.058em}
+.story-copy h2 em{font-style:italic;font-weight:500;background:linear-gradient(100deg,#c6a6ff,#ae9dff 57%,#8cdde9);background-clip:text;-webkit-text-fill-color:transparent}
+.story-glow{background:radial-gradient(ellipse,#7969e47a,#63a2da29 45%,transparent 72%);filter:blur(66px)}
+.story-layer{border-color:#b5b4f2a6;box-shadow:0 40px 90px #000c,0 0 53px #9185ed4d,inset 0 1px #ffffff4a}
+.story-depth--back{background:linear-gradient(135deg,#9e7aff26,#48cde31c);box-shadow:0 0 65px #806ce051}
+.story-layer--visual{background:url('/aurora-cinematic-coast.webp') 63% 53% / cover;border-color:#bdacffb7}
+.story-visual-art{background:url('/aurora-cinematic-coast.webp') 61% 50% / cover;border:1px solid #ffffff35;box-shadow:inset 0 0 55px #000a}
+.art-sun,.art-shore{display:none}
+.story-layer--content{background:linear-gradient(90deg,#050a1de8 1%,#090d28cc 64%,#07132d5c)}
+.story-layer--content strong em{font-style:italic;color:#d1b6ff}
+.story-layer--menu{background:linear-gradient(110deg,#101934f7,#18224def);border-color:#a3a8efcf;box-shadow:0 20px 45px #000b,0 0 25px #a68bfc3b}
+.story-phone{background:linear-gradient(180deg,#10132bde,#080a19bd),url('/aurora-cinematic-coast.webp') 64% center / cover;border-color:#080f23;box-shadow:0 26px 62px #000c,0 0 0 1px #c6c2ff,0 0 37px #8272e58e}
+.story-phone i{background:url('/aurora-cinematic-coast.webp') 70% 60% / cover}
+.story-link{border-color:#bbadfa94;box-shadow:0 0 28px #816cef38}
+[data-theme='light'] .story-pin{background:radial-gradient(ellipse at 74% 42%,#d9d5ff,#eef0fa 84%)}
+[data-theme='light'] .story-aura{opacity:.15}
+@media(max-width:870px){.story-copy h2{font-size:clamp(55px,9vw,81px)}}
+@media(max-width:560px){.story-copy h2{font-size:clamp(49px,11.5vw,67px)}.story-aura{opacity:.22}}

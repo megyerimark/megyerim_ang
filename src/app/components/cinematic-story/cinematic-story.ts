@@ -47,8 +47,13 @@ export class CinematicStory implements AfterViewInit, OnDestroy {
     if (this.scheduled) return;
     this.scheduled = window.requestAnimationFrame(() => {
       this.scheduled = 0;
-      if (window.innerWidth <= 870) { this.progress.set(.87); return; }
       const rect = this.section.nativeElement.getBoundingClientRect();
+      if (window.innerWidth <= 870) {
+        // On touch devices the section does not pin; animate the same layers as it passes through view.
+        const visibleJourney = Math.max(1, rect.height + window.innerHeight);
+        this.progress.set(Math.max(0, Math.min(1, (window.innerHeight - rect.top) / visibleJourney)));
+        return;
+      }
       const distance = Math.max(1, rect.height - window.innerHeight);
       this.progress.set(Math.max(0, Math.min(1, -rect.top / distance)));
     });

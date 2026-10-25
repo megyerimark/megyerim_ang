@@ -7,7 +7,7 @@ import { filter } from 'rxjs';
     standalone: true,
     imports: [RouterLink],
     templateUrl: './navbar.html',
-    styleUrl: './navbar.scss'
+    styleUrls: ['./navbar.scss', './navbar-v11.scss']
 })
 export class Navbar implements OnInit {
     private readonly router = inject(Router);

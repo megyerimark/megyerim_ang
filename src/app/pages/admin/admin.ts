@@ -30,7 +30,7 @@ interface ProjectEditor {
     sort_order: number;
     cover_image_url: string | null;
 }
-@Component({ selector: 'app-admin', standalone: true, imports: [FormsModule, RouterLink], templateUrl: './admin.html', styleUrl: './admin.scss' })
+@Component({ selector: 'app-admin', standalone: true, imports: [FormsModule, RouterLink], templateUrl: './admin.html', styleUrls: ['./admin.scss', './admin-v11.scss'] })
 export class AdminPage implements OnInit {
     private api = inject(ApiService);
     private auth = inject(AuthService);

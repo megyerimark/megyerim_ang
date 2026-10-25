@@ -341,3 +341,6 @@ hr {
 [data-theme='dark'] .section-title{color:#f7f6ff}
 [data-theme='light']{--accent:#7050bc;--accent2:#13799b}
 @media(max-width:420px){html,body{max-width:100%;overflow-x:clip}}
+
+/* Aurora Cinematic V11 — consistent editorial direction across public and admin routes. */
+@import './aurora-cinematic-v11';

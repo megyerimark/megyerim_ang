@@ -43,3 +43,47 @@
 @media(max-width:650px){.hero-content{padding-top:53px;gap:4px}.hero-copy{padding-bottom:0}.hero-copy h1{font-size:clamp(55px,11.5vw,77px);margin:23px 0 19px}.hero-copy>p{font-size:14px;line-height:1.75}.hero-eyebrow{font-size:8px;letter-spacing:.12em}.hero-eyebrow .eyebrow-index{font-size:8px}.hero-actions{gap:10px;margin-top:25px}.hero-cta{flex:1 1 230px;min-height:52px;padding:11px 15px;font-size:12px}.hero-benefits{margin-top:25px;gap:10px 18px;font-size:10px}.hero-visual{height:430px;margin-top:16px}.scene-world{transform:rotateX(3deg) rotateY(-6deg)!important}.scene-browser{inset:20% 8% 23% 9%;border-radius:12px;box-shadow:0 20px 55px #010411aa,0 0 0 4px #111c38}.browser-top{height:25px;font-size:6px;padding:0 9px}.browser-inner{height:calc(100% - 25px)}.browser-nav{padding:15px 12px 8px}.browser-nav strong{font-size:11px}.browser-nav>span{display:none}.browser-nav>b{font-size:6px;padding:6px 8px}.browser-grid{height:calc(100% - 60px)}.browser-copy{padding:18px 5px 10px 12px}.browser-copy>span{font-size:6px}.browser-copy strong{font-size:clamp(24px,6vw,35px);margin:8px 0}.browser-copy p{font-size:7px;line-height:1.45}.browser-copy b{font-size:6px;padding:6px 10px;margin-top:2px}.browser-caption{height:23px;font-size:6px;padding:0 9px}.scene-phone{left:0;bottom:10%;width:88px;height:188px;border-width:5px;border-radius:18px}.phone-screen{padding:18px 8px 8px}.phone-screen>span{font-size:8px}.phone-screen>small{font-size:5px;margin-top:20px}.phone-screen strong{font-size:15px}.phone-screen i{height:40px;margin-top:10px}.phone-screen b{font-size:5px}.phone-notch{height:7px}.scene-panel{right:0;top:31%;width:91px;padding:10px;gap:5px}.scene-panel small{font-size:6px}.scene-panel b{font-size:17px}.swatches i{width:12px;height:12px}.layouts{font-size:13px}.scene-tool{top:13%;left:0;padding:8px;gap:10px}.scene-tool span{font-size:12px}.scene-chip{padding:7px 9px;font-size:10px}.scene-chip span{font-size:6px}.scene-chip--top{right:0;top:8%}.scene-chip--bottom{left:22%;bottom:9%}.hero-foot{font-size:8px;letter-spacing:.08em}.hero-foot>span:last-child{display:none}.stage-top-label{font-size:7px;top:6%;right:17%}.stage-bottom-label{font-size:7px;bottom:3%}}
 @media(max-width:390px){.hero-copy h1{font-size:clamp(47px,12vw,62px)}.hero-content{padding-top:35px}.hero-actions{flex-direction:column}.hero-cta{width:100%;flex:auto}.hero-visual{height:360px}.scene-phone{transform:translateZ(150px) scale(.8) rotateZ(-4deg);transform-origin:left bottom}.scene-panel{transform:translateZ(150px) scale(.85);transform-origin:right top}.scene-tool{display:none}.hero-foot{flex-direction:column;align-items:flex-start;gap:13px}}
 @media(prefers-reduced-motion:reduce){.hero-copy,.scene-world{animation:none!important;transition:none!important}.hero-cinematic{scroll-behavior:auto}}
+
+/* V11: photoreal cinematic art direction, maintaining actual interactive CSS layers. */
+.hero-cinematic{background:radial-gradient(ellipse 53% 68% at 82% 45%,#2a326f8c,transparent 78%),#040814}
+.hero-sky::before{content:'';position:absolute;inset:0;opacity:.44;
+  background:linear-gradient(180deg,#040814 12%,#05091649 55%,#050916 100%),
+    url('/aurora-cinematic-coast.webp') center 64% / cover no-repeat;
+  mask-image:linear-gradient(to bottom,transparent 13%,#000 52%,#000 82%,transparent 99%);
+  filter:saturate(1.25)}
+.hero-sky i:first-child{background:#8158fe;opacity:.47;filter:blur(125px)}
+.hero-sky i:nth-child(2){background:#49c4ec;opacity:.25}
+.hero-copy h1{font-size:clamp(70px,6.65vw,119px);line-height:.86;letter-spacing:-.064em;max-width:13.1ch}
+.hero-copy h1 em{font-style:italic;font-weight:500;color:#c2a5ff;background:linear-gradient(110deg,#d7b5ff,#ba99ff 62%,#99ddef);background-clip:text;-webkit-text-fill-color:transparent}
+.hero-visual{filter:drop-shadow(0 32px 54px #02030b86)}
+.scene-world{transform:rotateX(calc(6deg + var(--scene-rx))) rotateY(calc(-10deg + var(--scene-ry)))}
+.scene-browser{border-color:#a6b0ffbd;box-shadow:0 39px 115px #02030ae9,0 0 0 7px #0a1128,0 0 72px #ac8aff68}
+.browser-inner{background:linear-gradient(90deg,#071022ef 4%,#0a1630c8 42%,#0b132b29 100%),
+  url('/aurora-cinematic-coast.webp') 63% 58% / cover no-repeat}
+.browser-inner::after{z-index:0;background:radial-gradient(ellipse at 79% 17%,#b797fb38,transparent 52%)}
+.browser-nav,.browser-grid,.browser-caption{z-index:2;position:relative}
+.browser-nav{background:linear-gradient(90deg,#08132b86,#0d142642)}
+.browser-copy{padding-top:clamp(22px,4vw,63px);padding-left:30px}
+.browser-copy strong{font-size:clamp(36px,3.35vw,57px);line-height:.91;text-shadow:0 8px 23px #000c}
+.browser-copy strong em{font-style:italic;color:#e0c7ff}
+.browser-copy p{color:#e9eaff;text-shadow:0 2px 15px #000b}
+.browser-landscape{position:absolute;inset:0;width:100%;height:100%;border-radius:0;
+  background:radial-gradient(ellipse at 79% 31%,#dfaaff3d,transparent 37%);mask-image:none;pointer-events:none}
+.landscape-ridge{display:none}.landscape-star{right:18%;top:18%;opacity:.5}
+.browser-caption{background:linear-gradient(90deg,#070c1add,#0a0b1cab);backdrop-filter:blur(6px)}
+.scene-backplate{border-color:#a19bf97e;background:linear-gradient(130deg,#b5b2ff26,#6cd8eb13)}
+.scene-glass--rear{border:2px solid #c1a6ffb0;box-shadow:0 0 55px #9e7dfa7c,inset 0 1px #e0d4ff4d}
+.scene-phone{background:#081327;box-shadow:0 29px 65px #000e,0 0 0 1px #c5cbffce,0 0 58px #9f83ed8b}
+.phone-screen{background:linear-gradient(180deg,#0b1436d8,#070c1b90),url('/aurora-cinematic-coast.webp') 65% center / cover}
+.phone-screen>small,.phone-screen strong,.phone-screen b{text-shadow:0 3px 15px #000e}
+.phone-screen i{background:url('/aurora-cinematic-coast.webp') 72% 45% / cover;border:1px solid #ffffff33;box-shadow:0 10px 18px #0008}
+.scene-tool,.scene-panel{backdrop-filter:blur(22px);border-color:#c1b2ffb6;box-shadow:0 25px 60px #010412ce,inset 0 1px #ffffff26}
+.scene-panel{background:linear-gradient(160deg,#202a50f2,#0b1234ec)}
+.hero-cta--primary{box-shadow:0 8px 34px #b09aff78,0 0 55px #7967e557}
+.hero-foot{border-top-color:#a49ddd62}
+[data-theme='light'] .hero-sky::before{opacity:.2}
+[data-theme='light'] .hero-cinematic{background:radial-gradient(ellipse at 80% 44%,#d9deff,#f6f7ff 78%)}
+[data-theme='light'] .hero-copy h1 em{background-image:linear-gradient(105deg,#7853bd,#6145ad,#387ca6)}
+@media(max-width:980px){.hero-copy h1{font-size:clamp(69px,10vw,104px)}.hero-sky::before{opacity:.23}}
+@media(max-width:650px){.hero-copy h1{font-size:clamp(52px,11.4vw,77px)}.hero-sky::before{opacity:.12}.scene-browser{box-shadow:0 20px 55px #010411aa,0 0 0 4px #111c38}.browser-copy{padding:17px 4px 12px 13px}.browser-copy strong{font-size:clamp(25px,6vw,37px)}.scene-world{transform:rotateX(3deg) rotateY(-6deg)!important}}
+@media(max-width:390px){.hero-copy h1{font-size:clamp(46px,12vw,62px)}}
