@@ -1,10 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, switchMap } from 'rxjs';
-import { AdminUser, Activity, Client, ClientProject, ConsultationConfirmation, ConsultationSlot, Dashboard, Envelope, Paged, Project, ProjectMilestone, ProjectMessage, ProjectDocument, ProjectCollaboration, Quote, QuotePayload, QuoteBoard, Service, SiteSettings, StudioTask, StudioClientNote, WorkspaceProject, CommunicationCenter, MaintenanceData, MaintenanceAgreement, MaintenanceEditor } from './models';
+import { AdminUser, Activity, Client, ClientProject, ConsultationConfirmation, ConsultationSlot, Dashboard, Envelope, Paged, Project, ProjectMilestone, ProjectMessage, ProjectDocument, ProjectCollaboration, Quote, QuotePayload, QuoteBoard, Service, SiteSettings, StudioTask, StudioClientNote, WorkspaceProject, CommunicationCenter, MaintenanceData, MaintenanceAgreement, MaintenanceEditor, Testimonial, TestimonialInput, GrowthData } from './models';
+import { AttributionService } from './attribution.service';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
     private http = inject(HttpClient);
+    private attribution = inject(AttributionService);
     private opts = { withCredentials: true };
     private params(data: Record<string, string | number | undefined>): HttpParams {
         let p = new HttpParams();
@@ -19,10 +21,18 @@ export class ApiService {
     publicServices() { return this.http.get<Envelope<Service[]>>('/api/services', this.opts); }
     publicProjects() { return this.http.get<Envelope<Project[]>>('/api/projects', this.opts); }
     sendQuote(data: QuotePayload) {
+        const payload: QuotePayload = { ...this.attribution.get(), ...data };
         return this.csrf().pipe(switchMap(() => this.http.post<{
             message: string;
             reference: number;
-        }>('/api/quote-requests', data, this.opts)));
+        }>('/api/quote-requests', payload, this.opts)));
+    }
+    publicTestimonials() { return this.http.get<Envelope<Testimonial[]>>('/api/testimonials', this.opts); }
+    /** Anonim eseményszámlálás: IP-t, sütit nem tárol; hiba esetén csendben elbukik. */
+    trackEvent(event: 'page_view' | 'cta_click' | 'quote_start' | 'quiz_start' | 'consultation_start', path: string): void {
+        if (!this.attribution.tracking) return;
+        const source = this.attribution.get().source;
+        this.http.post('/api/events', { event, path: path.split(/[?#]/)[0].slice(0, 160), ...(source ? { source } : {}) }, this.opts).subscribe({ error: () => { /* nem kritikus */ } });
     }
     availableConsultations() { return this.http.get<Envelope<ConsultationSlot[]>>('/api/consultations/available', this.opts); }
     bookConsultation(data: {consultation_slot_id: number; customer_name: string; email: string; phone: string; notes: string; privacy_notice_acknowledged: boolean; website: string}) {
@@ -93,7 +103,7 @@ export class ApiService {
     deleteStudioClientNote(id:number) { return this.http.delete(`/api/admin/workspace/client-notes/${id}`, this.opts); }
     quotes(q = '', status = '', page = 1) { return this.http.get<Paged<Quote>>('/api/admin/quote-requests', { ...this.opts, params: this.params({ q, status, page, per_page: 15 }) }); }
     quote(id: number) { return this.http.get<Envelope<Quote>>('/api/admin/quote-requests/' + id, this.opts); }
-    saveQuote(id: number, data: Partial<Pick<Quote, 'status' | 'admin_notes' | 'quoted_price_huf' | 'proposal_summary' | 'proposal_schedule' | 'proposal_terms' | 'proposal_valid_until'>>) { return this.http.patch<Envelope<Quote>>('/api/admin/quote-requests/' + id, data, this.opts); }
+    saveQuote(id: number, data: Partial<Pick<Quote, 'status' | 'admin_notes' | 'quoted_price_huf' | 'proposal_summary' | 'proposal_schedule' | 'proposal_terms' | 'proposal_valid_until' | 'follow_up_at'>>) { return this.http.patch<Envelope<Quote>>('/api/admin/quote-requests/' + id, data, this.opts); }
     milestones(id: number) { return this.http.get<Envelope<ProjectMilestone[]>>(`/api/admin/quote-requests/${id}/milestones`, this.opts); }
     addMilestone(id: number, data: {title: string; description?: string; due_date?: string | null; status?: string}) { return this.http.post<Envelope<ProjectMilestone>>(`/api/admin/quote-requests/${id}/milestones`, data, this.opts); }
     updateMilestone(id: number, milestoneId: number, data: {status: ProjectMilestone['status']}) { return this.http.patch<Envelope<ProjectMilestone>>(`/api/admin/quote-requests/${id}/milestones/${milestoneId}`, data, this.opts); }
@@ -116,4 +126,12 @@ export class ApiService {
     adminSettings() { return this.http.get<Envelope<SiteSettings>>('/api/admin/site-settings', this.opts); }
     saveSettings(data: SiteSettings) { return this.http.patch<Envelope<SiteSettings>>('/api/admin/site-settings', data, this.opts); }
     changePassword(current_password: string, password: string, password_confirmation: string) { return this.http.put('/api/admin/password', { current_password, password, password_confirmation }, this.opts); }
+    growth() { return this.http.get<Envelope<GrowthData>>('/api/admin/growth', this.opts); }
+    adminTestimonials() { return this.http.get<Envelope<Testimonial[]>>('/api/admin/testimonials', this.opts); }
+    createTestimonial(data: TestimonialInput) { return this.http.post<Envelope<Testimonial>>('/api/admin/testimonials', data, this.opts); }
+    updateTestimonial(id: number, data: Partial<TestimonialInput>) { return this.http.put<Envelope<Testimonial>>('/api/admin/testimonials/' + id, data, this.opts); }
+    deleteTestimonial(id: number) { return this.http.delete<{message?: string}>('/api/admin/testimonials/' + id, this.opts); }
+    adminQuote(id: number) { return this.http.get<Envelope<Quote>>('/api/admin/quote-requests/' + id, this.opts); }
+    markContacted(id: number) { return this.http.post<Envelope<Quote>>('/api/admin/quote-requests/' + id + '/contacted', {}, this.opts); }
+    exportQuotes(status?: string) { return this.http.get('/api/admin/exports/quote-requests', { ...this.opts, params: this.params({ status }), responseType: 'blob' }); }
 }

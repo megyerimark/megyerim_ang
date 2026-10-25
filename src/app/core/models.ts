@@ -46,7 +46,12 @@ export interface Project {
     is_demo: boolean;
     is_published: boolean;
     is_featured: boolean;
+    results?: ProjectResult[] | null;
     sort_order: number;
+}
+export interface ProjectResult {
+    value: string;
+    label: string;
 }
 export type QuoteStatus = 'new' | 'reviewing' | 'quoted' | 'accepted' | 'rejected' | 'completed';
 export interface Quote {
@@ -77,6 +82,14 @@ export interface Quote {
     status: QuoteStatus;
     admin_notes: string | null;
     quoted_price_huf: number | null;
+    source?: string | null;
+    utm_source?: string | null;
+    utm_medium?: string | null;
+    utm_campaign?: string | null;
+    referrer_host?: string | null;
+    landing_path?: string | null;
+    first_response_at?: string | null;
+    follow_up_at?: string | null;
     created_at: string;
     updated_at: string;
 }
@@ -100,6 +113,12 @@ export interface QuotePayload {
     consultation_preference: string;
     privacy_notice_acknowledged: boolean;
     website: string;
+    source?: string;
+    utm_source?: string;
+    utm_medium?: string;
+    utm_campaign?: string;
+    referrer_host?: string;
+    landing_path?: string;
 }
 export interface AdminUser {
     id: number;
@@ -274,3 +293,32 @@ export interface ConsultationConfirmation {
 export interface ProjectMessage { id: number; author: 'client' | 'admin'; body: string; created_at: string; }
 export interface ProjectDocument { id: number; title: string; filename: string; mime_type: string; size_bytes: number; created_at: string; }
 export interface ProjectCollaboration { messages: ProjectMessage[]; documents: ProjectDocument[]; }
+
+export interface Testimonial {
+    id: number;
+    author_name: string;
+    author_role: string | null;
+    company: string | null;
+    quote: string;
+    rating: number;
+    portfolio_project_id: number | null;
+    is_published: boolean;
+    sort_order: number;
+    project?: { title: string; slug: string } | null;
+}
+export type TestimonialInput = Pick<Testimonial, 'author_name' | 'author_role' | 'company' | 'quote' | 'rating' | 'portfolio_project_id' | 'is_published' | 'sort_order'>;
+export interface GrowthLead { id: number; customer_name: string; company_name: string | null; }
+export interface GrowthData {
+    funnel: { visits: number; page_views: number; cta_clicks: number; quote_starts: number; submissions: number; visit_to_lead_percent: number | null };
+    channels: { channel: string; leads: number; won: number; won_value_huf: number }[];
+    budgets: { label: string; count: number }[];
+    daily_leads: { date: string; count: number }[];
+    response: { average_hours: number | null; responded_count: number; waiting_over_24h: (GrowthLead & { created_at: string; hours_waiting: number })[] };
+    attention: {
+        follow_ups_due: (GrowthLead & { status: QuoteStatus; follow_up_at: string })[];
+        stale_proposals: (GrowthLead & { quoted_price_huf: number | null; quoted_at: string; proposal_valid_until: string | null })[];
+        expiring_proposals: (GrowthLead & { quoted_price_huf: number | null; proposal_valid_until: string })[];
+    };
+    revenue: { pipeline_value_huf: number; average_deal_huf: number | null; win_rate_percent: number | null };
+    trust: { testimonials_published: number; projects_published: number };
+}

@@ -5,3 +5,11 @@
 @if (showTop() && showNavbar()) {
 <button type="button" class="to-top" (click)="scrollTop()" aria-label="Vissza az oldal tetejére">↑</button>
 }
+@if (showMobileCta() && showNavbar()) {
+<div class="mobile-cta" role="region" aria-label="Gyors kapcsolatfelvétel">
+  <a class="mobile-cta__main" routerLink="/ajanlatkeres">Ajánlatot kérek <span aria-hidden="true">→</span></a>
+  @if (phone()) {
+  <a class="mobile-cta__call" [href]="'tel:' + phone()" aria-label="Hívás">Hívás</a>
+  }
+</div>
+}

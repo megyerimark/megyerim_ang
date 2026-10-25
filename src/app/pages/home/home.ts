@@ -5,7 +5,7 @@ import { Hero } from '../../components/hero/hero';
 import { CinematicStory } from '../../components/cinematic-story/cinematic-story';
 import { PremiumReveal } from '../../directives/premium-reveal';
 import { ApiService } from '../../core/api.service';
-import { Project, Service, SiteSettings, SITE_DEFAULTS } from '../../core/models';
+import { Project, Service, SiteSettings, Testimonial, SITE_DEFAULTS } from '../../core/models';
 type PreviewPurpose = 'business' | 'booking' | 'system';
 type PreviewStyle = 'graphite' | 'ivory' | 'ocean';
 
@@ -35,6 +35,7 @@ export class Home implements OnInit {
     settings = signal<SiteSettings>(SITE_DEFAULTS);
     services = signal<Service[]>([]);
     projects = signal<Project[]>([]);
+    testimonials = signal<Testimonial[]>([]);
     servicesUnavailable = signal(false);
     projectsUnavailable = signal(false);
     settingsUnavailable = signal(false);
@@ -151,6 +152,14 @@ export class Home implements OnInit {
         {
             question: 'Csak egyszerű bemutatkozó oldalt készítesz?',
             answer: 'Nem. Egyedi funkciók, adminfelületek és adatbázishoz kapcsolódó webes rendszerek tervezésére is kérhetsz ajánlatot.'
+        },
+        {
+            question: 'Mi történik, miután elküldtem az ajánlatkérést?',
+            answer: 'Átnézem, amit leírtál, és e-mailben vagy a megadott módon felveszem veled a kapcsolatot. Ha kell, rövid egyeztetéssel pontosítjuk az igényeket, majd írásos ajánlatot kapsz – ez nem kötelez semmire.'
+        },
+        {
+            question: 'Nem tudom pontosan, mire van szükségem. Kérhetek így ajánlatot?',
+            answer: 'Igen. A kvíz és az ajánlatkérő is segít rendszerezni az elképzeléseidet, a hiányzó részleteket pedig közösen tisztázzuk.'
         }
     ];
     ngOnInit(): void {
@@ -164,6 +173,8 @@ export class Home implements OnInit {
             next: response => this.services.set(response.data),
             error: () => this.servicesUnavailable.set(true)
         });
+        // Vélemények: hiba vagy üres lista esetén a szakasz egyszerűen nem jelenik meg.
+        this.api.publicTestimonials().subscribe({ next: response => this.testimonials.set(response.data), error: () => this.testimonials.set([]) });
         this.api.publicProjects().subscribe({
             next: response => this.projects.set(response.data),
             error: () => this.projectsUnavailable.set(true)
@@ -175,6 +186,7 @@ export class Home implements OnInit {
         }
         return new Intl.NumberFormat('hu-HU').format(amount) + ' Ft-tól';
     }
+    stars(n: number): string { return '★'.repeat(Math.max(0, Math.min(5, n))) + '☆'.repeat(5 - Math.max(0, Math.min(5, n))); }
     toggleFaq(index: number): void {
         this.openFaq.update(current => current === index ? null : index);
     }

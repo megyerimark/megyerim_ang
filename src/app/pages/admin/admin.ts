@@ -4,8 +4,8 @@ import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiService } from '../../core/api.service';
 import { AuthService } from '../../core/auth.service';
-import { Activity, Client, ConsultationSlot, Dashboard, Project, ProjectMilestone, ProjectCollaboration, ProjectDocument, Quote, QuoteStatus, Service, SiteSettings, SITE_DEFAULTS, STATUS_OPTIONS, MaintenanceAgreement, MaintenanceEditor, MaintenanceData, QuoteBoard, StudioTask } from '../../core/models';
-type Tab = 'dashboard' | 'workspace' | 'maintenance' | 'consultations' | 'quotes' | 'clients' | 'projects' | 'services' | 'settings' | 'activity' | 'account';
+import { Activity, Client, ConsultationSlot, Dashboard, Project, ProjectMilestone, ProjectCollaboration, ProjectDocument, Quote, QuoteStatus, Service, SiteSettings, SITE_DEFAULTS, STATUS_OPTIONS, MaintenanceAgreement, MaintenanceEditor, MaintenanceData, QuoteBoard, StudioTask, GrowthData, Testimonial } from '../../core/models';
+type Tab = 'dashboard' | 'growth' | 'testimonials' | 'workspace' | 'maintenance' | 'consultations' | 'quotes' | 'clients' | 'projects' | 'services' | 'settings' | 'activity' | 'account';
 interface ServiceEditor {
     id: number | null;
     title: string;
@@ -29,8 +29,20 @@ interface ProjectEditor {
     is_featured: boolean;
     sort_order: number;
     cover_image_url: string | null;
+    resultsText: string;
 }
-@Component({ selector: 'app-admin', standalone: true, imports: [FormsModule, RouterLink], templateUrl: './admin.html', styleUrls: ['./admin.scss', './admin-v11.scss'] })
+interface TestimonialEditor {
+    id: number | null;
+    author_name: string;
+    author_role: string;
+    company: string;
+    quote: string;
+    rating: number;
+    portfolio_project_id: number | null;
+    is_published: boolean;
+    sort_order: number;
+}
+@Component({ selector: 'app-admin', standalone: true, imports: [FormsModule, RouterLink], templateUrl: './admin.html', styleUrls: ['./admin.scss', './admin-v11.scss', './admin-v15.scss'] })
 export class AdminPage implements OnInit {
     private api = inject(ApiService);
     private auth = inject(AuthService);
@@ -65,6 +77,10 @@ export class AdminPage implements OnInit {
     selectedSchedule = '';
     selectedTerms = '';
     selectedValidUntil = '';
+    selectedFollowUp = '';
+    growth = signal<GrowthData | null>(null);
+    testimonials = signal<Testimonial[]>([]);
+    testimonialEditor = signal<TestimonialEditor | null>(null);
     milestones = signal<ProjectMilestone[]>([]);
     collaboration = signal<ProjectCollaboration>({ messages: [], documents: [] });
     adminMessage = '';
@@ -98,7 +114,7 @@ export class AdminPage implements OnInit {
         value: Tab;
         title: string;
         icon: string;
-    }[] = [{ value: 'dashboard', title: 'Áttekintés', icon: '◫' }, {value:'workspace',title:'MM Munkatér',icon:'▦'}, { value: 'quotes', title: 'Ajánlatkérések', icon: '▤' }, {value:'maintenance',title:'Karbantartás',icon:'✧'}, { value: 'consultations', title: 'Konzultációk', icon: '◷' }, { value: 'clients', title: 'Ügyfelek', icon: '♙' }, { value: 'projects', title: 'Referenciák', icon: '▧' }, { value: 'services', title: 'Szolgáltatások', icon: '◇' }, { value: 'settings', title: 'Weboldal beállításai', icon: '⚙' }, { value: 'activity', title: 'Tevékenységnapló', icon: '◷' }, { value: 'account', title: 'Fiók és jelszó', icon: '⌘' }];
+    }[] = [{ value: 'dashboard', title: 'Áttekintés', icon: '◫' }, { value: 'growth', title: 'Növekedés', icon: '↗' }, {value:'workspace',title:'MM Munkatér',icon:'▦'}, { value: 'quotes', title: 'Ajánlatkérések', icon: '▤' }, {value:'maintenance',title:'Karbantartás',icon:'✧'}, { value: 'consultations', title: 'Konzultációk', icon: '◷' }, { value: 'clients', title: 'Ügyfelek', icon: '♙' }, { value: 'projects', title: 'Referenciák', icon: '▧' }, { value: 'testimonials', title: 'Vélemények', icon: '❝' }, { value: 'services', title: 'Szolgáltatások', icon: '◇' }, { value: 'settings', title: 'Weboldal beállításai', icon: '⚙' }, { value: 'activity', title: 'Tevékenységnapló', icon: '◷' }, { value: 'account', title: 'Fiók és jelszó', icon: '⌘' }];
     readonly boardStatuses = STATUS_OPTIONS;
     readonly pipelinePalette: Record<QuoteStatus,string> = {
         new:'#9681fd', reviewing:'#579bea', quoted:'#36c8c2',
@@ -175,6 +191,9 @@ export class AdminPage implements OnInit {
         this.projectEditor.set(null);
         if (tab === 'dashboard')
             this.loadDashboard();
+        this.testimonialEditor.set(null);
+        if (tab === 'growth') this.loadGrowth();
+        if (tab === 'testimonials') { this.loadTestimonials(); if (!this.projects().length) this.loadProjects(); }
         if (tab === 'workspace') this.loadWorkspace();
         if (tab === 'maintenance') this.loadMaintenance();
         if (tab === 'quotes')
@@ -271,7 +290,7 @@ export class AdminPage implements OnInit {
         });
     }
     loadQuotes(page = 1) { this.busy.set(true); this.api.quotes(this.searchQuote, this.filterStatus, page).subscribe({ next: r => { this.quotes.set(r.data); this.quotePage.set(r.current_page); this.quotePages.set(r.last_page); this.quoteTotal.set(r.total); this.busy.set(false); }, error: e => this.fail(e) }); }
-    showQuote(q: Quote) { this.selectedQuote.set(q); this.selectedStatus = q.status; this.selectedNotes = q.admin_notes || ''; this.selectedPrice = q.quoted_price_huf === null ? '' : String(q.quoted_price_huf); this.selectedProposal = q.proposal_summary || ''; this.selectedSchedule = q.proposal_schedule || ''; this.selectedTerms = q.proposal_terms || ''; this.selectedValidUntil = q.proposal_valid_until ? q.proposal_valid_until.slice(0, 10) : ''; this.loadMilestones(q.id); this.loadCollaboration(q.id); }
+    showQuote(q: Quote) { this.selectedQuote.set(q); this.selectedStatus = q.status; this.selectedNotes = q.admin_notes || ''; this.selectedPrice = q.quoted_price_huf === null ? '' : String(q.quoted_price_huf); this.selectedProposal = q.proposal_summary || ''; this.selectedSchedule = q.proposal_schedule || ''; this.selectedTerms = q.proposal_terms || ''; this.selectedValidUntil = q.proposal_valid_until ? q.proposal_valid_until.slice(0, 10) : ''; this.selectedFollowUp = q.follow_up_at ? q.follow_up_at.slice(0, 10) : ''; this.loadMilestones(q.id); this.loadCollaboration(q.id); }
     saveQuote() {
         const q = this.selectedQuote();
         if (!q)
@@ -285,7 +304,7 @@ export class AdminPage implements OnInit {
             }
         }
         this.busy.set(true);
-        this.api.saveQuote(q.id, { status: this.selectedStatus, admin_notes: this.selectedNotes, ...(q.quoted_at ? {} : { quoted_price_huf: amount, proposal_summary: this.selectedProposal, proposal_schedule: this.selectedSchedule || null, proposal_terms: this.selectedTerms || null, proposal_valid_until: this.selectedValidUntil || null }) }).subscribe({ next: r => { this.showQuote(r.data); this.notify('Ajánlatkérés módosítva.'); this.loadQuotes(this.quotePage()); }, error: e => this.fail(e) });
+        this.api.saveQuote(q.id, { status: this.selectedStatus, admin_notes: this.selectedNotes, follow_up_at: this.selectedFollowUp || null, ...(q.quoted_at ? {} : { quoted_price_huf: amount, proposal_summary: this.selectedProposal, proposal_schedule: this.selectedSchedule || null, proposal_terms: this.selectedTerms || null, proposal_valid_until: this.selectedValidUntil || null }) }).subscribe({ next: r => { this.showQuote(r.data); this.notify('Ajánlatkérés módosítva.'); this.loadQuotes(this.quotePage()); }, error: e => this.fail(e) });
     }
     loadCollaboration(id: number) {
         this.api.adminCollaboration(id).subscribe({ next: r => { if(this.selectedQuote()?.id === id) this.collaboration.set(r.data); }, error: e => this.fail(e) });
@@ -394,7 +413,7 @@ export class AdminPage implements OnInit {
         this.api.deleteService(id).subscribe({ next: () => { this.notify('Szolgáltatás törölve.'); this.loadServices(); }, error: e => this.fail(e) });
     }
     loadProjects() { this.busy.set(true); this.api.adminProjects().subscribe({ next: r => { this.projects.set(r.data); this.busy.set(false); }, error: e => this.fail(e) }); }
-    editProject(p?: Project) { this.projectImage = null; this.removeProjectCover = false; this.projectEditor.set(p ? { id: p.id, title: p.title, summary: p.summary, description: p.description || '', category: p.category || '', technologiesText: (p.technologies || []).join(', '), project_url: p.project_url || '', is_demo: p.is_demo, is_published: p.is_published, is_featured: p.is_featured, sort_order: p.sort_order, cover_image_url: p.cover_image_url } : { id: null, title: '', summary: '', description: '', category: '', technologiesText: '', project_url: '', is_demo: true, is_published: false, is_featured: false, sort_order: 0, cover_image_url: null }); }
+    editProject(p?: Project) { this.projectImage = null; this.removeProjectCover = false; this.projectEditor.set(p ? { id: p.id, title: p.title, summary: p.summary, description: p.description || '', category: p.category || '', technologiesText: (p.technologies || []).join(', '), project_url: p.project_url || '', is_demo: p.is_demo, is_published: p.is_published, is_featured: p.is_featured, sort_order: p.sort_order, cover_image_url: p.cover_image_url, resultsText: (p.results || []).map(r => `${r.value} | ${r.label}`).join('\n') } : { id: null, title: '', summary: '', description: '', category: '', technologiesText: '', project_url: '', is_demo: true, is_published: false, is_featured: false, sort_order: 0, cover_image_url: null, resultsText: '' }); }
     pickImage(event: Event) {
         const input = event.target as HTMLInputElement;
         const f = input.files?.[0];
@@ -409,6 +428,10 @@ export class AdminPage implements OnInit {
         }
         this.projectImage = f;
     }
+    /** Soronként „érték | felirat” (pl. „+48% | több ajánlatkérés”), legfeljebb 4 sor. */
+    private parseResults(text: string): { value: string; label: string }[] {
+        return text.split('\n').map(line => line.split('|').map(x => x.trim())).filter(x => x[0] && x[1]).slice(0, 4).map(x => ({ value: x[0].slice(0, 30), label: x[1].slice(0, 80) }));
+    }
     saveProject() {
         const p = this.projectEditor();
         if (!p)
@@ -422,12 +445,15 @@ export class AdminPage implements OnInit {
             fd.append(k, v);
         for (const [i, t] of p.technologiesText.split(/[,\n]+/).map(x => x.trim()).filter(Boolean).entries())
             fd.append(`technologies[${i}]`, t);
+        const results = this.parseResults(p.resultsText);
+        if (!results.length) fd.append('results', '');
+        results.forEach((r, i) => { fd.append(`results[${i}][value]`, r.value); fd.append(`results[${i}][label]`, r.label); });
         if (this.projectImage)
             fd.append('cover_image', this.projectImage, this.projectImage.name);
         if (this.removeProjectCover)
             fd.append('remove_cover_image', '1');
         const tech = p.technologiesText.split(/[,\n]+/).map(x => x.trim()).filter(Boolean);
-        const data = { title: p.title, summary: p.summary, category: p.category || null, description: p.description || null, project_url: p.project_url || null, sort_order: p.sort_order, is_demo: p.is_demo, is_published: p.is_published, is_featured: p.is_featured, technologies: tech };
+        const data = { title: p.title, summary: p.summary, category: p.category || null, description: p.description || null, project_url: p.project_url || null, sort_order: p.sort_order, is_demo: p.is_demo, is_published: p.is_published, is_featured: p.is_featured, technologies: tech, results };
         this.busy.set(true);
         (this.projectImage || this.removeProjectCover ? this.api.saveProject(p.id, fd) : this.api.saveProjectJson(p.id, data)).subscribe({ next: () => { this.notify('Referencia mentve.'); this.projectEditor.set(null); this.loadProjects(); }, error: e => this.fail(e) });
     }
@@ -449,6 +475,52 @@ export class AdminPage implements OnInit {
         this.api.changePassword(this.oldPassword, this.newPassword, this.confirmPassword).subscribe({ next: () => { this.busy.set(false); this.oldPassword = ''; this.newPassword = ''; this.confirmPassword = ''; this.notify('Jelszó módosítva.'); }, error: e => this.fail(e) });
     }
     logout() { this.api.logout().subscribe({ next: () => { this.auth.user.set(null); this.router.navigateByUrl('/admin/bejelentkezes'); }, error: e => this.fail(e) }); }
+    loadGrowth() { this.busy.set(true); this.api.growth().subscribe({ next: r => { this.growth.set(r.data); this.busy.set(false); }, error: e => this.fail(e) }); }
+    readonly maxDaily = computed(() => Math.max(1, ...(this.growth()?.daily_leads ?? []).map(x => x.count)));
+    readonly maxChannel = computed(() => Math.max(1, ...(this.growth()?.channels ?? []).map(x => x.leads)));
+    readonly growthLeads30 = computed(() => (this.growth()?.daily_leads ?? []).reduce((sum, x) => sum + x.count, 0));
+    pct(value: number, max: number): number { return value ? Math.max(4, Math.round(value / max * 100)) : 2; }
+    hours(h: number | null | undefined): string { return h === null || h === undefined ? 'még nincs adat' : h < 1 ? 'egy órán belül' : h < 48 ? Math.round(h) + ' óra' : Math.round(h / 24) + ' nap'; }
+    openLead(id: number) {
+        this.use('quotes');
+        this.api.adminQuote(id).subscribe({ next: r => this.showQuote(r.data), error: e => this.fail(e) });
+    }
+    markContacted() {
+        const q = this.selectedQuote(); if (!q) return;
+        this.busy.set(true);
+        this.api.markContacted(q.id).subscribe({ next: r => { this.busy.set(false); this.selectedQuote.set({ ...q, first_response_at: r.data.first_response_at }); this.notify('Rögzítve: felvetted a kapcsolatot az érdeklődővel.'); }, error: e => this.fail(e) });
+    }
+    /** Előre kitöltött e-mail az érdeklődőnek – a küldés a saját levelezőből történik. */
+    replyMailto(q: Quote): string {
+        const subject = 'Weboldal ajánlatkérés – Megyeri Márk';
+        const body = `Szia ${q.customer_name.split(' ').pop()}!\n\nKöszönöm az érdeklődést. Átnéztem, amit a weboldalad kapcsán megírtál, és szívesen egyeztetnék egy rövid beszélgetés keretében a részletekről.\n\nMikor lenne alkalmas számodra egy 15–20 perces hívás?\n\nÜdvözlettel,\nMegyeri Márk Máté`;
+        return `mailto:${q.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }
+    exportCsv() {
+        this.busy.set(true);
+        this.api.exportQuotes(this.filterStatus || undefined).subscribe({ next: blob => { this.busy.set(false); this.saveDownloaded(blob, 'ajanlatkeresek-' + new Date().toISOString().slice(0, 10) + '.csv'); this.notify('CSV exportálva (Excelben megnyitható).'); }, error: e => this.fail(e) });
+    }
+    loadTestimonials() { this.busy.set(true); this.api.adminTestimonials().subscribe({ next: r => { this.testimonials.set(r.data); this.busy.set(false); }, error: e => this.fail(e) }); }
+    editTestimonial(t?: Testimonial) {
+        this.testimonialEditor.set(t
+            ? { id: t.id, author_name: t.author_name, author_role: t.author_role || '', company: t.company || '', quote: t.quote, rating: t.rating, portfolio_project_id: t.portfolio_project_id, is_published: t.is_published, sort_order: t.sort_order }
+            : { id: null, author_name: '', author_role: '', company: '', quote: '', rating: 5, portfolio_project_id: null, is_published: false, sort_order: 0 });
+    }
+    saveTestimonial() {
+        const t = this.testimonialEditor(); if (!t) return;
+        if (!t.author_name.trim() || t.quote.trim().length < 20) { this.notify('A név és legalább 20 karakteres vélemény kötelező.', true); return; }
+        const data = { author_name: t.author_name.trim(), author_role: t.author_role.trim() || null, company: t.company.trim() || null, quote: t.quote.trim(), rating: Number(t.rating), portfolio_project_id: t.portfolio_project_id ? Number(t.portfolio_project_id) : null, is_published: t.is_published, sort_order: Number(t.sort_order) || 0 };
+        this.busy.set(true);
+        (t.id ? this.api.updateTestimonial(t.id, data) : this.api.createTestimonial(data)).subscribe({ next: () => { this.notify('Vélemény mentve.'); this.testimonialEditor.set(null); this.loadTestimonials(); }, error: e => this.fail(e) });
+    }
+    togglePublished(t: Testimonial) {
+        this.api.updateTestimonial(t.id, { is_published: !t.is_published }).subscribe({ next: () => this.loadTestimonials(), error: e => this.fail(e) });
+    }
+    deleteTestimonial(t: Testimonial) {
+        if (!confirm('Biztosan törlöd ezt a véleményt?')) return;
+        this.busy.set(true);
+        this.api.deleteTestimonial(t.id).subscribe({ next: () => { this.notify('Vélemény törölve.'); this.loadTestimonials(); }, error: e => this.fail(e) });
+    }
     money(n: number | null | undefined) { return n === null || n === undefined ? '—' : new Intl.NumberFormat('hu-HU').format(n) + ' Ft'; }
     date(s: string | null | undefined) { return s ? new Date(s).toLocaleDateString('hu-HU') : '—'; }
     statusLabel(s: QuoteStatus) { return this.statuses.find(x => x.value === s)?.label || s; }

@@ -426,6 +426,13 @@
                 <span class="portfolio-type">{{ project.category || 'WEBFEJLESZTÉS' }}</span>
                 <h3>{{ project.title }}</h3>
                 <p>{{ project.summary }}</p>
+                @if (project.results?.length) {
+                  <ul class="portfolio-results" aria-label="Mérhető eredmények">
+                    @for (r of (project.results ?? []); track $index) {
+                      <li><strong>{{ r.value }}</strong><span>{{ r.label }}</span></li>
+                    }
+                  </ul>
+                }
                 <div class="portfolio-tags">
                   @for (technology of (project.technologies || []); track $index) {
                     <span>{{ technology }}</span>
@@ -583,6 +590,27 @@
     </div>
   </div>
 </section>
+@if (testimonials().length) {
+<section premiumReveal class="section testimonials" id="velemenyek" aria-labelledby="testimonials-title">
+  <div class="container">
+    <span class="overline">ÜGYFÉLVÉLEMÉNYEK</span>
+    <h2 class="section-title" id="testimonials-title">Amit az ügyfelek <span class="subtle-heading">mondanak.</span></h2>
+    <div class="testimonial-grid">
+      @for (t of testimonials(); track t.id) {
+      <figure class="testimonial-card">
+        <div class="testimonial-stars" [attr.aria-label]="t.rating + ' az 5-ből'">{{ stars(t.rating) }}</div>
+        <blockquote>„{{ t.quote }}”</blockquote>
+        <figcaption>
+          <strong>{{ t.author_name }}</strong>
+@if (t.author_role || t.company) {<span>{{ t.author_role && t.company ? t.author_role + ', ' + t.company : (t.author_role || t.company) }}</span>}
+          @if (t.project) {<a [routerLink]="['/munkak', t.project.slug]">{{ t.project.title }} ↗</a>}
+        </figcaption>
+      </figure>
+      }
+    </div>
+  </div>
+</section>
+}
 <section premiumReveal class="section faq" id="kerdesek">
   <div class="container faq-layout">
     <div>

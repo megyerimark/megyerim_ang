@@ -1595,3 +1595,15 @@
 @media(max-width:650px){.audience{padding-block:62px}.audience-intro .section-title{font-size:clamp(31px,8vw,43px)}.audience-grid{grid-template-columns:1fr;gap:12px}.audience-card,.audience-card:last-child{grid-column:auto;min-height:270px;padding:23px}.audience-card h3{font-size:25px;margin-top:24px}.audience-card p{font-size:13px}.audience-note{text-align:left}}
 @media(prefers-reduced-motion:reduce){.audience-card,.audience-card::before,.audience-card a span{transition:none!important;transform:none!important}}
 
+
+.portfolio-results{list-style:none;display:flex;flex-wrap:wrap;gap:.6rem;margin:.9rem 0 0;padding:0}
+.portfolio-results li{display:grid;padding:.55rem .8rem;border-radius:12px;background:rgba(143,120,255,.1);border:1px solid rgba(143,120,255,.25)}
+.portfolio-results strong{font-size:1.15rem;line-height:1.1}
+.portfolio-results span{font-size:.78rem;opacity:.75}
+.testimonials .testimonial-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:1.2rem;margin-top:2rem}
+.testimonial-card{margin:0;padding:1.6rem;border-radius:22px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);display:grid;gap:1rem;align-content:start}
+.testimonial-stars{color:#f5c76b;letter-spacing:.15em}
+.testimonial-card blockquote{margin:0;font-size:1.05rem;line-height:1.6}
+.testimonial-card figcaption{display:grid;gap:.15rem;font-size:.9rem}
+.testimonial-card figcaption span{opacity:.7}
+.testimonial-card figcaption a{color:inherit;opacity:.85}

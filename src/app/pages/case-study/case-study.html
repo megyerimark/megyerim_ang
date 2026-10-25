@@ -4,6 +4,7 @@
   @if(error()){<div role="alert" class="case-panel">{{error()}} <a routerLink="/">Főoldal ↗</a></div>}
   @if(project();as p){
     <header class="case-header"><span class="case-eyebrow">MEGVALÓSULT MUNKA / {{p.category||'WEBFEJLESZTÉS'}}</span><h1>{{p.title}}</h1><p>{{p.summary}}</p><div class="case-tags">@for(t of (p.technologies||[]);track t){<span>{{t}}</span>}</div></header>
+    @if(p.results?.length){<section class="case-details"><span class="case-eyebrow">EREDMÉNYEK</span><div class="case-results">@for(r of (p.results ?? []);track $index){<div><strong>{{r.value}}</strong><span>{{r.label}}</span></div>}</div></section>}
     @if(p.cover_image_url){
       <section class="case-preview"><div class="case-preview-top"><span>PROJEKT ELŐNÉZETE</span><div class="case-toggle"><button type="button" [class.active]="device()==='desktop'" (click)="device.set('desktop')" [attr.aria-pressed]="device()==='desktop'">▣ Asztali</button><button type="button" [class.active]="device()==='mobile'" (click)="device.set('mobile')" [attr.aria-pressed]="device()==='mobile'">▯ Mobil</button></div></div><div class="case-device-area"><div class="case-browser" [class.mobile]="device()==='mobile'"><div class="case-browser-top">● ● ● <span>{{p.title}}</span></div><img [src]="p.cover_image_url" [alt]="p.title + ' referencia: feltöltött projektkép'" loading="eager"></div></div><p>Feltöltött referencia-kép. A mobilnézet az illusztráció keretméretét változtatja, nem helyettesíti a tényleges mobilos képernyőképet.</p></section>
     }

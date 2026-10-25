@@ -81,10 +81,10 @@
             MEGYERI MÁRK MÁTÉ / DASHBOARD
           </span>
           <h1>
-            {{tab()==='dashboard'?'Üdv újra!':tab()==='workspace'?'MM Munkatér':tab()==='maintenance'?'Aurora Care':tab()==='quotes'?'Ajánlatkérések':tab()==='consultations'?'Konzultációk':tab()==='clients'?'Ügyfelek':tab()==='projects'?'Referenciák':tab()==='services'?'Szolgáltatások':tab()==='settings'?'Weboldal beállításai':tab()==='activity'?'Tevékenységnapló':'Fiók és biztonság'}}
+            {{tab()==='dashboard'?'Üdv újra!':tab()==='growth'?'Növekedés':tab()==='testimonials'?'Vélemények':tab()==='workspace'?'MM Munkatér':tab()==='maintenance'?'Aurora Care':tab()==='quotes'?'Ajánlatkérések':tab()==='consultations'?'Konzultációk':tab()==='clients'?'Ügyfelek':tab()==='projects'?'Referenciák':tab()==='services'?'Szolgáltatások':tab()==='settings'?'Weboldal beállításai':tab()==='activity'?'Tevékenységnapló':'Fiók és biztonság'}}
           </h1>
           <p>
-            {{tab()==='dashboard'?'Valós üzleti adatok és következő lépések.':tab()==='workspace'?'Ajánlatfolyamat és napi teendők egy helyen.':tab()==='maintenance'?'Havi karbantartási megállapodások és esedékességek.':tab()==='quotes'?'Beérkező megkeresések és ajánlatok kezelése.':tab()==='consultations'?'Szabad és lefoglalt konzultációk kezelése.':tab()==='clients'?'Korábbi érdeklődők és projektelőzmények.':tab()==='projects'?'A portfólió tartalmainak szerkesztése.':tab()==='services'?'Szolgáltatások és csomagok beállítása.':tab()==='settings'?'A nyilvános weboldal szövegei és elérhetőségei.':tab()==='activity'?'Legutóbbi adminműveletek.':'Jelszóváltoztatás és hozzáférés.'}}
+            {{tab()==='dashboard'?'Valós üzleti adatok és következő lépések.':tab()==='growth'?'Honnan jönnek az ügyfelek, és kire kell ma rászólni.':tab()==='testimonials'?'Ügyfélvélemények a nyilvános oldalra – csak valódiak.':tab()==='workspace'?'Ajánlatfolyamat és napi teendők egy helyen.':tab()==='maintenance'?'Havi karbantartási megállapodások és esedékességek.':tab()==='quotes'?'Beérkező megkeresések és ajánlatok kezelése.':tab()==='consultations'?'Szabad és lefoglalt konzultációk kezelése.':tab()==='clients'?'Korábbi érdeklődők és projektelőzmények.':tab()==='projects'?'A portfólió tartalmainak szerkesztése.':tab()==='services'?'Szolgáltatások és csomagok beállítása.':tab()==='settings'?'A nyilvános weboldal szövegei és elérhetőségei.':tab()==='activity'?'Legutóbbi adminműveletek.':'Jelszóváltoztatás és hozzáférés.'}}
           </p>
         </div>
         <div class="head-date">
@@ -364,6 +364,107 @@
         </section>
       </div>
       }}
+@if(tab()==='growth'){
+  @if(growth();as g){
+  <section class="gx-hero admin-panel card">
+    <span class="panel-eyebrow">ÜGYFÉLSZERZÉS / UTOLSÓ 30 NAP</span>
+    <div class="gx-kpis">
+      <div><small>Látogató (főoldal)</small><strong>{{g.funnel.visits}}</strong></div>
+      <div><small>Megkeresés</small><strong>{{g.funnel.submissions}}</strong></div>
+      <div><small>Látogatóból megkeresés</small><strong>{{g.funnel.visit_to_lead_percent === null ? '—' : g.funnel.visit_to_lead_percent + '%'}}</strong></div>
+      <div><small>Átlagos válaszidő</small><strong>{{hours(g.response.average_hours)}}</strong></div>
+      <div><small>Nyerési arány</small><strong>{{g.revenue.win_rate_percent === null ? '—' : g.revenue.win_rate_percent + '%'}}</strong></div>
+      <div><small>Függő ajánlatok értéke</small><strong>{{money(g.revenue.pipeline_value_huf)}}</strong></div>
+    </div>
+    <small class="muted">A látogatásszám anonim számláló (IP, süti nélkül); a „Do Not Track” böngészőket és a botokat nem számolja. Ha 0, a mérés még nem kezdődött el.</small>
+  </section>
+
+  <div class="gx-grid">
+    <section class="admin-panel card">
+      <div class="panel-title"><div><span class="panel-eyebrow">MA EZEKRE FIGYELJ</span><h2>Teendők az ügyfelekkel</h2></div></div>
+      @if(!g.response.waiting_over_24h.length && !g.attention.follow_ups_due.length && !g.attention.stale_proposals.length && !g.attention.expiring_proposals.length){
+      <div class="empty-state">Nincs sürgős teendő – minden érdeklődő kezelve van.</div>
+      }
+      @if(g.response.waiting_over_24h.length){
+      <h3 class="gx-h">Több mint 24 órája válaszra vár</h3>
+      <ul class="gx-list">
+        @for(l of g.response.waiting_over_24h;track l.id){
+        <li><button type="button" (click)="openLead(l.id)"><strong>{{l.customer_name}}</strong><span>{{l.company_name || 'magánszemély'}} · {{l.hours_waiting}} órája</span></button></li>
+        }
+      </ul>
+      }
+      @if(g.attention.follow_ups_due.length){
+      <h3 class="gx-h">Esedékes utánkövetés</h3>
+      <ul class="gx-list">
+        @for(l of g.attention.follow_ups_due;track l.id){
+        <li><button type="button" (click)="openLead(l.id)"><strong>{{l.customer_name}}</strong><span>{{date(l.follow_up_at)}} · {{statusLabel(l.status)}}</span></button></li>
+        }
+      </ul>
+      }
+      @if(g.attention.stale_proposals.length){
+      <h3 class="gx-h">Elküldött ajánlat, 5+ napja nincs döntés</h3>
+      <ul class="gx-list">
+        @for(l of g.attention.stale_proposals;track l.id){
+        <li><button type="button" (click)="openLead(l.id)"><strong>{{l.customer_name}}</strong><span>{{money(l.quoted_price_huf)}} · elküldve: {{date(l.quoted_at)}}</span></button></li>
+        }
+      </ul>
+      }
+      @if(g.attention.expiring_proposals.length){
+      <h3 class="gx-h">Hamarosan lejáró ajánlat</h3>
+      <ul class="gx-list">
+        @for(l of g.attention.expiring_proposals;track l.id){
+        <li><button type="button" (click)="openLead(l.id)"><strong>{{l.customer_name}}</strong><span>{{money(l.quoted_price_huf)}} · lejár: {{date(l.proposal_valid_until)}}</span></button></li>
+        }
+      </ul>
+      }
+    </section>
+
+    <section class="admin-panel card">
+      <div class="panel-title"><div><span class="panel-eyebrow">FORRÁSOK / 90 NAP</span><h2>Honnan érkeznek az ügyfelek?</h2></div></div>
+      @if(g.channels.length){
+      <ul class="gx-bars">
+        @for(c of g.channels;track c.channel){
+        <li>
+          <div class="gx-bar-head"><span>{{c.channel}}</span><strong>{{c.leads}} megkeresés · {{c.won}} nyert</strong></div>
+          <div class="gx-bar"><i [style.width.%]="pct(c.leads, maxChannel())"></i></div>
+          @if(c.won_value_huf){<small class="muted">Elfogadott ajánlatok értéke: {{money(c.won_value_huf)}}</small>}
+        </li>
+        }
+      </ul>
+      <small class="muted">Tipp: hirdetésekhez, posztokhoz és névjegykártya-QR-hoz használj ilyen címet: <code>?utm_source=facebook&amp;utm_medium=poszt&amp;utm_campaign=ősz</code></small>
+      } @else {<div class="empty-state">Még nincs forrásadat.</div>}
+    </section>
+
+    <section class="admin-panel card">
+      <div class="panel-title"><div><span class="panel-eyebrow">TREND</span><h2>Megkeresések naponta</h2></div><strong class="insight-percent">{{growthLeads30()}}</strong></div>
+      <div class="gx-spark" role="img" [attr.aria-label]="'Az elmúlt 30 nap megkeresései, összesen ' + growthLeads30()">
+        @for(d of g.daily_leads;track d.date){<i [style.height.%]="pct(d.count, maxDaily())" [title]="d.date + ': ' + d.count"></i>}
+      </div>
+    </section>
+
+    <section class="admin-panel card">
+      <div class="panel-title"><div><span class="panel-eyebrow">KÖLTSÉGKERETEK</span><h2>Mekkora büdzsével jönnek?</h2></div></div>
+      <ul class="gx-bars">
+        @for(b of g.budgets;track b.label){
+        <li><div class="gx-bar-head"><span>{{b.label}}</span><strong>{{b.count}}</strong></div></li>
+        }
+      </ul>
+    </section>
+
+    <section class="admin-panel card">
+      <div class="panel-title"><div><span class="panel-eyebrow">BIZALOM</span><h2>Hitelesség a nyilvános oldalon</h2></div></div>
+      <ul class="gx-checks">
+        <li [class.ok]="g.trust.testimonials_published > 0">{{g.trust.testimonials_published}} közzétett ügyfélvélemény @if(!g.trust.testimonials_published){– kérj egyet az első ügyfeledtől}</li>
+        <li [class.ok]="g.trust.projects_published > 0">{{g.trust.projects_published}} valódi (nem demó) referencia</li>
+        <li [class.ok]="g.funnel.visits > 0">Látogatásmérés {{g.funnel.visits > 0 ? 'működik' : 'még nem küldött adatot'}}</li>
+      </ul>
+      <div class="gx-lead-actions"><button type="button" class="btn btn-outline btn-sm" (click)="use('testimonials')">Vélemények kezelése ↗</button></div>
+    </section>
+  </div>
+  } @else {
+  <div class="empty-state">Betöltés…</div>
+  }
+}
 @if(tab()==='workspace'){
   <div class="admin-panel card workspace-intro"><span class="panel-eyebrow">MM STUDIO / CRM</span><h2>Ajánlatfolyamat – Kanban</h2><p>A kártyák az ajánlatkérések valódi állapotát mutatják. Státuszt az ajánlat adatlapján módosíthatsz.</p></div>
   @if(workspaceBoard();as board){
@@ -481,6 +582,9 @@
         </select>
         <button class="btn btn-outline btn-sm" type="button" (click)="loadQuotes()">
           Keresés ↗
+        </button>
+        <button class="btn btn-outline btn-sm" type="button" [disabled]="busy()" (click)="exportCsv()" title="Az aktuális szűrőnek megfelelő ajánlatkérések Excelben megnyitható CSV-ben">
+          CSV export ↓
         </button>
       </div>
       <div class="admin-grid" [class.no-side]="!selectedQuote()">
@@ -703,6 +807,23 @@
           @if(q.quoted_at){
           <p class="proposal-status" role="status">E-mailben elküldve: {{date(q.quoted_at)}}. Az elküldött ajánlat tartalma már nem módosítható.</p>
           }
+          <div class="gx-lead-box">
+            <div class="gx-lead-meta">
+              <span><small>Forrás</small><strong>{{q.utm_source || q.referrer_host || (q.source === 'direct' ? 'közvetlen' : q.source) || 'nem ismert'}}</strong></span>
+              <span><small>Első válasz</small><strong>{{q.first_response_at ? date(q.first_response_at) : 'még nincs'}}</strong></span>
+            </div>
+            <div class="gx-lead-actions">
+              <a class="btn btn-outline btn-sm" [href]="replyMailto(q)">Gyors válasz e-mailben ↗</a>
+              @if(!q.first_response_at){
+              <button type="button" class="btn btn-outline btn-sm" [disabled]="busy()" (click)="markContacted()">Felvettem a kapcsolatot ✓</button>
+              }
+            </div>
+            <div class="form-field">
+              <label for="admin-follow-up">Következő utánkövetés napja</label>
+              <input id="admin-follow-up" class="input" type="date" [(ngModel)]="selectedFollowUp">
+              <small class="muted">A mentés után a „Növekedés” fül jelzi, amikor esedékes.</small>
+            </div>
+          </div>
           <div class="form-field">
             <label for="admin-notes">
               Saját megjegyzések
@@ -1059,6 +1180,11 @@
             <input class="input" [(ngModel)]="pe.technologiesText">
           </div>
           <div class="form-field">
+            <label>Mérhető eredmények (soronként: érték | felirat, legfeljebb 4)</label>
+            <textarea class="input" rows="4" [(ngModel)]="pe.resultsText" placeholder="+48% | több ajánlatkérés&#10;1,2 mp | betöltési idő"></textarea>
+            <small class="muted">Csak valós, igazolható számot írj be – ezek a referenciakártyán jelennek meg.</small>
+          </div>
+          <div class="form-field">
             <label>
               Projekt URL (https://...)
             </label>
@@ -1103,6 +1229,48 @@
         }
       </div>
       }
+@if(tab()==='testimonials'){
+  <div class="admin-panel card workspace-intro">
+    <span class="panel-eyebrow">SOCIAL PROOF</span><h2>Ügyfélvélemények</h2>
+    <p>Csak valódi, az ügyfél által jóváhagyott véleményt tegyél közzé. A főoldalon a „Vélemények” szakasz csak akkor jelenik meg, ha legalább egy közzétett vélemény van.</p>
+    <button type="button" class="btn btn-primary btn-sm" (click)="editTestimonial()">+ Új vélemény</button>
+  </div>
+  @if(testimonialEditor();as te){
+  <section class="admin-panel card">
+    <div class="form-field"><label for="te-name">Ügyfél neve</label><input id="te-name" class="input" maxlength="120" [(ngModel)]="te.author_name"></div>
+    <div class="form-field"><label for="te-role">Beosztás</label><input id="te-role" class="input" maxlength="120" [(ngModel)]="te.author_role"></div>
+    <div class="form-field"><label for="te-company">Cég</label><input id="te-company" class="input" maxlength="150" [(ngModel)]="te.company"></div>
+    <div class="form-field"><label for="te-quote">Vélemény (20–1000 karakter)</label><textarea id="te-quote" class="input" rows="4" maxlength="1000" [(ngModel)]="te.quote"></textarea></div>
+    <div class="form-field"><label for="te-rating">Értékelés</label>
+      <select id="te-rating" class="input" [(ngModel)]="te.rating"><option [ngValue]="5">5 csillag</option><option [ngValue]="4">4 csillag</option><option [ngValue]="3">3 csillag</option></select></div>
+    <div class="form-field"><label for="te-project">Kapcsolódó referencia</label>
+      <select id="te-project" class="input" [(ngModel)]="te.portfolio_project_id"><option [ngValue]="null">— nincs —</option>@for(pr of projects();track pr.id){<option [ngValue]="pr.id">{{pr.title}}</option>}</select></div>
+    <div class="form-field"><label for="te-order">Sorrend</label><input id="te-order" class="input" type="number" [(ngModel)]="te.sort_order"></div>
+    <label class="check"><input type="checkbox" [(ngModel)]="te.is_published"> Közzététel a nyilvános oldalon (az ügyfél jóváhagyásával)</label>
+    <div class="gx-lead-actions">
+      <button type="button" class="btn btn-primary" [disabled]="busy()" (click)="saveTestimonial()">Mentés</button>
+      <button type="button" class="btn btn-outline" (click)="testimonialEditor.set(null)">Mégse</button>
+    </div>
+  </section>
+  }
+  <section class="admin-panel card">
+    @if(testimonials().length){
+    <ul class="gx-list gx-testimonials">
+      @for(t of testimonials();track t.id){
+      <li>
+        <div><strong>{{t.author_name}}</strong> <span class="muted">{{t.company || t.author_role || ''}}</span> <span class="gx-badge" [class.on]="t.is_published">{{t.is_published ? 'közzétéve' : 'piszkozat'}}</span>
+          <p>„{{t.quote}}”</p></div>
+        <div class="gx-lead-actions">
+          <button type="button" class="btn btn-outline btn-sm" (click)="togglePublished(t)">{{t.is_published ? 'Visszavonás' : 'Közzététel'}}</button>
+          <button type="button" class="btn btn-outline btn-sm" (click)="editTestimonial(t)">Szerkesztés</button>
+          <button type="button" class="btn btn-outline btn-sm" (click)="deleteTestimonial(t)">Törlés</button>
+        </div>
+      </li>
+      }
+    </ul>
+    } @else {<div class="empty-state">Még nincs vélemény. Az első befejezett projekt után kérj egy rövid, jóváhagyott idézetet.</div>}
+  </section>
+}
 @if(tab()==='settings'){
       <div class="settings-workspace">
       <section class="admin-panel card settings-editor">
