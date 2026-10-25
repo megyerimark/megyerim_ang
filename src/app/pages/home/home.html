@@ -602,7 +602,7 @@
         <blockquote>„{{ t.quote }}”</blockquote>
         <figcaption>
           <strong>{{ t.author_name }}</strong>
-@if (t.author_role || t.company) {<span>{{ t.author_role && t.company ? t.author_role + ', ' + t.company : (t.author_role || t.company) }}</span>}
+{{ t.author_role && t.company ? t.author_role + ', ' + t.company : (t.author_role || t.company || '') }}
           @if (t.project) {<a [routerLink]="['/munkak', t.project.slug]">{{ t.project.title }} ↗</a>}
         </figcaption>
       </figure>
