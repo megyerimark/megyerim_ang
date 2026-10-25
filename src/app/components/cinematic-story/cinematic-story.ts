@@ -6,7 +6,7 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [RouterLink],
   templateUrl: './cinematic-story.html',
-  styleUrl: './cinematic-story.scss'
+  styleUrls: ['./cinematic-story.scss', './cinematic-story-v12.scss']
 })
 export class CinematicStory implements AfterViewInit, OnDestroy {
   @ViewChild('storySection', { static: true }) private section!: ElementRef<HTMLElement>;
@@ -19,12 +19,13 @@ export class CinematicStory implements AfterViewInit, OnDestroy {
   ];
   readonly chapter = computed(() => this.chapters[Math.min(3, Math.floor(this.progress() * 4))]);
   readonly stageTransform = computed(() => `rotateX(${11 - this.progress() * 7}deg) rotateY(${-14 + this.progress() * 9}deg)`);
-  readonly wireTransform = computed(() => this.layerTransform(-62, 53, -110));
-  readonly visualTransform = computed(() => this.layerTransform(48, -48, 120));
-  readonly contentTransform = computed(() => this.layerTransform(-37, -35, 78));
-  readonly menuTransform = computed(() => this.layerTransform(0, -92, 165));
-  readonly mobileTransform = computed(() => `translate3d(${Math.round((1 - this.progress()) * 85)}px, ${Math.round((1 - this.progress()) * 32)}px, 145px) rotateY(-9deg)`);
-  readonly phoneOpacity = computed(() => Math.max(0, Math.min(1, (this.progress() - .42) * 3.8)));
+  readonly wireTransform = computed(() => this.layerTransform(-60, 105, -170));
+  readonly visualTransform = computed(() => this.layerTransform(36, 50, 40));
+  readonly contentTransform = computed(() => this.layerTransform(-16, -23, 125));
+  readonly menuTransform = computed(() => this.layerTransform(0, -72, 215));
+  readonly galleryTransform = computed(() => this.layerTransform(16, 70, 165));
+  readonly mobileTransform = computed(() => `translate3d(${Math.round((1 - this.progress()) * 40)}px, ${Math.round((1 - this.progress()) * 24)}px, 145px) rotateY(-9deg)`);
+  readonly phoneOpacity = computed(() => Math.max(.84, Math.min(1, .84 + this.progress() * .5)));
   readonly percentage = computed(() => String(Math.round(this.progress() * 100)).padStart(2, '0'));
   private scheduled = 0;
 

@@ -5,7 +5,7 @@
       <div class="story-copy">
         <span class="story-kicker"><span class="story-kicker-line"></span> 02 / TERVEZÉSTŐL AZ ÉLMÉNYIG</span>
         <h2 id="story-title">Így kel életre <em>egy weboldal.</em></h2>
-        <p class="story-intro">Egy jól felépített weboldal nem véletlenül működik. Az üzenet, a dizájn és a technológia minden rétege ugyanazért a célért dolgozik.</p>
+        <p class="story-intro">Egy jól felépített weboldal nem véletlen eredménye, hanem tudatos tervezés, kreatív dizájn és precíz fejlesztés folyamata. Az ötlettől a működő élményig minden rétegnek megvan a maga szerepe.</p>
         <div class="story-current" aria-live="off">
           <span class="story-current-number">{{ chapter().number }} <span>/ 04</span></span>
           <div><strong>{{ chapter().title }}</strong><p>{{ chapter().description }}</p></div>
@@ -27,25 +27,36 @@
           </div>
           <div class="story-layer story-layer--content" [style.transform]="contentTransform()">
             <span>EGYEDI DIGITÁLIS ÉLMÉNY</span>
-            <strong>Az ötletedből<br><em>érték.</em></strong>
+            <strong>Modern weboldalak,<br><em>valódi eredmények.</em></strong>
             <p>Stratégia, tervezés és technológia.</p>
             <div class="story-faux-button">Kezdjük el ↗</div>
+            <div class="story-content-window" aria-hidden="true"></div>
           </div>
           <div class="story-layer story-layer--menu" [style.transform]="menuTransform()">
             <strong>M<span>.</span></strong><span>Szolgáltatások</span><span>Rólam</span><span>Kapcsolat</span>
+          </div>
+          <div class="story-layer story-layer--gallery" [style.transform]="galleryTransform()">
+            <span>VIZUÁLIS RÉTEG / RESPONSIVE GRID</span>
+            <div class="story-gallery-grid"><i></i><i></i><i></i></div>
           </div>
           <div class="story-layer story-layer--code"><span>&lt;main&gt;</span><span> responsive: true</span><span> experience: premium</span><span>&lt;/main&gt;</span></div>
           <div class="story-scene-shadow"></div>
         </div>
         <div class="story-phone" [style.transform]="mobileTransform()" [style.opacity]="phoneOpacity()" aria-hidden="true">
-          <div class="story-phone-notch"></div><strong>M.</strong><span>ÚJ ÉLMÉNYEK</span><h3>Az ötletedből<br>érték.</h3><i></i><small>Kezdjük el ↗</small>
+          <div class="story-phone-notch"></div><strong>M.</strong><span>PRÉMIUM MEGJELENÉS</span><h3>Modern weboldalak,<br>valódi eredmények.</h3><i></i><small>Kérj ajánlatot ↗</small>
         </div>
-        <div class="story-callout story-callout--one" aria-hidden="true"><i></i>NAVIGÁCIÓ <span>/ 01</span></div>
-        <div class="story-callout story-callout--two" aria-hidden="true"><i></i>DIZÁJN <span>/ 02</span></div>
-        <div class="story-callout story-callout--three" aria-hidden="true"><i></i>FEJLESZTÉS <span>/ 03</span></div>
+        <div class="story-callout story-callout--one" aria-hidden="true"><i></i><span><strong>NAVIGÁCIÓ</strong><small>Irány és struktúra</small></span></div>
+        <div class="story-callout story-callout--two" aria-hidden="true"><i></i><span><strong>TARTALOM</strong><small>Üzenet és érték</small></span></div>
+        <div class="story-callout story-callout--three" aria-hidden="true"><i></i><span><strong>VIZUÁLIS RÉTEG</strong><small>Hangulat és identitás</small></span></div>
+        <div class="story-callout story-callout--four" aria-hidden="true"><i></i><span><strong>FELÉPÍTÉS</strong><small>Rugalmas megjelenés</small></span></div>
+        <div class="story-callout story-callout--five" aria-hidden="true"><i></i><span><strong>FEJLESZTÉS</strong><small>Stabil és gyors működés</small></span></div>
       </div>
       <div class="story-meter" aria-hidden="true"><span>SCROLL EXPERIENCE</span><div><i [style.height.%]="progress() * 100"></i></div><span>{{ percentage() }}%</span></div>
     </div>
-    <div class="container story-footer" aria-hidden="true"><span>01 / STRATÉGIA</span><span>02 / DIZÁJN</span><span>03 / FEJLESZTÉS</span><span>04 / ÉLMÉNY</span></div>
+    <div class="container story-footer" aria-label="A fejlesztés három lépése">
+      <div class="story-footer-step"><span>01</span><i aria-hidden="true">◎</i><div><strong>Stratégia</strong><small>Megértjük a céljaidat, a közönségedet és a lehetőségeket.</small></div></div>
+      <div class="story-footer-step"><span>02</span><i aria-hidden="true">✧</i><div><strong>Dizájn</strong><small>Egyedi, letisztult megjelenést tervezünk a márkádhoz.</small></div></div>
+      <div class="story-footer-step"><span>03</span><i aria-hidden="true">⌘</i><div><strong>Fejlesztés</strong><small>Reszponzív, megbízható élménnyé építjük a terveket.</small></div></div>
+    </div>
   </div>
 </section>
