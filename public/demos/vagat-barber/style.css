@@ -867,3 +867,125 @@ footer a {
     transform:none
   }
 }
+
+/* v15 – valódi fotó, finomabb tipográfia */
+:root{--serif:'Cormorant Garamond',Georgia,serif;--sans:'DM Sans',Arial,sans-serif}
+h1{letter-spacing:-.045em;font-weight:800;line-height:.98}
+h1 em,h2 em{font-style:italic;font-weight:500;letter-spacing:-.02em}
+h1 em{font-size:1.08em}
+.hero-art{background:#14160f}
+.hero-art .photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 62%;filter:saturate(.9) contrast(1.05) brightness(.9);z-index:0}
+.hero-art:before{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(0deg,#11120fd9 0%,transparent 38%),linear-gradient(90deg,#11120f 0%,#11120f66 14%,transparent 40%)}
+.hero-art:after{z-index:1}
+.arch,.sun-disc{display:none}
+.hero-art-text,.vertical-word{z-index:3}
+.studio-poster{background:#0f100e}
+.studio-poster .studio-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 78%;opacity:.55;filter:grayscale(.35) contrast(1.05)}
+.studio-poster:before{display:none}
+.studio-poster:after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,#0f100ef2,transparent 60%)}
+.studio-poster>*:not(img){position:relative;z-index:2}
+@media(max-width:760px){
+  .hero-art .photo{object-position:50% 70%}
+  .hero-art{min-height:520px}
+}
+h1 .mark{margin-left:-.12em}
+.studio-poster .studio-photo{object-position:50% 50%;opacity:.7}
+@media(max-width:760px){h1{font-size:clamp(40px,12.5vw,60px)}}
+
+/* ===== v16 – görgetésvezérelt 3D jelenetek ===== */
+:root{--accent:#c9a877}
+.scene{overflow:visible!important}
+
+/* HERO: a fotó a görgetéssel kitágul, a szöveg 3D-ben hátrébb csúszik */
+.hero.scene{display:block;min-height:0}
+.hero .scene-pin{background:var(--bg)}
+.hero-copy{position:absolute;left:0;top:0;bottom:0;width:52%;justify-content:flex-start;z-index:2;padding-top:clamp(70px,13vh,140px);padding-bottom:36px;
+  opacity:calc(1 - var(--t,0));transform:translate3d(calc(var(--t,0) * -70px),0,0)}
+.hero-copy:before{top:50%;transform:translateY(-50%)}
+.hero h1{white-space:normal}
+.hero h1 .ln{display:block;white-space:nowrap}
+.hero h1 .ln:nth-child(1){transform:translateX(calc(var(--t,0) * -50px))}
+.hero h1 .ln:nth-child(2){transform:translateX(calc(var(--t,0) * 30px))}
+.hero h1 .ln:nth-child(3){transform:translateX(calc(var(--t,0) * -90px))}
+.hero-art{position:absolute;top:0;bottom:0;right:0;left:calc(52% - 52% * var(--t,0));min-height:0;z-index:3;overflow:hidden}
+.hero-art:before,.hero-art:after{display:none}
+.hero-tilt{position:absolute;inset:0;perspective:1300px;overflow:hidden;background:#14160f}
+.hero-art .photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% min(86%,calc(62% + var(--p,0) * 40%));
+  transform-origin:55% 70%;transform:rotateY(calc((1 - var(--t,0)) * -15deg)) scale(calc(1.12 + var(--p,0) * .07));
+  filter:saturate(.92) contrast(1.06) brightness(.92)}
+.hero-shade{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(0deg,rgb(17 18 15 / .85) 0%,transparent 42%),linear-gradient(90deg,rgb(17 18 15 / calc(var(--t,0) * .78)) 0%,transparent 58%),linear-gradient(90deg,rgb(17 18 15 / calc(1 - var(--t,0))) 0%,rgb(17 18 15 / calc(.4 * (1 - var(--t,0)))) 14%,transparent 40%)}
+.hero-art-text{opacity:calc(1 - var(--t,0) * 1.6);left:6%}
+.vertical-word{opacity:calc(1 - var(--t,0) * 2)}
+.hero-final{position:absolute;left:clamp(24px,6vw,110px);bottom:clamp(60px,14vh,150px);max-width:min(720px,86vw);z-index:4;
+  opacity:var(--t,0);transform:translateY(calc((1 - var(--t,0)) * 50px)) rotateX(calc((1 - var(--t,0)) * 14deg));transform-origin:0 100%;pointer-events:none}
+.hero-final .solid-btn{pointer-events:auto}
+.hero-final small{display:block;letter-spacing:.25em;font-size:11px;color:var(--gold);margin-bottom:14px}
+.hero-final strong{display:block;font-size:clamp(40px,6.4vw,104px);line-height:.98;letter-spacing:-.04em;font-weight:800;margin-bottom:28px}
+.hero-final strong em{font-style:italic;font-weight:500;color:var(--gold)}
+.scroll-cue{position:absolute;left:50%;bottom:22px;z-index:5;display:flex;flex-direction:column;align-items:center;gap:8px;font-size:9px;letter-spacing:.3em;color:#cfc7b4;
+  transform:translateX(-50%);opacity:max(0,calc(1 - var(--p,0) * 9))}
+.scroll-cue i{width:1px;height:34px;background:linear-gradient(var(--gold),transparent);animation:cue 1.8s ease-in-out infinite}
+@keyframes cue{0%{transform:scaleY(.2);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(.2);transform-origin:bottom}}
+
+/* SZOLGÁLTATÁSOK: coverflow – a kártyák a görgetéssel forognak a térben */
+.services.scene{padding:0;background:radial-gradient(ellipse at 50% 80%,#24251d,#11120f 62%)}
+.services .scene-pin{display:flex;flex-direction:column;padding:clamp(40px,7vh,84px) clamp(24px,8vw,140px) 0}
+.services .section-intro{margin-bottom:0;flex:none;position:relative;z-index:3}
+.services .section-intro h2{font-size:clamp(30px,3.6vw,56px);margin-bottom:0}
+.services .section-intro p{max-width:360px}
+.services .service-grid{display:block;position:relative;flex:1;border:0;perspective:1600px;perspective-origin:50% 40%;transform-style:preserve-3d;min-height:360px}
+.services .service{position:absolute;left:50%;top:50%;width:min(520px,82vw);min-height:410px;border:1px solid #3a3b33;
+  background:linear-gradient(160deg,#1c1d17,#0f100c);box-shadow:0 40px 80px #000b;
+  transform:translate(-50%,-50%) translate3d(calc(var(--o,0) * 64%),0,calc(var(--a,0) * -300px)) rotateY(calc(var(--o,0) * -36deg)) scale(calc(1 - var(--a,0) * .05));
+  opacity:calc(1 - var(--a,0) * .42);transition:border-color .3s,box-shadow .3s}
+.services .service.is-active{border-color:var(--gold);box-shadow:0 40px 90px #000c,0 0 80px #c9a87722}
+.svc-rail{position:absolute;left:50%;bottom:26px;display:flex;gap:10px;transform:translateX(-50%);z-index:4}
+.svc-rail i{width:34px;height:3px;background:#46463d;transition:background .3s,width .3s}
+.services[data-step="0"] .svc-rail i:nth-child(1),.services[data-step="1"] .svc-rail i:nth-child(2),.services[data-step="2"] .svc-rail i:nth-child(3){background:var(--gold);width:54px}
+
+/* STÚDIÓ: a fotó három sávban repül össze */
+.studio.scene{display:block;background:var(--paper)}
+.studio .scene-pin{display:grid;grid-template-columns:1fr 1fr;background:var(--paper)}
+.studio .studio-poster{min-height:0;height:100%;padding:clamp(28px,4vw,55px);perspective:1400px;background:#0d0e0b}
+.studio .studio-poster>.slice{position:absolute;inset:0;z-index:0;clip-path:inset(0 calc(100% - (var(--n) + 1) * 33.3334%) 0 calc(var(--n) * 33.3334%));
+  background:linear-gradient(0deg,#0d0e0b55,#0d0e0b00) ,url(../photos/vagat-1000.jpg) 50% 62%/cover;
+  transform:translate3d(0,calc((1 - var(--t,0)) * var(--d) * 62vh),calc((1 - var(--t,0)) * -420px)) rotateX(calc((1 - var(--t,0)) * var(--d) * -38deg));
+  opacity:calc(.25 + var(--t,0) * .75);filter:saturate(.85) contrast(1.05)}
+.studio .studio-poster:after{z-index:1}
+.studio .studio-poster>.poster-stamp,.studio .studio-poster>.poster-line,.studio .studio-poster>small{position:relative;z-index:2}
+.poster-line{font-size:clamp(34px,4.4vw,76px);line-height:.95;letter-spacing:-.04em;font-weight:800;text-shadow:0 4px 30px #000a;
+  transform:translateZ(0) translateY(calc((1 - var(--p,0)) * 24px))}
+.studio .studio-copy{opacity:var(--t,0);transform:translate3d(calc((1 - var(--t,0)) * 70px),0,0)}
+
+/* többi szekció: 3D belépők */
+.reveal{transform:perspective(1100px) translateY(54px) rotateX(9deg);transform-origin:50% 100%}
+.reveal.visible{transform:none}
+.price-list>div{transition:opacity .7s ease,transform .8s cubic-bezier(.2,.8,.2,1)}
+.reveal:not(.visible) .price-list>div{opacity:0;transform:translateX(-40px) rotateX(12deg)}
+.price-list>div:nth-child(2){transition-delay:.12s}.price-list>div:nth-child(3){transition-delay:.24s}
+
+/* MOBIL / csökkentett mozgás: nincs rögzítés, tiszta egymás utáni elrendezés */
+@media (max-width:860px),(prefers-reduced-motion:reduce){
+  .hero .scene-pin{display:flex;flex-direction:column}
+  .hero-copy{position:relative;width:auto;opacity:1;transform:none;padding:48px 24px 36px}
+  .hero h1 .ln{transform:none!important}
+  .hero-art{position:relative;left:0!important;height:540px;min-height:0}
+  .hero-final,.scroll-cue{display:none}
+  .hero-art-text{opacity:1}
+  .services .scene-pin{padding:60px 22px}
+  .services .service-grid{display:grid;gap:16px;min-height:0;perspective:none;margin-top:30px}
+  .services .service{position:relative;left:auto;top:auto;width:auto;min-height:0;transform:none!important;opacity:1}
+  .svc-rail{display:none}
+  .studio .scene-pin{display:block}
+  .studio .studio-poster{height:460px}
+  .studio .studio-poster>.slice{transform:none!important;opacity:1!important}
+  .studio .studio-copy{opacity:1;transform:none;padding:48px 24px}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero-copy{opacity:1}
+  .hero-art{left:0}
+  .reveal{transform:none}
+}
+.services .service h3{font-size:clamp(22px,2vw,32px)}
+.services .service p{font-size:15px}

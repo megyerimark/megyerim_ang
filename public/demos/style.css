@@ -464,3 +464,13 @@ section {
     transition:none!important
   }
 }
+/* v15 – olvashatóbb tipográfia, fotós kártyák */
+.hero h1{letter-spacing:-.045em}
+.hero h1 em,.section-heading h2 em,.note h2 em{letter-spacing:-.02em}
+.visual-card{background-size:cover!important;background-position:center!important;overflow:hidden;color:#fff}
+.visual-card:before{content:'';position:absolute;inset:0;background:linear-gradient(0deg,#000a,#0002 70%)}
+.visual-card>*{position:relative}
+.visual-card strong{color:#fff!important;text-shadow:0 2px 14px #0008}
+.visual-card.v1{background-image:url(photos/vagat-600.jpg)!important}
+.visual-card.v2{background-image:url(photos/axis-900.jpg)!important}
+.visual-card.v3{background-image:url(photos/pulse-600.jpg)!important}

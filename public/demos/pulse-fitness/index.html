@@ -8,8 +8,8 @@
     <title>
       PULSE. – Personal Training | Demó
     </title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap"><link rel="stylesheet" href="../shared/scroll3d.css"><link rel="stylesheet" href="style.css">
+    <script src="../shared/scroll3d.js" defer></script><script src="script.js" defer>
     </script>
   </head>
   <body>
@@ -76,7 +76,7 @@
       </a>
     </nav>
     <main>
-      <section class="hero">
+      <section class="hero scene" data-scene data-steps="3" data-final="1" style="--h:300vh"><div class="scene-pin">
         <div class="hero-content">
           <div class="pretitle">
             <span class="asterisk">
@@ -84,15 +84,7 @@
             </span>
             ERŐSEBB TEST. TISZTÁBB CÉL.
           </div>
-          <h1>
-            MOZDULJ.
-            <br>
-            <span>
-              FEJLŐDJ.
-            </span>
-            <br>
-            ISMÉTELD.
-          </h1>
+          <h1><span class="wd">MOZDULJ.</span><span class="wd">FEJLŐDJ.</span><span class="wd">ISMÉTELD.</span></h1>
           <p>
             Nincs varázsformula. Csak egy terv, ami rólad szól, és mozgás, amitől napról napra erősebb leszel.
           </p>
@@ -121,7 +113,7 @@
             </span>
           </div>
         </div>
-        <div class="hero-illustration" role="img" aria-label="Stilizált sportoló illusztráció">
+        <div class="hero-illustration" data-t="0,0.3">
           <div class="orbit orbit-1">
           </div>
           <div class="orbit orbit-2">
@@ -131,35 +123,8 @@
           <div class="huge-asterisk">
             ✳
           </div>
-          <svg class="athlete" viewBox="0 0 630 800" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <defs>
-              <linearGradient id="shirt" x1="0" y1="0" x2="1" y2="1">
-                <stop stop-color="#292e28"/>
-                <stop offset="1" stop-color="#121715"/>
-              </linearGradient>
-              <linearGradient id="face" x1="0" y1="0" x2="1" y2="1">
-                <stop stop-color="#b96e48"/>
-                <stop offset="1" stop-color="#70452e"/>
-              </linearGradient>
-            </defs>
-            <path d="M104 798L160 545Q179 495 230 477l67-24 71 5 91 41q48 23 64 84l54 215z" fill="url(#shirt)"/>
-            <path d="M273 432v74l59 53 58-56-10-80z" fill="url(#face)"/>
-            <path d="M223 257Q215 173 298 160Q387 141 417 231L416 346Q394 437 328 455Q262 435 231 364Z" fill="url(#face)"/>
-            <path d="M219 278Q196 198 250 153Q283 109 354 125Q423 138 432 218L418 293l-19-34q-35-2-44-63-50 60-136 82Z" fill="#161c18"/>
-            <path d="M237 296q-28-30-32 10 4 41 36 49M414 294q22-19 21 13-3 39-26 45" fill="#a76948"/>
-            <path d="M265 308q21-17 42-4M351 304q17-12 39-2" fill="none" stroke="#34211b" stroke-width="10" stroke-linecap="round"/>
-            <path d="M272 327h29M352 325h29" stroke="#241b17" stroke-width="5" stroke-linecap="round"/>
-            <path d="M335 330l-11 48 22 5" stroke="#814f36" stroke-width="6" stroke-linecap="round" fill="none"/>
-            <path d="M297 405q35 18 68-6" stroke="#462c24" stroke-width="7" fill="none" stroke-linecap="round"/>
-            <path d="M267 474q61 86 117 5" fill="none" stroke="#6b533d" stroke-width="13"/>
-            <path d="M166 543q-30 51-54 145l-50 112h118l61-202M452 546q59 93 63 253h-99l-57-176" fill="url(#face)" stroke="#65402e" stroke-width="5"/>
-            <path d="M232 484l-36 67 56 79-40 169h245l-37-188 51-69-80-68q-29 67-72 64-49-1-87-54Z" fill="url(#shirt)"/>
-            <path d="M242 574l135 3" stroke="#414b40" stroke-width="5"/>
-            <path d="M230 607h159" stroke="#424b42" stroke-width="4"/>
-            <path d="M248 644h133" stroke="#414a40" stroke-width="4"/>
-            <path d="M162 540l49 34 15 148-80-32M452 542l-41 42-19 135 82-34" fill="#262e28"/>
-          </svg>
-          <div class="vertical-caption">
+          <img class="athlete-photo" src="../photos/pulse-1000.jpg" srcset="../photos/pulse-600.jpg 600w, ../photos/pulse-1000.jpg 1000w" sizes="(max-width:800px) 100vw, 48vw" width="1000" height="1500" alt="Edző bicepszgyakorlatot végez kézisúlyzóval" fetchpriority="high">
+          <div class="rep" aria-hidden="true"><b></b><span>/ 03</span><small>ISMÉTLÉS</small></div><div class="vertical-caption">
             STRONGER EVERY REP / EST. 2026
           </div>
           <div class="hero-sticker">
@@ -175,7 +140,7 @@
             </span>
           </div>
         </div>
-      </section>
+      </div></section>
       <section class="movement-strip">
         <div>
           SHOW UP
@@ -254,118 +219,27 @@
           </div>
         </div>
       </section>
-      <section id="programok" class="programs section">
-        <div class="section-title reveal">
-          <span class="kicker">
-            02 / PROGRAMOK
-          </span>
-          <h2>
-            Találd meg a
-            <br>
-            <em>
-              ritmusodat.
-            </em>
-          </h2>
-          <p>
-            Válassz célt, és nézd meg, hogyan épülne fel egy mintaprogram.
-          </p>
-        </div>
-        <div class="program-tabs" role="tablist" aria-label="Edzéscél">
-          <button role="tab" aria-selected="true" data-program="strength" id="tab-strength" aria-controls="program-panel" class="active">
-            ERŐFEJLESZTÉS
-            <span>
-              01
-            </span>
-          </button>
-          <button role="tab" aria-selected="false" data-program="shape" id="tab-shape" aria-controls="program-panel">
-            ALAKFORMÁLÁS
-            <span>
-              02
-            </span>
-          </button>
-          <button role="tab" aria-selected="false" data-program="start" id="tab-start" aria-controls="program-panel">
-            ÚJRAKEZDÉS
-            <span>
-              03
-            </span>
-          </button>
-        </div>
-        <div class="program-panel" id="program-panel" role="tabpanel" aria-labelledby="tab-strength" tabindex="0">
-          <div class="program-art">
-            <div class="art-text">
-              WORK
-              <br>
-              FOR
-              <br>
-              IT
-              <span>
-                .
-              </span>
-            </div>
-            <span class="art-stamp">
-              PULSE / MOTION
-            </span>
+      <section id="programok" class="programs scene" data-scene data-steps="3" style="--h:340vh">
+        <div class="scene-pin">
+          <div class="prog-head"><div><span class="kicker">02 / PROGRAMOK</span><h2>Találd meg a <em>ritmusodat.</em></h2></div><p>Görgess: a mintaprogramok sorban érkeznek. Válassz célt, és nézd meg, hogyan épülne fel.</p></div>
+          <div class="program-tabs" role="tablist" aria-label="Edzéscél">
+            <button role="tab" aria-selected="true" data-i="0" id="tab-0" class="active">ERŐFEJLESZTÉS <span>01</span></button>
+            <button role="tab" aria-selected="false" data-i="1" id="tab-1">ALAKFORMÁLÁS <span>02</span></button>
+            <button role="tab" aria-selected="false" data-i="2" id="tab-2">ÚJRAKEZDÉS <span>03</span></button>
           </div>
-          <div class="program-copy">
-            <div class="kicker">
-              KIVÁLASZTOTT PROGRAM / DEMÓ
-            </div>
-            <h3 id="program-title">
-              Építs erőt, tudatosan.
-            </h3>
-            <p id="program-desc">
-              Fokozatos terhelés, stabil alapok és egy rendszer, amely követhetővé teszi a fejlődésedet.
-            </p>
-            <div class="program-attributes">
-              <div>
-                <span>
-                  FÓKUSZ
-                </span>
-                <strong id="program-focus">
-                  Erő & állóképesség
-                </strong>
-              </div>
-              <div>
-                <span>
-                  JAVASOLT RITMUS
-                </span>
-                <strong id="program-frequency">
-                  Heti 3 alkalom
-                </strong>
-              </div>
-            </div>
-            <a href="#jelentkezes" class="button-primary">
-              Ezt választom
-              <span>
-                ↗
-              </span>
-            </a>
-          </div>
+          <div class="prog-stage" data-fan><article class="program-panel" role="tabpanel" aria-labelledby="tab-0"><div class="program-art"><div class="art-text">WORK<br>FOR<br>IT<span>.</span></div><span class="art-stamp">PULSE / MOTION</span></div><div class="program-copy"><div class="kicker">01 / ERŐFEJLESZTÉS · KIVÁLASZTOTT PROGRAM / DEMÓ</div><h3>Építs erőt, tudatosan.</h3><p>Fokozatos terhelés, stabil alapok és egy rendszer, amely követhetővé teszi a fejlődésedet.</p><div class="program-attributes"><div><span>FÓKUSZ</span><strong>Erő &amp; állóképesség</strong></div><div><span>JAVASOLT RITMUS</span><strong>Heti 3 alkalom</strong></div></div><a href="#jelentkezes" class="button-primary">Ezt választom <span>↗</span></a></div></article><article class="program-panel" role="tabpanel" aria-labelledby="tab-1"><div class="program-art"><div class="art-text">FIND<br>YOUR<br>FLOW<span>.</span></div><span class="art-stamp">PULSE / MOTION</span></div><div class="program-copy"><div class="kicker">02 / ALAKFORMÁLÁS · KIVÁLASZTOTT PROGRAM / DEMÓ</div><h3>Formáld a saját utad.</h3><p>A mozgás és a tudatos tervezés összhangja, az egyéni céljaidnak megfelelően.</p><div class="program-attributes"><div><span>FÓKUSZ</span><strong>Állóképesség &amp; technika</strong></div><div><span>JAVASOLT RITMUS</span><strong>Heti 2–3 alkalom</strong></div></div><a href="#jelentkezes" class="button-primary">Ezt választom <span>↗</span></a></div></article><article class="program-panel" role="tabpanel" aria-labelledby="tab-2"><div class="program-art"><div class="art-text">START<br>SMALL<br>GO<br>FAR<span>.</span></div><span class="art-stamp">PULSE / MOTION</span></div><div class="program-copy"><div class="kicker">03 / ÚJRAKEZDÉS · KIVÁLASZTOTT PROGRAM / DEMÓ</div><h3>Indulj el a saját tempódban.</h3><p>Könnyen követhető, fokozatos program azoknak, akik most építik újra a mozgás rutinját.</p><div class="program-attributes"><div><span>FÓKUSZ</span><strong>Mobilitás &amp; alapok</strong></div><div><span>JAVASOLT RITMUS</span><strong>Heti 2 alkalom</strong></div></div><a href="#jelentkezes" class="button-primary">Ezt választom <span>↗</span></a></div></article></div>
         </div>
       </section>
-      <section class="manifesto">
-        <span class="manifesto-kicker">
-          DON'T WAIT FOR THE PERFECT MOMENT
-        </span>
-        <h2>
-          START
-          <br>
-          WHERE
-          <br>
-          YOU
-          <i>
-            ARE.
-          </i>
-        </h2>
-        <div class="manifesto-star">
-          ✳
+      <section class="manifesto scene" data-scene data-final="1" style="--h:250vh">
+        <div class="scene-pin">
+          <span class="manifesto-kicker">DON'T WAIT FOR THE PERFECT MOMENT</span>
+          <h2><span class="mw" data-t="0.04,0.36">START</span><span class="mw" data-t="0.2,0.52">WHERE</span><span class="mw" data-t="0.36,0.68">YOU</span><i class="mw" data-t="0.52,0.86">ARE.</i></h2>
+          <div class="manifesto-star">✳</div>
+          <span class="manifesto-bottom">A LEGJOBB IDŐPONT AZ, AMIT MAGADNAK ADSZ.</span>
         </div>
-        <span class="manifesto-bottom">
-          A LEGJOBB IDŐPONT AZ, AMIT MAGADNAK ADSZ.
-        </span>
       </section>
       <section id="edzo" class="section about reveal">
-        <div class="about-art">
+        <div class="about-art"><img data-speed="0.06" class="about-photo" src="../photos/pulse-detail.jpg" width="900" height="600" alt="" loading="lazy">
           <span class="about-number">
             03 / THE COACH
           </span>

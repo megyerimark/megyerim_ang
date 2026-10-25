@@ -454,8 +454,8 @@
       </div>
     </div>
   </section>
-} @else {
-  <section premiumReveal class="section work work--concepts" id="munkak" aria-labelledby="concepts-title">
+}
+<section premiumReveal class="section work work--concepts" id="koncepciok" aria-labelledby="concepts-title">
     <div class="container">
       <div class="section-heading-row">
         <div>
@@ -475,8 +475,7 @@
       </div>
       <p class="concept-disclaimer">Demó koncepciók: a megjelenés és a működés szemléltetésére készültek.</p>
     </div>
-  </section>
-}
+</section>
 <section premiumReveal class="section process" id="folyamat">
   <div class="container process-layout">
     <div class="process-intro">
@@ -602,7 +601,7 @@
         <blockquote>„{{ t.quote }}”</blockquote>
         <figcaption>
           <strong>{{ t.author_name }}</strong>
-{{ t.author_role && t.company ? t.author_role + ', ' + t.company : (t.author_role || t.company || '') }}
+@if (t.author_role || t.company) {<span>{{ t.author_role && t.company ? t.author_role + ', ' + t.company : (t.author_role || t.company) }}</span>}
           @if (t.project) {<a [routerLink]="['/munkak', t.project.slug]">{{ t.project.title }} ↗</a>}
         </figcaption>
       </figure>

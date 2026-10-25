@@ -5,9 +5,8 @@ const range = document.querySelector('#comparison-range'), after = document.quer
 function updateRange() { const v = Number(range.value); after.style.clipPath = `inset(0 ${100 - v}% 0 0)`; line.style.left = v + '%'; }
 range.addEventListener('input', updateRange);
 updateRange();
-const plans = { essential: { name: 'Essential Detail', description: 'Az autó megjelenésének átgondolt felfrissítése.', price: '24 900 Ft', features: ['Külső kézi mosás', 'Felületek ápolása', 'Felnik tisztítása'] }, signature: { name: 'Signature Care', description: 'Komplex autóápolás, amely a belső és külső felületeket is új szintre emeli.', price: '49 900 Ft', features: ['Részletes külső detailing', 'Utastér tisztítása és ápolása', 'Prémium felületi finish'] }, ultimate: { name: 'Ultimate Shield', description: 'Átfogó prémium kezelés, külön hangsúllyal a tartósabb felületvédelemre.', price: '89 900 Ft', features: ['Külső-belső mélytisztítás', 'Fényezés-előkészítés', 'Mintakerámia védelem'] } };
-const tabs = [...document.querySelectorAll('.package-tab')];
-tabs.forEach(button => button.addEventListener('click', () => { tabs.forEach(t => { const active = t === button; t.classList.toggle('active', active); t.setAttribute('aria-pressed', String(active)); }); const p = plans[button.dataset.plan]; document.querySelector('#plan-name').textContent = p.name; document.querySelector('#plan-description').textContent = p.description; document.querySelector('#plan-price').textContent = p.price; document.querySelector('#plan-features').replaceChildren(...p.features.map(item => { const li = document.createElement('li'); li.textContent = item; return li; })); }));
+// A görgetés vezérli a csúszkát (a kézi húzás továbbra is működik)
+document.querySelector('#elotte-utana').addEventListener('scene:frame', e => { const p = e.detail.p; range.value = String(Math.round(Math.min(1, Math.max(0, (p - .22) / .6)) * 100)); updateRange(); });
 const reveal = document.querySelectorAll('.reveal');
 if ('IntersectionObserver' in window) {
     const obs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) {
