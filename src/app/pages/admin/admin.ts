@@ -4,8 +4,8 @@ import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiService } from '../../core/api.service';
 import { AuthService } from '../../core/auth.service';
-import { Activity, Client, ConsultationSlot, Dashboard, Project, ProjectMilestone, ProjectCollaboration, ProjectDocument, Quote, QuoteStatus, Service, SiteSettings, SITE_DEFAULTS, STATUS_OPTIONS } from '../../core/models';
-type Tab = 'dashboard' | 'consultations' | 'quotes' | 'clients' | 'projects' | 'services' | 'settings' | 'activity' | 'account';
+import { Activity, Client, ConsultationSlot, Dashboard, Project, ProjectMilestone, ProjectCollaboration, ProjectDocument, Quote, QuoteStatus, Service, SiteSettings, SITE_DEFAULTS, STATUS_OPTIONS, MaintenanceAgreement, MaintenanceEditor, MaintenanceData, QuoteBoard, StudioTask } from '../../core/models';
+type Tab = 'dashboard' | 'workspace' | 'maintenance' | 'consultations' | 'quotes' | 'clients' | 'projects' | 'services' | 'settings' | 'activity' | 'account';
 interface ServiceEditor {
     id: number | null;
     title: string;
@@ -43,6 +43,14 @@ export class AdminPage implements OnInit {
     isError = signal(false);
     menuOpen = signal(false);
     dashboard = signal<Dashboard | null>(null);
+    maintenanceData = signal<MaintenanceData>({agreements: [], candidates: []});
+    maintenanceEditor = signal<MaintenanceEditor | null>(null);
+    editingMaintenanceId = signal<number | null>(null);
+    workspaceBoard = signal<QuoteBoard | null>(null);
+    studioTasks = signal<StudioTask[]>([]);
+    newTaskTitle = '';
+    newTaskDue = '';
+    newTaskQuoteId = '';
     quotes = signal<Quote[]>([]);
     quotePage = signal(1);
     quotePages = signal(1);
@@ -90,7 +98,42 @@ export class AdminPage implements OnInit {
         value: Tab;
         title: string;
         icon: string;
-    }[] = [{ value: 'dashboard', title: 'Áttekintés', icon: '◫' }, { value: 'quotes', title: 'Ajánlatkérések', icon: '▤' }, { value: 'consultations', title: 'Konzultációk', icon: '◷' }, { value: 'clients', title: 'Ügyfelek', icon: '♙' }, { value: 'projects', title: 'Referenciák', icon: '▧' }, { value: 'services', title: 'Szolgáltatások', icon: '◇' }, { value: 'settings', title: 'Weboldal beállításai', icon: '⚙' }, { value: 'activity', title: 'Tevékenységnapló', icon: '◷' }, { value: 'account', title: 'Fiók és jelszó', icon: '⌘' }];
+    }[] = [{ value: 'dashboard', title: 'Áttekintés', icon: '◫' }, {value:'workspace',title:'MM Munkatér',icon:'▦'}, { value: 'quotes', title: 'Ajánlatkérések', icon: '▤' }, {value:'maintenance',title:'Karbantartás',icon:'✧'}, { value: 'consultations', title: 'Konzultációk', icon: '◷' }, { value: 'clients', title: 'Ügyfelek', icon: '♙' }, { value: 'projects', title: 'Referenciák', icon: '▧' }, { value: 'services', title: 'Szolgáltatások', icon: '◇' }, { value: 'settings', title: 'Weboldal beállításai', icon: '⚙' }, { value: 'activity', title: 'Tevékenységnapló', icon: '◷' }, { value: 'account', title: 'Fiók és jelszó', icon: '⌘' }];
+    readonly boardStatuses = STATUS_OPTIONS;
+    readonly pipelinePalette: Record<QuoteStatus,string> = {
+        new:'#9681fd', reviewing:'#579bea', quoted:'#36c8c2',
+        accepted:'#54d8a1', rejected:'#f18a95', completed:'#d5b5ff'
+    };
+    readonly pipelineDonut = computed(() => {
+        const entries = this.dashboard()?.quotes_by_status ?? [];
+        const total = entries.reduce((sum, x) => sum + x.count, 0);
+        if (!total) return 'conic-gradient(#64688740 0 100%)';
+        let position = 0;
+        const stops = entries.map(row => {
+            const start = position;
+            position += (row.count / total) * 100;
+            return `${this.pipelinePalette[row.status]} ${start}% ${position}%`;
+        });
+        return `conic-gradient(${stops.join(',')})`;
+    });
+    readonly leadDonut = computed(() => {
+        const breakdown = this.dashboard()?.lead_sources;
+        if (!breakdown || breakdown.quiz + breakdown.form === 0) return 'conic-gradient(#64688740 0 100%)';
+        const percent = (breakdown.quiz / (breakdown.quiz + breakdown.form)) * 100;
+        return `conic-gradient(#8f78ff 0 ${percent}%,#48bed9 ${percent}% 100%)`;
+    });
+    readonly conversionPercent = computed(() => {
+        const d = this.dashboard(); return d?.quotes_total ? Math.round(((d.quotes_accepted + d.quotes_completed) / d.quotes_total) * 100) : 0;
+    });
+    moneyBar(value: number): number {
+        const values = this.dashboard()?.accepted_value_monthly ?? [];
+        const max = Math.max(1, ...values.map(x => x.value));
+        return value ? Math.max(5, (value / max) * 100) : 2;
+    }
+    typeBar(value:number):number {
+        const max = Math.max(1,...(this.dashboard()?.quotes_by_type ?? []).map(x=>x.count));
+        return (value / max) * 100;
+    }
     readonly chartHeight = (count: number): number => {
         const values = this.dashboard()?.quotes_monthly ?? [];
         const highest = Math.max(1, ...values.map(item => item.count));
@@ -132,6 +175,8 @@ export class AdminPage implements OnInit {
         this.projectEditor.set(null);
         if (tab === 'dashboard')
             this.loadDashboard();
+        if (tab === 'workspace') this.loadWorkspace();
+        if (tab === 'maintenance') this.loadMaintenance();
         if (tab === 'quotes')
             this.loadQuotes();
         if (tab === 'consultations') this.loadConsultations();
@@ -163,6 +208,68 @@ export class AdminPage implements OnInit {
         this.api.deleteConsultation(slot.id).subscribe({next:()=>{this.loadConsultations(); this.notify('Időpont törölve.');}, error:e=>this.fail(e)});
     }
     loadDashboard() { this.busy.set(true); this.api.dashboard().subscribe({ next: r => { this.dashboard.set(r.data); this.busy.set(false); }, error: e => this.fail(e) }); }
+    loadWorkspace() {
+        this.api.quoteBoard().subscribe({next:r=>this.workspaceBoard.set(r.data),error:e=>this.fail(e)});
+        this.api.studioTasks().subscribe({next:r=>this.studioTasks.set(r.data),error:e=>this.fail(e)});
+    }
+    createStudioTask() {
+        if(this.newTaskTitle.trim().length < 2) {this.notify('Legalább két karakteres feladatnevet adj meg.',true);return;}
+        const quoteId = this.newTaskQuoteId.trim() ? Number(this.newTaskQuoteId) : null;
+        if (quoteId !== null && (!Number.isInteger(quoteId) || quoteId <= 0)) {this.notify('Érvénytelen ajánlat-azonosító.',true);return;}
+        this.busy.set(true);
+        this.api.createStudioTask({title:this.newTaskTitle.trim(),due_date:this.newTaskDue || null,quote_request_id:quoteId}).subscribe({
+            next:()=>{this.newTaskTitle='';this.newTaskDue='';this.newTaskQuoteId='';this.busy.set(false);this.loadWorkspace();this.loadDashboard();this.notify('Feladat létrehozva.');},
+            error:e=>this.fail(e)
+        });
+    }
+    toggleStudioTask(task: StudioTask) {
+        this.api.updateStudioTask(task.id,{is_done:!task.is_done}).subscribe({
+            next:()=>{this.loadWorkspace();this.loadDashboard();},
+            error:e=>this.fail(e)
+        });
+    }
+    removeStudioTask(task: StudioTask) {
+        if(!confirm('Törlöd ezt a belső feladatot?'))return;
+        this.api.deleteStudioTask(task.id).subscribe({next:()=>{this.loadWorkspace();this.loadDashboard();},error:e=>this.fail(e)});
+    }
+    openBoardQuote(id:number) {
+        this.use('quotes');
+        this.api.quote(id).subscribe({next:r=>this.showQuote(r.data),error:e=>this.fail(e)});
+    }
+    loadMaintenance() {
+        this.busy.set(true);
+        this.api.maintenance().subscribe({next:r=>{this.maintenanceData.set(r.data);this.busy.set(false);},error:e=>this.fail(e)});
+    }
+    newMaintenance(quoteId?:number) {
+        this.editingMaintenanceId.set(null);
+        this.maintenanceEditor.set({
+            quote_request_id:quoteId ?? this.maintenanceData().candidates[0]?.id ?? 0,
+            plan_name:'Aurora Care – Mini',monthly_fee_huf:2000,status:'draft',
+            starts_on:'',next_review_on:'',included_services:'Alapvető állapotfigyelés és havi ellenőrzés.',
+            internal_notes:''
+        });
+    }
+    editMaintenance(row:MaintenanceAgreement) {
+        this.editingMaintenanceId.set(row.id);
+        this.maintenanceEditor.set({
+            quote_request_id:row.quote_request_id,plan_name:row.plan_name,
+            monthly_fee_huf:row.monthly_fee_huf,status:row.status,
+            starts_on:row.starts_on?.slice(0,10)??'',
+            next_review_on:row.next_review_on?.slice(0,10)??'',
+            included_services:row.included_services??'',internal_notes:row.internal_notes??''
+        });
+    }
+    saveMaintenance() {
+        const editor = this.maintenanceEditor();
+        if(!editor || !editor.quote_request_id || !editor.plan_name.trim() || !Number.isInteger(editor.monthly_fee_huf) || editor.monthly_fee_huf < 0) {
+            this.notify('Válassz ügyfelet, csomagnevet és érvényes havi díjat.',true);return;
+        }
+        this.busy.set(true);
+        this.api.saveMaintenance(this.editingMaintenanceId(),editor).subscribe({
+            next:()=>{this.maintenanceEditor.set(null);this.busy.set(false);this.loadMaintenance();this.loadDashboard();this.notify('Karbantartási megállapodás mentve. Fizetés nem indult.');},
+            error:e=>this.fail(e)
+        });
+    }
     loadQuotes(page = 1) { this.busy.set(true); this.api.quotes(this.searchQuote, this.filterStatus, page).subscribe({ next: r => { this.quotes.set(r.data); this.quotePage.set(r.current_page); this.quotePages.set(r.last_page); this.quoteTotal.set(r.total); this.busy.set(false); }, error: e => this.fail(e) }); }
     showQuote(q: Quote) { this.selectedQuote.set(q); this.selectedStatus = q.status; this.selectedNotes = q.admin_notes || ''; this.selectedPrice = q.quoted_price_huf === null ? '' : String(q.quoted_price_huf); this.selectedProposal = q.proposal_summary || ''; this.selectedSchedule = q.proposal_schedule || ''; this.selectedTerms = q.proposal_terms || ''; this.selectedValidUntil = q.proposal_valid_until ? q.proposal_valid_until.slice(0, 10) : ''; this.loadMilestones(q.id); this.loadCollaboration(q.id); }
     saveQuote() {

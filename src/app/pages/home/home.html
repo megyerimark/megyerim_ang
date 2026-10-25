@@ -2,6 +2,7 @@
   <div class="backend-warning" role="status">Egyes élő adatok átmenetileg nem érhetők el. Ajánlatot ettől még kérhetsz.</div>
 }
 <app-hero [headline]="heroHeadline()" [description]="heroDescription()"></app-hero>
+<app-cinematic-story></app-cinematic-story>
 <section class="value-strip" aria-label="A közös munka alapjai">
   <div class="value-strip-track">
     @for (copy of [0, 1]; track copy) {
@@ -184,10 +185,13 @@
         </div>
       </div>
 
-      <div class="lab-stage">
+      <div class="lab-stage" [class.lab-stage--mobile]="selectedDevice() === 'mobile'">
         <div class="lab-stage-top">
           <span><span class="lab-live-dot" aria-hidden="true"></span> ÉLŐ VIZUÁLIS ELŐNÉZET</span>
-          <span>INTERAKTÍV KONCEPCIÓ / MMM</span>
+          <div class="lab-device-switch" role="group" aria-label="Eszköznézet kiválasztása">
+            <button type="button" [class.active]="selectedDevice() === 'desktop'" [attr.aria-pressed]="selectedDevice() === 'desktop'" (click)="selectedDevice.set('desktop')">Asztali</button>
+            <button type="button" [class.active]="selectedDevice() === 'mobile'" [attr.aria-pressed]="selectedDevice() === 'mobile'" (click)="selectedDevice.set('mobile')">Mobil</button>
+          </div>
         </div>
         <div class="lab-browser" [attr.data-style]="selectedStyle()">
           <div class="lab-browser-chrome">

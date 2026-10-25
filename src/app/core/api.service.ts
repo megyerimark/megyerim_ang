@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, switchMap } from 'rxjs';
-import { AdminUser, Activity, Client, ClientProject, ConsultationConfirmation, ConsultationSlot, Dashboard, Envelope, Paged, Project, ProjectMilestone, ProjectMessage, ProjectDocument, ProjectCollaboration, Quote, QuotePayload, QuoteBoard, Service, SiteSettings, StudioTask, StudioClientNote, WorkspaceProject, CommunicationCenter } from './models';
+import { AdminUser, Activity, Client, ClientProject, ConsultationConfirmation, ConsultationSlot, Dashboard, Envelope, Paged, Project, ProjectMilestone, ProjectMessage, ProjectDocument, ProjectCollaboration, Quote, QuotePayload, QuoteBoard, Service, SiteSettings, StudioTask, StudioClientNote, WorkspaceProject, CommunicationCenter, MaintenanceData, MaintenanceAgreement, MaintenanceEditor } from './models';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
     private http = inject(HttpClient);
@@ -75,6 +75,12 @@ export class ApiService {
     }
     me() { return this.http.get<Envelope<AdminUser>>('/api/admin/me', this.opts); }
     dashboard() { return this.http.get<Envelope<Dashboard>>('/api/admin/dashboard', this.opts); }
+    maintenance() { return this.http.get<Envelope<MaintenanceData>>('/api/admin/maintenance-agreements', this.opts); }
+    saveMaintenance(id:number|null, data:MaintenanceEditor) {
+        return id
+            ? this.http.patch<Envelope<MaintenanceAgreement>>('/api/admin/maintenance-agreements/' + id, (({quote_request_id,...changes})=>changes)(data), this.opts)
+            : this.http.post<Envelope<MaintenanceAgreement>>('/api/admin/maintenance-agreements', data, this.opts);
+    }
     quoteBoard() { return this.http.get<Envelope<QuoteBoard>>('/api/admin/quote-board', this.opts); }
     workspaceProjects() { return this.http.get<Envelope<WorkspaceProject[]>>('/api/admin/workspace/projects', this.opts); }
     communications() { return this.http.get<Envelope<CommunicationCenter>>('/api/admin/workspace/communications', this.opts); }

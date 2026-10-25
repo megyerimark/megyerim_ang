@@ -81,10 +81,10 @@
             MEGYERI MÁRK MÁTÉ / DASHBOARD
           </span>
           <h1>
-            {{tab()==='dashboard'?'Üdv újra!':tab()==='quotes'?'Ajánlatkérések':tab()==='consultations'?'Konzultációk':tab()==='clients'?'Ügyfelek':tab()==='projects'?'Referenciák':tab()==='services'?'Szolgáltatások':tab()==='settings'?'Weboldal beállításai':tab()==='activity'?'Tevékenységnapló':'Fiók és biztonság'}}
+            {{tab()==='dashboard'?'Üdv újra!':tab()==='workspace'?'MM Munkatér':tab()==='maintenance'?'Aurora Care':tab()==='quotes'?'Ajánlatkérések':tab()==='consultations'?'Konzultációk':tab()==='clients'?'Ügyfelek':tab()==='projects'?'Referenciák':tab()==='services'?'Szolgáltatások':tab()==='settings'?'Weboldal beállításai':tab()==='activity'?'Tevékenységnapló':'Fiók és biztonság'}}
           </h1>
           <p>
-            {{tab()==='dashboard'?'Minden fontos információ egy helyen.':tab()==='quotes'?'Beérkező megkeresések és ajánlatok kezelése.':tab()==='consultations'?'Szabad és lefoglalt konzultációk kezelése.':tab()==='clients'?'Korábbi érdeklődők és projektelőzmények.':tab()==='projects'?'A portfólió tartalmainak szerkesztése.':tab()==='services'?'Szolgáltatások és csomagok beállítása.':tab()==='settings'?'A nyilvános weboldal szövegei és elérhetőségei.':tab()==='activity'?'Legutóbbi adminműveletek.':'Jelszóváltoztatás és hozzáférés.'}}
+            {{tab()==='dashboard'?'Valós üzleti adatok és következő lépések.':tab()==='workspace'?'Ajánlatfolyamat és napi teendők egy helyen.':tab()==='maintenance'?'Havi karbantartási megállapodások és esedékességek.':tab()==='quotes'?'Beérkező megkeresések és ajánlatok kezelése.':tab()==='consultations'?'Szabad és lefoglalt konzultációk kezelése.':tab()==='clients'?'Korábbi érdeklődők és projektelőzmények.':tab()==='projects'?'A portfólió tartalmainak szerkesztése.':tab()==='services'?'Szolgáltatások és csomagok beállítása.':tab()==='settings'?'A nyilvános weboldal szövegei és elérhetőségei.':tab()==='activity'?'Legutóbbi adminműveletek.':'Jelszóváltoztatás és hozzáférés.'}}
           </p>
         </div>
         <div class="head-date">
@@ -196,6 +196,53 @@
           <button type="button" (click)="use('clients')"><span class="quick-icon">♧</span><span>Ügyfelek <small>Kapcsolatok és projektelőzmények</small></span><b>↗</b></button>
         </section>
       </div>
+      <div class="aurora-insight-grid">
+        <section class="admin-panel card aurora-insight">
+          <div class="panel-title"><div><span class="panel-eyebrow">AJÁNLATI FUNNEL</span><h2>Érdeklődők útja</h2></div><strong class="insight-percent">{{conversionPercent()}}%</strong></div>
+          <div class="donut-layout">
+            <div class="aurora-donut" [style.background]="pipelineDonut()" role="img" [attr.aria-label]="'Ajánlatok megoszlása státusz szerint, összesen ' + dash.quotes_total"><div><strong>{{dash.quotes_total}}</strong><small>megkeresés</small></div></div>
+            <div class="donut-legend">
+              @for(row of (dash.quotes_by_status || []);track row.status){<div><i [style.background]="pipelinePalette[row.status]"></i><span>{{statusLabel(row.status)}}</span><strong>{{row.count}}</strong></div>}
+            </div>
+          </div>
+          <small class="insight-foot">Elfogadott + lezárt megkeresések aránya az összesből. Nem fizetési mutató.</small>
+        </section>
+        <section class="admin-panel card aurora-insight">
+          <div class="panel-title"><div><span class="panel-eyebrow">CSATORNÁK</span><h2>Kvíz vagy űrlap?</h2></div></div>
+          <div class="donut-layout">
+            <div class="aurora-donut source-donut" [style.background]="leadDonut()" role="img" [attr.aria-label]="'Kvízből érkező: ' + (dash.lead_sources?.quiz || 0) + ', űrlapból érkező: ' + (dash.lead_sources?.form || 0)"><div><strong>{{dash.lead_sources?.quiz || 0}}</strong><small>kvízlead</small></div></div>
+            <div class="donut-legend">
+              <div><i style="background:#8f78ff"></i><span>Interaktív kvíz</span><strong>{{dash.lead_sources?.quiz || 0}}</strong></div>
+              <div><i style="background:#48bed9"></i><span>Ajánlatkérő űrlap</span><strong>{{dash.lead_sources?.form || 0}}</strong></div>
+            </div>
+          </div>
+          <small class="insight-foot">A már beérkezett megkeresések forrásai, nem látogatottsági mérés.</small>
+        </section>
+        <section class="admin-panel card aurora-insight">
+          <div class="panel-title"><div><span class="panel-eyebrow">IGÉNYEK</span><h2>Milyen weboldalt kérnek?</h2></div></div>
+          <div class="type-chart">
+            @for(row of (dash.quotes_by_type || []);track row.label){
+              <div class="type-chart-row"><div><span>{{row.label}}</span><strong>{{row.count}}</strong></div><div class="type-track"><i [style.width.%]="typeBar(row.count)"></i></div></div>
+            }@empty{<p class="muted">Még nincs megjeleníthető ajánlatkérés.</p>}
+          </div>
+        </section>
+        <section class="admin-panel card aurora-insight money-insight">
+          <div class="panel-title"><div><span class="panel-eyebrow">ÜZLETI ÉRTÉK / NEM BEVÉTEL</span><h2>Elfogadott ajánlatok értéke</h2></div><strong class="money-amount">{{money(dash.accepted_proposals_value_huf)}}</strong></div>
+          <div class="value-bars" role="img" aria-label="Az elmúlt hat hónapban elfogadott ajánlatok értéke">
+            @for(row of (dash.accepted_value_monthly || []);track $index){
+              <div class="value-month"><div class="value-track" [title]="money(row.value)"><div [style.height.%]="moneyBar(row.value)"></div></div><span>{{row.label}}</span></div>
+            }
+          </div>
+          <small class="insight-foot">Ajánlati érték: a ténylegesen befolyt összeget külön kell majd nyilvántartani.</small>
+        </section>
+      </div>
+      <div class="care-dash-strip">
+        <div><span>✧ Karbantartást kérők</span><strong>{{dash.maintenance_leads || 0}}</strong></div>
+        <div><span>Aktív megállapodások</span><strong>{{dash.maintenance_active || 0}}</strong></div>
+        <div><span>Havi szerződéses érték</span><strong>{{money(dash.maintenance_contract_value_huf)}}</strong></div>
+        <div><span>Esedékes ellenőrzés</span><strong>{{dash.maintenance_reviews_due || 0}}</strong></div>
+        <button type="button" (click)="use('maintenance')">Aurora Care megnyitása ↗</button>
+      </div>
       <div class="admin-grid">
         <section class="admin-panel card">
           <div class="panel-title">
@@ -302,6 +349,83 @@
         </section>
       </div>
       }}
+@if(tab()==='workspace'){
+  <div class="admin-panel card workspace-intro"><span class="panel-eyebrow">MM STUDIO / CRM</span><h2>Ajánlatfolyamat – Kanban</h2><p>A kártyák az ajánlatkérések valódi állapotát mutatják. Státuszt az ajánlat adatlapján módosíthatsz.</p></div>
+  @if(workspaceBoard();as board){
+    <div class="workspace-board">
+      @for(column of boardStatuses;track column.value){
+        <section class="board-column">
+          <div class="board-heading"><span [style.background]="pipelinePalette[column.value]"></span><strong>{{column.label}}</strong><small>{{board.totals[column.value] || 0}}</small></div>
+          @for(q of (board.columns[column.value] || []);track q.id){
+            <button type="button" class="board-quote" (click)="openBoardQuote(q.id)"><strong>{{q.customer_name}}</strong><span>{{q.company_name || q.website_type}}</span><small>#{{q.id}} · {{money(q.quoted_price_huf)}}</small></button>
+          } @empty {<p class="board-empty">Nincs ajánlat ebben a szakaszban.</p>}
+        </section>
+      }
+    </div>
+  }
+  <section class="admin-panel card task-workspace">
+    <div class="panel-title"><div><span class="panel-eyebrow">TEENDŐK</span><h2>Saját feladatkezelő</h2></div><span class="muted">{{studioTasks().length}} feladat</span></div>
+    <div class="task-create">
+      <label>Új feladat<input class="input" maxlength="160" [(ngModel)]="newTaskTitle" placeholder="Pl. Ajánlat elküldése"></label>
+      <label>Határidő<input class="input" type="date" [(ngModel)]="newTaskDue"></label>
+      <label>Ajánlat ID (opcionális)<input class="input" type="number" min="1" [(ngModel)]="newTaskQuoteId" placeholder="Pl. 12"></label>
+      <button class="btn btn-primary" type="button" [disabled]="busy()" (click)="createStudioTask()">+ Feladat</button>
+    </div>
+    @for(task of studioTasks();track task.id){
+      <div class="task-item" [class.done]="task.is_done">
+        <label><input type="checkbox" [checked]="task.is_done" (change)="toggleStudioTask(task)"><span><strong>{{task.title}}</strong><small>{{task.due_date ? date(task.due_date) : 'Nincs határidő'}} @if(task.quote_request_id){ · Ajánlat #{{task.quote_request_id}} }</small></span></label>
+        <button type="button" class="danger-text" (click)="removeStudioTask(task)">Törlés</button>
+      </div>
+    } @empty {<p class="empty-state">Még nincs feladat. Vedd fel az első teendőt!</p>}
+  </section>
+}
+@if(tab()==='maintenance'){
+  <div class="care-banner">
+    <span class="panel-eyebrow">AURORA CARE / KARBANTARTÁS</span>
+    <h2>Az ügyfélkapcsolat az átadás után is folytatódik.</h2>
+    <p>A havi megállapodásokat és az ellenőrzési időpontokat itt követheted. Ez nyilvántartás; a rendszer még nem terhel bankkártyát, és a megadott díjak nem igazolt befizetések.</p>
+    <button type="button" class="btn btn-primary" (click)="newMaintenance()">+ Új megállapodás</button>
+  </div>
+  <div class="care-record-grid" [class.with-editor]="!!maintenanceEditor()">
+    <section class="admin-panel card">
+      <div class="panel-title"><h2>Megállapodások ({{maintenanceData().agreements.length}})</h2><button type="button" class="action-link" (click)="loadMaintenance()">Frissítés ↗</button></div>
+      @for(row of maintenanceData().agreements;track row.id){
+        <div class="care-record">
+          <div class="care-record-person"><strong>{{row.quote_request.customer_name}}</strong><a [href]="'mailto:'+row.quote_request.email">{{row.quote_request.email}}</a><small>{{row.plan_name}} · #{{row.quote_request_id}}</small></div>
+          <div class="care-record-price"><strong>{{money(row.monthly_fee_huf)}}<small>/hó</small></strong><span class="care-status" [attr.data-care-status]="row.status">{{row.status==='active'?'Aktív':row.status==='paused'?'Szünetel':row.status==='canceled'?'Lezárva':'Tervezet'}}</span></div>
+          <div class="care-record-bottom"><small>Következő ellenőrzés: {{date(row.next_review_on)}}</small><button type="button" class="mini-action" (click)="editMaintenance(row)">Szerkesztés ↗</button></div>
+        </div>
+      } @empty {<div class="empty-state">Még nincs karbantartási megállapodás. Az érdeklődőkből készíthetsz tervezetet.</div>}
+      <div class="care-candidates"><h3>Karbantartás iránt érdeklődők</h3>
+        @for(q of maintenanceData().candidates;track q.id){
+          <button type="button" class="care-candidate" (click)="newMaintenance(q.id)"><span><strong>{{q.customer_name}}</strong><small>{{q.email}} · {{statusLabel(q.status)}}</small></span><span>Tervezet +</span></button>
+        } @empty {<p class="muted">Nincs feldolgozatlan karbantartási igény.</p>}
+      </div>
+    </section>
+    @if(maintenanceEditor();as editor){
+      <section class="admin-panel card care-editor">
+        <div class="panel-title"><h2>{{editingMaintenanceId()?'Megállapodás szerkesztése':'Új megállapodás'}}</h2><button type="button" aria-label="Szerkesztés bezárása" (click)="maintenanceEditor.set(null)">×</button></div>
+        <label class="form-field">Ügyfél / ajánlat
+          <select class="input" [(ngModel)]="editor.quote_request_id" [disabled]="!!editingMaintenanceId()">
+            @if(!editingMaintenanceId()){<option [ngValue]="0">Válassz ajánlatot</option>}
+            @for(q of maintenanceData().candidates;track q.id){<option [ngValue]="q.id">{{q.customer_name}} – #{{q.id}}</option>}
+            @if(editingMaintenanceId()){<option [ngValue]="editor.quote_request_id">Ajánlat #{{editor.quote_request_id}}</option>}
+          </select>
+        </label>
+        <label class="form-field">Csomag neve<input class="input" maxlength="100" [(ngModel)]="editor.plan_name"></label>
+        <label class="form-field">Havi díj (Ft)<input class="input" type="number" min="0" max="1000000" [(ngModel)]="editor.monthly_fee_huf"></label>
+        <label class="form-field">Megállapodás állapota
+          <select class="input" [(ngModel)]="editor.status"><option value="draft">Tervezet</option><option value="active">Aktív</option><option value="paused">Szünetel</option><option value="canceled">Lezárva</option></select>
+        </label>
+        <p class="proposal-hint">Aktiválás csak ténylegesen elfogadott ajánlatnál lehetséges. Az aktív jelölés nem bizonyítja a befizetést.</p>
+        <div class="care-dates"><label class="form-field">Kezdés<input class="input" type="date" [(ngModel)]="editor.starts_on"></label><label class="form-field">Következő ellenőrzés<input class="input" type="date" [(ngModel)]="editor.next_review_on"></label></div>
+        <label class="form-field">Pontosan mit tartalmaz?<textarea class="input" maxlength="3000" rows="4" [(ngModel)]="editor.included_services" placeholder="Vállalt ellenőrzések, mentések, hibajavítás, kizárások…"></textarea></label>
+        <label class="form-field">Belső megjegyzés<textarea class="input" maxlength="3000" rows="3" [(ngModel)]="editor.internal_notes"></textarea></label>
+        <button type="button" class="btn btn-primary" [disabled]="busy()" (click)="saveMaintenance()">Megállapodás mentése ↗</button>
+      </section>
+    }
+  </div>
+}
 @if(tab()==='consultations'){
     <div class="admin-panel card consultations-admin">
       <h2>Új szabad konzultációs időpont</h2>
@@ -524,6 +648,13 @@
             </div>
           } @else {
             <div class="detail-block"><small>Projektleírás</small><p class="description">{{q.project_description}}</p></div>
+          }
+          @if(q.wants_maintenance){
+            <div class="detail-block care-detail-cta">
+              <small>✧ Aurora Care lehetőség</small>
+              <p>Ez az érdeklődő karbantartást is szeretne. Az elfogadott ajánlat után külön havi megállapodást rögzíthetsz.</p>
+              <button type="button" class="btn btn-outline" (click)="use('maintenance')">Karbantartási nyilvántartás ↗</button>
+            </div>
           }
           <hr>
           <div class="form-field">

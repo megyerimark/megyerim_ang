@@ -1,0 +1,51 @@
+<section #storySection class="cinematic-story" id="cinematic-story" aria-labelledby="story-title">
+  <div class="story-pin">
+    <div class="story-aura" aria-hidden="true"></div>
+    <div class="container story-layout">
+      <div class="story-copy">
+        <span class="story-kicker"><span class="story-kicker-line"></span> 02 / TERVEZÉSTŐL AZ ÉLMÉNYIG</span>
+        <h2 id="story-title">Így kel életre <em>egy weboldal.</em></h2>
+        <p class="story-intro">Egy jól felépített weboldal nem véletlenül működik. Az üzenet, a dizájn és a technológia minden rétege ugyanazért a célért dolgozik.</p>
+        <div class="story-current" aria-live="off">
+          <span class="story-current-number">{{ chapter().number }} <span>/ 04</span></span>
+          <div><strong>{{ chapter().title }}</strong><p>{{ chapter().description }}</p></div>
+        </div>
+        <a routerLink="/tervezo" class="story-link">Tervezd meg a sajátodat <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="story-scene" role="img" aria-label="Görgetésre egymásba rendeződő weboldalrétegek és mobil előnézet">
+        <div class="story-glow" aria-hidden="true"></div>
+        <div class="story-stage" [style.transform]="stageTransform()" aria-hidden="true">
+          <div class="story-depth story-depth--back"></div>
+          <div class="story-layer story-layer--wire" [style.transform]="wireTransform()">
+            <div class="story-wire-title"></div><div class="story-wire-line"></div>
+            <div class="story-wire-grid"><i></i><i></i><i></i></div>
+            <div class="story-wire-button"></div>
+          </div>
+          <div class="story-layer story-layer--visual" [style.transform]="visualTransform()">
+            <div class="story-visual-art"><span class="art-sun"></span><span class="art-shore art-shore--one"></span><span class="art-shore art-shore--two"></span></div>
+            <div class="story-visual-bubbles"><i></i><i></i><i></i></div>
+          </div>
+          <div class="story-layer story-layer--content" [style.transform]="contentTransform()">
+            <span>EGYEDI DIGITÁLIS ÉLMÉNY</span>
+            <strong>Az ötletedből<br><em>érték.</em></strong>
+            <p>Stratégia, tervezés és technológia.</p>
+            <div class="story-faux-button">Kezdjük el ↗</div>
+          </div>
+          <div class="story-layer story-layer--menu" [style.transform]="menuTransform()">
+            <strong>M<span>.</span></strong><span>Szolgáltatások</span><span>Rólam</span><span>Kapcsolat</span>
+          </div>
+          <div class="story-layer story-layer--code"><span>&lt;main&gt;</span><span> responsive: true</span><span> experience: premium</span><span>&lt;/main&gt;</span></div>
+          <div class="story-scene-shadow"></div>
+        </div>
+        <div class="story-phone" [style.transform]="mobileTransform()" [style.opacity]="phoneOpacity()" aria-hidden="true">
+          <div class="story-phone-notch"></div><strong>M.</strong><span>ÚJ ÉLMÉNYEK</span><h3>Az ötletedből<br>érték.</h3><i></i><small>Kezdjük el ↗</small>
+        </div>
+        <div class="story-callout story-callout--one" aria-hidden="true"><i></i>NAVIGÁCIÓ <span>/ 01</span></div>
+        <div class="story-callout story-callout--two" aria-hidden="true"><i></i>DIZÁJN <span>/ 02</span></div>
+        <div class="story-callout story-callout--three" aria-hidden="true"><i></i>FEJLESZTÉS <span>/ 03</span></div>
+      </div>
+      <div class="story-meter" aria-hidden="true"><span>SCROLL EXPERIENCE</span><div><i [style.height.%]="progress() * 100"></i></div><span>{{ percentage() }}%</span></div>
+    </div>
+    <div class="container story-footer" aria-hidden="true"><span>01 / STRATÉGIA</span><span>02 / DIZÁJN</span><span>03 / FEJLESZTÉS</span><span>04 / ÉLMÉNY</span></div>
+  </div>
+</section>

@@ -243,3 +243,23 @@
 [data-theme='light'] .nav-links a{color:#263257}
 [data-theme='light'] .theme-btn,[data-theme='light'] .menu-btn{background:#eef0fa;border:1px solid #c7cdeb;color:#1f2a4e}
 @media(max-width:1220px){[data-theme='light'] .nav-links{background:#f9fafff5;border-color:#d8def0}[data-theme='light'] .nav-links a:not(.mobile-quote){color:#283657;border-color:#dce0f0}}
+
+/* Aurora Cinematic responsive glass navigation. */
+.nav-wrap{background:#070c1aea;border-bottom:1px solid #8c86d041;box-shadow:0 10px 36px #03050d6e;backdrop-filter:blur(24px)}
+.navbar{max-width:1500px;height:77px}
+.brand-monogram{background:linear-gradient(135deg,#d7c7ff,#a189ec 62%,#84dcec);color:#10162a;border-radius:13px;box-shadow:0 0 24px #a28cfa59}
+.brand-monogram span{color:#32316f}
+.brand-text strong{font-size:12px;letter-spacing:.14em;color:#fff}
+.brand-text small{font-size:9px;letter-spacing:.11em;color:#aebbdc}
+.nav-links a{color:#d2dcf1;font-size:12px}
+.nav-links a:hover{color:#fff}
+.nav-links a::after{bottom:-10px;background:linear-gradient(90deg,#bb9bff,#89e2eb)}
+.nav-cta,.mobile-quote{border-radius:99px;background:linear-gradient(108deg,#b58aff,#aaa7ff 55%,#8adfec);color:#11142e!important;border:1px solid #d0c5ff;box-shadow:0 8px 31px #826de373;font-weight:800}
+.nav-cta:hover{box-shadow:0 12px 40px #826de38c}
+.theme-btn,.menu-btn{border-radius:13px;background:#121a33d9;color:#e6e7ff;border:1px solid #7d84bc7a}
+.theme-btn:hover,.menu-btn:hover{border-color:#b9abff;color:#fff}
+[data-theme='light'] .nav-wrap{background:#fafbfff1;border-color:#c6cbec}
+[data-theme='light'] .nav-links a{color:#2e3c64}
+[data-theme='light'] .brand-text strong{color:#172147}
+@media(max-width:1220px){.navbar{height:74px}.nav-links{top:74px;background:#0a122aee;border-color:#8175d66a;padding-bottom:max(26px,env(safe-area-inset-bottom))}.nav-links a:not(.mobile-quote){color:#e5ebff}.menu-btn{display:inline-flex}.mobile-quote{color:#10142f!important}.nav-wrap{isolation:isolate}}
+@media(max-width:440px){.navbar{padding-inline:13px}.brand{gap:9px}.brand-monogram{width:38px;height:38px}.brand-text strong{font-size:10px;letter-spacing:.04em}.brand-text small{display:none}.nav-actions{gap:7px}.theme-btn,.menu-btn{width:38px;height:38px}}

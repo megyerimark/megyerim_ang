@@ -2,6 +2,7 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
 import { Hero } from '../../components/hero/hero';
+import { CinematicStory } from '../../components/cinematic-story/cinematic-story';
 import { PremiumReveal } from '../../directives/premium-reveal';
 import { ApiService } from '../../core/api.service';
 import { Project, Service, SiteSettings, SITE_DEFAULTS } from '../../core/models';
@@ -25,7 +26,7 @@ interface PreviewPalette {
 @Component({
     selector: 'app-home',
     standalone: true,
-    imports: [Hero, RouterLink, DecimalPipe, PremiumReveal],
+    imports: [Hero, CinematicStory, RouterLink, DecimalPipe, PremiumReveal],
     templateUrl: './home.html',
     styleUrl: './home.scss'
 })
@@ -67,6 +68,7 @@ export class Home implements OnInit {
     setInquiryMinutes(event: Event): void { this.inquiryMinutes.set(Number((event.target as HTMLInputElement).value)); }
     readonly selectedPurpose = signal<PreviewPurpose>('business');
     readonly selectedStyle = signal<PreviewStyle>('graphite');
+    readonly selectedDevice = signal<'desktop' | 'mobile'>('desktop');
     readonly realProjects = computed(() => this.projects().filter(project => !project.is_demo));
 
     readonly previewModes: PreviewMode[] = [

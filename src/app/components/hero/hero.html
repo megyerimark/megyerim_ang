@@ -1,115 +1,44 @@
-<section class="hero" id="fooldal" aria-labelledby="hero-title">
-  <div class="hero-grid" aria-hidden="true">
-  </div>
-  <div class="hero-glow hero-glow--right" aria-hidden="true">
-  </div>
-  <div class="hero-glow hero-glow--left" aria-hidden="true">
-  </div>
-  <div class="container hero-layout">
+<section class="hero-cinematic" id="fooldal" aria-labelledby="hero-title">
+  <div class="hero-sky" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="container hero-content">
     <div class="hero-copy">
-      <div class="hero-eyebrow">
-        <span class="eyebrow-index">
-          EGYEDI WEBOLDALAK ÉS WEBES RENDSZEREK
-        </span>
-        <span class="eyebrow-rule">
-        </span>
-        <span>
-          BUDAPEST · ONLINE EGYÜTTMŰKÖDÉS
-        </span>
-      </div>
-      <h1 id="hero-title">{{ titleLead }} <span class="hero-highlight">{{ titleAccent }}</span></h1>
-      <p class="hero-description">
-        {{ description }}
-      </p>
+      <div class="hero-eyebrow"><span></span> EGYEDI DIGITÁLIS ÉLMÉNYEK <span class="eyebrow-index">/ 001</span></div>
+      <h1 id="hero-title">{{ titleLead }} <em>{{ titleAccent }}</em></h1>
+      <p>{{ description }}</p>
       <div class="hero-actions">
-        <a class="btn btn-primary" routerLink="/projekt-kviz">
-          2 perc alatt megtervezem a weboldalam
-          <span aria-hidden="true">
-            ↗
-          </span>
-        </a>
-        <a class="btn btn-outline" routerLink="/" fragment="megoldas">
-          Kipróbálom a tervezőt
-          <span aria-hidden="true">
-            ↘
-          </span>
-        </a>
+        <a class="hero-cta hero-cta--primary" routerLink="/ajanlatkeres">Kérj ajánlatot <span aria-hidden="true">↗</span></a>
+        <a class="hero-cta hero-cta--secondary" routerLink="/" fragment="munkak">Munkáim megtekintése <span aria-hidden="true">→</span></a>
       </div>
-      <div class="hero-proof">
-        <span>
-          <i aria-hidden="true">
-            ✳
-          </i>
-          Egyedi arculat
-        </span>
-        <span>
-          <i aria-hidden="true">
-            ✳
-          </i>
-          Átlátható folyamat
-        </span>
-        <span>
-          <i aria-hidden="true">
-            ✳
-          </i>
-          Személyes kapcsolattartás
-        </span>
-      </div>
+      <div class="hero-benefits" aria-label="A közös munka előnyei"><span><i>✦</i> Egyedi tervezés</span><span><i>✦</i> Mobilra optimalizálva</span><span><i>✦</i> Üzleti szemlélettel</span></div>
     </div>
-    <div
-      class="hero-stage"
-      aria-label="Finoman mozgó, prémium weboldal-előnézet"
-      (pointermove)="moveScene($event)"
-      (pointerleave)="resetScene($event)"
-    >
-      <span class="stage-coordinate stage-coordinate--top" aria-hidden="true">
-        ÉLŐ DIZÁJNKONCEPCIÓ / 001
-      </span>
-      <div class="stage-orbit" aria-hidden="true">
-      </div>
-      <div class="stage-halo" aria-hidden="true">
-      </div>
-      <div class="premium-device" aria-hidden="true">
-        <div class="premium-device-screen">
-          <div class="premium-device-toolbar"><span class="premium-device-dots"><i></i><i></i><i></i></span><span>MEGYERI / WEB EXPERIENCE</span><span>↗</span></div>
-          <div class="premium-device-content">
-            <div class="premium-device-navigation"><strong>SAJÁT MÁRKÁD<span>.</span></strong><span>Szolgáltatások &nbsp; Rólunk &nbsp; Kapcsolat</span></div>
-            <span class="premium-device-overline">WEBOLDAL-KONCEPCIÓ / EGYEDI DESIGN</span>
-            <h2>Az első benyomás<br><span>mindent megváltoztathat.</span></h2>
-            <p>Karakteres arculat, világos üzenet, egyszerű következő lépés.</p>
-            <span class="premium-device-cta">Kapcsolatfelvétel ↗</span>
+    <div class="hero-visual" (pointermove)="moveScene($event)" (pointerleave)="resetScene($event)" aria-label="Interaktív, térbeli weboldal-előnézet">
+      <div class="visual-aura" aria-hidden="true"></div>
+      <div class="visual-ring visual-ring--one" aria-hidden="true"></div>
+      <div class="visual-ring visual-ring--two" aria-hidden="true"></div>
+      <div class="scene-world" aria-hidden="true">
+        <div class="scene-backplate"></div>
+        <div class="scene-glass scene-glass--rear"><div class="rear-line"></div><div class="rear-line"></div></div>
+        <div class="scene-browser">
+          <div class="browser-top"><span class="browser-dots"><i></i><i></i><i></i></span><span>DESIGN STUDIO / KONCEPCIÓ</span><span>↗</span></div>
+          <div class="browser-inner">
+            <div class="browser-nav"><strong>STUDIO<span>.</span></strong><span>SZOLGÁLTATÁSOK &nbsp;&nbsp; RÓLUNK</span><b>KAPCSOLAT ↗</b></div>
+            <div class="browser-grid">
+              <div class="browser-copy"><span>AZ ELSŐ BENYOMÁS SZÁMÍT</span><strong>Időtálló<br><em>weboldalak.</em></strong><p>Arculat és technológia, amely együtt dolgozik a céljaidért.</p><b>Fedezd fel ↗</b></div>
+              <div class="browser-landscape"><span class="landscape-ridge landscape-ridge--back"></span><span class="landscape-ridge landscape-ridge--front"></span><span class="landscape-star"></span></div>
+            </div>
+            <div class="browser-caption"><span>01 / STRATÉGIA</span><span>02 / DIZÁJN</span><span>03 / FEJLESZTÉS</span></div>
           </div>
         </div>
-        <div class="premium-device-base"></div>
+        <div class="scene-phone"><div class="phone-notch"></div><div class="phone-screen"><span>STUDIO.</span><small>PRÉMIUM WEBOLDALAK</small><strong>Időtálló<br>weboldalak.</strong><i></i><b>Felfedezem ↗</b></div></div>
+        <div class="scene-tool scene-tool--type"><span>↗</span><span>□</span><span>T</span><span>◇</span></div>
+        <div class="scene-panel"><small>MEGJELENÉS</small><span class="swatches"><i></i><i></i><i></i><i></i></span><small>TIPOGRÁFIA</small><b>Aa</b><small>ELRENDEZÉS</small><span class="layouts">▤ &nbsp; ▦ &nbsp; ▥</span></div>
+        <div class="scene-chip scene-chip--top">✦ <span>SAJÁT ARCULAT</span></div>
+        <div class="scene-chip scene-chip--bottom">◈ <span>RESPONZÍV ÉLMÉNY</span></div>
+        <div class="scene-base"></div>
       </div>
-      <div class="premium-hero-chip premium-hero-chip--top" aria-hidden="true">
-        <span>✦</span><div><strong>Átgondolt felépítés</strong><small>Minden részlet számít</small></div>
-      </div>
-      <div class="premium-hero-chip premium-hero-chip--bottom" aria-hidden="true">
-        <span>◇</span><div><strong>Mobilbarát kialakítás</strong><small>Más képernyőn is átlátható</small></div>
-      </div>
-      <div class="stage-tag" aria-hidden="true">
-        <span>
-          ✧
-        </span>
-        <span>
-          A dizájn a célokat szolgálja.
-        </span>
-      </div>
-      <span class="stage-coordinate stage-coordinate--bottom" aria-hidden="true">
-        MMM / DESIGN STUDIO · MOZGASD AZ EGERET
-      </span>
+      <span class="stage-top-label">INTERAKTÍV KONCEPCIÓ &nbsp; / &nbsp; 3D</span>
+      <span class="stage-bottom-label">MOZGASD AZ EGERET &nbsp; ✧</span>
     </div>
   </div>
-  <div class="container hero-bottom">
-    <span>
-      MEGYERI MÁRK MÁTÉ · WEBFEJLESZTÉS
-    </span>
-    <a routerLink="/" fragment="miert-fontos">
-      NÉZD MEG, MI A KÜLÖNBSÉG
-      <span aria-hidden="true">
-        ↓
-      </span>
-    </a>
-  </div>
+  <div class="container hero-foot"><span>MEGYERI MÁRK · WEBFEJLESZTÉS</span><a routerLink="/" fragment="cinematic-story">FEDEZD FEL AZ ÉLMÉNYT <span aria-hidden="true">↓</span></a><span>01 / 06</span></div>
 </section>

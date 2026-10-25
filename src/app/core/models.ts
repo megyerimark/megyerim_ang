@@ -108,6 +108,14 @@ export interface AdminUser {
 }
 export interface Dashboard {
     quotes_monthly?: { label: string; count: number }[];
+    accepted_value_monthly?: {label:string;value:number}[];
+    quotes_by_status?: {status:QuoteStatus;count:number}[];
+    quotes_by_type?: {label:string;count:number}[];
+    lead_sources?: {quiz:number;form:number};
+    maintenance_leads?: number;
+    maintenance_active?: number;
+    maintenance_contract_value_huf?: number;
+    maintenance_reviews_due?: number;
     quotes_total: number;
     quotes_new: number;
     quotes_reviewing: number;
@@ -123,6 +131,33 @@ export interface Dashboard {
     quotes_completed: number;
     accepted_proposals_value_huf: number;
     upcoming_tasks: StudioTask[];
+}
+export type MaintenanceStatus = 'draft' | 'active' | 'paused' | 'canceled';
+export interface MaintenanceAgreement {
+    id: number;
+    quote_request_id: number;
+    quote_request: Pick<Quote, 'id'|'customer_name'|'email'|'company_name'|'status'|'wants_maintenance'>;
+    plan_name: string;
+    monthly_fee_huf: number;
+    status: MaintenanceStatus;
+    starts_on: string | null;
+    next_review_on: string | null;
+    included_services: string | null;
+    internal_notes: string | null;
+}
+export interface MaintenanceEditor {
+    quote_request_id: number;
+    plan_name: string;
+    monthly_fee_huf: number;
+    status: MaintenanceStatus;
+    starts_on: string;
+    next_review_on: string;
+    included_services: string;
+    internal_notes: string;
+}
+export interface MaintenanceData {
+    agreements: MaintenanceAgreement[];
+    candidates: Pick<Quote,'id'|'customer_name'|'email'|'company_name'|'status'|'wants_maintenance'>[];
 }
 export interface StudioTask {
     id: number;

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 :root,
 [data-theme='dark'] {
@@ -334,3 +334,10 @@ hr {
 
 /* Print the visitor's local concept without website chrome. */
 @media print{body:has(.studio-print-brief) app-navbar{display:none!important}}
+
+/* Aurora Cinematic design tokens; the admin API, forms and route layout stay intact. */
+:root,[data-theme='dark']{--bg:#060a16;--surface:#0d142b;--surface-alt:#101c35;--text:#f7f7ff;--muted:#a9b9d7;--border:#303b62;--accent:#b39aff;--accent2:#82d7eb;--premium-primary:linear-gradient(105deg,#a989fb 0%,#999df5 53%,#83d8ed 100%)}
+[data-theme='dark'] body{background-color:#060a16;background-image:radial-gradient(ellipse at 60% -20%,#25295686,transparent 57%)}
+[data-theme='dark'] .section-title{color:#f7f6ff}
+[data-theme='light']{--accent:#7050bc;--accent2:#13799b}
+@media(max-width:420px){html,body{max-width:100%;overflow-x:clip}}
