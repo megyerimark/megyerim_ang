@@ -1,0 +1,43 @@
+<main class="container legal">
+  <a routerLink="/" class="back">← Vissza a főoldalra</a>
+  <span class="overline">JOGI INFORMÁCIÓK</span>
+  <h1>Impresszum</h1>
+
+  @if (missing.length) {
+  <div class="notice error" role="alert">
+    <strong>Hiányos impresszum.</strong>
+    Kitöltendő a <code>src/app/core/legal-info.ts</code> fájlban: {{ missing.join(', ') }}.
+  </div>
+  }
+
+  <section>
+    <h2>A szolgáltató</h2>
+    <ul class="legal-list">
+      <li><strong>Név:</strong> {{ legal.operatorName || todo }}</li>
+      <li><strong>Székhely:</strong> {{ legal.address || todo }}</li>
+      <li><strong>E-mail:</strong> @if (legal.email) { <a [href]="'mailto:' + legal.email">{{ legal.email }}</a> } @else { {{ todo }} }</li>
+      @if (legal.phone) { <li><strong>Telefon:</strong> <a [href]="'tel:' + legal.phone">{{ legal.phone }}</a></li> }
+      <li><strong>Nyilvántartási szám / cégjegyzékszám:</strong> {{ legal.registrationNumber || todo }}</li>
+      <li><strong>Nyilvántartást vezető szerv:</strong> {{ legal.registry || todo }}</li>
+      <li><strong>Adószám:</strong> {{ legal.taxNumber || todo }}</li>
+      @if (legal.chamber) { <li><strong>Kamarai tagság:</strong> {{ legal.chamber }}</li> }
+    </ul>
+
+    <h2>Tárhelyszolgáltató</h2>
+    <ul class="legal-list">
+      <li><strong>Név:</strong> {{ legal.hosting.name || todo }}</li>
+      <li><strong>Cím:</strong> {{ legal.hosting.address || todo }}</li>
+      <li><strong>Elérhetőség:</strong> {{ legal.hosting.email || todo }}</li>
+      @if (legal.hosting.website) { <li><strong>Weboldal:</strong> {{ legal.hosting.website }}</li> }
+    </ul>
+
+    <h2>Szerzői jogok</h2>
+    <p>
+      A weboldal szövegei, grafikái és forráskódja szerzői jogi védelem alatt állnak; engedély nélküli
+      felhasználásuk nem megengedett. A bemutató (demó) oldalak fiktív márkákat mutatnak be, nem valódi ügyfélmunkák.
+      A betűtípusok a SIL Open Font License alatt állnak.
+    </p>
+  </section>
+
+  <p class="legal-meta">Kapcsolódó: <a routerLink="/adatkezeles">Adatkezelési tájékoztató</a></p>
+</main>

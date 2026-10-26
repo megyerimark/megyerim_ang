@@ -4,3 +4,4 @@ Disallow: /admin
 Disallow: /ugyfel
 Disallow: /demos
 Sitemap: https://megyerimarkmate.hu/sitemap.xml
+Sitemap: https://megyerimarkmate.hu/api/sitemap.xml

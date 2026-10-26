@@ -39,13 +39,24 @@ Adminban felvett szolgáltatás csak `is_active=true`, referencia csak `is_publi
 
 ## Élesítés előtt kötelező ellenőrzések
 
-- Adatkezelési tájékoztató véglegesítése, valós adatkezelői és kapcsolati adatokkal. Ne induljon publikus ajánlatgyűjtés a tervezettel.
+- **Jogi adatok kitöltése:** `src/app/core/legal-info.ts` – innen épül fel az **Impresszum** (`/impresszum`) és az **Adatkezelési tájékoztató** (`/adatkezeles`). Amíg kötelező mező hiányzik, az oldalakon figyelmeztetés látszik. A szöveget érdemes jogásszal is átnézetni.
 - Valós domain, HTTPS, cookie/Sanctum/CORS és reverse-proxy konfiguráció tesztelése.
 - Ajánlatbeküldés és adminlogin valódi böngészős end-to-end tesztje, 422/419/401 hibakezelés.
 - SMTP-küldés, spamszűrés, biztonság, feltöltések és hozzáférések ellenőrzése.
 - SEO, betöltési teljesítmény, mobilteszt, akadálymentességi felülvizsgálat.
 
 **Megjegyzés:** a 3D Hero jelenleg CSS-perspektívával készült. Valós WebGL/Three.js jelenet és mélyebb térbeli interakció külön bővítést igényel.
+
+## Biztonság és teljesítmény
+
+- **Betűtípusok saját tárhelyről:** `public/fonts/` (woff2, magyar ékezetekkel; SIL OFL licenc). Nincs Google Fonts-kapcsolat → GDPR-barát és gyorsabb.
+- **Képek:** a demóképek WebP-ben (~3,6 MB → ~0,56 MB). Az eredeti, nagy felbontású forrásképek a `design-sources/` mappában vannak – ez **nem** kerül a buildbe.
+- **`.htaccess`:** HTTPS-átirányítás, teljes Content-Security-Policy, HSTS, gyorsítótárazás és tömörítés. Ha új külső szolgáltatást (pl. térkép, analitika, videó) építesz be, a CSP-ben engedélyezni kell a domainjét.
+  A HSTS-t csak akkor hagyd bent, ha a HTTPS minden aldomainen működik.
+- A kritikus CSS inline-olása ki van kapcsolva (`angular.json`), mert az `onload` attribútumot a szigorú CSP blokkolná.
+- **Közösségi megosztás:** `public/og-image.jpg` (1200×630) – Facebook/LinkedIn/Messenger előnézet.
+- **Oldaltérkép:** statikus `public/sitemap.xml` + a backend dinamikus `/api/sitemap.xml`-je (referenciák), mindkettő a `robots.txt`-ben.
+- **CI:** `.github/workflows/ci.yml` – minden push után `npm audit` és éles build.
 
 ## Valós API-kapcsolat ellenőrzése
 

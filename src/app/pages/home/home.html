@@ -467,7 +467,7 @@
       <div class="concept-grid">
         @for (demo of demoSites; track demo.slug) {
           <a class="concept-card" [href]="'/demos/' + demo.slug + '/index.html'" target="_blank" rel="noopener">
-            <span class="concept-shot"><img [src]="'/demos/previews/' + demo.preview + '.png'" [alt]="demo.title + ' koncepció előnézete'" loading="lazy" width="640" height="400"></span>
+            <span class="concept-shot"><img [src]="'/demos/previews/' + demo.preview + '.webp'" [alt]="demo.title + ' koncepció előnézete'" loading="lazy" width="640" height="400"></span>
             <span class="concept-meta"><small>{{ demo.kind }}</small><strong>{{ demo.title }}</strong><span>{{ demo.text }}</span></span>
             <span class="concept-arrow" aria-hidden="true">↗</span>
           </a>
@@ -728,8 +728,9 @@
     <span>
       © {{ year }} Megyeri Márk Máté. Minden jog fenntartva.
     </span>
-    <a routerLink="/adatkezeles">
-      Adatkezelési tájékoztató
-    </a>
+    <span class="footer-legal">
+      <a routerLink="/adatkezeles">Adatkezelési tájékoztató</a>
+      <a routerLink="/impresszum">Impresszum</a>
+    </span>
   </div>
 </footer>

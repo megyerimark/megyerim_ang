@@ -1416,6 +1416,51 @@
           Jelszó módosítása ↗
         </button>
       </section>
+      <section class="admin-panel card settings-editor">
+        <div class="panel-title">
+          <h2>Kétlépcsős belépés</h2>
+        </div>
+        @if (security(); as sec) {
+          @if (sec.two_factor_required) {
+          <p class="muted">✓ Kötelező és aktív: minden belépésnél e-mailben kapott 6 jegyű kódot is kérünk. Éles környezetben nem kapcsolható ki.</p>
+          } @else {
+          <p class="muted">
+            Állapot: <strong>{{ sec.two_factor_email_enabled ? 'bekapcsolva' : 'kikapcsolva' }}</strong>.
+            Bekapcsolva minden belépésnél e-mailben kapott kódot is kérünk (működő SMTP szükséges).
+          </p>
+          <div class="form-field">
+            <label>Jelenlegi jelszó</label>
+            <input class="input" type="password" autocomplete="current-password" [(ngModel)]="twoFactorPassword">
+          </div>
+          <button type="button" class="btn btn-primary" [disabled]="busy()" (click)="toggleTwoFactor(!sec.two_factor_email_enabled)">
+            {{ sec.two_factor_email_enabled ? 'Kikapcsolás' : 'Bekapcsolás' }}
+          </button>
+          }
+        } @else {
+          <p class="muted">A biztonsági állapot nem tölthető be.</p>
+        }
+      </section>
+      <section class="admin-panel card settings-editor">
+        <div class="panel-title">
+          <h2>Aktív munkamenetek</h2>
+        </div>
+        @if (sessions().length) {
+        <ul class="session-list">
+          @for (session of sessions(); track session.id) {
+          <li>
+            <strong>{{ session.current ? 'Ez az eszköz' : (session.ip_address || 'Ismeretlen IP') }}</strong>
+            <span class="muted"> · {{ sessionTime(session.last_activity) }}</span>
+            <div class="muted session-agent">{{ session.user_agent }}</div>
+          </li>
+          }
+        </ul>
+        <button type="button" class="btn btn-outline" [disabled]="busy() || sessions().length < 2" (click)="revokeOtherSessions()">
+          Kijelentkeztetés minden más eszközön
+        </button>
+        } @else {
+        <p class="muted">A munkamenetlista adatbázis-alapú munkamenet-tárolással (SESSION_DRIVER=database) érhető el.</p>
+        }
+      </section>
       }
     </div>
   </div>

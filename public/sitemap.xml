@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Statikus oldalak. A referenciák (/munkak/...) a backend dinamikus oldaltérképében vannak: /api/sitemap.xml -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://megyerimarkmate.hu/</loc></url>
   <url><loc>https://megyerimarkmate.hu/tervezo</loc></url>
   <url><loc>https://megyerimarkmate.hu/ajanlatkeres</loc></url>
   <url><loc>https://megyerimarkmate.hu/projekt-kviz</loc></url>
   <url><loc>https://megyerimarkmate.hu/konzultacio</loc></url>
+  <url><loc>https://megyerimarkmate.hu/adatkezeles</loc></url>
+  <url><loc>https://megyerimarkmate.hu/impresszum</loc></url>
 </urlset>

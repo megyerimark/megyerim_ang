@@ -42,6 +42,11 @@ export const routes: Routes = [
         title: 'Adatkezelés | Megyeri Márk Máté'
     },
     {
+        path: 'impresszum',
+        loadComponent: () => import('./pages/imprint/imprint').then(module => module.ImprintPage),
+        title: 'Impresszum | Megyeri Márk Máté'
+    },
+    {
         path: 'admin/bejelentkezes',
         loadComponent: () => import('./pages/login/login').then(module => module.LoginPage),
         title: 'Admin bejelentkezés | Megyeri Márk Máté'

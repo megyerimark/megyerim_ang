@@ -949,7 +949,7 @@ h1 .mark{margin-left:-.12em}
 .studio .scene-pin{display:grid;grid-template-columns:1fr 1fr;background:var(--paper)}
 .studio .studio-poster{min-height:0;height:100%;padding:clamp(28px,4vw,55px);perspective:1400px;background:#0d0e0b}
 .studio .studio-poster>.slice{position:absolute;inset:0;z-index:0;clip-path:inset(0 calc(100% - (var(--n) + 1) * 33.3334%) 0 calc(var(--n) * 33.3334%));
-  background:linear-gradient(0deg,#0d0e0b55,#0d0e0b00) ,url(../photos/vagat-1000.jpg) 50% 62%/cover;
+  background:linear-gradient(0deg,#0d0e0b55,#0d0e0b00) ,url(../photos/vagat-1000.webp) 50% 62%/cover;
   transform:translate3d(0,calc((1 - var(--t,0)) * var(--d) * 62vh),calc((1 - var(--t,0)) * -420px)) rotateX(calc((1 - var(--t,0)) * var(--d) * -38deg));
   opacity:calc(.25 + var(--t,0) * .75);filter:saturate(.85) contrast(1.05)}
 .studio .studio-poster:after{z-index:1}

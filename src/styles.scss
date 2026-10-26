@@ -329,7 +329,7 @@ hr {
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 
 /* AURORA V5: shared consistency and overflow safety */
-@import "./aurora-v5";
+@import './aurora-theme';
 
 /* Print the visitor's local concept without website chrome. */
 @media print{body:has(.studio-print-brief) app-navbar{display:none!important}}
@@ -342,4 +342,4 @@ hr {
 @media(max-width:420px){html,body{max-width:100%;overflow-x:clip}}
 
 /* Aurora Cinematic V11 — consistent editorial direction across public and admin routes. */
-@import './aurora-cinematic-v11';
+@import './aurora-cinematic';

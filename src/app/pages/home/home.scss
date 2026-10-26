@@ -620,6 +620,11 @@
   a {
     text-decoration: none;
   }
+  .footer-legal {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 18px;
+  }
 }
 @media (max-width: 990px) {
   .services-layout {

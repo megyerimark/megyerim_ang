@@ -1,62 +1,141 @@
 <main class="container legal">
-  <a routerLink="/" class="back">
-    ← Vissza a főoldalra
-  </a>
-  <span class="overline">
-    ADATVÉDELEM
-  </span>
-  <h1>
-    Adatkezelési tájékoztató
-  </h1>
-  <div class="notice error">
-    <strong>
-      TERVEZET – éles üzem előtt véglegesítendő!
-    </strong>
-    Ez az oldal még nem teljes körű jogi tájékoztató. Éles ajánlatkérés előtt az adatkezelő
-    tényleges adataival, a tárhelyszolgáltatókkal, a megőrzési időkkel, a jogalapokkal és
-    az érintetti jogokkal ki kell egészíteni, és szükség esetén szakemberrel ellenőriztetni.
+  <a routerLink="/" class="back">← Vissza a főoldalra</a>
+  <span class="overline">ADATVÉDELEM</span>
+  <h1>Adatkezelési tájékoztató</h1>
+
+  @if (missing.length) {
+  <div class="notice error" role="alert">
+    <strong>Hiányos tájékoztató.</strong>
+    Az alábbi adatkezelői adatok még nincsenek megadva (<code>src/app/core/legal-info.ts</code>):
+    {{ missing.join(', ') }}.
   </div>
+  }
+
   <section>
-    <h2>
-      Milyen adatokat kérünk?
-    </h2>
     <p>
-      Az ajánlatkérő a megadott nevet, e-mail-címet, opcionális telefonszámot,
-      vállalkozásnevet, projektleírást és a választott szolgáltatási paramétereket
-      dolgozza fel az ajánlatkérés megválaszolása céljából.
+      Ez a tájékoztató az Európai Parlament és a Tanács (EU) 2016/679 rendelete (GDPR) és az információs
+      önrendelkezési jogról szóló 2011. évi CXII. törvény (Infotv.) alapján bemutatja, hogyan kezeljük a
+      megyerimarkmate.hu weboldalon megadott személyes adataidat.
+      @if (legal.effectiveDate) { Hatályos: {{ legal.effectiveDate }}. }
     </p>
-    <h2>Konzultációfoglalás és ajánlatkövetés</h2>
+
+    <h2>1. Az adatkezelő</h2>
+    <ul class="legal-list">
+      <li><strong>Név:</strong> {{ legal.operatorName || todo }}</li>
+      <li><strong>Székhely / levelezési cím:</strong> {{ legal.address || todo }}</li>
+      <li><strong>E-mail:</strong> @if (legal.email) { <a [href]="'mailto:' + legal.email">{{ legal.email }}</a> } @else { {{ todo }} }</li>
+      @if (legal.phone) { <li><strong>Telefon:</strong> {{ legal.phone }}</li> }
+      <li><strong>Adószám:</strong> {{ legal.taxNumber || todo }}</li>
+    </ul>
+    <p>Adatvédelmi tisztviselő kijelölésére nem vagyunk kötelesek.</p>
+
+    <h2>2. Milyen adatokat, milyen célból és jogalapon kezelünk?</h2>
+
+    <h3>Ajánlatkérés és igényfelmérő kvíz</h3>
     <p>
-      Konzultációfoglalás esetén a nevet, e-mail-címet, opcionális telefonszámot,
-      üzenetet és a választott időpontot kezeljük a foglalás és a kapcsolattartás céljából.
-      A foglalási adatok az adminisztrációs felületen érhetők el.
+      <strong>Adatok:</strong> név, e-mail-cím, opcionálisan telefonszám és vállalkozásnév, a projekt leírása,
+      költségkeret, határidő, a tervezőben vagy kvízben választott stílus-, szín- és funkcióigények, inspirációs linkek.<br>
+      <strong>Cél:</strong> az ajánlatkérés megválaszolása, az igények felmérése, ajánlat készítése és kapcsolattartás.<br>
+      <strong>Jogalap:</strong> a szerződés megkötését megelőzően, a te kérésedre tett lépések (GDPR 6. cikk (1) b) pont).<br>
+      <strong>Megőrzés:</strong> az utolsó aktivitástól számított {{ legal.retentionMonths }} hónapig, ezután automatikusan törlődnek.
+      Elfogadott ajánlat esetén a szerződéses kapcsolat idejéig.
     </p>
+
+    <h3>Konzultációfoglalás</h3>
     <p>
-      Az ajánlatkérésekhez egy személyes, véletlenszerű hozzáférési link tartozhat.
-      A linken az ajánlat státusza, tartalma, összege és projektmérföldkövei tekinthetők meg;
-      az ajánlat elfogadásának dátuma rögzítésre kerül. A hozzáférési linket ne oszd meg másokkal.
-      A tokent titkosítva, illetve az ellenőrzéshez hash formájában tároljuk.
+      <strong>Adatok:</strong> név, e-mail-cím, opcionális telefonszám és megjegyzés, a választott időpont.<br>
+      <strong>Cél:</strong> az egyeztetés megszervezése és visszaigazolása.
+      <strong>Jogalap:</strong> GDPR 6. cikk (1) b) pont.<br>
+      <strong>Megőrzés:</strong> az időpontot követő {{ legal.retentionMonths }} hónapig.
     </p>
-    <h2>Projektüzenetek és privát fájlok</h2>
-    <p>A projektoldalon küldött üzenetek tartalmát, szerzőjét és időpontját tároljuk, hogy a projekt egyeztetései követhetők legyenek. Az admin által feltöltött dokumentumok fájlneve, típusa és tartalma privát tárhelyen kerül megőrzésre. A privát link birtokosa ezeket elérheti, ezért a hivatkozást biztonságosan kell kezelni. Az admin a linket lecserélheti és a régit visszavonhatja.</p>
-    <p>Az ajánlatkérés részévé válhat az interaktív tervezőben megadott iparág, arculati irány, betűhangulat és funkcióigény. A konkrét adatmegőrzési és törlési rendet az éles szabályzatban kell meghatározni.</p>
-    <h2>
-      Miért történik adatkezelés?
-    </h2>
+
+    <h3>Privát projektoldal, üzenetek és dokumentumok</h3>
     <p>
-      Az érdeklődő kérésére történő kapcsolatfelvétel, a webfejlesztési igény felmérése
-      és az ajánlat előkészítése érdekében. A konkrét adatkezelési jogalapot és a megőrzési
-      szabályokat az éles tájékoztatóban kell rögzíteni.
+      Az ajánlatkéréshez személyes, véletlenszerű hozzáférési link tartozik, amelyet e-mailben kapsz meg.
+      A linken az ajánlat állapota, tartalma, összege és a projekt mérföldkövei láthatók; itt üzenhetsz, és
+      letöltheted a neked feltöltött dokumentumokat. Az üzenetek tartalmát, szerzőjét és időpontját, valamint a
+      dokumentumokat privát tárhelyen őrizzük. Az ajánlat elfogadásának időpontját rögzítjük.
+      A linket ne oszd meg másokkal; lejár, és kérésre lecseréljük (a régi ekkor érvényét veszti).
+      A hozzáférési kulcsot csak titkosítva, illetve ellenőrzéshez visszafejthetetlen (hash) formában tároljuk.<br>
+      <strong>Jogalap:</strong> GDPR 6. cikk (1) b) pont. <strong>Megőrzés:</strong> mint az ajánlatkérésnél.
     </p>
-    <h2>
-      Kapcsolat, adatkezelő és érintetti jogok
-    </h2>
+
+    <h3>Számlázás és szerződés</h3>
     <p>
-      Az adatkezelő pontos neve, kapcsolattartási címe, az érintetti jogok gyakorlásának
-      módja és a panasztételi információk az éles verzióban feltüntetendők.
+      Megrendelés esetén a számla adatait a számvitelről szóló 2000. évi C. törvény 169. §-a alapján
+      8 évig meg kell őriznünk (GDPR 6. cikk (1) c) pont – jogi kötelezettség).
+    </p>
+
+    <h3>Látogatottsági statisztika</h3>
+    <p>
+      Névtelen, összesített eseményszámlálást használunk (pl. oldalmegtekintés, gombkattintás, a látogatás forrása).
+      Ehhez <strong>nem</strong> tárolunk IP-címet, böngészőazonosítót vagy sütit, ezért ezek az adatok nem kapcsolhatók
+      személyhez. Ha a böngésződben a „Do Not Track” be van kapcsolva, nem számolunk. Az érkezési forrást a böngésző
+      munkamenet-tárolója (sessionStorage) őrzi a lap bezárásáig. A névtelen események 13 hónap után törlődnek.
+    </p>
+
+    <h3>Sütik és helyi tárolás</h3>
+    <p>
+      Csak a működéshez feltétlenül szükséges sütiket használjuk: űrlapküldéskor egy biztonsági (CSRF-védelmi)
+      sütit és egy munkamenet-sütit, amelyek a visszaélések kivédését szolgálják, és a böngészési munkamenet
+      végén vagy legfeljebb 2 óra után lejárnak. A választott világos/sötét téma a böngésződ helyi tárolójában
+      (localStorage) marad meg. Hirdetési vagy követő sütit nem használunk, ezért hozzájárulást sem kérünk hozzájuk.
+    </p>
+
+    <h3>Biztonsági naplózás</h3>
+    <p>
+      A szerver a visszaélések megelőzése és a hibák elhárítása érdekében rövid ideig technikai naplót vezethet
+      (pl. IP-cím, időpont, kért cím). Jogalap: jogos érdek (GDPR 6. cikk (1) f) pont) – a szolgáltatás
+      biztonságos működtetése. Megőrzés: a tárhelyszolgáltató naplózási rendje szerint, jellemzően legfeljebb 30 nap.
+    </p>
+
+    <h2>3. Kik férnek hozzá az adatokhoz? (adatfeldolgozók)</h2>
+    <ul class="legal-list">
+      <li>
+        <strong>Tárhelyszolgáltató:</strong>
+        {{ legal.hosting.name || todo }}
+        @if (legal.hosting.address) { <span>({{ legal.hosting.address }})</span> }
+        – a weboldal és az adatbázis üzemeltetése.
+      </li>
+      @if (legal.emailProvider) {
+      <li><strong>E-mail-küldés:</strong> {{ legal.emailProvider }} – az értesítő és visszaigazoló levelek kézbesítése.</li>
+      }
+    </ul>
+    <p>
+      Adataidat nem adjuk el, nem használjuk hirdetési célra, és harmadik országba (az EGT-n kívülre) nem továbbítjuk.
+      A betűtípusokat és minden egyéb erőforrást saját tárhelyünkről szolgáljuk ki, így látogatáskor nem jön létre
+      kapcsolat külső szolgáltatóval (pl. Google).
+    </p>
+
+    <h2>4. Adatbiztonság</h2>
+    <p>
+      Az oldal kizárólag titkosított (HTTPS) kapcsolaton érhető el. Az adminisztrációs felület kétlépcsős
+      azonosítással védett, a belépési kísérletek korlátozottak, a feltöltött dokumentumok nem nyilvános tárhelyen
+      vannak. Az adatbázisról rendszeres biztonsági mentés készül, amely a mentési ciklus végén törlődik.
+    </p>
+
+    <h2>5. Jogaid</h2>
+    <p>Az adatkezelő elérhetőségein bármikor kérheted:</p>
+    <ul class="legal-list">
+      <li><strong>hozzáférés:</strong> tájékoztatást arról, milyen adatot kezelünk rólad (GDPR 15. cikk);</li>
+      <li><strong>helyesbítés</strong> (16. cikk) és <strong>törlés</strong> („elfeledtetés”, 17. cikk);</li>
+      <li><strong>az adatkezelés korlátozását</strong> (18. cikk);</li>
+      <li><strong>adathordozhatóság:</strong> az adataid tagolt, géppel olvasható formában (20. cikk);</li>
+      <li><strong>tiltakozás</strong> a jogos érdeken alapuló adatkezelés ellen (21. cikk).</li>
+    </ul>
+    <p>A kérésedre legfeljebb egy hónapon belül válaszolunk.</p>
+
+    <h2>6. Jogorvoslat</h2>
+    <p>
+      Ha úgy érzed, hogy megsértettük az adatvédelmi jogaidat, kérjük, először keress minket – igyekszünk
+      gyorsan rendezni. Panaszt tehetsz a Nemzeti Adatvédelmi és Információszabadság Hatóságnál (NAIH,
+      1055 Budapest, Falk Miksa utca 9–11.; postacím: 1363 Budapest, Pf. 9.; e-mail: ugyfelszolgalat&#64;naih.hu;
+      honlap: naih.hu), illetve bírósághoz fordulhatsz (a lakóhelyed szerinti törvényszék előtt is).
     </p>
   </section>
-  <a class="btn btn-outline" routerLink="/ajanlatkeres">
-    Vissza az ajánlatkéréshez
-  </a>
+
+  <p class="legal-meta">
+    Kapcsolódó: <a routerLink="/impresszum">Impresszum</a>
+  </p>
+  <a class="btn btn-outline" routerLink="/ajanlatkeres">Vissza az ajánlatkéréshez</a>
 </main>
