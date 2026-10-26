@@ -1,5 +1,7 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, signal, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { TPipe } from '../../i18n/t.pipe';
+import { I18nService } from '../../i18n/i18n.service';
 
 type SiteGoal = 'business' | 'booking' | 'shop' | 'system';
 type Tone = 'midnight' | 'linen' | 'electric' | 'forest';
@@ -7,8 +9,9 @@ type Layout = 'editorial' | 'split' | 'centered';
 type Font = 'elegant' | 'modern';
 type Device = 'desktop' | 'mobile';
 
-@Component({ selector: 'app-studio', standalone: true, imports: [RouterLink], templateUrl: './studio.html', styleUrl: './studio.scss' })
+@Component({ selector: 'app-studio', standalone: true, imports: [RouterLink, TPipe], templateUrl: './studio.html', styleUrl: './studio.scss' })
 export class StudioPage {
+    readonly i18n = inject(I18nService);
     readonly goals: {value: SiteGoal; title: string; description: string}[] = [
         {value:'business',title:'Céges weboldal',description:'Megbízható digitális jelenlét'},
         {value:'booking',title:'Foglalási rendszer',description:'Időpontok és ügyfelek'},
@@ -39,6 +42,7 @@ export class StudioPage {
     readonly visibleBrand = computed(() => this.brandName().trim() || 'MÁRKANEVED');
     readonly monogram = computed(() => this.visibleBrand().slice(0, 1).toLocaleUpperCase('hu-HU'));
     readonly selectedFeatures = signal<string[]>(['Kapcsolatfelvételi űrlap', 'Keresőoptimalizálás']);
+    translatedFeatures(): string { return this.selectedFeatures().map(f => this.i18n.t(f)).join(', '); }
     readonly theme = computed(() => this.palettes.find(p => p.value === this.tone())!);
     readonly headline = computed(() => {
         const headlines: Record<SiteGoal,string> = {business:'Az első benyomásból új kapcsolat.',booking:'Neked több idő. Nekik egyszerű foglalás.',shop:'A következő kedvenc egy kattintásra.',system:'Minden, ami fontos, egy helyen.'};

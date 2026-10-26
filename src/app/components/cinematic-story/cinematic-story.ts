@@ -1,6 +1,8 @@
 import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, ViewChild, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ScrollScrubber, range } from '../../core/scroll-scrubber';
+import { TPipe } from '../../i18n/t.pipe';
+import { I18nService } from '../../i18n/i18n.service';
 
 /**
  * „Így kel életre egy weboldal” – görgetésvezérelt, szétszedett (exploded) réteges jelenet.
@@ -9,11 +11,12 @@ import { ScrollScrubber, range } from '../../core/scroll-scrubber';
 @Component({
   selector: 'app-cinematic-story',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, TPipe],
   templateUrl: './cinematic-story.html',
   styleUrl: './cinematic-story.scss'
 })
 export class CinematicStory implements AfterViewInit, OnDestroy {
+    readonly i18n = inject(I18nService);
   @ViewChild('storySection', { static: true }) private section!: ElementRef<HTMLElement>;
   private readonly zone = inject(NgZone);
   private scrubber?: ScrollScrubber;

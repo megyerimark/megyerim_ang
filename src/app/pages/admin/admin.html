@@ -46,7 +46,7 @@
     </nav>
     <div class="side-bottom">
       <a routerLink="/" target="_blank" rel="noopener noreferrer">
-        ↗ Weboldal megtekintése
+        ↗︎ Weboldal megtekintése
       </a>
       <button type="button" (click)="logout()">
         ⇥ Kijelentkezés
@@ -63,7 +63,8 @@
       </div>
       <div class="admin-top-actions">
         <button type="button" class="top-action" (click)="use('quotes')" aria-label="Ajánlatkérések megnyitása" title="Ajánlatkérések">▤ @if(dashboard()?.quotes_new){<span class="top-action-notify">{{dashboard()?.quotes_new}}</span>}</button>
-        <a class="top-action" routerLink="/" target="_blank" rel="noopener noreferrer" aria-label="Nyilvános oldal megnyitása" title="Nyilvános weboldal">↗</a>
+        <button type="button" class="top-action" (click)="openUnreadMessages()" [attr.aria-label]="'Ügyfélüzenetek: ' + (dashboard()?.messages_unread || 0) + ' olvasatlan'" title="Ügyfélüzenetek">✉︎ @if(dashboard()?.messages_unread){<span class="top-action-notify">{{dashboard()?.messages_unread}}</span>}</button>
+        <a class="top-action" routerLink="/" target="_blank" rel="noopener noreferrer" aria-label="Nyilvános oldal megnyitása" title="Nyilvános weboldal">↗︎</a>
       </div>
       <div class="account-tag">
         <span class="account-dot">
@@ -81,10 +82,10 @@
             MEGYERI MÁRK MÁTÉ / DASHBOARD
           </span>
           <h1>
-            {{tab()==='dashboard'?'Üdv újra!':tab()==='growth'?'Növekedés':tab()==='testimonials'?'Vélemények':tab()==='workspace'?'MM Munkatér':tab()==='maintenance'?'Aurora Care':tab()==='quotes'?'Ajánlatkérések':tab()==='consultations'?'Konzultációk':tab()==='clients'?'Ügyfelek':tab()==='projects'?'Referenciák':tab()==='services'?'Szolgáltatások':tab()==='settings'?'Weboldal beállításai':tab()==='activity'?'Tevékenységnapló':'Fiók és biztonság'}}
+            {{headings[tab()][0]}}
           </h1>
           <p>
-            {{tab()==='dashboard'?'Valós üzleti adatok és következő lépések.':tab()==='growth'?'Honnan jönnek az ügyfelek, és kire kell ma rászólni.':tab()==='testimonials'?'Ügyfélvélemények a nyilvános oldalra – csak valódiak.':tab()==='workspace'?'Ajánlatfolyamat és napi teendők egy helyen.':tab()==='maintenance'?'Havi karbantartási megállapodások és esedékességek.':tab()==='quotes'?'Beérkező megkeresések és ajánlatok kezelése.':tab()==='consultations'?'Szabad és lefoglalt konzultációk kezelése.':tab()==='clients'?'Korábbi érdeklődők és projektelőzmények.':tab()==='projects'?'A portfólió tartalmainak szerkesztése.':tab()==='services'?'Szolgáltatások és csomagok beállítása.':tab()==='settings'?'A nyilvános weboldal szövegei és elérhetőségei.':tab()==='activity'?'Legutóbbi adminműveletek.':'Jelszóváltoztatás és hozzáférés.'}}
+            {{headings[tab()][1]}}
           </p>
         </div>
         <div class="head-date">
@@ -105,12 +106,21 @@
       </div>
       }
 @if(tab()==='dashboard'){
+      @if(dashboard()?.sites_expiring?.length){
+      <div class="expiry-alert" role="status">
+        <strong>⚠︎ Közelgő lejáratok (30 napon belül)</strong>
+        @for(site of dashboard()?.sites_expiring; track site.id){
+          <span>{{site.domain || site.name}}: @if(site.domain_expires_on){domain {{date(site.domain_expires_on)}} }@if(site.hosting_expires_on){· tárhely {{date(site.hosting_expires_on)}} }@if(site.ssl_expires_on){· SSL {{date(site.ssl_expires_on)}}}</span>
+        }
+        <button type="button" class="mini-action" (click)="use('sites')">Kész projektek →</button>
+      </div>
+      }
       <section class="admin-cinematic-intro" aria-label="Aurora Studio admin áttekintés">
         <div class="admin-cinematic-copy">
           <span>MEGYERI MÁRK / AURORA STUDIO</span>
           <h2>Az ötletekből <em>valós projektek.</em></h2>
           <p>Az érdeklődésektől a megvalósításig: minden fontos folyamat egy helyen.</p>
-          <button type="button" (click)="use('quotes')">Beérkező megkeresések <span aria-hidden="true">↗</span></button>
+          <button type="button" (click)="use('quotes')">Beérkező megkeresések <span aria-hidden="true">↗︎</span></button>
         </div>
         <div class="admin-cinematic-visual" aria-hidden="true">
           <div class="admin-cinematic-orbit"></div>
@@ -146,7 +156,7 @@
             Válaszra várhat
           </small>
           <b>
-            ✳
+            ✳︎
           </b>
         </div>
         <div class="metric card">
@@ -160,7 +170,7 @@
             Aktív egyeztetés
           </small>
           <b>
-            ↗
+            ↗︎
           </b>
         </div>
         <div class="metric card">
@@ -206,9 +216,9 @@
           <span class="panel-eyebrow">MAI FÓKUSZ</span>
           <h2>Vidd előre a projektjeidet.</h2>
           <p>Gyors elérés a leggyakoribb teendőkhöz.</p>
-          <button type="button" (click)="use('quotes')"><span class="quick-icon">✉</span><span>Új ajánlatkérések <small>{{dash.quotes_new}} feldolgozásra váró megkeresés</small></span><b>↗</b></button>
-          <button type="button" (click)="use('consultations')"><span class="quick-icon">◷</span><span>Konzultációk <small>Szabad időpontok és foglalások</small></span><b>↗</b></button>
-          <button type="button" (click)="use('clients')"><span class="quick-icon">♧</span><span>Ügyfelek <small>Kapcsolatok és projektelőzmények</small></span><b>↗</b></button>
+          <button type="button" (click)="use('quotes')"><span class="quick-icon">✉︎</span><span>Új ajánlatkérések <small>{{dash.quotes_new}} feldolgozásra váró megkeresés</small></span><b>↗︎</b></button>
+          <button type="button" (click)="use('consultations')"><span class="quick-icon">◷</span><span>Konzultációk <small>Szabad időpontok és foglalások</small></span><b>↗︎</b></button>
+          <button type="button" (click)="use('clients')"><span class="quick-icon">♧</span><span>Ügyfelek <small>Kapcsolatok és projektelőzmények</small></span><b>↗︎</b></button>
         </section>
       </div>
       <div class="aurora-insight-grid">
@@ -256,7 +266,7 @@
         <div><span>Aktív megállapodások</span><strong>{{dash.maintenance_active || 0}}</strong></div>
         <div><span>Havi szerződéses érték</span><strong>{{money(dash.maintenance_contract_value_huf)}}</strong></div>
         <div><span>Esedékes ellenőrzés</span><strong>{{dash.maintenance_reviews_due || 0}}</strong></div>
-        <button type="button" (click)="use('maintenance')">Aurora Care megnyitása ↗</button>
+        <button type="button" (click)="use('maintenance')">Aurora Care megnyitása ↗︎</button>
       </div>
       <div class="admin-grid">
         <section class="admin-panel card">
@@ -265,7 +275,7 @@
               Legutóbbi ajánlatok
             </h2>
             <button type="button" class="action-link" (click)="use('quotes')">
-              Összes megtekintése ↗
+              Összes megtekintése ↗︎
             </button>
           </div>
           @if(dash.recent_quotes.length){
@@ -359,7 +369,7 @@
             </strong>
           </div>
           <button type="button" class="btn btn-primary" (click)="use('projects')">
-            Portfólió kezelése ↗
+            Portfólió kezelése ↗︎
           </button>
         </section>
       </div>
@@ -458,7 +468,7 @@
         <li [class.ok]="g.trust.projects_published > 0">{{g.trust.projects_published}} valódi (nem demó) referencia</li>
         <li [class.ok]="g.funnel.visits > 0">Látogatásmérés {{g.funnel.visits > 0 ? 'működik' : 'még nem küldött adatot'}}</li>
       </ul>
-      <div class="gx-lead-actions"><button type="button" class="btn btn-outline btn-sm" (click)="use('testimonials')">Vélemények kezelése ↗</button></div>
+      <div class="gx-lead-actions"><button type="button" class="btn btn-outline btn-sm" (click)="use('testimonials')">Vélemények kezelése ↗︎</button></div>
     </section>
   </div>
   } @else {
@@ -495,21 +505,28 @@
     } @empty {<p class="empty-state">Még nincs feladat. Vedd fel az első teendőt!</p>}
   </section>
 }
+@if(tab()==='sites'){<app-sites-panel></app-sites-panel>}
+@if(tab()==='finance'){<app-finance-panel></app-finance-panel>}
 @if(tab()==='maintenance'){
   <div class="care-banner">
     <span class="panel-eyebrow">AURORA CARE / KARBANTARTÁS</span>
     <h2>Az ügyfélkapcsolat az átadás után is folytatódik.</h2>
-    <p>A havi megállapodásokat és az ellenőrzési időpontokat itt követheted. Ez nyilvántartás; a rendszer még nem terhel bankkártyát, és a megadott díjak nem igazolt befizetések.</p>
+    <p>Havi megállapodások, ellenőrzési időpontok és kártyás előfizetések (Stripe). Ha egy megállapodásnál engedélyezed az online fizetést, az ügyfél a projektoldalán indíthatja el; a befizetések automatikusan bekerülnek a Pénzügyekbe.</p>
     <button type="button" class="btn btn-primary" (click)="newMaintenance()">+ Új megállapodás</button>
   </div>
   <div class="care-record-grid" [class.with-editor]="!!maintenanceEditor()">
     <section class="admin-panel card">
-      <div class="panel-title"><h2>Megállapodások ({{maintenanceData().agreements.length}})</h2><button type="button" class="action-link" (click)="loadMaintenance()">Frissítés ↗</button></div>
+      <div class="panel-title"><h2>Megállapodások ({{maintenanceData().agreements.length}})</h2><button type="button" class="action-link" (click)="loadMaintenance()">Frissítés ↗︎</button></div>
       @for(row of maintenanceData().agreements;track row.id){
         <div class="care-record">
           <div class="care-record-person"><strong>{{row.quote_request.customer_name}}</strong><a [href]="'mailto:'+row.quote_request.email">{{row.quote_request.email}}</a><small>{{row.plan_name}} · #{{row.quote_request_id}}</small></div>
           <div class="care-record-price"><strong>{{money(row.monthly_fee_huf)}}<small>/hó</small></strong><span class="care-status" [attr.data-care-status]="row.status">{{row.status==='active'?'Aktív':row.status==='paused'?'Szünetel':row.status==='canceled'?'Lezárva':'Tervezet'}}</span></div>
-          <div class="care-record-bottom"><small>Következő ellenőrzés: {{date(row.next_review_on)}}</small><button type="button" class="mini-action" (click)="editMaintenance(row)">Szerkesztés ↗</button></div>
+          <div class="care-record-bottom"><small>Következő ellenőrzés: {{date(row.next_review_on)}}</small><button type="button" class="mini-action" (click)="editMaintenance(row)">Szerkesztés ↗︎</button></div>
+          <div class="care-billing" [attr.data-billing]="row.stripe_status || (row.billing_enabled ? 'waiting' : 'none')">
+            <small>{{row.stripe_status ? subscriptionLabel(row.stripe_status) : row.billing_enabled ? 'Online fizetés engedélyezve – az ügyfél még nem indította el' : 'Nincs online előfizetés'}}
+              @if(row.last_payment_at){ · utolsó befizetés: {{date(row.last_payment_at)}}}</small>
+            @if(row.stripe_subscription_id && !row.stripe_status?.endsWith('_cancel_scheduled') && row.stripe_status!=='canceled'){<button type="button" class="mini-action danger-text" [disabled]="busy()" (click)="cancelSubscription(row)">Lemondás</button>}
+          </div>
         </div>
       } @empty {<div class="empty-state">Még nincs karbantartási megállapodás. Az érdeklődőkből készíthetsz tervezetet.</div>}
       <div class="care-candidates"><h3>Karbantartás iránt érdeklődők</h3>
@@ -533,11 +550,12 @@
         <label class="form-field">Megállapodás állapota
           <select class="input" [(ngModel)]="editor.status"><option value="draft">Tervezet</option><option value="active">Aktív</option><option value="paused">Szünetel</option><option value="canceled">Lezárva</option></select>
         </label>
-        <p class="proposal-hint">Aktiválás csak ténylegesen elfogadott ajánlatnál lehetséges. Az aktív jelölés nem bizonyítja a befizetést.</p>
+        <p class="proposal-hint">Aktiválás csak ténylegesen elfogadott ajánlatnál lehetséges. Kártyás előfizetésnél az aktiválás automatikus az első sikeres fizetéskor.</p>
+        <label class="form-field care-toggle"><span><input type="checkbox" [(ngModel)]="editor.billing_enabled"> Online kártyás előfizetés engedélyezése (Stripe)</span><small class="muted">Az ügyfél a projektoldalán „Előfizetés indítása” gombot lát; a havidíjat a Stripe havonta automatikusan terheli. Minimum 175 Ft.</small></label>
         <div class="care-dates"><label class="form-field">Kezdés<input class="input" type="date" [(ngModel)]="editor.starts_on"></label><label class="form-field">Következő ellenőrzés<input class="input" type="date" [(ngModel)]="editor.next_review_on"></label></div>
         <label class="form-field">Pontosan mit tartalmaz?<textarea class="input" maxlength="3000" rows="4" [(ngModel)]="editor.included_services" placeholder="Vállalt ellenőrzések, mentések, hibajavítás, kizárások…"></textarea></label>
         <label class="form-field">Belső megjegyzés<textarea class="input" maxlength="3000" rows="3" [(ngModel)]="editor.internal_notes"></textarea></label>
-        <button type="button" class="btn btn-primary" [disabled]="busy()" (click)="saveMaintenance()">Megállapodás mentése ↗</button>
+        <button type="button" class="btn btn-primary" [disabled]="busy()" (click)="saveMaintenance()">Megállapodás mentése ↗︎</button>
       </section>
     }
   </div>
@@ -581,7 +599,7 @@
           }
         </select>
         <button class="btn btn-outline btn-sm" type="button" (click)="loadQuotes()">
-          Keresés ↗
+          Keresés ↗︎
         </button>
         <button class="btn btn-outline btn-sm" type="button" [disabled]="busy()" (click)="exportCsv()" title="Az aktuális szűrőnek megfelelő ajánlatkérések Excelben megnyitható CSV-ben">
           CSV export ↓
@@ -612,6 +630,7 @@
                   {{q.email}} · {{date(q.created_at)}}
                 </small>
                 @if(isQuizQuote(q.project_description)){<span class="quote-quiz-badge">✦ KITÖLTÖTT KVÍZ</span>}
+                @if(q.unread_messages_count){<span class="quote-unread-badge">✉︎ {{q.unread_messages_count}} új üzenet</span>}
               </span>
               <span class="status" [attr.data-status]="q.status">
                 {{statusLabel(q.status)}}
@@ -749,7 +768,7 @@
             </small>
             @for(link of (q.inspiration_urls||[]);track $index){
             <a [href]="link" target="_blank" rel="noopener noreferrer">
-              {{link}} ↗
+              {{link}} ↗︎
             </a>
             }
           </div>
@@ -772,7 +791,7 @@
             <div class="detail-block care-detail-cta">
               <small>✧ Aurora Care lehetőség</small>
               <p>Ez az érdeklődő karbantartást is szeretne. Az elfogadott ajánlat után külön havi megállapodást rögzíthetsz.</p>
-              <button type="button" class="btn btn-outline" (click)="use('maintenance')">Karbantartási nyilvántartás ↗</button>
+              <button type="button" class="btn btn-outline" (click)="use('maintenance')">Karbantartási nyilvántartás ↗︎</button>
             </div>
           }
           <hr>
@@ -795,6 +814,19 @@
             <input id="admin-price" class="input" type="text" inputmode="numeric" [(ngModel)]="selectedPrice" [disabled]="!!q.quoted_at" placeholder="Ajánlati összeg forintban">
           </div>
           <div class="form-field">
+            <label for="admin-deposit">Előleg (%) – a munka csak a befizetése után indul</label>
+            <input id="admin-deposit" class="input" type="number" min="0" max="100" step="5" [(ngModel)]="selectedDeposit" [disabled]="!!q.quoted_at" placeholder="Pl. 30 (üresen: nincs előleg)">
+            @if(depositPreview(q); as dep){<small class="muted">Előleg összege: {{money(dep)}}</small>}
+          </div>
+          @if(q.proposal_accepted_at && q.deposit_percent){
+          <div class="deposit-status" [class.paid]="!!q.deposit_paid_at" role="status">
+            @if(q.deposit_paid_at){✓ Előleg beérkezett: {{date(q.deposit_paid_at)}} ({{q.deposit_paid_via==='stripe'?'bankkártya':'átutalás'}})}
+            @else {Előleg ({{q.deposit_percent}}%) még nem érkezett meg.
+              <button type="button" class="btn btn-outline btn-sm" [disabled]="busy()" (click)="markDepositPaid()">Átutalás beérkezett ✓</button>}
+          </div>
+          }
+          @if(q.terms_version){<p class="muted" style="font-size:11px">Elfogadva az ÁSZF {{q.terms_version}} verziójával; az ajánlat ujjlenyomata rögzítve.</p>}
+          <div class="form-field">
             <label for="admin-proposal">Részletes, ügyfélnek elküldendő ajánlati tartalom</label>
             <textarea id="admin-proposal" class="input" rows="6" maxlength="7000" [(ngModel)]="selectedProposal" [disabled]="!!q.quoted_at" placeholder="A szállítandó oldalak és funkciók, várható ütemezés, átadás, a díj tartalma és a kizárások."></textarea>
           </div>
@@ -813,7 +845,7 @@
               <span><small>Első válasz</small><strong>{{q.first_response_at ? date(q.first_response_at) : 'még nincs'}}</strong></span>
             </div>
             <div class="gx-lead-actions">
-              <a class="btn btn-outline btn-sm" [href]="replyMailto(q)">Gyors válasz e-mailben ↗</a>
+              <a class="btn btn-outline btn-sm" [href]="replyMailto(q)">Gyors válasz e-mailben ↗︎</a>
               @if(!q.first_response_at){
               <button type="button" class="btn btn-outline btn-sm" [disabled]="busy()" (click)="markContacted()">Felvettem a kapcsolatot ✓</button>
               }
@@ -836,7 +868,7 @@
           </button>
           @if(!q.quoted_at){
           <button type="button" class="btn btn-outline" [disabled]="busy()" (click)="sendProposal()">
-            Ajánlat tényleges elküldése e-mailben ↗
+            Ajánlat tényleges elküldése e-mailben ↗︎
           </button>
           }
           <p class="proposal-hint">Az ajánlatküldés külön művelet. Előtte a részleteket mentsd el; SMTP-beállítás nélkül nem jelölhető elküldöttnek.</p>
@@ -868,7 +900,7 @@
               } @empty {<p class="muted">Még nincs üzenet.</p>}
             </div>
             <label class="form-field">Válasz az ügyfélnek<textarea class="input" rows="3" maxlength="3000" [(ngModel)]="adminMessage" placeholder="A következő lépésről tájékoztatás…"></textarea></label>
-            <button type="button" class="btn btn-outline" [disabled]="busy() || adminMessage.trim().length<2" (click)="sendProjectMessage()">Válasz közzététele ↗</button>
+            <button type="button" class="btn btn-outline" [disabled]="busy() || adminMessage.trim().length<2" (click)="sendProjectMessage()">Válasz közzététele ↗︎</button>
           </section>
           <section class="milestone-editor">
             <h3>Projektfájlok – csak az ügyfélnek</h3>
@@ -880,7 +912,7 @@
             <label class="form-field">Fájl<input class="input" type="file" accept=".pdf,.png,.jpg,.jpeg,.webp" (change)="pickDocument($event)"></label>
             <button type="button" class="btn btn-outline" [disabled]="busy() || !documentFile || !documentTitle.trim()" (click)="uploadDocument()">Fájl privát feltöltése +</button>
           </section>
-          <div class="detail-block"><small>Ügyfélportál hozzáférés</small><p>A privát link csak az ügyfélnek küldött e-mailben érhető el. Ha a link illetéktelenhez kerül, új hozzáférés küldhető.</p><button class="btn btn-outline" type="button" [disabled]="busy()" (click)="rotateClientAccess()">Új privát link küldése, régi visszavonása ↗</button></div>
+          <div class="detail-block"><small>Ügyfélportál hozzáférés</small><p>A privát link csak az ügyfélnek küldött e-mailben érhető el. Ha a link illetéktelenhez kerül, új hozzáférés küldhető.</p><button class="btn btn-outline" type="button" [disabled]="busy()" (click)="rotateClientAccess()">Új privát link küldése, régi visszavonása ↗︎</button></div>
           <button type="button" class="danger-text" (click)="deleteQuote()">
             Ajánlat végleges törlése
           </button>
@@ -1065,6 +1097,14 @@
             <textarea class="input" rows="3" [(ngModel)]="se.featuresText">
             </textarea>
           </div>
+          <details class="en-fields">
+            <summary>🇬🇧 Angol változat (nyelvválasztóhoz, opcionális)</summary>
+            <div class="form-field"><label>Title (EN)</label><input class="input" maxlength="150" [(ngModel)]="se.title_en"></div>
+            <div class="form-field"><label>Summary (EN)</label><textarea class="input" rows="2" maxlength="300" [(ngModel)]="se.summary_en"></textarea></div>
+            <div class="form-field"><label>Description (EN)</label><textarea class="input" rows="3" [(ngModel)]="se.description_en"></textarea></div>
+            <div class="form-field"><label>Features (EN, soronként egy)</label><textarea class="input" rows="3" [(ngModel)]="se.featuresEnText"></textarea></div>
+            <small class="muted">Üresen hagyva angol nézetben is a magyar szöveg látszik.</small>
+          </details>
           <div class="form-field">
             <label>
               Kezdőár (Ft)
@@ -1179,6 +1219,14 @@
             </label>
             <input class="input" [(ngModel)]="pe.technologiesText">
           </div>
+          <details class="en-fields">
+            <summary>🇬🇧 Angol változat (nyelvválasztóhoz, opcionális)</summary>
+            <div class="form-field"><label>Title (EN)</label><input class="input" maxlength="160" [(ngModel)]="pe.title_en"></div>
+            <div class="form-field"><label>Category (EN)</label><input class="input" maxlength="80" [(ngModel)]="pe.category_en"></div>
+            <div class="form-field"><label>Summary (EN)</label><textarea class="input" rows="2" maxlength="400" [(ngModel)]="pe.summary_en"></textarea></div>
+            <div class="form-field"><label>Description (EN)</label><textarea class="input" rows="4" [(ngModel)]="pe.description_en"></textarea></div>
+            <small class="muted">Üresen hagyva angol nézetben is a magyar szöveg látszik.</small>
+          </details>
           <div class="form-field">
             <label>Mérhető eredmények (soronként: érték | felirat, legfeljebb 4)</label>
             <textarea class="input" rows="4" [(ngModel)]="pe.resultsText" placeholder="+48% | több ajánlatkérés&#10;1,2 mp | betöltési idő"></textarea>
@@ -1328,6 +1376,16 @@
             <input class="input" type="url" [(ngModel)]="settings.github_url">
           </div>
           <div class="form-field">
+            <label>Trustindex widget-azonosító (Google-vélemények)</label>
+            <input class="input" maxlength="64" [(ngModel)]="settings.reviews_widget_id" placeholder="Pl. 8f2c1a9b3e... (a beágyazó kódban a loader.js? utáni rész)">
+            <small class="muted">Kitöltve a főoldalon megjelenik a véleményblokk, és a látogatóktól hozzájárulást kérünk (süti-sáv).</small>
+          </div>
+          <div class="form-field">
+            <label>Google véleményírási link</label>
+            <input class="input" type="url" [(ngModel)]="settings.google_review_url" placeholder="https://g.page/r/.../review">
+            <small class="muted">Google Cégprofil → „Vélemények kérése”. A főoldalon gombként jelenik meg.</small>
+          </div>
+          <div class="form-field">
             <label>
               Instagram URL
             </label>
@@ -1335,7 +1393,7 @@
           </div>
         </div>
         <button class="btn btn-primary" type="button" [disabled]="busy()" (click)="saveSettings()">
-          Beállítások mentése ↗
+          Beállítások mentése ↗︎
         </button>
       </section>
       <aside class="settings-live-preview" aria-label="Weboldal beállításainak előnézete">
@@ -1345,11 +1403,11 @@
           <span class="settings-preview-eyebrow">PRÉMIUM WEBFEJLESZTÉS</span>
           <h2>{{ settings.hero_headline || 'Ne csak jelen legyél online. Emelkedj ki.' }}</h2>
           <p>{{ settings.hero_description || 'Egyedi, modern digitális megoldások vállalkozásoknak.' }}</p>
-          <span class="settings-preview-button">Indítsuk el a projekted <span>↗</span></span>
+          <span class="settings-preview-button">Indítsuk el a projekted <span>↗︎</span></span>
           <div class="settings-preview-hologram" aria-hidden="true"><i></i><b>M<span>.</span></b><i></i></div>
         </div>
         <div class="settings-preview-bottom"><span>{{ settings.site_title || 'Megyeri Márk Máté | Webfejlesztés' }}</span><span>DESIGN THAT CONNECTS</span></div>
-        <a class="settings-public-link" routerLink="/" target="_blank" rel="noopener noreferrer">Nyilvános weboldal megnyitása ↗</a>
+        <a class="settings-public-link" routerLink="/" target="_blank" rel="noopener noreferrer">Nyilvános weboldal megnyitása ↗︎</a>
       </aside>
       </div>
       }
@@ -1413,7 +1471,7 @@
           <input class="input" type="password" autocomplete="new-password" [(ngModel)]="confirmPassword">
         </div>
         <button type="button" class="btn btn-primary" [disabled]="busy()" (click)="changePassword()">
-          Jelszó módosítása ↗
+          Jelszó módosítása ↗︎
         </button>
       </section>
       <section class="admin-panel card settings-editor">

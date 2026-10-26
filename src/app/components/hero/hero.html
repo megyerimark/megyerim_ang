@@ -8,15 +8,15 @@
 
     <div class="hero-grid">
       <div class="hero-copy">
-        <div class="hero-eyebrow"><span class="hero-eyebrow-line"></span>MODERN WEBOLDALAK</div>
+        <div class="hero-eyebrow"><span class="hero-eyebrow-line"></span>{{ 'MODERN WEBOLDALAK' | t }}</div>
         <h1 id="hero-title" [attr.aria-label]="headline">
           @for (line of leadLines; track $index) {<span class="hero-line">{{ line }}</span>}
           <em class="hero-line hero-line--accent">{{ titleAccent }}</em>
         </h1>
-        <p class="hero-sub">{{ description }}</p>
+        <p class="hero-sub">{{ description | t }}</p>
         <div class="hero-actions">
-          <a class="hero-btn hero-btn--fill" routerLink="/ajanlatkeres">Kérj ajánlatot <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a>
-          <a class="hero-btn hero-btn--ghost" routerLink="/" fragment="munkak">Munkáim megtekintése <svg class="play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg></a>
+          <a class="hero-btn hero-btn--fill" routerLink="/ajanlatkeres">{{ 'Kérj ajánlatot' | t }} <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a>
+          <a class="hero-btn hero-btn--ghost" routerLink="/" fragment="munkak">{{ 'Munkáim megtekintése' | t }} <svg class="play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg></a>
         </div>
       </div>
 
@@ -36,16 +36,16 @@
             <div class="monitor-bar"><i></i><i></i><i></i></div>
             <div class="screen">
               <div class="screen-photo"></div>
-              <div class="screen-nav"><span>Rólam</span><span>Szolgáltatások</span><span>Munkáim</span><span>Kapcsolat</span></div>
+              <div class="screen-nav"><span>{{ 'Rólam' | t }}</span><span>{{ 'Szolgáltatások' | t }}</span><span>{{ 'Munkáim' | t }}</span><span>{{ 'Kapcsolat' | t }}</span></div>
               <div class="slide slide--a">
-                <strong>Időtálló<br>weboldalak</strong>
-                <p>Stratégia, design és technológia együtt, hogy vállalkozásod magasabb szintre lépjen.</p>
-                <span class="slide-btn">Továbbiak <svg viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></svg></span>
+                <strong>{{ 'Időtálló' | t }}<br>{{ 'weboldalak' | t }}</strong>
+                <p>{{ 'Stratégia, design és technológia együtt, hogy vállalkozásod magasabb szintre lépjen.' | t }}</p>
+                <span class="slide-btn">{{ 'Továbbiak' | t }} <svg viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></svg></span>
               </div>
               <div class="slide slide--b">
-                <small>MEGGYŐZŐ ELSŐ BENYOMÁS</small>
-                <strong>Egyedi arculat,<br>stabil alap.</strong>
-                <p>Minden réteg a céljaidat szolgálja – a tartalomtól a kódig.</p>
+                <small>{{ 'MEGGYŐZŐ ELSŐ BENYOMÁS' | t }}</small>
+                <strong>{{ 'Egyedi arculat,' | t }}<br>{{ 'stabil alap.' | t }}</strong>
+                <p>{{ 'Minden réteg a céljaidat szolgálja – a tartalomtól a kódig.' | t }}</p>
               </div>
               <div class="screen-strip"><i></i><i></i><i></i></div>
             </div>
@@ -56,18 +56,18 @@
             <div class="phone-screen">
               <div class="phone-photo"></div>
               <div class="phone-menu"><b></b><b></b><b></b></div>
-              <strong>Időtálló<br>weboldalak</strong>
-              <p>Stratégia, design és technológia együtt, hogy vállalkozásod magasabb szintre lépjen.</p>
-              <span class="phone-btn">Továbbiak →</span>
+              <strong>{{ 'Időtálló' | t }}<br>{{ 'weboldalak' | t }}</strong>
+              <p>{{ 'Stratégia, design és technológia együtt, hogy vállalkozásod magasabb szintre lépjen.' | t }}</p>
+              <span class="phone-btn">{{ 'Továbbiak →' | t }}</span>
             </div>
           </div>
 
           <div class="panel">
-            <small>Színek</small>
+            <small>{{ 'Színek' | t }}</small>
             <div class="dots"><i></i><i></i><i></i><i></i></div>
-            <small>Betűtípus</small>
-            <div class="type"><b>Aa</b><span><u></u><u></u></span></div>
-            <small>Elrendezés</small>
+            <small>{{ 'Betűtípus' | t }}</small>
+            <div class="type"><b>{{ 'Aa' | t }}</b><span><u></u><u></u></span></div>
+            <small>{{ 'Elrendezés' | t }}</small>
             <div class="cols"><i></i><i></i><i></i></div>
           </div>
 
@@ -84,13 +84,13 @@
     </div>
 
     <div class="hero-foot">
-      <span class="hero-chapter">01 / AZ ELSŐ BENYOMÁS</span>
+      <span class="hero-chapter">{{ '01 / AZ ELSŐ BENYOMÁS' | t }}</span>
       <div class="hero-bar" aria-hidden="true">
         @for (seg of segments; track $index) {<i [class.is-first]="$index === 0"></i>}
       </div>
       <div class="hero-arrows">
-        <button type="button" class="hero-arrow" disabled aria-label="Előző fejezet"><svg viewBox="0 0 24 24"><path d="M20 12H5M11 6l-6 6 6 6"/></svg></button>
-        <button type="button" class="hero-arrow is-next" (click)="next()" aria-label="Következő fejezet"><svg viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button>
+        <button type="button" class="hero-arrow" disabled [attr.aria-label]="'Előző fejezet' | t"><svg viewBox="0 0 24 24"><path d="M20 12H5M11 6l-6 6 6 6"/></svg></button>
+        <button type="button" class="hero-arrow is-next" (click)="next()" [attr.aria-label]="'Következő fejezet' | t"><svg viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button>
       </div>
     </div>
   </div>

@@ -1,0 +1,37 @@
+@use "admin-primitives";
+:host { display: block; }
+.vault-bar { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px 24px; align-items: center; margin-bottom: 18px; border-color: #f5b94b55; }
+.vault-bar.open { border-color: #55e5c766; }
+.vault-intro h2 { margin: 6px 0; font-size: 22px; }
+.vault-intro p { margin: 0; font-size: 13px; line-height: 1.6; max-width: 640px; }
+.vault-form { display: flex; flex-wrap: wrap; gap: 10px; grid-column: 1 / -1; }
+.vault-form .input { flex: 1 1 220px; }
+.vault-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.sites-layout { display: grid; gap: 18px; }
+.sites-layout.with-editor { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); align-items: start; }
+.sites-search { margin: 4px 0 10px; }
+.site-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 14px; width: 100%; padding: 14px 6px; border: 0; border-bottom: 1px solid var(--border); background: transparent; color: var(--text); text-align: left; cursor: pointer; }
+.site-row:hover, .site-row.chosen { background: var(--surface-alt); }
+.site-main { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.site-main strong { font-size: 14px; }
+.site-main small { color: var(--muted); font-size: 11.5px; overflow-wrap: anywhere; }
+.lock { font-size: 11px; margin-left: 4px; opacity: .8; }
+.site-chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.chip { padding: 3px 9px; border-radius: 999px; font-size: 10.5px; font-weight: 700; border: 1px solid var(--border); color: var(--muted); }
+.chip.ok { border-color: #55e5c74d; color: #7ff0d6; }
+.chip.near { border-color: #f5b94b80; color: #f8c76b; background: #f5b94b14; }
+.chip.soon, .chip.expired { border-color: #ff7a8f99; color: #ff9db0; background: #ff5d7a1a; }
+.site-grid, .cred-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 14px; }
+.site-grid .wide, .cred-grid .wide { grid-column: 1 / -1; }
+.cred-section { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); }
+.cred-section h3 { font-size: 16px; margin: 0 0 10px; }
+.cred-card { padding: 12px; margin-bottom: 12px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface-alt); }
+.cred-inline { display: flex; gap: 6px; align-items: center; }
+.cred-inline .input { flex: 1; min-width: 0; }
+.site-editor-actions { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 18px; }
+@media (max-width: 1100px) { .sites-layout.with-editor { grid-template-columns: 1fr; } }
+@media (max-width: 600px) {
+  .vault-bar { grid-template-columns: 1fr; }
+  .site-grid, .cred-grid { grid-template-columns: 1fr; }
+  .cred-inline { flex-wrap: wrap; }
+}

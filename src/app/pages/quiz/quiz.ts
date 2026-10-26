@@ -4,32 +4,35 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/api.service';
 import { QuotePayload } from '../../core/models';
+import { TPipe } from '../../i18n/t.pipe';
+import { I18nService } from '../../i18n/i18n.service';
 
 type QuizKey = 'industry' | 'goal' | 'website' | 'solution' | 'timeline';
 interface QuizOption { value:string; label:string; detail:string; icon:string; }
 interface QuizQuestion { key:QuizKey; eyebrow:string; title:string; hint:string; options:QuizOption[]; }
 const option=(value:string,label:string,detail:string,icon='✦'):QuizOption=>({value,label,detail,icon});
 
-@Component({selector:'app-quiz',standalone:true,imports:[FormsModule,RouterLink],templateUrl:'./quiz.html',styleUrl:'./quiz.scss'})
+@Component({selector:'app-quiz',standalone:true,imports:[FormsModule,RouterLink, TPipe],templateUrl:'./quiz.html',styleUrl:'./quiz.scss'})
 export class QuizPage {
+    readonly i18n = inject(I18nService);
     private readonly api=inject(ApiService);
     readonly questions:QuizQuestion[]=[
         {key:'industry',eyebrow:'A VÁLLALKOZÁSOD',title:'Mivel foglalkozol leginkább?',hint:'Így a neked releváns megoldásokra fókuszálhatunk.',options:[
-            option('Szolgáltatás','Szolgáltató','Tanácsadás, oktatás, szakmai szolgáltatás'),option('Egészség és szépség','Egészség és szépség','Kozmetika, egészségügy, wellness','✳'),
+            option('Szolgáltatás','Szolgáltató','Tanácsadás, oktatás, szakmai szolgáltatás'),option('Egészség és szépség','Egészség és szépség','Kozmetika, egészségügy, wellness','✳︎'),
             option('Kereskedelem','Kereskedelem','Üzlet, termékek, értékesítés','◇'),option('Vendéglátás','Vendéglátás','Étterem, szállás, rendezvények','◈'),
-            option('Technológia','Technológia','Digitális szolgáltatások','⌘'),option('Más terület','Egyéb terület','Másféle vállalkozás vagy új ötlet','↗')]},
+            option('Technológia','Technológia','Digitális szolgáltatások','⌘'),option('Más terület','Egyéb terület','Másféle vállalkozás vagy új ötlet','↗︎')]},
         {key:'goal',eyebrow:'AZ ÜZLETI CÉLOD',title:'Mit szeretnél elsősorban elérni?',hint:'Egy jó weboldalnak mindig legyen konkrét feladata.',options:[
-            option('Professzionális megjelenés','Professzionális megjelenés','Erősebb márka és első benyomás'),option('Több érdeklődő','Több érdeklődő','Egyszerűbb ajánlatkérés, kapcsolatfelvétel','↗'),
+            option('Professzionális megjelenés','Professzionális megjelenés','Erősebb márka és első benyomás'),option('Több érdeklődő','Több érdeklődő','Egyszerűbb ajánlatkérés, kapcsolatfelvétel','↗︎'),
             option('Online értékesítés','Online értékesítés','Termékek és szolgáltatások eladása','◇'),option('Hatékonyabb működés','Hatékonyabb működés','Foglalások és adminisztráció','◎')]},
         {key:'website',eyebrow:'A KIINDULÓ HELYZET',title:'Van már weboldalad?',hint:'A kiindulópont segít felmérni a szükséges munkát.',options:[
             option('Még nincs','Még nincs weboldalam','Most kezdeném az online jelenlétet','+'),option('Megújítás','Igen, de megújítanám','Modernebb és átláthatóbb lehetne','↻'),
-            option('Csak közösségi oldal','Csak Facebook / Instagram','Saját weboldallal egészíteném ki','◉'),option('Bővítés','Van, de továbbfejleszteném','Új funkciókat szeretnék hozzá','✳')]},
+            option('Csak közösségi oldal','Csak Facebook / Instagram','Saját weboldallal egészíteném ki','◉'),option('Bővítés','Van, de továbbfejleszteném','Új funkciókat szeretnék hozzá','✳︎')]},
         {key:'solution',eyebrow:'A MEGOLDÁS',title:'Milyen weboldalra gondoltál?',hint:'Ha még bizonytalan vagy, a választásban is segítek.',options:[
-            option('business','Céges weboldal','Bemutatkozás, szolgáltatások, kapcsolat','▣'),option('landing','Landing oldal','Egy ajánlat vagy kampány köré épül','↗'),
+            option('business','Céges weboldal','Bemutatkozás, szolgáltatások, kapcsolat','▣'),option('landing','Landing oldal','Egy ajánlat vagy kampány köré épül','↗︎'),
             option('webshop','Webáruház','Termékek, kosár és online értékesítés','◇'),option('custom','Egyedi webes rendszer','Adminfelület, speciális funkciók','⌘'),
             option('undecided','Még nem tudom','A céljaimhoz keresek megoldást','?')]},
         {key:'timeline',eyebrow:'AZ IDŐZÍTÉS',title:'Mikor szeretnéd elindítani?',hint:'A vállalható határidőt később egyeztetjük.',options:[
-            option('Minél hamarabb','Minél hamarabb','Már most aktuális a projekt','↗'),option('1–3 hónapon belül','1–3 hónapon belül','Van idő átgondolni a részleteket','◷'),
+            option('Minél hamarabb','Minél hamarabb','Már most aktuális a projekt','↗︎'),option('1–3 hónapon belül','1–3 hónapon belül','Van idő átgondolni a részleteket','◷'),
             option('3–6 hónapon belül','3–6 hónapon belül','Előre tervezek','◇'),option('Még tervezem','Még csak tervezem','Előbb látnám a lehetőségeket','◎')]}
     ];
     readonly step=signal(0);

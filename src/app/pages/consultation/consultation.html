@@ -1,25 +1,25 @@
 <main class="consultation-page">
   <div class="container">
-    <div class="consultation-header"><div><span class="overline">SZEMÉLYES EGYEZTETÉS / ONLINE</span><h1>Beszéljünk a projektedről.</h1><p>Válassz egy szabad konzultációs időpontot. Az időpontot a rendszer azonnal lefoglalja, a találkozó technikai részleteit külön egyeztetjük.</p></div><a routerLink="/" class="back-link">← Vissza a főoldalra</a></div>
+    <div class="consultation-header"><div><span class="overline">{{ 'SZEMÉLYES EGYEZTETÉS / ONLINE' | t }}</span><h1>{{ 'Beszéljünk a projektedről.' | t }}</h1><p>{{ 'Válassz egy szabad konzultációs időpontot. Az időpontot a rendszer azonnal lefoglalja, a találkozó technikai részleteit külön egyeztetjük.' | t }}</p></div><a routerLink="/" class="back-link">{{ '← Vissza a főoldalra' | t }}</a></div>
     @if(confirmation();as done){
-      <section class="consultation-card booking-success" role="status"><span class="overline">SIKERES FOGLALÁS</span><h2>Az időpontot lefoglaltuk.</h2><p><strong>{{date(done.starts_at)}}</strong> · {{done.duration_minutes}} perc</p><p>Foglalási azonosító: #{{done.reference}}</p><p>Az időpontot rögzítettem a rendszerben. E-mailes visszaigazolás csak a megfelelő levélküldési beállítások mellett érkezik.</p><button type="button" class="btn btn-outline" (click)="addToCalendar()">Naptárba mentés (.ics) ↓</button> <a class="btn btn-primary" routerLink="/">Vissza a főoldalra ↗</a></section>
+      <section class="consultation-card booking-success" role="status"><span class="overline">{{ 'SIKERES FOGLALÁS' | t }}</span><h2>{{ 'Az időpontot lefoglaltuk.' | t }}</h2><p><strong>{{date(done.starts_at)}}</strong> · {{done.duration_minutes}} {{ 'perc' | t }}</p><p>{{ 'Foglalási azonosító' | t }}: #{{done.reference}}</p><p>{{ 'Az időpontot rögzítettem a rendszerben. E-mailes visszaigazolás csak a megfelelő levélküldési beállítások mellett érkezik.' | t }}</p><button type="button" class="btn btn-outline" (click)="addToCalendar()">{{ 'Naptárba mentés (.ics) ↓' | t }}</button> <a class="btn btn-primary" routerLink="/">{{ 'Vissza a főoldalra ↗︎' | t }}</a></section>
     } @else {
-      <div class="consultation-layout"><section class="consultation-card"><span class="overline">01 / SZABAD IDŐPONTOK</span><h2>Válassz időpontot</h2>
-        @if(loading()){<p role="status">Szabad időpontok betöltése…</p>}
-        @else if(!slots().length){<p>Jelenleg nem tettem közzé új szabad időpontot. Az <a routerLink="/ajanlatkeres">ajánlatkérőn</a> keresztül is felveheted velem a kapcsolatot.</p>}
-        <div class="slot-grid">@for(slot of slots();track slot.id){<button type="button" class="slot" [class.active]="selectedSlot()===slot.id" [attr.aria-pressed]="selectedSlot()===slot.id" (click)="selectedSlot.set(slot.id)"><strong>{{date(slot.starts_at)}}</strong><small>{{slot.duration_minutes}} perces konzultáció</small></button>}</div>
-        <p class="time-note">Az időpontok magyarországi idő szerint szerepelnek (Europe/Budapest).</p>
+      <div class="consultation-layout"><section class="consultation-card"><span class="overline">{{ '01 / SZABAD IDŐPONTOK' | t }}</span><h2>{{ 'Válassz időpontot' | t }}</h2>
+        @if(loading()){<p role="status">{{ 'Szabad időpontok betöltése…' | t }}</p>}
+        @else if(!slots().length){<p>{{ 'Jelenleg nem tettem közzé új szabad időpontot. Az' | t }} <a routerLink="/ajanlatkeres">{{ 'ajánlatkérőn' | t }}</a> {{ 'keresztül is felveheted velem a kapcsolatot.' | t }}</p>}
+        <div class="slot-grid">@for(slot of slots();track slot.id){<button type="button" class="slot" [class.active]="selectedSlot()===slot.id" [attr.aria-pressed]="selectedSlot()===slot.id" (click)="selectedSlot.set(slot.id)"><strong>{{date(slot.starts_at)}}</strong><small>{{slot.duration_minutes}} {{ 'perces konzultáció' | t }}</small></button>}</div>
+        <p class="time-note">{{ 'Az időpontok magyarországi idő szerint szerepelnek (Europe/Budapest).' | t }}</p>
       </section>
-      <section class="consultation-card"><span class="overline">02 / ELÉRHETŐSÉGEK</span><h2>Hogyan érhetlek el?</h2>
-        <div class="booking-field"><label for="booking-name">Teljes név *</label><input class="input" id="booking-name" autocomplete="name" maxlength="120" [(ngModel)]="data.customer_name"></div>
-        <div class="booking-field"><label for="booking-email">E-mail-cím *</label><input class="input" id="booking-email" type="email" autocomplete="email" maxlength="254" [(ngModel)]="data.email"></div>
-        <div class="booking-field"><label for="booking-phone">Telefon (opcionális)</label><input class="input" id="booking-phone" type="tel" autocomplete="tel" maxlength="30" [(ngModel)]="data.phone"></div>
-        <div class="booking-field"><label for="booking-notes">Miről szeretnél beszélni?</label><textarea class="input" id="booking-notes" rows="3" maxlength="1000" [(ngModel)]="data.notes"></textarea></div>
-        <div class="booking-honeypot" aria-hidden="true"><label for="booking-website">Weboldal</label><input id="booking-website" tabindex="-1" autocomplete="off" [(ngModel)]="data.website"></div>
-        <label class="booking-consent"><input type="checkbox" [(ngModel)]="data.privacy_notice_acknowledged"><span>Elolvastam és tudomásul vettem az <a routerLink="/adatkezeles" target="_blank" rel="noopener noreferrer">adatkezelési tájékoztatót</a>. *</span></label>
-        @if(error()){<p class="booking-error" role="alert">{{error()}}</p>}
-        <button type="button" class="btn btn-primary book-btn" [disabled]="sending()||!selectedSlot()" (click)="book()">{{sending()?'Foglalás folyamatban…':'Időpont lefoglalása ↗'}}</button>
-        <p class="time-note">A konzultáció díjmentes és nem jár megrendelési kötelezettséggel.</p>
+      <section class="consultation-card"><span class="overline">{{ '02 / ELÉRHETŐSÉGEK' | t }}</span><h2>{{ 'Hogyan érhetlek el?' | t }}</h2>
+        <div class="booking-field"><label for="booking-name">{{ 'Teljes név *' | t }}</label><input class="input" id="booking-name" autocomplete="name" maxlength="120" [(ngModel)]="data.customer_name"></div>
+        <div class="booking-field"><label for="booking-email">{{ 'E-mail-cím *' | t }}</label><input class="input" id="booking-email" type="email" autocomplete="email" maxlength="254" [(ngModel)]="data.email"></div>
+        <div class="booking-field"><label for="booking-phone">{{ 'Telefon (opcionális)' | t }}</label><input class="input" id="booking-phone" type="tel" autocomplete="tel" maxlength="30" [(ngModel)]="data.phone"></div>
+        <div class="booking-field"><label for="booking-notes">{{ 'Miről szeretnél beszélni?' | t }}</label><textarea class="input" id="booking-notes" rows="3" maxlength="1000" [(ngModel)]="data.notes"></textarea></div>
+        <div class="booking-honeypot" aria-hidden="true"><label for="booking-website">{{ 'Weboldal' | t }}</label><input id="booking-website" tabindex="-1" autocomplete="off" [(ngModel)]="data.website"></div>
+        <label class="booking-consent"><input type="checkbox" [(ngModel)]="data.privacy_notice_acknowledged"><span>{{ 'Elolvastam és tudomásul vettem az' | t }} <a routerLink="/adatkezeles" target="_blank" rel="noopener noreferrer">{{ 'adatkezelési tájékoztatót' | t }}</a>. *</span></label>
+        @if(error()){<p class="booking-error" role="alert">{{ error() | t }}</p>}
+        <button type="button" class="btn btn-primary book-btn" [disabled]="sending()||!selectedSlot()" (click)="book()">{{ (sending()?'Foglalás folyamatban…':'Időpont lefoglalása ↗︎') | t }}</button>
+        <p class="time-note">{{ 'A konzultáció díjmentes és nem jár megrendelési kötelezettséggel.' | t }}</p>
       </section></div>
     }
   </div>

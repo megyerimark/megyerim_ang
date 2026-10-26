@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Meta } from '@angular/platform-browser';
 import { ApiService } from '../../core/api.service';
+import { ToastService } from '../../core/toast.service';
 import { ClientProject, ProjectCollaboration, ProjectDocument, QuoteStatus } from '../../core/models';
 
 @Component({ selector: 'app-client-project', standalone: true, imports: [RouterLink, FormsModule], templateUrl: './client-project.html', styleUrl: './client-project.scss' })
@@ -11,11 +12,14 @@ export class ClientProjectPage implements OnInit, OnDestroy {
     private readonly api = inject(ApiService);
     private readonly route = inject(ActivatedRoute);
     private readonly meta = inject(Meta);
+    private readonly toast = inject(ToastService);
     private token = '';
     project = signal<ClientProject | null>(null);
     loading = signal(true);
     accepting = signal(false);
     consent = signal(false);
+    earlyStart = signal(false);
+    paying = signal(false);
     error = signal('');
     message = signal('');
     collaboration = signal<ProjectCollaboration>({ messages: [], documents: [] });
@@ -62,7 +66,7 @@ export class ClientProjectPage implements OnInit, OnDestroy {
         if (!item || !this.consent() || !this.canAccept(item)) return;
         this.accepting.set(true);
         this.error.set('');
-        this.api.acceptProposal(this.token).subscribe({
+        this.api.acceptProposal(this.token, this.earlyStart()).subscribe({
             next: result => { this.project.set(result.data); this.message.set('Az ajánlat elfogadását rögzítettük. Hamarosan egyeztetünk a következő lépésekről.'); this.accepting.set(false); },
             error: (e: HttpErrorResponse) => { this.error.set(e.error?.message || 'Nem sikerült az ajánlat elfogadása.'); this.accepting.set(false); }
         });
@@ -77,8 +81,8 @@ export class ClientProjectPage implements OnInit, OnDestroy {
         if (this.sendingMessage() || this.newMessage.trim().length < 2) return;
         this.sendingMessage.set(true);
         this.api.sendClientMessage(this.token, this.newMessage.trim()).subscribe({
-            next: () => { this.newMessage = ''; this.sendingMessage.set(false); this.loadCollaboration(); },
-            error: () => { this.sendingMessage.set(false); this.error.set('Az üzenetet nem sikerült elküldeni.'); }
+            next: () => { this.newMessage = ''; this.sendingMessage.set(false); this.loadCollaboration(); this.toast.success('Üzenet elküldve. Hamarosan válaszolok.'); },
+            error: () => { this.sendingMessage.set(false); this.toast.error('Az üzenetet nem sikerült elküldeni. Próbáld újra.'); }
         });
     }
     downloadDocument(doc: ProjectDocument): void {
@@ -94,4 +98,20 @@ export class ClientProjectPage implements OnInit, OnDestroy {
         setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
     printProposal(): void { window.print(); }
+    /** Stripe Checkout: a szerver friss fizetési munkamenetet nyit, mi csak átirányítunk. */
+    private redirect(request: ReturnType<ApiService['depositCheckout']>): void {
+        if (this.paying()) return;
+        this.paying.set(true);
+        request.subscribe({
+            next: r => { location.href = r.url; },
+            error: (e: HttpErrorResponse) => { this.paying.set(false); this.toast.error(e.error?.errors?.payment?.[0] || e.error?.message || 'A fizetési oldal most nem nyitható meg.'); }
+        });
+    }
+    payDeposit(): void { this.redirect(this.api.depositCheckout(this.token)); }
+    startMaintenance(): void { this.redirect(this.api.maintenanceCheckout(this.token)); }
+    manageBilling(): void { this.redirect(this.api.billingPortal(this.token)); }
+    subscriptionLabel(status: string): string {
+        const labels: Record<string, string> = { active: 'Aktív', trialing: 'Próbaidőszak', past_due: 'Sikertelen terhelés – frissítsd a kártyádat', canceled: 'Lemondva', unpaid: 'Kifizetetlen', paused: 'Szüneteltetve', incomplete: 'Függőben' };
+        return status.endsWith('_cancel_scheduled') ? 'Aktív – az időszak végén megszűnik' : (labels[status] ?? status);
+    }
 }

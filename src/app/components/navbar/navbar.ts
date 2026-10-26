@@ -2,18 +2,21 @@ import { Component, HostListener, OnDestroy, OnInit, inject, signal } from '@ang
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
+import { TPipe } from '../../i18n/t.pipe';
+import { I18nService } from '../../i18n/i18n.service';
 
 interface NavItem { label: string; link: string; fragment?: string; spy?: string; mobileOnly?: boolean; }
 
 @Component({
     selector: 'app-navbar',
     standalone: true,
-    imports: [RouterLink],
+    imports: [RouterLink, TPipe],
     templateUrl: './navbar.html',
     styleUrl: './navbar.scss',
     host: { '[class.overlay]': 'onHome' }
 })
 export class Navbar implements OnInit, OnDestroy {
+    readonly i18n = inject(I18nService);
     private readonly router = inject(Router);
     isDark = signal(true);
     menuOpen = signal(false);

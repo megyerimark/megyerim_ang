@@ -37,3 +37,12 @@
 .project-textarea{border:1px solid var(--premium-rim);background:var(--premium-glass);color:var(--text);border-radius:12px}
 .project-textarea:focus{outline:2px solid var(--accent)}
 @media print{.client-panel{background:#fff!important;border-color:#ddd!important;box-shadow:none!important;backdrop-filter:none!important}}
+
+
+/* Fizetés (előleg, karbantartási előfizetés) */
+.payment-due{display:flex;flex-wrap:wrap;align-items:center;gap:14px 18px;margin:6px 0 12px}
+.payment-due>div{display:flex;flex-direction:column;gap:3px;margin-right:auto}
+.payment-due small{color:var(--muted);font-size:12px}
+.payment-due strong{font-size:26px;letter-spacing:-.5px}
+.accept-optional{opacity:.92;font-size:.94em}
+.accept-optional small{color:var(--muted)}

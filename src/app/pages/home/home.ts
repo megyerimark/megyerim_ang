@@ -5,7 +5,11 @@ import { Hero } from '../../components/hero/hero';
 import { CinematicStory } from '../../components/cinematic-story/cinematic-story';
 import { PremiumReveal } from '../../directives/premium-reveal';
 import { ApiService } from '../../core/api.service';
+import { ConsentService } from '../../core/consent.service';
+import { ExternalReviews } from '../../components/external-reviews/external-reviews';
 import { Project, Service, SiteSettings, Testimonial, SITE_DEFAULTS } from '../../core/models';
+import { TPipe } from '../../i18n/t.pipe';
+import { I18nService } from '../../i18n/i18n.service';
 type PreviewPurpose = 'business' | 'booking' | 'system';
 type PreviewStyle = 'graphite' | 'ivory' | 'ocean';
 
@@ -26,13 +30,16 @@ interface PreviewPalette {
 @Component({
     selector: 'app-home',
     standalone: true,
-    imports: [Hero, CinematicStory, RouterLink, DecimalPipe, PremiumReveal],
+    imports: [Hero, CinematicStory, RouterLink, DecimalPipe, PremiumReveal, ExternalReviews, TPipe],
     templateUrl: './home.html',
     styleUrl: './home.scss'
 })
 export class Home implements OnInit {
+    readonly i18n = inject(I18nService);
+    loc(obj: object | null | undefined, field: string): string { return this.i18n.loc(obj, field); }
     private readonly api = inject(ApiService);
     settings = signal<SiteSettings>(SITE_DEFAULTS);
+    readonly consent = inject(ConsentService);
     services = signal<Service[]>([]);
     projects = signal<Project[]>([]);
     testimonials = signal<Testimonial[]>([]);
@@ -182,9 +189,10 @@ export class Home implements OnInit {
     }
     money(amount: number | null): string {
         if (amount === null) {
-            return 'Egyedi ajánlat';
+            return this.i18n.t('Egyedi ajánlat');
         }
-        return new Intl.NumberFormat('hu-HU').format(amount) + ' Ft-tól';
+        const value = new Intl.NumberFormat('hu-HU').format(amount);
+        return this.i18n.lang() === 'en' ? `From HUF ${value}` : `${value} Ft-tól`;
     }
     stars(n: number): string { return '★'.repeat(Math.max(0, Math.min(5, n))) + '☆'.repeat(5 - Math.max(0, Math.min(5, n))); }
     toggleFaq(index: number): void {

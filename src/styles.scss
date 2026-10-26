@@ -343,3 +343,6 @@ hr {
 
 /* Aurora Cinematic V11 — consistent editorial direction across public and admin routes. */
 @import './aurora-cinematic';
+
+/* iOS-en egyes ikonkarakterek (↗ ⚙ ✳) színes emojiként jelennének meg. */
+body { font-variant-emoji: text; }

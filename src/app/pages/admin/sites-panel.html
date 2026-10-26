@@ -1,0 +1,127 @@
+<!-- Széf állapota -->
+<section class="admin-panel card vault-bar" [class.open]="vault.unlocked()">
+  @if (meta() === undefined) {
+    <p class="muted">Széf betöltése…</p>
+  } @else if (meta() === null) {
+    <div class="vault-intro">
+      <span class="panel-eyebrow">HOZZÁFÉRÉS-SZÉF</span>
+      <h2>Állíts be egy külön széfjelszót</h2>
+      <p class="muted">A domain-, tárhely- és adminbelépéseket ezzel a jelszóval a <strong>böngésződ</strong> titkosítja (AES-256-GCM).
+        A szerver – és bárki, aki az adatbázishoz hozzáfér – csak olvashatatlan adatot lát. Ha a jelszót elfelejted, a tartalom nem állítható vissza.</p>
+    </div>
+    <form class="vault-form" (ngSubmit)="createVault()">
+      <input class="input" type="password" name="vp1" autocomplete="new-password" [(ngModel)]="vaultPassword" placeholder="Széfjelszó (min. 12 karakter)">
+      <input class="input" type="password" name="vp2" autocomplete="new-password" [(ngModel)]="vaultPassword2" placeholder="Széfjelszó újra">
+      <button class="btn btn-primary" type="submit" [disabled]="busy()">Széf létrehozása</button>
+    </form>
+  } @else if (!vault.unlocked()) {
+    <div class="vault-intro">
+      <span class="panel-eyebrow">🔒︎ SZÉF ZÁROLVA</span>
+      <h2>A hozzáférések titkosítva vannak</h2>
+      <p class="muted">A projektek listája látható; a jelszavak megtekintéséhez és szerkesztéséhez nyisd meg a széfet.</p>
+    </div>
+    <form class="vault-form" (ngSubmit)="unlock()">
+      <input class="input" type="password" name="vpu" autocomplete="current-password" [(ngModel)]="vaultPassword" placeholder="Széfjelszó">
+      <button class="btn btn-primary" type="submit" [disabled]="busy() || !vaultPassword">{{ busy() ? 'Feloldás…' : 'Széf megnyitása' }}</button>
+    </form>
+  } @else {
+    <div class="vault-intro">
+      <span class="panel-eyebrow">🔓︎ SZÉF NYITVA</span>
+      <h2>Hozzáférések szerkeszthetők</h2>
+      <p class="muted">10 perc tétlenség után, vagy az oldal elhagyásakor automatikusan zárol.</p>
+    </div>
+    <div class="vault-actions">
+      <button class="btn btn-outline" type="button" (click)="showRotate.set(!showRotate())">Széfjelszó módosítása</button>
+      <button class="btn btn-primary" type="button" (click)="lock()">Zárolás 🔒︎</button>
+    </div>
+    @if (showRotate()) {
+      <form class="vault-form" (ngSubmit)="rotate()">
+        <input class="input" type="password" name="vr1" autocomplete="new-password" [(ngModel)]="vaultPassword" placeholder="Új széfjelszó (min. 12 karakter)">
+        <input class="input" type="password" name="vr2" autocomplete="new-password" [(ngModel)]="vaultPassword2" placeholder="Új széfjelszó újra">
+        <button class="btn btn-primary" type="submit" [disabled]="busy()">Minden bejegyzés újratitkosítása</button>
+      </form>
+    }
+  }
+</section>
+
+<div class="sites-layout" [class.with-editor]="!!editor()">
+  <section class="admin-panel card">
+    <div class="panel-title">
+      <h2>Projektek ({{ sites().length }})</h2>
+      <button type="button" class="btn btn-primary btn-sm" (click)="edit()">+ Új projekt</button>
+    </div>
+    <input class="input sites-search" type="search" [(ngModel)]="filter" placeholder="Keresés név, domain vagy ügyfél szerint">
+    @for (site of filtered(); track site.id) {
+      <button type="button" class="site-row" [class.chosen]="editor()?.id === site.id" (click)="edit(site)">
+        <span class="site-main">
+          <strong>{{ site.name }} @if (hasVault(site)) {<span class="lock" title="Titkosított hozzáférések">🔒︎</span>}</strong>
+          <small>{{ site.domain || 'nincs domain' }}@if (site.client_name) { · {{ site.client_name }} }@if (site.launched_on) { · élesítve: {{ fmt(site.launched_on) }} }</small>
+        </span>
+        <span class="site-chips">
+          @if (site.domain_expires_on) {<span class="chip" [class]="'chip ' + expiryClass(site.domain_expires_on)">Domain {{ fmt(site.domain_expires_on) }}</span>}
+          @if (site.hosting_expires_on) {<span class="chip" [class]="'chip ' + expiryClass(site.hosting_expires_on)">Tárhely {{ fmt(site.hosting_expires_on) }}</span>}
+          @if (site.ssl_expires_on) {<span class="chip" [class]="'chip ' + expiryClass(site.ssl_expires_on)">SSL {{ fmt(site.ssl_expires_on) }}</span>}
+        </span>
+      </button>
+    } @empty {
+      <p class="empty-state">Még nincs rögzített kész projekt. Vedd fel az első élesített oldalt!</p>
+    }
+  </section>
+
+  @if (editor(); as e) {
+    <section class="admin-panel card site-editor">
+      <div class="panel-title">
+        <h2>{{ e.id ? 'Projekt szerkesztése' : 'Új kész projekt' }}</h2>
+        <button type="button" aria-label="Bezárás" (click)="editor.set(null)">×</button>
+      </div>
+      <div class="site-grid">
+        <label class="form-field wide">Projekt neve<input class="input" maxlength="120" [(ngModel)]="e.name" placeholder="Pl. Kovács Fogászat weboldal"></label>
+        <label class="form-field">Domain<input class="input" maxlength="190" [(ngModel)]="e.domain" placeholder="kovacsfogaszat.hu"></label>
+        <label class="form-field">Élesítés napja<input class="input" type="date" [(ngModel)]="e.launched_on"></label>
+        <label class="form-field">Ügyfél neve<input class="input" maxlength="120" [(ngModel)]="e.client_name"></label>
+        <label class="form-field">Ügyfél e-mail<input class="input" type="email" maxlength="254" [(ngModel)]="e.client_email"></label>
+        <label class="form-field">Tárhelyszolgáltató<input class="input" maxlength="120" [(ngModel)]="e.hosting_provider" placeholder="Pl. Rackhost, Tárhely.Eu"></label>
+        <label class="form-field">Domain-regisztrátor<input class="input" maxlength="120" [(ngModel)]="e.domain_registrar"></label>
+        <label class="form-field">Domain lejárata<input class="input" type="date" [(ngModel)]="e.domain_expires_on"></label>
+        <label class="form-field">Tárhely lejárata<input class="input" type="date" [(ngModel)]="e.hosting_expires_on"></label>
+        <label class="form-field">SSL lejárata (ha nem automatikus)<input class="input" type="date" [(ngModel)]="e.ssl_expires_on"></label>
+        <label class="form-field">Technológia<input class="input" maxlength="255" [(ngModel)]="e.tech_stack" placeholder="Angular, Laravel, MySQL"></label>
+        <label class="form-field wide">Megjegyzés (nem titkosított – jelszót ide ne írj!)<textarea class="input" rows="3" maxlength="5000" [(ngModel)]="e.notes"></textarea></label>
+      </div>
+
+      <div class="cred-section">
+        <h3>🔒︎ Hozzáférések</h3>
+        @if (!vault.unlocked()) {
+          <p class="muted">A széf zárolva van. Nyisd meg fent a széfjelszóval a hozzáférések megtekintéséhez és szerkesztéséhez. Mentéskor a meglévő titkosított adatok érintetlenek maradnak.</p>
+        } @else {
+          @for (c of credentials(); track $index; let i = $index) {
+            <div class="cred-card">
+              <div class="cred-grid">
+                <label class="form-field">Megnevezés<input class="input" [(ngModel)]="c.label" placeholder="Pl. cPanel, WordPress admin, Domain"></label>
+                <label class="form-field">Cím (URL)<input class="input" [(ngModel)]="c.url" placeholder="https://…"></label>
+                <label class="form-field">Felhasználónév
+                  <span class="cred-inline"><input class="input" autocomplete="off" [(ngModel)]="c.username">
+                  <button type="button" class="mini-action" [disabled]="!c.username" (click)="copy(c.username, 'Felhasználónév')">Másol</button></span>
+                </label>
+                <label class="form-field">Jelszó
+                  <span class="cred-inline"><input class="input" autocomplete="off" [type]="revealed().has(i) ? 'text' : 'password'" [(ngModel)]="c.password">
+                  <button type="button" class="mini-action" (click)="toggleReveal(i)">{{ revealed().has(i) ? 'Elrejt' : 'Mutat' }}</button>
+                  <button type="button" class="mini-action" [disabled]="!c.password" (click)="copy(c.password, 'Jelszó')">Másol</button>
+                  <button type="button" class="mini-action" title="Erős jelszó generálása" (click)="generatePassword(i)">⟳</button></span>
+                </label>
+                <label class="form-field wide">Megjegyzés<input class="input" [(ngModel)]="c.note" placeholder="Pl. 2FA telefonszám, PIN helye"></label>
+              </div>
+              <button type="button" class="danger-text" (click)="removeCredential(i)">Bejegyzés törlése</button>
+            </div>
+          }
+          <button type="button" class="btn btn-outline btn-sm" (click)="addCredential()">+ Hozzáférés</button>
+        }
+      </div>
+
+      <div class="site-editor-actions">
+        <button type="button" class="btn btn-primary" [disabled]="busy()" (click)="save()">{{ busy() ? 'Mentés…' : 'Mentés' }}</button>
+        @if (e.id) {<button type="button" class="danger-text" (click)="remove($any(e))">Projekt törlése</button>}
+      </div>
+    </section>
+  }
+</div>

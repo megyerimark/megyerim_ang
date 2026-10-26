@@ -1,5 +1,6 @@
 <main class="container legal">
   <a routerLink="/" class="back">← Vissza a főoldalra</a>
+  @if (i18n.lang() === 'en') {<p class="notice" lang="en">{{ 'Ez a jogi dokumentum csak magyar nyelven érhető el.' | t }}</p>}
   <span class="overline">ADATVÉDELEM</span>
   <h1>Adatkezelési tájékoztató</h1>
 
@@ -60,10 +61,18 @@
       <strong>Jogalap:</strong> GDPR 6. cikk (1) b) pont. <strong>Megőrzés:</strong> mint az ajánlatkérésnél.
     </p>
 
-    <h3>Számlázás és szerződés</h3>
+    <h3>Szerződéskötés, számlázás és fizetés</h3>
     <p>
-      Megrendelés esetén a számla adatait a számvitelről szóló 2000. évi C. törvény 169. §-a alapján
-      8 évig meg kell őriznünk (GDPR 6. cikk (1) c) pont – jogi kötelezettség).
+      Az ajánlat elfogadásakor a szerződés létrejöttének bizonyítására rögzítjük az elfogadás időpontját, az
+      elfogadott ajánlat tartalmának ujjlenyomatát, az ÁSZF verzióját, valamint az elfogadáskor használt IP-címet
+      és böngészőazonosítót (GDPR 6. cikk (1) b) és f) pont). Megrendelés esetén a számla adatait a számvitelről
+      szóló 2000. évi C. törvény 169. §-a alapján 8 évig meg kell őriznünk (GDPR 6. cikk (1) c) pont).
+    </p>
+    <p>
+      Bankkártyás fizetésnél (előleg, karbantartási előfizetés) a fizetés a Stripe Payments Europe Ltd.
+      (Írország) biztonságos fizetési oldalán történik; a kártyaadatokat mi nem látjuk és nem tároljuk. A Stripe
+      felé a nevet, az e-mail-címet és a fizetendő összeget adjuk át. A Stripe önálló adatkezelőként is eljár a
+      csalásmegelőzés és a jogszabályi kötelezettségei érdekében (stripe.com/privacy).
     </p>
 
     <h3>Látogatottsági statisztika</h3>
@@ -79,7 +88,14 @@
       Csak a működéshez feltétlenül szükséges sütiket használjuk: űrlapküldéskor egy biztonsági (CSRF-védelmi)
       sütit és egy munkamenet-sütit, amelyek a visszaélések kivédését szolgálják, és a böngészési munkamenet
       végén vagy legfeljebb 2 óra után lejárnak. A választott világos/sötét téma a böngésződ helyi tárolójában
-      (localStorage) marad meg. Hirdetési vagy követő sütit nem használunk, ezért hozzájárulást sem kérünk hozzájuk.
+      (localStorage) marad meg. Hirdetési vagy követő sütit nem használunk.
+    </p>
+    <p>
+      <strong>Google-vélemények (külső tartalom):</strong> ha a főoldalon Google-értékelések jelennek meg, azokat a
+      Trustindex szolgáltatása tölti be, amely a látogató IP-címét megkapja és sütit helyezhet el. Ezt a tartalmat
+      <strong>csak a hozzájárulásod után</strong> töltjük be (GDPR 6. cikk (1) a) pont); a döntésed a böngésződ helyi
+      tárolójában marad meg, és a lábléc „Süti-beállítások” gombjával bármikor módosíthatod. A Trustindex adatkezeléséről
+      a trustindex.io adatvédelmi tájékoztatója ad felvilágosítást.
     </p>
 
     <h3>Biztonsági naplózás</h3>
@@ -97,12 +113,13 @@
         @if (legal.hosting.address) { <span>({{ legal.hosting.address }})</span> }
         – a weboldal és az adatbázis üzemeltetése.
       </li>
+      <li><strong>Stripe Payments Europe Ltd.</strong> (1 Grand Canal Street Lower, Dublin 2, Írország) – online kártyás fizetés.</li>
       @if (legal.emailProvider) {
       <li><strong>E-mail-küldés:</strong> {{ legal.emailProvider }} – az értesítő és visszaigazoló levelek kézbesítése.</li>
       }
     </ul>
     <p>
-      Adataidat nem adjuk el, nem használjuk hirdetési célra, és harmadik országba (az EGT-n kívülre) nem továbbítjuk.
+      Adataidat nem adjuk el és nem használjuk hirdetési célra. Harmadik országba (az EGT-n kívülre) mi nem továbbítjuk; a Stripe a saját, EU-s jogszabályoknak megfelelő garanciái mellett végezhet ilyen adattovábbítást.
       A betűtípusokat és minden egyéb erőforrást saját tárhelyünkről szolgáljuk ki, így látogatáskor nem jön létre
       kapcsolat külső szolgáltatóval (pl. Google).
     </p>

@@ -1,16 +1,16 @@
 @if (settingsUnavailable() || servicesUnavailable() || projectsUnavailable()) {
-  <div class="backend-warning" role="status">Egyes élő adatok átmenetileg nem érhetők el. Ajánlatot ettől még kérhetsz.</div>
+  <div class="backend-warning" role="status">{{ 'Egyes élő adatok átmenetileg nem érhetők el. Ajánlatot ettől még kérhetsz.' | t }}</div>
 }
 <app-hero [headline]="heroHeadline()" [description]="heroDescription()"></app-hero>
 <app-cinematic-story></app-cinematic-story>
-<section class="value-strip" aria-label="A közös munka alapjai">
+<section class="value-strip" [attr.aria-label]="'A közös munka alapjai' | t">
   <div class="value-strip-track">
     @for (copy of [0, 1]; track copy) {
       <div class="value-strip-group" [attr.aria-hidden]="copy === 1 ? 'true' : null">
-        <span><i aria-hidden="true">✦</i> PRÉMIUM MEGJELENÉS</span>
-        <span><i aria-hidden="true">✦</i> ÜZLETI CÉLOKRA TERVEZVE</span>
-        <span><i aria-hidden="true">✦</i> SZEMÉLYES EGYÜTTMŰKÖDÉS</span>
-        <span><i aria-hidden="true">✦</i> MODERN TECHNOLÓGIA</span>
+        <span><i aria-hidden="true">✦</i> {{ 'PRÉMIUM MEGJELENÉS' | t }}</span>
+        <span><i aria-hidden="true">✦</i> {{ 'ÜZLETI CÉLOKRA TERVEZVE' | t }}</span>
+        <span><i aria-hidden="true">✦</i> {{ 'SZEMÉLYES EGYÜTTMŰKÖDÉS' | t }}</span>
+        <span><i aria-hidden="true">✦</i> {{ 'MODERN TECHNOLÓGIA' | t }}</span>
       </div>
     }
   </div>
@@ -19,93 +19,93 @@
   <div class="container">
     <div class="audience-intro">
       <div>
-        <span class="overline">HOGYAN TUDOK SEGÍTENI?</span>
-        <h2 id="audience-title" class="section-title">A célodhoz tervezek. <span class="subtle-heading">Nem egy sablonhoz.</span></h2>
+        <span class="overline">{{ 'HOGYAN TUDOK SEGÍTENI?' | t }}</span>
+        <h2 id="audience-title" class="section-title">{{ 'A célodhoz tervezek.' | t }} <span class="subtle-heading">{{ 'Nem egy sablonhoz.' | t }}</span></h2>
       </div>
-      <p class="lead">Legyen szó az első céges oldaladról vagy egy összetettebb rendszerről, a közös munka mindig az üzleti célod megértésével kezdődik.</p>
+      <p class="lead">{{ 'Legyen szó az első céges oldaladról vagy egy összetettebb rendszerről, a közös munka mindig az üzleti célod megértésével kezdődik.' | t }}</p>
     </div>
     <div class="audience-grid">
       <article class="audience-card">
-        <div class="audience-card-top"><span>01 / MEGJELENÉS</span><span aria-hidden="true">↗</span></div>
-        <h3>Erősebb első benyomást szeretnél?</h3>
-        <p>Egyedi céges weboldal, amely világosan bemutatja a vállalkozásodat és megkönnyíti a kapcsolatfelvételt.</p>
-        <a routerLink="/ajanlatkeres" [queryParams]="{type:'business'}">Céges weboldalt szeretnék <span aria-hidden="true">↗</span></a>
+        <div class="audience-card-top"><span>{{ '01 / MEGJELENÉS' | t }}</span><span aria-hidden="true">↗︎</span></div>
+        <h3>{{ 'Erősebb első benyomást szeretnél?' | t }}</h3>
+        <p>{{ 'Egyedi céges weboldal, amely világosan bemutatja a vállalkozásodat és megkönnyíti a kapcsolatfelvételt.' | t }}</p>
+        <a routerLink="/ajanlatkeres" [queryParams]="{type:'business'}">{{ 'Céges weboldalt szeretnék' | t }} <span aria-hidden="true">↗︎</span></a>
       </article>
       <article class="audience-card audience-card--featured">
-        <div class="audience-card-top"><span>02 / ÜGYFÉLSZERZÉS</span><span aria-hidden="true">✦</span></div>
-        <h3>Több releváns érdeklődőt szeretnél?</h3>
-        <p>Célzott landing oldal, jól felépített üzenettel és egyértelmű ajánlatkérési útvonallal.</p>
-        <a routerLink="/ajanlatkeres" [queryParams]="{type:'landing'}">Landing oldalt szeretnék <span aria-hidden="true">↗</span></a>
+        <div class="audience-card-top"><span>{{ '02 / ÜGYFÉLSZERZÉS' | t }}</span><span aria-hidden="true">✦</span></div>
+        <h3>{{ 'Több releváns érdeklődőt szeretnél?' | t }}</h3>
+        <p>{{ 'Célzott landing oldal, jól felépített üzenettel és egyértelmű ajánlatkérési útvonallal.' | t }}</p>
+        <a routerLink="/ajanlatkeres" [queryParams]="{type:'landing'}">{{ 'Landing oldalt szeretnék' | t }} <span aria-hidden="true">↗︎</span></a>
       </article>
       <article class="audience-card">
-        <div class="audience-card-top"><span>03 / HATÉKONYSÁG</span><span aria-hidden="true">↗</span></div>
-        <h3>Egyszerűsítenéd a munkafolyamataidat?</h3>
-        <p>Rád szabott webes rendszer, adminfelület vagy automatizált folyamat a mindennapi feladataidhoz.</p>
-        <a routerLink="/ajanlatkeres" [queryParams]="{type:'custom'}">Egyedi rendszert szeretnék <span aria-hidden="true">↗</span></a>
+        <div class="audience-card-top"><span>{{ '03 / HATÉKONYSÁG' | t }}</span><span aria-hidden="true">↗︎</span></div>
+        <h3>{{ 'Egyszerűsítenéd a munkafolyamataidat?' | t }}</h3>
+        <p>{{ 'Rád szabott webes rendszer, adminfelület vagy automatizált folyamat a mindennapi feladataidhoz.' | t }}</p>
+        <a routerLink="/ajanlatkeres" [queryParams]="{type:'custom'}">{{ 'Egyedi rendszert szeretnék' | t }} <span aria-hidden="true">↗︎</span></a>
       </article>
     </div>
-    <p class="audience-note">Még nem tudod, pontosan mire van szükséged? <a routerLink="/projekt-kviz">Töltsd ki a 2 perces igényfelmérőt <span aria-hidden="true">↗</span></a></p>
+    <p class="audience-note">{{ 'Még nem tudod, pontosan mire van szükséged?' | t }} <a routerLink="/projekt-kviz">{{ 'Töltsd ki a 2 perces igényfelmérőt' | t }} <span aria-hidden="true">↗︎</span></a></p>
   </div>
 </section>
 <section premiumReveal class="section transformation" id="miert-fontos" aria-labelledby="transformation-title">
   <div class="container">
     <div class="transformation-header">
       <div>
-        <span class="overline">01 / A KÜLÖNBSÉG</span>
-        <h2 class="section-title" id="transformation-title">Online lenni egyszerű. <span class="subtle-heading">Kitűnni tudatos döntés.</span></h2>
+        <span class="overline">{{ '01 / A KÜLÖNBSÉG' | t }}</span>
+        <h2 class="section-title" id="transformation-title">{{ 'Online lenni egyszerű.' | t }} <span class="subtle-heading">{{ 'Kitűnni tudatos döntés.' | t }}</span></h2>
       </div>
-      <p class="lead">Egy weboldal akkor dolgozik igazán érted, ha egyértelművé teszi, miért téged válasszanak – és megkönnyíti az első kapcsolatfelvételt.</p>
+      <p class="lead">{{ 'Egy weboldal akkor dolgozik igazán érted, ha egyértelművé teszi, miért téged válasszanak – és megkönnyíti az első kapcsolatfelvételt.' | t }}</p>
     </div>
-    <div class="transformation-controls" role="group" aria-label="Előtte és utána nézet kiválasztása">
-      <button type="button" [class.is-active]="comparisonPosition() === 100" [attr.aria-pressed]="comparisonPosition() === 100" (click)="selectComparison('before')">Előtte <span aria-hidden="true">↙</span></button>
-      <button type="button" [class.is-active]="comparisonPosition() === 0" [attr.aria-pressed]="comparisonPosition() === 0" (click)="selectComparison('after')">Utána <span aria-hidden="true">↗</span></button>
-      <span class="comparison-hint">Húzd a csúszkát, és nézd meg a különbséget</span>
+    <div class="transformation-controls" role="group" [attr.aria-label]="'Előtte és utána nézet kiválasztása' | t">
+      <button type="button" [class.is-active]="comparisonPosition() === 100" [attr.aria-pressed]="comparisonPosition() === 100" (click)="selectComparison('before')">{{ 'Előtte' | t }} <span aria-hidden="true">↙︎</span></button>
+      <button type="button" [class.is-active]="comparisonPosition() === 0" [attr.aria-pressed]="comparisonPosition() === 0" (click)="selectComparison('after')">{{ 'Utána' | t }} <span aria-hidden="true">↗︎</span></button>
+      <span class="comparison-hint">{{ 'Húzd a csúszkát, és nézd meg a különbséget' | t }}</span>
     </div>
     <div class="comparison-stage" [attr.data-view]="comparisonView()">
-      <div class="comparison-visual" [style.--comparison-split]="comparisonPosition() + '%'" aria-label="Szemléltető weboldal-előnézet; nem ügyfélmunka">
-        <div class="comparison-browser-bar"><span class="browser-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>VIZUÁLIS ÖSSZEHASONLÍTÁS · KONCEPCIÓ</span><span aria-hidden="true">↗</span></div>
+      <div class="comparison-visual" [style.--comparison-split]="comparisonPosition() + '%'" [attr.aria-label]="'Szemléltető weboldal-előnézet; nem ügyfélmunka' | t">
+        <div class="comparison-browser-bar"><span class="browser-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>{{ 'VIZUÁLIS ÖSSZEHASONLÍTÁS · KONCEPCIÓ' | t }}</span><span aria-hidden="true">↗︎</span></div>
         <div class="comparison-layers" aria-hidden="true">
           <div class="comparison-new">
-            <div class="comparison-new-nav"><strong>STÚDIÓ<span>.</span></strong><span>SZOLGÁLTATÁSOK &nbsp; RÓLUNK</span><b>Kapcsolat ↗</b></div>
-            <div class="comparison-new-main"><span class="comparison-new-eyebrow">TUDATOS MEGJELENÉS / EGYEDI KONCEPCIÓ</span><strong>A márkád következő fejezete<span>.</span></strong><p>Határozott üzenet, letisztult élmény és világos út az érdeklődéstől a kapcsolatfelvételig.</p><span class="comparison-new-link">Beszéljünk az ötletedről ↗</span></div>
-            <div class="comparison-new-orb"></div><div class="comparison-new-caption">PURPOSEFUL DESIGN — BUILT TO CONNECT</div>
+            <div class="comparison-new-nav"><strong>{{ 'STÚDIÓ' | t }}<span>.</span></strong><span>{{ 'SZOLGÁLTATÁSOK' | t }} &nbsp; {{ 'RÓLUNK' | t }}</span><b>{{ 'Kapcsolat ↗︎' | t }}</b></div>
+            <div class="comparison-new-main"><span class="comparison-new-eyebrow">{{ 'TUDATOS MEGJELENÉS / EGYEDI KONCEPCIÓ' | t }}</span><strong>{{ 'A márkád következő fejezete' | t }}<span>.</span></strong><p>{{ 'Határozott üzenet, letisztult élmény és világos út az érdeklődéstől a kapcsolatfelvételig.' | t }}</p><span class="comparison-new-link">{{ 'Beszéljünk az ötletedről ↗︎' | t }}</span></div>
+            <div class="comparison-new-orb"></div><div class="comparison-new-caption">{{ 'PURPOSEFUL DESIGN — BUILT TO CONNECT' | t }}</div>
           </div>
           <div class="comparison-old">
-            <div class="comparison-old-nav">Cégem <span>Főoldal &nbsp; Rólunk &nbsp; Elérhetőség</span></div>
-            <div class="comparison-old-copy"><small>ÜDVÖZÖLJÜK WEBOLDALUNKON</small><strong>Üdvözöljük honlapunkon!</strong><p>Szolgáltatásainkkal állunk rendelkezésére. További információkért keressen minket.</p><span class="comparison-old-link">Kapcsolat</span></div>
+            <div class="comparison-old-nav">{{ 'Cégem' | t }} <span>{{ 'Főoldal' | t }} &nbsp; {{ 'Rólunk' | t }} &nbsp; {{ 'Elérhetőség' | t }}</span></div>
+            <div class="comparison-old-copy"><small>{{ 'ÜDVÖZÖLJÜK WEBOLDALUNKON' | t }}</small><strong>{{ 'Üdvözöljük honlapunkon!' | t }}</strong><p>{{ 'Szolgáltatásainkkal állunk rendelkezésére. További információkért keressen minket.' | t }}</p><span class="comparison-old-link">{{ 'Kapcsolat' | t }}</span></div>
             <div class="comparison-old-blocks"><i></i><i></i><i></i></div>
           </div>
         </div>
-        <label class="comparison-slider-label" for="comparison-slider">Előtte és utána összehasonlítása: {{comparisonPosition()}}% régi nézet</label>
+        <label class="comparison-slider-label" for="comparison-slider">{{ 'Előtte és utána összehasonlítása' | t }}: {{comparisonPosition()}}% {{ 'régi nézet' | t }}</label>
         <div class="comparison-slider-line" aria-hidden="true"><span>‹ ›</span></div>
-        <input class="comparison-slider" id="comparison-slider" type="range" min="0" max="100" step="1" [value]="comparisonPosition()" (input)="moveComparison($event)" aria-label="Összehasonlító csúszka, balra az előtte, jobbra az utána nézet" />
+        <input class="comparison-slider" id="comparison-slider" type="range" min="0" max="100" step="1" [value]="comparisonPosition()" (input)="moveComparison($event)" [attr.aria-label]="'Összehasonlító csúszka, balra az előtte, jobbra az utána nézet' | t" />
       </div>
       <div class="comparison-copy" aria-live="polite">
-        <span class="comparison-number">{{ comparisonView() === 'before' ? '01 / KIINDULÓ HELYZET' : '02 / AZ ÚJ MEGKÖZELÍTÉS' }}</span>
-        <h3>{{ comparisonView() === 'before' ? 'Csak jelen van.' : 'Valóban képvisel.' }}</h3>
-        <p>{{ comparisonView() === 'before' ? 'Általános üzenetek, nehézkes eligazodás és bizonytalan következő lépések. A látogató könnyen továbbáll.' : 'Karakteres első benyomás, átlátható tartalom és jól látható cselekvési lehetőségek. A látogató érti, hogyan léphet kapcsolatba veled.' }}</p>
+        <span class="comparison-number">{{ (comparisonView() === 'before' ? '01 / KIINDULÓ HELYZET' : '02 / AZ ÚJ MEGKÖZELÍTÉS') | t }}</span>
+        <h3>{{ (comparisonView() === 'before' ? 'Csak jelen van.' : 'Valóban képvisel.') | t }}</h3>
+        <p>{{ (comparisonView() === 'before' ? 'Általános üzenetek, nehézkes eligazodás és bizonytalan következő lépések. A látogató könnyen továbbáll.' : 'Karakteres első benyomás, átlátható tartalom és jól látható cselekvési lehetőségek. A látogató érti, hogyan léphet kapcsolatba veled.') | t }}</p>
         <div class="comparison-points">
           @for (point of (comparisonView() === 'before' ? beforePoints : afterPoints); track point) {
-            <span><i aria-hidden="true">{{ comparisonView() === 'before' ? '−' : '+' }}</i> {{ point }}</span>
+            <span><i aria-hidden="true">{{ comparisonView() === 'before' ? '−' : '+' }}</i> {{ point | t }}</span>
           }
         </div>
-        <a routerLink="/tervezo" class="comparison-action">Tervezd meg a sajátodat <span aria-hidden="true">↗</span></a>
+        <a routerLink="/tervezo" class="comparison-action">{{ 'Tervezd meg a sajátodat' | t }} <span aria-hidden="true">↗︎</span></a>
       </div>
     </div>
-    <p class="concept-disclaimer">A két nézet szemléltető dizájnkoncepció, nem valódi ügyfélmunka vagy garantált eredmény.</p>
+    <p class="concept-disclaimer">{{ 'A két nézet szemléltető dizájnkoncepció, nem valódi ügyfélmunka vagy garantált eredmény.' | t }}</p>
   </div>
 </section>
 <section premiumReveal class="section promise" id="elonyok" aria-labelledby="promise-title">
   <div class="container">
     <div class="promise-head">
-      <span class="overline">02 / AMIT A PROJEKTED KAP</span>
-      <h2 class="section-title" id="promise-title">Nem csak egy weboldalt. <span class="subtle-heading">Egy átgondolt digitális élményt.</span></h2>
+      <span class="overline">{{ '02 / AMIT A PROJEKTED KAP' | t }}</span>
+      <h2 class="section-title" id="promise-title">{{ 'Nem csak egy weboldalt.' | t }} <span class="subtle-heading">{{ 'Egy átgondolt digitális élményt.' | t }}</span></h2>
     </div>
     <div class="promise-grid">
-      <article class="promise-card"><span class="promise-icon" aria-hidden="true">✳</span><span class="promise-index">01</span><h3>Rád szabott megjelenés</h3><p>A márkád személyiségéből indulunk ki, nem egy gyorsan összerakott sablonból.</p></article>
-      <article class="promise-card"><span class="promise-icon" aria-hidden="true">◎</span><span class="promise-index">02</span><h3>Ügyfélközpontú működés</h3><p>A látogató könnyen megtalálja, amit keres, és érti a következő lépést.</p></article>
-      <article class="promise-card"><span class="promise-icon" aria-hidden="true">◇</span><span class="promise-index">03</span><h3>Korszerű fejlesztés</h3><p>Reszponzív, bővíthető felületek és a projekt céljaihoz illeszkedő technológia.</p></article>
-      <article class="promise-card"><span class="promise-icon" aria-hidden="true">↗</span><span class="promise-index">04</span><h3>Átlátható együttműködés</h3><p>Személyes egyeztetés, követhető mérföldkövek és világos kommunikáció.</p></article>
+      <article class="promise-card"><span class="promise-icon" aria-hidden="true">✳︎</span><span class="promise-index">01</span><h3>{{ 'Rád szabott megjelenés' | t }}</h3><p>{{ 'A márkád személyiségéből indulunk ki, nem egy gyorsan összerakott sablonból.' | t }}</p></article>
+      <article class="promise-card"><span class="promise-icon" aria-hidden="true">◎</span><span class="promise-index">02</span><h3>{{ 'Ügyfélközpontú működés' | t }}</h3><p>{{ 'A látogató könnyen megtalálja, amit keres, és érti a következő lépést.' | t }}</p></article>
+      <article class="promise-card"><span class="promise-icon" aria-hidden="true">◇</span><span class="promise-index">03</span><h3>{{ 'Korszerű fejlesztés' | t }}</h3><p>{{ 'Reszponzív, bővíthető felületek és a projekt céljaihoz illeszkedő technológia.' | t }}</p></article>
+      <article class="promise-card"><span class="promise-icon" aria-hidden="true">↗︎</span><span class="promise-index">04</span><h3>{{ 'Átlátható együttműködés' | t }}</h3><p>{{ 'Személyes egyeztetés, követhető mérföldkövek és világos kommunikáció.' | t }}</p></article>
     </div>
   </div>
 </section>
@@ -113,14 +113,14 @@
   <div class="container">
     <div class="section-heading-row">
       <div>
-        <span class="overline">03 / AZ ELSŐ ÖTLETED ITT KEZDŐDIK</span>
+        <span class="overline">{{ '03 / AZ ELSŐ ÖTLETED ITT KEZDŐDIK' | t }}</span>
         <h2 class="section-title" id="concept-title">
-          Nézd meg, milyen lehetne
-          <span class="subtle-heading">a saját weboldalad.</span>
+          {{ 'Nézd meg, milyen lehetne' | t }}
+          <span class="subtle-heading">{{ 'a saját weboldalad.' | t }}</span>
         </h2>
       </div>
       <p class="lead">
-        Válassz célt és arculatot. Az élő koncepció azonnal reagál – ez nem egy közzétett ügyfélmunka, hanem a saját ötleted kiindulópontja.
+        {{ 'Válassz célt és arculatot. Az élő koncepció azonnal reagál – ez nem egy közzétett ügyfélmunka, hanem a saját ötleted kiindulópontja.' | t }}
       </p>
     </div>
 
@@ -135,9 +135,9 @@
         </div>
 
         <div class="lab-control-group">
-          <span class="lab-step-label">01 / MIRE VAN SZÜKSÉGED?</span>
-          <h3>Mi legyen a weboldal célja?</h3>
-          <div class="lab-choices" role="group" aria-label="Weboldal típusának kiválasztása">
+          <span class="lab-step-label">{{ '01 / MIRE VAN SZÜKSÉGED?' | t }}</span>
+          <h3>{{ 'Mi legyen a weboldal célja?' | t }}</h3>
+          <div class="lab-choices" role="group" [attr.aria-label]="'Weboldal típusának kiválasztása' | t">
             @for (mode of previewModes; track mode.value) {
               <button
                 type="button"
@@ -146,17 +146,17 @@
                 [attr.aria-pressed]="selectedPurpose() === mode.value"
                 (click)="selectedPurpose.set(mode.value)"
               >
-                <span>{{ mode.label }}</span>
-                <span aria-hidden="true">{{ selectedPurpose() === mode.value ? '●' : '↗' }}</span>
+                <span>{{ mode.label | t }}</span>
+                <span aria-hidden="true">{{ selectedPurpose() === mode.value ? '●' : '↗︎' }}</span>
               </button>
             }
           </div>
         </div>
 
         <div class="lab-control-group">
-          <span class="lab-step-label">02 / MILYEN LEGYEN A HANGULATA?</span>
-          <h3>Válassz vizuális irányt.</h3>
-          <div class="lab-palettes" role="group" aria-label="Arculati stílus kiválasztása">
+          <span class="lab-step-label">{{ '02 / MILYEN LEGYEN A HANGULATA?' | t }}</span>
+          <h3>{{ 'Válassz vizuális irányt.' | t }}</h3>
+          <div class="lab-palettes" role="group" [attr.aria-label]="'Arculati stílus kiválasztása' | t">
             @for (palette of previewPalettes; track palette.value) {
               <button
                 type="button"
@@ -166,52 +166,51 @@
                 (click)="selectedStyle.set(palette.value)"
               >
                 <span [class]="'lab-palette-dot lab-palette-dot--' + palette.value" aria-hidden="true"></span>
-                {{ palette.label }}
+                {{ palette.label | t }}
               </button>
             }
           </div>
         </div>
 
         <div class="lab-next-step">
-          <span class="lab-step-label">03 / A KÖVETKEZŐ LÉPÉS</span>
+          <span class="lab-step-label">{{ '03 / A KÖVETKEZŐ LÉPÉS' | t }}</span>
           <p>
-            Tetszik az irány? Mondd el, mire van szükséged, és kialakítjuk a saját
-            vállalkozásodhoz illő megoldást.
+            {{ 'Tetszik az irány? Mondd el, mire van szükséged, és kialakítjuk a saját vállalkozásodhoz illő megoldást.' | t }}
           </p>
           <a class="btn btn-primary" routerLink="/tervezo">
-            Részletes tervező megnyitása
-            <span aria-hidden="true">↗</span>
+            {{ 'Részletes tervező megnyitása' | t }}
+            <span aria-hidden="true">↗︎</span>
           </a>
         </div>
       </div>
 
       <div class="lab-stage" [class.lab-stage--mobile]="selectedDevice() === 'mobile'">
         <div class="lab-stage-top">
-          <span><span class="lab-live-dot" aria-hidden="true"></span> ÉLŐ VIZUÁLIS ELŐNÉZET</span>
-          <div class="lab-device-switch" role="group" aria-label="Eszköznézet kiválasztása">
-            <button type="button" [class.active]="selectedDevice() === 'desktop'" [attr.aria-pressed]="selectedDevice() === 'desktop'" (click)="selectedDevice.set('desktop')">Asztali</button>
-            <button type="button" [class.active]="selectedDevice() === 'mobile'" [attr.aria-pressed]="selectedDevice() === 'mobile'" (click)="selectedDevice.set('mobile')">Mobil</button>
+          <span><span class="lab-live-dot" aria-hidden="true"></span> {{ 'ÉLŐ VIZUÁLIS ELŐNÉZET' | t }}</span>
+          <div class="lab-device-switch" role="group" [attr.aria-label]="'Eszköznézet kiválasztása' | t">
+            <button type="button" [class.active]="selectedDevice() === 'desktop'" [attr.aria-pressed]="selectedDevice() === 'desktop'" (click)="selectedDevice.set('desktop')">{{ 'Asztali' | t }}</button>
+            <button type="button" [class.active]="selectedDevice() === 'mobile'" [attr.aria-pressed]="selectedDevice() === 'mobile'" (click)="selectedDevice.set('mobile')">{{ 'Mobil' | t }}</button>
           </div>
         </div>
         <div class="lab-browser" [attr.data-style]="selectedStyle()">
           <div class="lab-browser-chrome">
             <span class="lab-window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-            <span>SAJÁT MÁRKÁD / KONCEPCIÓ</span>
-            <span aria-hidden="true">↗</span>
+            <span>{{ 'SAJÁT MÁRKÁD / KONCEPCIÓ' | t }}</span>
+            <span aria-hidden="true">↗︎</span>
           </div>
           <div class="lab-browser-content">
             <div class="lab-site-nav">
-              <strong>MÁRKANÉV<span>®</span></strong>
-              <span>Szolgáltatások</span>
-              <span>Rólunk</span>
-              <span class="lab-nav-contact">Kapcsolat ↗</span>
+              <strong>{{ 'MÁRKANÉV' | t }}<span>®︎</span></strong>
+              <span>{{ 'Szolgáltatások' | t }}</span>
+              <span>{{ 'Rólunk' | t }}</span>
+              <span class="lab-nav-contact">{{ 'Kapcsolat ↗︎' | t }}</span>
             </div>
             <div class="lab-site-hero">
               <div class="lab-site-copy">
-                <span class="lab-site-kicker">{{ activePreview().eyebrow }}</span>
-                <h3>{{ activePreview().headline }}</h3>
-                <p>{{ activePreview().description }}</p>
-                <span class="lab-site-cta">{{ activePreview().cta }} <span aria-hidden="true">↗</span></span>
+                <span class="lab-site-kicker">{{ activePreview().eyebrow | t }}</span>
+                <h3>{{ activePreview().headline | t }}</h3>
+                <p>{{ activePreview().description | t }}</p>
+                <span class="lab-site-cta">{{ activePreview().cta | t }} <span aria-hidden="true">↗︎</span></span>
               </div>
               <div class="lab-site-art" aria-hidden="true">
                 <span class="lab-art-rim"></span>
@@ -221,15 +220,15 @@
               </div>
             </div>
             <div class="lab-site-footer" aria-hidden="true">
-              <span>EGYEDI MEGJELENÉS</span>
-              <span>ÁTGONDOLT FELÉPÍTÉS</span>
-              <span>MOBILBARÁT</span>
+              <span>{{ 'EGYEDI MEGJELENÉS' | t }}</span>
+              <span>{{ 'ÁTGONDOLT FELÉPÍTÉS' | t }}</span>
+              <span>{{ 'MOBILBARÁT' | t }}</span>
             </div>
           </div>
         </div>
         <div class="lab-stage-bottom">
-          <span>Az előnézet szemléltetés; a végleges oldal egyedi tervezésű.</span>
-          <span>DESIGN SYSTEM / LIVE</span>
+          <span>{{ 'Az előnézet szemléltetés; a végleges oldal egyedi tervezésű.' | t }}</span>
+          <span>{{ 'DESIGN SYSTEM / LIVE' | t }}</span>
         </div>
       </div>
     </div>
@@ -241,17 +240,17 @@
     <div class="section-heading-row">
       <div>
         <span class="overline">
-          04 / A MEGOLDÁSAIM
+          {{ '04 / A MEGOLDÁSAIM' | t }}
         </span>
         <h2 class="section-title">
-          Szolgáltatások,
+          {{ 'Szolgáltatások,' | t }}
           <span class="subtle-heading">
-            amelyek előrevisznek.
+            {{ 'amelyek előrevisznek.' | t }}
           </span>
         </h2>
       </div>
       <p class="lead">
-        Nem pusztán technológiát kapsz. Olyan felületet tervezek, amely a vállalkozásod céljaihoz és ügyfeleihez igazodik.
+        {{ 'Nem pusztán technológiát kapsz. Olyan felületet tervezek, amely a vállalkozásod céljaihoz és ügyfeleihez igazodik.' | t }}
       </p>
     </div>
     <div class="services-layout">
@@ -263,25 +262,25 @@
             {{ ($index + 1).toString().padStart(2, '0') }}
           </span>
           <span aria-hidden="true">
-            ↗
+            ↗︎
           </span>
         </div>
         <div class="service-tile-body">
           <h3>
-            {{ service.title }}
+            {{ loc(service, 'title') }}
           </h3>
           <p>
-            {{ service.summary }}
+            {{ loc(service, 'summary') }}
           </p>
         </div>
         <div class="service-tile-bottom">
           <span>
             {{ money(service.starting_price_huf) }}
           </span>
-          <a routerLink="/ajanlatkeres" aria-label="Ajánlatot kérek">
-            Érdekel
+          <a routerLink="/ajanlatkeres" [attr.aria-label]="'Ajánlatot kérek' | t">
+            {{ 'Érdekel' | t }}
             <span aria-hidden="true">
-              ↗
+              ↗︎
             </span>
           </a>
         </div>
@@ -294,23 +293,23 @@
             01
           </span>
           <span aria-hidden="true">
-            ↗
+            ↗︎
           </span>
         </div>
         <div class="service-tile-body">
           <h3>
-            Céges weboldalak
+            {{ 'Céges weboldalak' | t }}
           </h3>
           <p>
-            Karakteres online megjelenés, világos üzenetekkel és könnyű navigációval.
+            {{ 'Karakteres online megjelenés, világos üzenetekkel és könnyű navigációval.' | t }}
           </p>
         </div>
         <div class="service-tile-bottom">
           <span>
-            Személyre szabott
+            {{ 'Személyre szabott' | t }}
           </span>
           <a routerLink="/ajanlatkeres">
-            Érdekel ↗
+            {{ 'Érdekel ↗︎' | t }}
           </a>
         </div>
       </article>
@@ -320,23 +319,23 @@
             02
           </span>
           <span aria-hidden="true">
-            ↗
+            ↗︎
           </span>
         </div>
         <div class="service-tile-body">
           <h3>
-            Landing oldalak
+            {{ 'Landing oldalak' | t }}
           </h3>
           <p>
-            Egy jól meghatározott cél köré épített, látványos és fókuszált felületek.
+            {{ 'Egy jól meghatározott cél köré épített, látványos és fókuszált felületek.' | t }}
           </p>
         </div>
         <div class="service-tile-bottom">
           <span>
-            Személyre szabott
+            {{ 'Személyre szabott' | t }}
           </span>
           <a routerLink="/ajanlatkeres">
-            Érdekel ↗
+            {{ 'Érdekel ↗︎' | t }}
           </a>
         </div>
       </article>
@@ -346,23 +345,23 @@
             03
           </span>
           <span aria-hidden="true">
-            ↗
+            ↗︎
           </span>
         </div>
         <div class="service-tile-body">
           <h3>
-            Egyedi webes rendszerek
+            {{ 'Egyedi webes rendszerek' | t }}
           </h3>
           <p>
-            Adminfelületek és funkciók, amelyek valódi munkafolyamatokat könnyítenek meg.
+            {{ 'Adminfelületek és funkciók, amelyek valódi munkafolyamatokat könnyítenek meg.' | t }}
           </p>
         </div>
         <div class="service-tile-bottom">
           <span>
-            Személyre szabott
+            {{ 'Személyre szabott' | t }}
           </span>
           <a routerLink="/ajanlatkeres">
-            Érdekel ↗
+            {{ 'Érdekel ↗︎' | t }}
           </a>
         </div>
       </article>
@@ -373,34 +372,34 @@
 <section premiumReveal class="section estimation" id="kalkulator" aria-labelledby="estimation-title">
   <div class="container estimation-layout">
     <div>
-      <span class="overline">PÉLDA / DIGITÁLIS HATÉKONYSÁG</span>
-      <h2 class="section-title" id="estimation-title">Mennyi időd megy el <span class="subtle-heading">az ismétlődő egyeztetésekre?</span></h2>
-      <p class="lead">Egy jó webes rendszer nemcsak szép: egyszerűsítheti például a foglalásokat és az ajánlatkérések kezelését. Nézd meg egy óvatos mintaszámítással.</p>
-      <p class="estimate-note">A példa feltételezi, hogy az adminisztrációs idő 40%-a automatizálható. Az eredmény tájékoztató becslés, nem megtakarítási garancia.</p>
+      <span class="overline">{{ 'PÉLDA / DIGITÁLIS HATÉKONYSÁG' | t }}</span>
+      <h2 class="section-title" id="estimation-title">{{ 'Mennyi időd megy el' | t }} <span class="subtle-heading">{{ 'az ismétlődő egyeztetésekre?' | t }}</span></h2>
+      <p class="lead">{{ 'Egy jó webes rendszer nemcsak szép: egyszerűsítheti például a foglalásokat és az ajánlatkérések kezelését. Nézd meg egy óvatos mintaszámítással.' | t }}</p>
+      <p class="estimate-note">{{ 'A példa feltételezi, hogy az adminisztrációs idő 40%-a automatizálható. Az eredmény tájékoztató becslés, nem megtakarítási garancia.' | t }}</p>
     </div>
     <div class="estimate-card">
-      <div class="estimate-card-head"><span>BECSÜLT LEHETŐSÉG</span><span aria-hidden="true">↗</span></div>
-      <label for="inquiry-count">Havi érdeklődések / foglalások <strong>{{ inquiryCount() }} db</strong></label>
+      <div class="estimate-card-head"><span>{{ 'BECSÜLT LEHETŐSÉG' | t }}</span><span aria-hidden="true">↗︎</span></div>
+      <label for="inquiry-count">{{ 'Havi érdeklődések / foglalások' | t }} <strong>{{ inquiryCount() }} {{ 'db' | t }}</strong></label>
       <input type="range" id="inquiry-count" min="5" max="150" step="5" [value]="inquiryCount()" (input)="setInquiryCount($event)" />
-      <label for="inquiry-minutes">Átlagos kézi ügyintézés <strong>{{ inquiryMinutes() }} perc / alkalom</strong></label>
+      <label for="inquiry-minutes">{{ 'Átlagos kézi ügyintézés' | t }} <strong>{{ inquiryMinutes() }} {{ 'perc / alkalom' | t }}</strong></label>
       <input type="range" id="inquiry-minutes" min="5" max="30" step="5" [value]="inquiryMinutes()" (input)="setInquiryMinutes($event)" />
-      <div class="estimate-total"><span>Lehetséges havi időmegtakarítás</span><strong>{{ savedHours() | number:'1.1-1' }} <small>óra</small></strong><p>40%-os adminisztrációs időcsökkenést feltételező becslés</p></div>
-      <a routerLink="/konzultacio" class="estimate-link">Beszéljük át, mi automatizálható nálad <span aria-hidden="true">↗</span></a>
+      <div class="estimate-total"><span>{{ 'Lehetséges havi időmegtakarítás' | t }}</span><strong>{{ savedHours() | number:'1.1-1' }} <small>{{ 'óra' | t }}</small></strong><p>{{ '40%-os adminisztrációs időcsökkenést feltételező becslés' | t }}</p></div>
+      <a routerLink="/konzultacio" class="estimate-link">{{ 'Beszéljük át, mi automatizálható nálad' | t }} <span aria-hidden="true">↗︎</span></a>
     </div>
   </div>
 </section>
 @if (realProjects().length) {
-  <section premiumReveal class="section work" id="munkak" aria-label="Valódi referenciák">
+  <section premiumReveal class="section work" id="munkak" [attr.aria-label]="'Valódi referenciák' | t">
     <div class="container">
       <div class="section-heading-row">
         <div>
-          <span class="overline">VALÓDI REFERENCIÁK</span>
+          <span class="overline">{{ 'VALÓDI REFERENCIÁK' | t }}</span>
           <h2 class="section-title">
-            Megvalósult
-            <span class="subtle-heading">projektek.</span>
+            {{ 'Megvalósult' | t }}
+            <span class="subtle-heading">{{ 'projektek.' | t }}</span>
           </h2>
         </div>
-        <p class="lead">A közzétett, tényleges munkák. Demóprojektek nélkül.</p>
+        <p class="lead">{{ 'A közzétett, tényleges munkák. Demóprojektek nélkül.' | t }}</p>
       </div>
       <div class="portfolio-grid">
         @for (project of realProjects(); track project.id) {
@@ -409,25 +408,25 @@
               @if (project.cover_image_url) {
                 <img
                   [src]="project.cover_image_url"
-                  [alt]="project.title + ' projekt előnézete'"
+                  [alt]="loc(project, 'title') + ' ' + ('projekt előnézete' | t)"
                   loading="lazy"
                 />
               } @else {
                 <div class="portfolio-cover-placeholder">
-                  <span>MEGYERI MÁRK MÁTÉ</span>
-                  <strong>{{ project.title }}</strong>
+                  <span>{{ 'MEGYERI MÁRK MÁTÉ' | t }}</span>
+                  <strong>{{ loc(project, 'title') }}</strong>
                 </div>
               }
-              <span class="portfolio-badge">REFERENCIA</span>
-              <a [routerLink]="['/munkak',project.slug]" class="portfolio-case-link">Projektbemutató megnyitása ↗</a>
+              <span class="portfolio-badge">{{ 'REFERENCIA' | t }}</span>
+              <a [routerLink]="['/munkak',project.slug]" class="portfolio-case-link">{{ 'Projektbemutató megnyitása ↗︎' | t }}</a>
             </div>
             <div class="portfolio-meta">
               <div>
-                <span class="portfolio-type">{{ project.category || 'WEBFEJLESZTÉS' }}</span>
-                <h3>{{ project.title }}</h3>
-                <p>{{ project.summary }}</p>
+                <span class="portfolio-type">{{ loc(project, 'category') || ('WEBFEJLESZTÉS' | t) }}</span>
+                <h3>{{ loc(project, 'title') }}</h3>
+                <p>{{ loc(project, 'summary') }}</p>
                 @if (project.results?.length) {
-                  <ul class="portfolio-results" aria-label="Mérhető eredmények">
+                  <ul class="portfolio-results" [attr.aria-label]="'Mérhető eredmények' | t">
                     @for (r of (project.results ?? []); track $index) {
                       <li><strong>{{ r.value }}</strong><span>{{ r.label }}</span></li>
                     }
@@ -445,8 +444,8 @@
                   [href]="project.project_url"
                   target="_blank"
                   rel="noopener noreferrer"
-                  [attr.aria-label]="project.title + ' megtekintése'"
-                >↗</a>
+                  [attr.aria-label]="loc(project, 'title') + ' – ' + ('megtekintése' | t)"
+                >↗︎</a>
               }
             </div>
           </article>
@@ -459,50 +458,50 @@
     <div class="container">
       <div class="section-heading-row">
         <div>
-          <span class="overline">MUNKÁIM / KONCEPCIÓK</span>
-          <h2 class="section-title" id="concepts-title">Három stílus. <span class="subtle-heading">Három irány.</span></h2>
+          <span class="overline">{{ 'MUNKÁIM / KONCEPCIÓK' | t }}</span>
+          <h2 class="section-title" id="concepts-title">{{ 'Három stílus.' | t }} <span class="subtle-heading">{{ 'Három irány.' | t }}</span></h2>
         </div>
-        <p class="lead">Önálló, interaktív bemutató-weboldalak – saját koncepciók, nem ügyfélmunkák. Kattints, és próbáld ki őket élőben.</p>
+        <p class="lead">{{ 'Önálló, interaktív bemutató-weboldalak – saját koncepciók, nem ügyfélmunkák. Kattints, és próbáld ki őket élőben.' | t }}</p>
       </div>
       <div class="concept-grid">
         @for (demo of demoSites; track demo.slug) {
           <a class="concept-card" [href]="'/demos/' + demo.slug + '/index.html'" target="_blank" rel="noopener">
-            <span class="concept-shot"><img [src]="'/demos/previews/' + demo.preview + '.webp'" [alt]="demo.title + ' koncepció előnézete'" loading="lazy" width="640" height="400"></span>
-            <span class="concept-meta"><small>{{ demo.kind }}</small><strong>{{ demo.title }}</strong><span>{{ demo.text }}</span></span>
-            <span class="concept-arrow" aria-hidden="true">↗</span>
+            <span class="concept-shot"><img [src]="'/demos/previews/' + demo.preview + '.webp'" [alt]="(demo.title | t) + ' – ' + ('koncepció előnézete' | t)" loading="lazy" width="640" height="400"></span>
+            <span class="concept-meta"><small>{{ demo.kind | t }}</small><strong>{{ demo.title | t }}</strong><span>{{ demo.text | t }}</span></span>
+            <span class="concept-arrow" aria-hidden="true">↗︎</span>
           </a>
         }
       </div>
-      <p class="concept-disclaimer">Demó koncepciók: a megjelenés és a működés szemléltetésére készültek.</p>
+      <p class="concept-disclaimer">{{ 'Demó koncepciók: a megjelenés és a működés szemléltetésére készültek.' | t }}</p>
     </div>
 </section>
 <section premiumReveal class="section process" id="folyamat">
   <div class="container process-layout">
     <div class="process-intro">
       <span class="overline">
-        05 / HOGYAN DOLGOZOM
+        {{ '05 / HOGYAN DOLGOZOM' | t }}
       </span>
       <h2 class="section-title">
-        Átlátható folyamat.
+        {{ 'Átlátható folyamat.' | t }}
         <span class="subtle-heading">
-          Személyes figyelem.
+          {{ 'Személyes figyelem.' | t }}
         </span>
       </h2>
       <p class="lead">
-        A tervezéstől az átadásig minden lépésnek célja van. A projekted állapotát a privát ügyfélfelületen is követheted.
+        {{ 'A tervezéstől az átadásig minden lépésnek célja van. A projekted állapotát a privát ügyfélfelületen is követheted.' | t }}
       </p>
       <div class="process-hologram" aria-hidden="true">
         <div class="process-hologram-grid"></div>
         <div class="process-hologram-ring process-hologram-ring--one"></div>
         <div class="process-hologram-ring process-hologram-ring--two"></div>
-        <div class="process-hologram-core"><span>01</span><strong>IDEA <em>→</em><br>IMPACT</strong><small>DESIGN × DEVELOPMENT</small></div>
-        <span class="process-holo-chip process-holo-chip--left">✦ &nbsp; KONCEPCIÓ</span>
-        <span class="process-holo-chip process-holo-chip--right">◈ &nbsp; MEGVALÓSÍTÁS</span>
+        <div class="process-hologram-core"><span>01</span><strong>{{ 'IDEA' | t }} <em>→</em><br>{{ 'IMPACT' | t }}</strong><small>{{ 'DESIGN × DEVELOPMENT' | t }}</small></div>
+        <span class="process-holo-chip process-holo-chip--left">✦ &nbsp; {{ 'KONCEPCIÓ' | t }}</span>
+        <span class="process-holo-chip process-holo-chip--right">◈ &nbsp; {{ 'MEGVALÓSÍTÁS' | t }}</span>
       </div>
       <a class="text-link" routerLink="/konzultacio">
-        Foglalj egy konzultációt
+        {{ 'Foglalj egy konzultációt' | t }}
         <span aria-hidden="true">
-          ↗
+          ↗︎
         </span>
       </a>
     </div>
@@ -514,14 +513,14 @@
         </span>
         <div>
           <h3>
-            {{ step.title }}
+            {{ step.title | t }}
           </h3>
           <p>
-            {{ step.description }}
+            {{ step.description | t }}
           </p>
         </div>
         <span class="process-arrow" aria-hidden="true">
-          ↗
+          ↗︎
         </span>
       </article>
       }
@@ -538,75 +537,74 @@
       <div class="about-art-ring about-art-ring--b">
       </div>
       <strong>
-        MMM
+        {{ 'MMM' | t }}
         <span>
           —
         </span>
       </strong>
       <small>
-        INDEPENDENT DIGITAL CRAFT / BUDAPEST
+        {{ 'INDEPENDENT DIGITAL CRAFT / BUDAPEST' | t }}
       </small>
       <div class="about-art-stamp">
-        DESIGN × ENGINEERING
+        {{ 'DESIGN × ENGINEERING' | t }}
       </div>
     </div>
     <div class="about-copy">
       <span class="overline">
-        06 / KI ÁLL A KÓD MÖGÖTT
+        {{ '06 / KI ÁLL A KÓD MÖGÖTT' | t }}
       </span>
       <h2 class="section-title">
-        Közvetlen kapcsolat.
+        {{ 'Közvetlen kapcsolat.' | t }}
         <span class="subtle-heading">
-          Gondosan kidolgozott részletek.
+          {{ 'Gondosan kidolgozott részletek.' | t }}
         </span>
       </h2>
       <p class="lead">
-        Megyeri Márk Máté vagyok. A webfejlesztés számomra nem pusztán
-        kódolás: szeretem a precíz részleteket, az átgondolt működést
-        és az egyedi vizuális megoldásokat.
+        {{ 'Megyeri Márk Máté vagyok. A webfejlesztés számomra nem pusztán kódolás: szeretem a precíz részleteket, az átgondolt működést és az egyedi vizuális megoldásokat.' | t }}
       </p>
       <p class="lead">
-        Közvetlenül velem egyeztetsz, a koncepció kialakításától
-        az elkészült weboldal átadásáig.
+        {{ 'Közvetlenül velem egyeztetsz, a koncepció kialakításától az elkészült weboldal átadásáig.' | t }}
       </p>
       <div class="about-benefits">
         <span>
-          ✳ Közvetlen kommunikáció
+          {{ '✳︎ Közvetlen kommunikáció' | t }}
         </span>
         <span>
-          ✳ Átlátható folyamat
+          {{ '✳︎ Átlátható folyamat' | t }}
         </span>
         <span>
-          ✳ Gondosan megtervezett részletek
+          {{ '✳︎ Gondosan megtervezett részletek' | t }}
         </span>
       </div>
       <a class="btn btn-outline" routerLink="/ajanlatkeres">
-        Dolgozzunk együtt
+        {{ 'Dolgozzunk együtt' | t }}
         <span aria-hidden="true">
-          ↗
+          ↗︎
         </span>
       </a>
     </div>
   </div>
 </section>
-@if (testimonials().length) {
+@if (testimonials().length || settings().reviews_widget_id || settings().google_review_url) {
 <section premiumReveal class="section testimonials" id="velemenyek" aria-labelledby="testimonials-title">
   <div class="container">
-    <span class="overline">ÜGYFÉLVÉLEMÉNYEK</span>
-    <h2 class="section-title" id="testimonials-title">Amit az ügyfelek <span class="subtle-heading">mondanak.</span></h2>
+    <span class="overline">{{ 'ÜGYFÉLVÉLEMÉNYEK' | t }}</span>
+    <h2 class="section-title" id="testimonials-title">{{ 'Amit az ügyfelek' | t }} <span class="subtle-heading">{{ 'mondanak.' | t }}</span></h2>
     <div class="testimonial-grid">
       @for (t of testimonials(); track t.id) {
       <figure class="testimonial-card">
-        <div class="testimonial-stars" [attr.aria-label]="t.rating + ' az 5-ből'">{{ stars(t.rating) }}</div>
+        <div class="testimonial-stars" [attr.aria-label]="t.rating + ' ' + ('az 5-ből' | t)">{{ stars(t.rating) }}</div>
         <blockquote>„{{ t.quote }}”</blockquote>
         <figcaption>
           <strong>{{ t.author_name }}</strong>
 @if (t.author_role || t.company) {<span>{{ t.author_role && t.company ? t.author_role + ', ' + t.company : (t.author_role || t.company) }}</span>}
-          @if (t.project) {<a [routerLink]="['/munkak', t.project.slug]">{{ t.project.title }} ↗</a>}
+          @if (t.project) {<a [routerLink]="['/munkak', t.project.slug]">{{ t.project.title }} ↗︎</a>}
         </figcaption>
       </figure>
       }
     </div>
+    @if (settings().reviews_widget_id) {<app-external-reviews [widgetId]="settings().reviews_widget_id!"></app-external-reviews>}
+    @if (settings().google_review_url) {<p class="review-cta"><a class="btn btn-outline" [href]="settings().google_review_url" target="_blank" rel="noopener noreferrer">{{ 'Dolgoztunk együtt? Írj véleményt a Google-on ↗︎' | t }}</a></p>}
   </div>
 </section>
 }
@@ -614,16 +612,16 @@
   <div class="container faq-layout">
     <div>
       <span class="overline">
-        07 / GYAKORI KÉRDÉSEK
+        {{ '07 / GYAKORI KÉRDÉSEK' | t }}
       </span>
       <h2 class="section-title">
-        Jó kérdésekre
+        {{ 'Jó kérdésekre' | t }}
         <span class="subtle-heading">
-          őszinte válaszok.
+          {{ 'őszinte válaszok.' | t }}
         </span>
       </h2>
       <p class="lead">
-        Ha nem találsz választ, írd meg az elképzeléseidet az ajánlatkérőben.
+        {{ 'Ha nem találsz választ, írd meg az elképzeléseidet az ajánlatkérőben.' | t }}
       </p>
     </div>
     <div class="faq-list">
@@ -635,7 +633,7 @@
             (click)="toggleFaq($index)"
           >
           <span>
-            {{ item.question }}
+            {{ item.question | t }}
           </span>
           <b aria-hidden="true">
             {{ openFaq() === $index ? '−' : '+' }}
@@ -643,7 +641,7 @@
         </button>
         @if (openFaq() === $index) {
         <p>
-          {{ item.answer }}
+          {{ item.answer | t }}
         </p>
         }
       </article>
@@ -654,48 +652,48 @@
 
 <section class="bottom-cta" aria-labelledby="cta-title">
   <div class="container"><div class="cta-panel"><div class="cta-panel-grid" aria-hidden="true"></div><div class="cta-glow" aria-hidden="true"></div>
-    <span class="overline">A TE PROJEKTED KÖVETKEZIK</span>
-    <h2 id="cta-title">Ne csak jelen legyél online. <em>Emelkedj ki.</em></h2>
-    <p>Legyen olyan weboldalad, amely hitelesen képvisel, és megkönnyíti az ügyfeleid első lépését. Mesélj az elképzelésedről!</p>
-    <div class="cta-buttons"><a class="btn btn-primary" routerLink="/ajanlatkeres">Ajánlatot kérek <span aria-hidden="true">↗</span></a><a class="btn cta-outline" routerLink="/konzultacio">Konzultációt foglalok <span aria-hidden="true">↗</span></a></div>
+    <span class="overline">{{ 'A TE PROJEKTED KÖVETKEZIK' | t }}</span>
+    <h2 id="cta-title">{{ 'Ne csak jelen legyél online.' | t }} <em>{{ 'Emelkedj ki.' | t }}</em></h2>
+    <p>{{ 'Legyen olyan weboldalad, amely hitelesen képvisel, és megkönnyíti az ügyfeleid első lépését. Mesélj az elképzelésedről!' | t }}</p>
+    <div class="cta-buttons"><a class="btn btn-primary" routerLink="/ajanlatkeres">{{ 'Ajánlatot kérek' | t }} <span aria-hidden="true">↗︎</span></a><a class="btn cta-outline" routerLink="/konzultacio">{{ 'Konzultációt foglalok' | t }} <span aria-hidden="true">↗︎</span></a></div>
   </div></div>
 </section>
 <footer class="footer">
   <div class="container footer-main">
     <div class="footer-intro">
       <a class="footer-brand" routerLink="/">
-        MMM
+        {{ 'MMM' | t }}
         <span>
           .
         </span>
       </a>
       <p>
-        Megyeri Márk Máté | Webfejlesztés
+        {{ 'Megyeri Márk Máté | Webfejlesztés' | t }}
       </p>
       <span>
-        Ne csak jelen legyél online. Emelkedj ki.
+        {{ 'Ne csak jelen legyél online. Emelkedj ki.' | t }}
       </span>
     </div>
     <div class="footer-links">
       <h3>
-        Felfedezés
+        {{ 'Felfedezés' | t }}
       </h3>
       <a routerLink="/" fragment="szolgaltatasok">
-        Szolgáltatások
+        {{ 'Szolgáltatások' | t }}
       </a>
       <a routerLink="/" fragment="megoldas">
-        Tervezőasztal
+        {{ 'Tervezőasztal' | t }}
       </a>
       <a routerLink="/" fragment="folyamat">
-        Munkafolyamat
+        {{ 'Munkafolyamat' | t }}
       </a>
       <a routerLink="/ajanlatkeres">
-        Ajánlatkérés
+        {{ 'Ajánlatkérés' | t }}
       </a>
     </div>
     <div class="footer-links">
       <h3>
-        Kapcsolat
+        {{ 'Kapcsolat' | t }}
       </h3>
       @if (settings().contact_email) {
       <a [href]="'mailto:' + settings().contact_email">
@@ -709,28 +707,30 @@
       }
       @if (settings().linkedin_url) {
       <a [href]="settings().linkedin_url" target="_blank" rel="noopener noreferrer">
-        LinkedIn ↗
+        {{ 'LinkedIn ↗︎' | t }}
       </a>
       }
       @if (settings().github_url) {
       <a [href]="settings().github_url" target="_blank" rel="noopener noreferrer">
-        GitHub ↗
+        {{ 'GitHub ↗︎' | t }}
       </a>
       }
       @if (settings().instagram_url) {
       <a [href]="settings().instagram_url" target="_blank" rel="noopener noreferrer">
-        Instagram ↗
+        {{ 'Instagram ↗︎' | t }}
       </a>
       }
     </div>
   </div>
   <div class="container footer-bottom">
     <span>
-      © {{ year }} Megyeri Márk Máté. Minden jog fenntartva.
+      ©︎ {{ year }} Megyeri Márk Máté. {{ 'Minden jog fenntartva.' | t }}
     </span>
     <span class="footer-legal">
-      <a routerLink="/adatkezeles">Adatkezelési tájékoztató</a>
-      <a routerLink="/impresszum">Impresszum</a>
+      <a routerLink="/adatkezeles">{{ 'Adatkezelési tájékoztató' | t }}</a>
+      <a routerLink="/aszf">{{ 'ÁSZF' | t }}</a>
+      <a routerLink="/impresszum">{{ 'Impresszum' | t }}</a>
+      @if (settings().reviews_widget_id) {<button type="button" class="footer-cookie" (click)="consent.openSettings()">{{ 'Süti-beállítások' | t }}</button>}
     </span>
   </div>
 </footer>

@@ -80,7 +80,7 @@
         </div>
         }
         <button class="btn btn-primary" type="submit" [disabled]="loading()">
-          {{loading()?'Ellenőrzés…':needsCode()?'Kód megerősítése ↗':'Belépés az adminba ↗'}}
+          {{loading()?'Ellenőrzés…':needsCode()?'Kód megerősítése ↗︎':'Belépés az adminba ↗︎'}}
         </button>
       </form>
       @if(needsCode()){<button class="btn btn-outline" type="button" [disabled]="loading()" (click)="resendCode()">Új kód küldése</button>}

@@ -1,0 +1,119 @@
+<main class="container legal">
+  <a routerLink="/" class="back">← Vissza a főoldalra</a>
+  @if (i18n.lang() === 'en') {<p class="notice" lang="en">{{ 'Ez a jogi dokumentum csak magyar nyelven érhető el.' | t }}</p>}
+  <span class="overline">JOGI INFORMÁCIÓK</span>
+  <h1>Általános Szerződési Feltételek</h1>
+  <p class="legal-meta">Verzió: {{ version }}@if (legal.effectiveDate) { · Hatályos: {{ legal.effectiveDate }} }</p>
+
+  @if (missing.length) {
+  <div class="notice error" role="alert">
+    <strong>Hiányos ÁSZF.</strong> Kitöltendő a <code>src/app/core/legal-info.ts</code> fájlban: {{ missing.join(', ') }}.
+  </div>
+  }
+
+  <section>
+    <h2>1. A szolgáltató</h2>
+    <p>
+      {{ legal.operatorName || todo }} (székhely: {{ legal.address || todo }}; adószám: {{ legal.taxNumber || todo }};
+      nyilvántartási szám: {{ legal.registrationNumber || todo }}; e-mail: {{ legal.email || todo }}),
+      a továbbiakban: <strong>Szolgáltató</strong>. A megrendelő a továbbiakban: <strong>Ügyfél</strong>.
+    </p>
+
+    <h2>2. A szerződés tárgya és létrejötte</h2>
+    <p>
+      A Szolgáltató egyedi ajánlat alapján weboldal, webes rendszer tervezését, fejlesztését, illetve karbantartását
+      vállalja. A szerződés tartalmát az Ügyfélnek személyre szabott ajánlat (díj, tartalom, ütemezés, előleg,
+      egyedi feltételek) és ez az ÁSZF együtt határozza meg; eltérés esetén az ajánlat az irányadó.
+    </p>
+    <p>
+      A szerződés elektronikus úton jön létre azzal, hogy az Ügyfél a privát projektoldalán az ajánlatot
+      elfogadja. Az elfogadást a Szolgáltató haladéktalanul, e-mailben visszaigazolja. A Szolgáltató a megkötött
+      szerződést (az ajánlat tartalmát, az elfogadás időpontját és az ÁSZF verzióját) rögzíti; az a projektoldalon
+      az Ügyfél számára visszakereshető. A szerződés nyelve magyar.
+    </p>
+
+    <h2>3. Díj és előleg</h2>
+    <p>
+      A vállalási díjat az ajánlat tartalmazza. Ha az ajánlat előleget határoz meg, a Szolgáltató a munkát az
+      előleg beérkezése után kezdi meg; az előleg a végszámlából levonásra kerül. Az előleg bankkártyával
+      (a Stripe biztonságos fizetési oldalán) vagy átutalással fizethető. A fennmaradó díj az átadás-átvételt
+      követően, a kiállított számla alapján, annak fizetési határidejéig esedékes.
+    </p>
+    <p>
+      Ha a munka az Ügyfélnek felróható okból (pl. a szükséges tartalmak, jóváhagyások hiánya miatt) 60 napnál
+      tovább szünetel, vagy az Ügyfél a szerződéstől a munka megkezdése után eláll, a Szolgáltatót az addig
+      elvégzett munka arányos díja megilleti; az előleg ennek beszámításával kerül elszámolásra.
+    </p>
+
+    <h2>4. Az Ügyfél közreműködése</h2>
+    <p>
+      Az Ügyfél a szükséges szöveges és képi tartalmakat, hozzáféréseket és jóváhagyásokat az egyeztetett
+      időben biztosítja, és szavatolja, hogy azok felhasználására jogosult. Az Ügyfél késedelme az ütemezést
+      arányosan módosítja.
+    </p>
+
+    <h2>5. Módosítás és többletmunka</h2>
+    <p>
+      Az ajánlatban nem szereplő igények többletmunkának minősülnek; ezek díjáról és határidejéről a felek a
+      munka megkezdése előtt írásban (e-mailben vagy a projektoldalon) megállapodnak.
+    </p>
+
+    <h2>6. Átadás-átvétel</h2>
+    <p>
+      A Szolgáltató az elkészült munkát átadásra felajánlja. Az Ügyfél 8 napon belül jelzi az esetleges, az
+      ajánlattól eltérő hibákat; ezeket a Szolgáltató díjmentesen javítja. Ha az Ügyfél ezen idő alatt nem jelez
+      hibát, vagy a weboldalt élesben használni kezdi, a munka átvettnek minősül.
+    </p>
+
+    <h2>7. Fizetési késedelem</h2>
+    <p>
+      Késedelmes fizetés esetén a Polgári Törvénykönyv (Ptk.) szerinti késedelmi kamat, vállalkozások között
+      a jogszabály szerinti behajtási költségátalány is felszámítható. A Szolgáltató a teljes díj megfizetéséig
+      az élesítést, illetve a forrásfájlok átadását visszatarthatja.
+    </p>
+
+    <h2>8. Szerzői jog és referencia</h2>
+    <p>
+      Az elkészült egyedi munkára vonatkozó, a szerződés céljának megfelelő, korlátlan idejű felhasználási jog a
+      teljes díj megfizetésével száll át az Ügyfélre. A felhasznált nyílt forrású összetevők és harmadik féltől
+      származó elemek (pl. betűtípusok, képek) a saját licencük szerint használhatók. A Szolgáltató az elkészült
+      munkát referenciaként bemutathatja, kivéve, ha az Ügyfél ezt írásban megtiltja.
+    </p>
+
+    <h2>9. Felelősség</h2>
+    <p>
+      A Szolgáltató a szerződésszegéssel okozott kárért – a szándékosan, súlyos gondatlansággal, illetve
+      életben, testi épségben okozott kár kivételével – legfeljebb az adott szerződés szerinti díj összegéig
+      felel. Nem felel harmadik fél szolgáltatásainak (tárhely, domain, fizetési szolgáltató, külső API-k)
+      kieséséért, valamint az Ügyfél által utólag végzett módosítások következményeiért.
+    </p>
+
+    <h2>10. Karbantartási előfizetés</h2>
+    <p>
+      A havi karbantartás az ajánlatban vagy a megállapodásban rögzített szolgáltatásokat tartalmazza. Online
+      előfizetés esetén a havidíjat a Stripe havonta automatikusan terheli a megadott bankkártyára. Az előfizetés
+      bármikor lemondható a projektoldalon keresztül; a lemondás a már kifizetett időszak végén lép hatályba.
+    </p>
+
+    <h2>11. Fogyasztó elállási joga</h2>
+    <p>
+      Ha az Ügyfél fogyasztó (magánszemély), a 45/2014. (II. 26.) Korm. rendelet alapján a szerződés
+      megkötésétől számított 14 napon belül indokolás nélkül elállhat. Ha az Ügyfél kifejezetten kéri, hogy a
+      Szolgáltató a teljesítést az elállási határidő lejárta előtt megkezdje, elállás esetén az addig nyújtott
+      szolgáltatás arányos díját meg kell fizetnie; a szolgáltatás teljes teljesítése után az elállási jog nem
+      gyakorolható. Az elállási szándékot a {{ legal.email || todo }} címre küldött nyilatkozattal lehet jelezni.
+    </p>
+
+    <h2>12. Panaszkezelés és jogviták</h2>
+    <p>
+      Panaszodat a {{ legal.email || todo }} címre küldheted; 30 napon belül írásban válaszolok. Fogyasztóként
+      a lakóhelyed vagy a Szolgáltató székhelye szerint illetékes békéltető testülethez fordulhatsz.
+      A szerződésre a magyar jog, különösen a Ptk. és az elektronikus kereskedelemről szóló 2001. évi CVIII.
+      törvény az irányadó.
+    </p>
+  </section>
+
+  <p class="legal-meta">
+    Kapcsolódó: <a routerLink="/adatkezeles">Adatkezelési tájékoztató</a> · <a routerLink="/impresszum">Impresszum</a>
+  </p>
+</main>

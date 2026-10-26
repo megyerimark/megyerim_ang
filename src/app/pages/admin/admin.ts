@@ -1,11 +1,32 @@
-import { Component, HostListener, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, HostListener, inject, OnDestroy, OnInit, signal, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ToastService } from '../../core/toast.service';
+import { SitesPanel } from './sites-panel';
+import { FinancePanel } from './finance-panel';
 import { ApiService } from '../../core/api.service';
 import { AuthService } from '../../core/auth.service';
 import { Activity, Client, ConsultationSlot, Dashboard, Project, ProjectMilestone, ProjectCollaboration, ProjectDocument, Quote, QuoteStatus, Service, SiteSettings, SITE_DEFAULTS, STATUS_OPTIONS, MaintenanceAgreement, MaintenanceEditor, MaintenanceData, QuoteBoard, StudioTask, GrowthData, Testimonial } from '../../core/models';
-type Tab = 'dashboard' | 'growth' | 'testimonials' | 'workspace' | 'maintenance' | 'consultations' | 'quotes' | 'clients' | 'projects' | 'services' | 'settings' | 'activity' | 'account';
+type Tab = 'dashboard' | 'growth' | 'testimonials' | 'workspace' | 'maintenance' | 'sites' | 'finance' | 'consultations' | 'quotes' | 'clients' | 'projects' | 'services' | 'settings' | 'activity' | 'account';
+/** Fejléc-cím és alcím fülenként. */
+const HEADINGS: Record<Tab, [string, string]> = {
+    dashboard: ['Üdv újra!', 'Valós üzleti adatok és következő lépések.'],
+    growth: ['Növekedés', 'Honnan jönnek az ügyfelek, és kire kell ma rászólni.'],
+    testimonials: ['Vélemények', 'Ügyfélvélemények a nyilvános oldalra – csak valódiak.'],
+    workspace: ['MM Munkatér', 'Ajánlatfolyamat és napi teendők egy helyen.'],
+    maintenance: ['Aurora Care', 'Havi karbantartás, előfizetések és esedékességek.'],
+    sites: ['Kész projektek', 'Élesített oldalak, domainek, lejáratok és titkosított hozzáférések.'],
+    finance: ['Pénzügyek', 'Bevételek, kiadások, ÁFA és becsült átalányadó havonta.'],
+    quotes: ['Ajánlatkérések', 'Beérkező megkeresések és ajánlatok kezelése.'],
+    consultations: ['Konzultációk', 'Szabad és lefoglalt konzultációk kezelése.'],
+    clients: ['Ügyfelek', 'Korábbi érdeklődők és projektelőzmények.'],
+    projects: ['Referenciák', 'A portfólió tartalmainak szerkesztése.'],
+    services: ['Szolgáltatások', 'Szolgáltatások és csomagok beállítása.'],
+    settings: ['Weboldal beállításai', 'A nyilvános weboldal szövegei és elérhetőségei.'],
+    activity: ['Tevékenységnapló', 'Legutóbbi adminműveletek.'],
+    account: ['Fiók és biztonság', 'Jelszó, kétlépcsős belépés és munkamenetek.'],
+};
 interface ServiceEditor {
     id: number | null;
     title: string;
@@ -13,6 +34,10 @@ interface ServiceEditor {
     description: string;
     featuresText: string;
     starting_price_huf: string;
+    title_en: string;
+    summary_en: string;
+    description_en: string;
+    featuresEnText: string;
     is_active: boolean;
     sort_order: number;
 }
@@ -24,6 +49,10 @@ interface ProjectEditor {
     description: string;
     technologiesText: string;
     project_url: string;
+    title_en: string;
+    category_en: string;
+    summary_en: string;
+    description_en: string;
     is_demo: boolean;
     is_published: boolean;
     is_featured: boolean;
@@ -42,8 +71,8 @@ interface TestimonialEditor {
     is_published: boolean;
     sort_order: number;
 }
-@Component({ selector: 'app-admin', standalone: true, imports: [FormsModule, RouterLink], templateUrl: './admin.html', styleUrl: './admin.scss' })
-export class AdminPage implements OnInit {
+@Component({ selector: 'app-admin', standalone: true, imports: [FormsModule, RouterLink, SitesPanel, FinancePanel], templateUrl: './admin.html', styleUrl: './admin.scss' })
+export class AdminPage implements OnInit, OnDestroy {
     private api = inject(ApiService);
     private auth = inject(AuthService);
     private router = inject(Router);
@@ -62,7 +91,8 @@ export class AdminPage implements OnInit {
     studioTasks = signal<StudioTask[]>([]);
     newTaskTitle = '';
     newTaskDue = '';
-    newTaskQuoteId = '';
+    // type="number" mezőnél az Angular számot (vagy null-t) ír ide, ezért nem csak string lehet.
+    newTaskQuoteId: string | number | null = '';
     quotes = signal<Quote[]>([]);
     quotePage = signal(1);
     quotePages = signal(1);
@@ -73,6 +103,7 @@ export class AdminPage implements OnInit {
     selectedStatus: QuoteStatus = 'new';
     selectedNotes = '';
     selectedPrice = '';
+    selectedDeposit: number | string | null = '';
     selectedProposal = '';
     selectedSchedule = '';
     selectedTerms = '';
@@ -110,11 +141,12 @@ export class AdminPage implements OnInit {
     newPassword = '';
     confirmPassword = '';
     statuses = STATUS_OPTIONS;
+    readonly headings = HEADINGS;
     tabs: {
         value: Tab;
         title: string;
         icon: string;
-    }[] = [{ value: 'dashboard', title: 'Áttekintés', icon: '◫' }, { value: 'growth', title: 'Növekedés', icon: '↗' }, {value:'workspace',title:'MM Munkatér',icon:'▦'}, { value: 'quotes', title: 'Ajánlatkérések', icon: '▤' }, {value:'maintenance',title:'Karbantartás',icon:'✧'}, { value: 'consultations', title: 'Konzultációk', icon: '◷' }, { value: 'clients', title: 'Ügyfelek', icon: '♙' }, { value: 'projects', title: 'Referenciák', icon: '▧' }, { value: 'testimonials', title: 'Vélemények', icon: '❝' }, { value: 'services', title: 'Szolgáltatások', icon: '◇' }, { value: 'settings', title: 'Weboldal beállításai', icon: '⚙' }, { value: 'activity', title: 'Tevékenységnapló', icon: '◷' }, { value: 'account', title: 'Fiók és jelszó', icon: '⌘' }];
+    }[] = [{ value: 'dashboard', title: 'Áttekintés', icon: '◫' }, { value: 'growth', title: 'Növekedés', icon: '↗︎' }, {value:'workspace',title:'MM Munkatér',icon:'▦'}, { value: 'quotes', title: 'Ajánlatkérések', icon: '▤' }, {value:'maintenance',title:'Karbantartás',icon:'✧'}, { value: 'sites', title: 'Kész projektek', icon: '◈' }, { value: 'finance', title: 'Pénzügyek', icon: '¤' }, { value: 'consultations', title: 'Konzultációk', icon: '◷' }, { value: 'clients', title: 'Ügyfelek', icon: '♙' }, { value: 'projects', title: 'Referenciák', icon: '▧' }, { value: 'testimonials', title: 'Vélemények', icon: '❝' }, { value: 'services', title: 'Szolgáltatások', icon: '◇' }, { value: 'settings', title: 'Weboldal beállításai', icon: '⚙︎' }, { value: 'activity', title: 'Tevékenységnapló', icon: '◷' }, { value: 'account', title: 'Fiók és jelszó', icon: '⌘' }];
     readonly boardStatuses = STATUS_OPTIONS;
     readonly pipelinePalette: Record<QuoteStatus,string> = {
         new:'#9681fd', reviewing:'#579bea', quoted:'#36c8c2',
@@ -168,7 +200,27 @@ export class AdminPage implements OnInit {
         const line = pts.map((pt, i) => `${i === 0 ? 'M' : 'L'} ${pt.x.toFixed(1)} ${pt.y.toFixed(1)}`).join(' ');
         return {line, area: line + ` L ${pts.at(-1)!.x.toFixed(1)} 162 L ${pts[0].x.toFixed(1)} 162 Z`, points: pts};
     });
-    ngOnInit() { this.loadDashboard(); }
+    private poll: ReturnType<typeof setInterval> | null = null;
+    ngOnInit() {
+        this.loadDashboard();
+        // Az e-mailben kapott „Megnyitás az adminban” link: /admin?ajanlat=12
+        const quoteParam = Number(new URLSearchParams(location.search).get('ajanlat'));
+        if (Number.isInteger(quoteParam) && quoteParam > 0) this.openBoardQuote(quoteParam);
+        // Percenként csendben frissítjük a számlálókat; új ügyfélüzenetnél toast jelez.
+        this.poll = setInterval(() => this.refreshCounters(), 60_000);
+    }
+    ngOnDestroy() { if (this.poll) clearInterval(this.poll); }
+    private refreshCounters() {
+        if (document.hidden) return;
+        const before = this.dashboard()?.messages_unread ?? 0;
+        const newBefore = this.dashboard()?.quotes_new ?? 0;
+        this.api.dashboard().subscribe({ next: r => {
+            this.dashboard.set(r.data);
+            const unread = r.data.messages_unread ?? 0;
+            if (unread > before) this.toast.info(`Új ügyfélüzenet érkezett (${unread} olvasatlan).`);
+            if (r.data.quotes_new > newBefore) this.toast.info('Új ajánlatkérés érkezett.');
+        }, error: () => { /* csendes háttérfrissítés */ } });
+    }
     isQuizQuote(description: string): boolean { return description?.startsWith('AURORA KVÍZ – IGÉNYFELMÉRÉS') || false; }
     quizSummary(description: string): {label:string;value:string}[] {
         if(!this.isQuizQuote(description)) return [];
@@ -179,7 +231,12 @@ export class AdminPage implements OnInit {
     }
     @HostListener('document:keydown.escape')
     closeMobileNavigation() { this.menuOpen.set(false); }
-    notify(message: string, error = false) { this.message.set(message); this.isError.set(error); }
+    private readonly toast = inject(ToastService);
+    /** Visszajelzés: toastként jelenik meg (mobilon is látszik, görgetéstől függetlenül). */
+    notify(message: string, error = false) {
+        this.message.set(''); this.isError.set(error);
+        if (message) error ? this.toast.error(message) : this.toast.success(message);
+    }
     fail(e: unknown) { const err = e as HttpErrorResponse; const fields = err.error?.errors as Record<string, string[]> | undefined; this.notify(fields ? Object.values(fields).flat().join(' · ') : err.status === 419 ? 'Lejárt a munkamenet. Frissítsd az oldalt.' : err.status === 401 ? 'A munkamenet lejárt. Jelentkezz be újra.' : err.error?.message || 'Szerverhiba. Próbáld újra.', true); this.busy.set(false); }
     use(tab: Tab) {
         this.tab.set(tab);
@@ -235,7 +292,8 @@ export class AdminPage implements OnInit {
     }
     createStudioTask() {
         if(this.newTaskTitle.trim().length < 2) {this.notify('Legalább két karakteres feladatnevet adj meg.',true);return;}
-        const quoteId = this.newTaskQuoteId.trim() ? Number(this.newTaskQuoteId) : null;
+        const rawQuoteId = String(this.newTaskQuoteId ?? '').trim();
+        const quoteId = rawQuoteId ? Number(rawQuoteId) : null;
         if (quoteId !== null && (!Number.isInteger(quoteId) || quoteId <= 0)) {this.notify('Érvénytelen ajánlat-azonosító.',true);return;}
         this.busy.set(true);
         this.api.createStudioTask({title:this.newTaskTitle.trim(),due_date:this.newTaskDue || null,quote_request_id:quoteId}).subscribe({
@@ -253,9 +311,18 @@ export class AdminPage implements OnInit {
         if(!confirm('Törlöd ezt a belső feladatot?'))return;
         this.api.deleteStudioTask(task.id).subscribe({next:()=>{this.loadWorkspace();this.loadDashboard();},error:e=>this.fail(e)});
     }
+    /** A legfrissebb olvasatlan beszélgetés megnyitása (vagy az ajánlatlista, ha nincs). */
+    openUnreadMessages() {
+        const first = this.dashboard()?.unread_threads?.[0];
+        if (first) this.openBoardQuote(first.quote_request_id); else this.use('quotes');
+    }
     openBoardQuote(id:number) {
         this.use('quotes');
-        this.api.quote(id).subscribe({next:r=>this.showQuote(r.data),error:e=>this.fail(e)});
+        this.api.quote(id).subscribe({next:r=>{
+            this.showQuote(r.data);
+            // Mobilon az adatlap a lista alatt van: odagörgetünk.
+            if (matchMedia('(max-width: 1050px)').matches) setTimeout(() => document.querySelector('.admin-panel.detail')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
+        },error:e=>this.fail(e)});
     }
     loadMaintenance() {
         this.busy.set(true);
@@ -267,7 +334,7 @@ export class AdminPage implements OnInit {
             quote_request_id:quoteId ?? this.maintenanceData().candidates[0]?.id ?? 0,
             plan_name:'Aurora Care – Mini',monthly_fee_huf:2000,status:'draft',
             starts_on:'',next_review_on:'',included_services:'Alapvető állapotfigyelés és havi ellenőrzés.',
-            internal_notes:''
+            internal_notes:'',billing_enabled:false
         });
     }
     editMaintenance(row:MaintenanceAgreement) {
@@ -277,8 +344,19 @@ export class AdminPage implements OnInit {
             monthly_fee_huf:row.monthly_fee_huf,status:row.status,
             starts_on:row.starts_on?.slice(0,10)??'',
             next_review_on:row.next_review_on?.slice(0,10)??'',
-            included_services:row.included_services??'',internal_notes:row.internal_notes??''
+            included_services:row.included_services??'',internal_notes:row.internal_notes??'',
+            billing_enabled:!!row.billing_enabled
         });
+    }
+    cancelSubscription(row: MaintenanceAgreement) {
+        if (!confirm('Lemondod az online előfizetést? A már kifizetett hónap végén szűnik meg.')) return;
+        this.busy.set(true);
+        this.api.cancelSubscription(row.id).subscribe({ next: r => { this.busy.set(false); this.notify(r.message); this.loadMaintenance(); }, error: e => this.fail(e) });
+    }
+    subscriptionLabel(status?: string | null): string {
+        if (!status) return 'Nincs online előfizetés';
+        if (status.endsWith('_cancel_scheduled')) return 'Lemondva – időszak végéig aktív';
+        return ({ active: 'Kártyás előfizetés aktív', trialing: 'Próbaidőszak', past_due: 'Sikertelen terhelés!', canceled: 'Előfizetés megszűnt', unpaid: 'Kifizetetlen', paused: 'Szüneteltetve', incomplete: 'Függőben' } as Record<string, string>)[status] ?? status;
     }
     saveMaintenance() {
         const editor = this.maintenanceEditor();
@@ -287,12 +365,12 @@ export class AdminPage implements OnInit {
         }
         this.busy.set(true);
         this.api.saveMaintenance(this.editingMaintenanceId(),editor).subscribe({
-            next:()=>{this.maintenanceEditor.set(null);this.busy.set(false);this.loadMaintenance();this.loadDashboard();this.notify('Karbantartási megállapodás mentve. Fizetés nem indult.');},
+            next:()=>{this.maintenanceEditor.set(null);this.busy.set(false);this.loadMaintenance();this.loadDashboard();this.notify(editor.billing_enabled ? 'Mentve. Az ügyfél a projektoldalán elindíthatja a kártyás előfizetést.' : 'Karbantartási megállapodás mentve.');},
             error:e=>this.fail(e)
         });
     }
     loadQuotes(page = 1) { this.busy.set(true); this.api.quotes(this.searchQuote, this.filterStatus, page).subscribe({ next: r => { this.quotes.set(r.data); this.quotePage.set(r.current_page); this.quotePages.set(r.last_page); this.quoteTotal.set(r.total); this.busy.set(false); }, error: e => this.fail(e) }); }
-    showQuote(q: Quote) { this.selectedQuote.set(q); this.selectedStatus = q.status; this.selectedNotes = q.admin_notes || ''; this.selectedPrice = q.quoted_price_huf === null ? '' : String(q.quoted_price_huf); this.selectedProposal = q.proposal_summary || ''; this.selectedSchedule = q.proposal_schedule || ''; this.selectedTerms = q.proposal_terms || ''; this.selectedValidUntil = q.proposal_valid_until ? q.proposal_valid_until.slice(0, 10) : ''; this.selectedFollowUp = q.follow_up_at ? q.follow_up_at.slice(0, 10) : ''; this.loadMilestones(q.id); this.loadCollaboration(q.id); }
+    showQuote(q: Quote) { this.selectedQuote.set(q); this.selectedStatus = q.status; this.selectedNotes = q.admin_notes || ''; this.selectedPrice = q.quoted_price_huf === null ? '' : String(q.quoted_price_huf); this.selectedDeposit = q.deposit_percent ?? ''; this.selectedProposal = q.proposal_summary || ''; this.selectedSchedule = q.proposal_schedule || ''; this.selectedTerms = q.proposal_terms || ''; this.selectedValidUntil = q.proposal_valid_until ? q.proposal_valid_until.slice(0, 10) : ''; this.selectedFollowUp = q.follow_up_at ? q.follow_up_at.slice(0, 10) : ''; this.loadMilestones(q.id); this.loadCollaboration(q.id); }
     saveQuote() {
         const q = this.selectedQuote();
         if (!q)
@@ -306,10 +384,33 @@ export class AdminPage implements OnInit {
             }
         }
         this.busy.set(true);
-        this.api.saveQuote(q.id, { status: this.selectedStatus, admin_notes: this.selectedNotes, follow_up_at: this.selectedFollowUp || null, ...(q.quoted_at ? {} : { quoted_price_huf: amount, proposal_summary: this.selectedProposal, proposal_schedule: this.selectedSchedule || null, proposal_terms: this.selectedTerms || null, proposal_valid_until: this.selectedValidUntil || null }) }).subscribe({ next: r => { this.showQuote(r.data); this.notify('Ajánlatkérés módosítva.'); this.loadQuotes(this.quotePage()); }, error: e => this.fail(e) });
+        this.api.saveQuote(q.id, { status: this.selectedStatus, admin_notes: this.selectedNotes, follow_up_at: this.selectedFollowUp || null, ...(q.quoted_at ? {} : { quoted_price_huf: amount, deposit_percent: this.depositPercent(), proposal_summary: this.selectedProposal, proposal_schedule: this.selectedSchedule || null, proposal_terms: this.selectedTerms || null, proposal_valid_until: this.selectedValidUntil || null }) }).subscribe({ next: r => { this.showQuote(r.data); this.notify('Ajánlatkérés módosítva.'); this.loadQuotes(this.quotePage()); }, error: e => this.fail(e) });
+    }
+    /** Az előleg %-a (0–100), üres mező = nincs előleg. type="number" mezőből szám vagy null is jöhet. */
+    depositPercent(): number | null {
+        const raw = String(this.selectedDeposit ?? '').trim();
+        if (!raw) return null;
+        const n = Math.round(Number(raw));
+        return Number.isFinite(n) ? Math.min(100, Math.max(0, n)) : null;
+    }
+    depositPreview(q: Quote): number | null {
+        const pct = q.quoted_at ? q.deposit_percent ?? null : this.depositPercent();
+        const price = q.quoted_at ? q.quoted_price_huf : Number(String(this.selectedPrice).replace(/\s/g, ''));
+        return pct && price ? Math.round(price * pct / 100) : null;
+    }
+    markDepositPaid() {
+        const q = this.selectedQuote();
+        if (!q || !confirm('Jóváírod az előleget (átutalás beérkezett)? Bevételként is rögzül.')) return;
+        this.busy.set(true);
+        this.api.markDepositPaid(q.id).subscribe({ next: r => { this.busy.set(false); this.showQuote(r.data); this.notify(r.message); }, error: e => this.fail(e) });
     }
     loadCollaboration(id: number) {
-        this.api.adminCollaboration(id).subscribe({ next: r => { if(this.selectedQuote()?.id === id) this.collaboration.set(r.data); }, error: e => this.fail(e) });
+        this.api.adminCollaboration(id).subscribe({ next: r => {
+            if(this.selectedQuote()?.id === id) this.collaboration.set(r.data);
+            // A szerver olvasottnak jelölte az üzeneteket: a jelvényeket is frissítjük.
+            if (this.quotes().some(q => q.id === id && q.unread_messages_count)) this.quotes.update(list => list.map(q => q.id === id ? { ...q, unread_messages_count: 0 } : q));
+            if (this.dashboard()?.unread_threads?.some(t => t.quote_request_id === id)) this.api.dashboard().subscribe({ next: d => this.dashboard.set(d.data), error: () => {} });
+        }, error: e => this.fail(e) });
     }
     sendProjectMessage() {
         const q = this.selectedQuote(); if(!q || this.adminMessage.trim().length < 2) return;
@@ -391,7 +492,7 @@ export class AdminPage implements OnInit {
     loadClients(page = 1) { this.busy.set(true); this.api.clients(this.searchClient, page).subscribe({ next: r => { this.clients.set(r.data); this.clientsPage.set(r.current_page); this.clientsPages.set(r.last_page); this.busy.set(false); }, error: e => this.fail(e) }); }
     showClient(c: Client) { this.selectedClient.set(c); this.busy.set(true); this.api.clientQuotes(c.email).subscribe({ next: r => { this.clientHistory.set(r.data); this.busy.set(false); }, error: e => this.fail(e) }); }
     loadServices() { this.busy.set(true); this.api.adminServices().subscribe({ next: r => { this.services.set(r.data); this.busy.set(false); }, error: e => this.fail(e) }); }
-    editService(s?: Service) { this.serviceEditor.set(s ? { id: s.id, title: s.title, summary: s.summary, description: s.description || '', featuresText: (s.features || []).join('\n'), starting_price_huf: s.starting_price_huf === null ? '' : String(s.starting_price_huf), is_active: s.is_active, sort_order: s.sort_order } : { id: null, title: '', summary: '', description: '', featuresText: '', starting_price_huf: '', is_active: false, sort_order: 0 }); }
+    editService(s?: Service) { this.serviceEditor.set(s ? { id: s.id, title: s.title, summary: s.summary, description: s.description || '', featuresText: (s.features || []).join('\n'), starting_price_huf: s.starting_price_huf === null ? '' : String(s.starting_price_huf), is_active: s.is_active, sort_order: s.sort_order, title_en: s.title_en || '', summary_en: s.summary_en || '', description_en: s.description_en || '', featuresEnText: (s.features_en || []).join('\n') } : { id: null, title: '', summary: '', description: '', featuresText: '', starting_price_huf: '', is_active: false, sort_order: 0, title_en: '', summary_en: '', description_en: '', featuresEnText: '' }); }
     saveService() {
         const s = this.serviceEditor();
         if (!s)
@@ -406,7 +507,7 @@ export class AdminPage implements OnInit {
             return;
         }
         this.busy.set(true);
-        this.api.saveService(s.id, { title: s.title, summary: s.summary, description: s.description || null, features: s.featuresText.split(/[\n,]+/).map(x => x.trim()).filter(Boolean), starting_price_huf: amount, is_active: s.is_active, sort_order: s.sort_order }).subscribe({ next: () => { this.notify('Szolgáltatás mentve.'); this.serviceEditor.set(null); this.loadServices(); }, error: e => this.fail(e) });
+        this.api.saveService(s.id, { title: s.title, summary: s.summary, description: s.description || null, features: s.featuresText.split(/[\n,]+/).map(x => x.trim()).filter(Boolean), title_en: s.title_en.trim() || null, summary_en: s.summary_en.trim() || null, description_en: s.description_en.trim() || null, features_en: s.featuresEnText.split(/\n+/).map(x => x.trim()).filter(Boolean), starting_price_huf: amount, is_active: s.is_active, sort_order: s.sort_order }).subscribe({ next: () => { this.notify('Szolgáltatás mentve.'); this.serviceEditor.set(null); this.loadServices(); }, error: e => this.fail(e) });
     }
     deleteService(id: number) {
         if (!confirm('Biztosan törlöd a szolgáltatást?'))
@@ -415,7 +516,7 @@ export class AdminPage implements OnInit {
         this.api.deleteService(id).subscribe({ next: () => { this.notify('Szolgáltatás törölve.'); this.loadServices(); }, error: e => this.fail(e) });
     }
     loadProjects() { this.busy.set(true); this.api.adminProjects().subscribe({ next: r => { this.projects.set(r.data); this.busy.set(false); }, error: e => this.fail(e) }); }
-    editProject(p?: Project) { this.projectImage = null; this.removeProjectCover = false; this.projectEditor.set(p ? { id: p.id, title: p.title, summary: p.summary, description: p.description || '', category: p.category || '', technologiesText: (p.technologies || []).join(', '), project_url: p.project_url || '', is_demo: p.is_demo, is_published: p.is_published, is_featured: p.is_featured, sort_order: p.sort_order, cover_image_url: p.cover_image_url, resultsText: (p.results || []).map(r => `${r.value} | ${r.label}`).join('\n') } : { id: null, title: '', summary: '', description: '', category: '', technologiesText: '', project_url: '', is_demo: true, is_published: false, is_featured: false, sort_order: 0, cover_image_url: null, resultsText: '' }); }
+    editProject(p?: Project) { this.projectImage = null; this.removeProjectCover = false; this.projectEditor.set(p ? { id: p.id, title: p.title, summary: p.summary, description: p.description || '', category: p.category || '', technologiesText: (p.technologies || []).join(', '), project_url: p.project_url || '', is_demo: p.is_demo, is_published: p.is_published, is_featured: p.is_featured, sort_order: p.sort_order, cover_image_url: p.cover_image_url, resultsText: (p.results || []).map(r => `${r.value} | ${r.label}`).join('\n'), title_en: p.title_en || '', category_en: p.category_en || '', summary_en: p.summary_en || '', description_en: p.description_en || '' } : { id: null, title: '', summary: '', description: '', category: '', technologiesText: '', project_url: '', is_demo: true, is_published: false, is_featured: false, sort_order: 0, cover_image_url: null, resultsText: '', title_en: '', category_en: '', summary_en: '', description_en: '' }); }
     pickImage(event: Event) {
         const input = event.target as HTMLInputElement;
         const f = input.files?.[0];
@@ -443,7 +544,7 @@ export class AdminPage implements OnInit {
             return;
         }
         const fd = new FormData();
-        for (const [k, v] of Object.entries({ title: p.title, summary: p.summary, category: p.category, description: p.description, project_url: p.project_url, sort_order: String(p.sort_order), is_demo: p.is_demo ? '1' : '0', is_published: p.is_published ? '1' : '0', is_featured: p.is_featured ? '1' : '0' }))
+        for (const [k, v] of Object.entries({ title: p.title, summary: p.summary, category: p.category, title_en: p.title_en, category_en: p.category_en, summary_en: p.summary_en, description_en: p.description_en, description: p.description, project_url: p.project_url, sort_order: String(p.sort_order), is_demo: p.is_demo ? '1' : '0', is_published: p.is_published ? '1' : '0', is_featured: p.is_featured ? '1' : '0' }))
             fd.append(k, v);
         for (const [i, t] of p.technologiesText.split(/[,\n]+/).map(x => x.trim()).filter(Boolean).entries())
             fd.append(`technologies[${i}]`, t);

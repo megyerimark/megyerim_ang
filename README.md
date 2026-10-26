@@ -58,6 +58,16 @@ Adminban felvett szolgáltatás csak `is_active=true`, referencia csak `is_publi
 - **Oldaltérkép:** statikus `public/sitemap.xml` + a backend dinamikus `/api/sitemap.xml`-je (referenciák), mindkettő a `robots.txt`-ben.
 - **CI:** `.github/workflows/ci.yml` – minden push után `npm audit` és éles build.
 
+## V17 újdonságok
+
+- **Nyelvválasztó (HU/EN):** `src/app/i18n/`. A kulcs maga a magyar szöveg (`{{ 'Szöveg' | t }}`), a fordítás az `en.ts`-ben van; hiányzó fordításnál a magyar szöveg jelenik meg. Az angol szótár csak angol nézetben töltődik le. Link angolul: `?lang=en`. Új szöveg felvételekor tedd a `| t` pipe mögé, és vedd fel az angol megfelelőjét az `en.ts`-be. A szolgáltatások és referenciák angol szövegét az adminban, a szerkesztő „Angol változat” részében adhatod meg. A jogi oldalak csak magyarul érhetők el (angolul jelzés látszik).
+- **Toast-értesítések:** `ToastService` (`success` / `error` / `info`) – bárhonnan hívható.
+- **Admin:** kötelező 2FA kijelzése, munkamenetek; olvasatlan ügyfélüzenet-jelző (✉), percenkénti háttérfrissítés; **Kész projektek** (domainek, lejáratok, böngészőben titkosított hozzáférés-széf); **Pénzügyek** (bevétel, kiadás, ÁFA, becsült átalányadó); előleg és Stripe-előfizetés kezelése.
+- **Ügyfélportál:** előleg és havi karbantartás fizetése bankkártyával (Stripe), ÁSZF-elfogadás, fogyasztói hozzájárulás a korai teljesítéshez.
+- **Új oldalak:** `/aszf`, `/fizetes/sikeres`, `/fizetes/megszakitva`.
+- **Süti-kezelés:** a süti-sáv csak akkor jelenik meg, ha az adminban be van állítva Google-vélemények widget (Trustindex); a widget csak hozzájárulás után töltődik be.
+- **Mobil:** a telefonos adminban a navigáció a ☰ menüből nyílik (az ikonsáv nem veszi el a helyet), az ikonok iOS-en sem jelennek meg színes emojiként.
+
 ## Valós API-kapcsolat ellenőrzése
 
 Futtasd: `npm run check:api`. A részletes hibaelhárítás: `LARAVEL_KAPCSOLAT_ELLENORZES.md`. Fejlesztéskor a proxy már `ng serve`-vel is aktív.

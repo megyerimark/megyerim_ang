@@ -1,23 +1,24 @@
 <header class="nav-wrap" [class.is-compact]="compact() || !onHome">
   <div class="navbar">
-    <a class="brand" routerLink="/" (click)="close()" aria-label="Megyeri Márk – főoldal">
-      <strong>MEGYERI <span>MÁRK</span> MÁTÉ </strong>
+    <a class="brand" routerLink="/" (click)="close()" [attr.aria-label]="'Megyeri Márk – főoldal' | t">
+      <strong>{{ 'MEGYERI' | t }} <span>{{ 'MÁRK' | t }}</span> {{ 'MÁTÉ' | t }} </strong>
     </a>
-    <nav id="site-navigation" class="nav-links" [class.open]="menuOpen()" aria-label="Fő navigáció">
+    <nav id="site-navigation" class="nav-links" [class.open]="menuOpen()" [attr.aria-label]="'Fő navigáció' | t">
       @for (item of items; track item.label) {
         <a [routerLink]="item.link" [fragment]="item.fragment" [class.is-active]="isActive(item)" [class.only-mobile]="item.mobileOnly"
-      [attr.aria-current]="isActive(item) ? 'page' : null" (click)="close()">{{ item.label }}</a>
+      [attr.aria-current]="isActive(item) ? 'page' : null" (click)="close()">{{ item.label | t }}</a>
       }
-      <a class="mobile-quote" routerLink="/ajanlatkeres" (click)="close()">Kérj ajánlatot <span aria-hidden="true">→</span></a>
+      <a class="mobile-quote" routerLink="/ajanlatkeres" (click)="close()">{{ 'Kérj ajánlatot' | t }} <span aria-hidden="true">→</span></a>
     </nav>
     <div class="nav-actions">
       <!-- <button type="button" class="theme-btn" (click)="toggleTheme()"
-        [attr.aria-label]="isDark() ? 'Világos téma' : 'Sötét téma'" [title]="isDark() ? 'Világos téma' : 'Sötét téma'">
+        [attr.aria-label]="(isDark() ? 'Világos téma' : 'Sötét téma') | t" [title]="(isDark() ? 'Világos téma' : 'Sötét téma') | t">
         <span aria-hidden="true">{{ isDark() ? '☼' : '☾' }}</span>
       </button> -->
-      <a class="nav-cta" routerLink="/ajanlatkeres" (click)="close()">Kérj ajánlatot <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a>
+      <button type="button" class="lang-btn" (click)="i18n.toggle()" [attr.aria-label]="i18n.lang() === 'hu' ? 'Switch to English' : 'Váltás magyar nyelvre'" [attr.lang]="i18n.lang() === 'hu' ? 'en' : 'hu'">{{ i18n.lang() === 'hu' ? 'EN' : 'HU' }}</button>
+      <a class="nav-cta" routerLink="/ajanlatkeres" (click)="close()">{{ 'Kérj ajánlatot' | t }} <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a>
       <button class="menu-btn" aria-controls="site-navigation" type="button" (click)="toggleMenu()"
-        [attr.aria-expanded]="menuOpen()" [attr.aria-label]="menuOpen() ? 'Menü bezárása' : 'Menü megnyitása'">
+        [attr.aria-expanded]="menuOpen()" [attr.aria-label]="(menuOpen() ? 'Menü bezárása' : 'Menü megnyitása') | t">
         {{ menuOpen() ? '✕' : '☰' }}
       </button>
     </div>

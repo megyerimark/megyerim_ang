@@ -4,8 +4,11 @@ import { RouterLink, ActivatedRoute } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiService } from '../../core/api.service';
 import { QuotePayload } from '../../core/models';
-@Component({ selector: 'app-quote', standalone: true, imports: [FormsModule, RouterLink], templateUrl: './quote.html', styleUrl: './quote.scss' })
+import { TPipe } from '../../i18n/t.pipe';
+import { I18nService } from '../../i18n/i18n.service';
+@Component({ selector: 'app-quote', standalone: true, imports: [FormsModule, RouterLink, TPipe], templateUrl: './quote.html', styleUrl: './quote.scss' })
 export class QuotePage {
+    readonly i18n = inject(I18nService);
     private api = inject(ApiService);
     private route = inject(ActivatedRoute);
     step = signal(1);
@@ -13,7 +16,7 @@ export class QuotePage {
     sent = signal<number | null>(null);
     generalError = signal('');
     errors = signal<Record<string, string[]>>({});
-    websiteTypes = [{ v: 'landing', title: 'Landing oldal', desc: 'Egyoldalas, fókuszált weboldal', icon: '↗' }, { v: 'business', title: 'Céges weboldal', desc: 'Teljes üzleti online jelenlét', icon: '▣' }, { v: 'webshop', title: 'Webshop', desc: 'Online termékértékesítés', icon: '◇' }, { v: 'custom', title: 'Egyedi rendszer', desc: 'Speciális funkciók, adminfelület', icon: '⌘' }];
+    websiteTypes = [{ v: 'landing', title: 'Landing oldal', desc: 'Egyoldalas, fókuszált weboldal', icon: '↗︎' }, { v: 'business', title: 'Céges weboldal', desc: 'Teljes üzleti online jelenlét', icon: '▣' }, { v: 'webshop', title: 'Webshop', desc: 'Online termékértékesítés', icon: '◇' }, { v: 'custom', title: 'Egyedi rendszer', desc: 'Speciális funkciók, adminfelület', icon: '⌘' }];
     styles = [{ v: 'dark-premium', title: 'Dark Premium', desc: 'Sötét, karakteres és exkluzív', css: 'dark' }, { v: 'elegant-minimal', title: 'Elegant Minimal', desc: 'Világos, időtálló, letisztult', css: 'minimal' }, { v: 'modern-creative', title: 'Modern Creative', desc: 'Merészebb színek, kreatív ritmus', css: 'creative' }, { v: 'mixed', title: 'Egyedi kombináció', desc: 'A stílusokat együtt alakítjuk ki', css: 'mixed' }, { v: 'undecided', title: 'Még nem tudom', desc: 'Segíts a megfelelő irány megtalálásában', css: 'neutral' }];
     palette = ['#8259ee', '#4fc6e9', '#0a1530', '#F6F4ED', '#F0B08F', '#75C0A5', '#FF6583', '#F4D35E'];
     featureOptions = ['Kapcsolatfelvételi űrlap', 'Időpontfoglalás', 'Adminfelület', 'Blog / hírek', 'Többnyelvűség', 'Online fizetés', 'Keresőoptimalizálás', 'Animációk / 3D', 'Hírlevél', 'Ügyfélfiók'];

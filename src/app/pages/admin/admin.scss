@@ -1096,3 +1096,34 @@ td small {
 .session-list { list-style: none; margin: 0 0 18px; padding: 0; display: grid; gap: 12px; }
 .session-list li { padding: 12px 14px; border: 1px solid #ffffff1a; border-radius: 12px; font-size: 13px; }
 .session-agent { margin-top: 4px; font-size: 11px; word-break: break-word; }
+
+/* ---- Mobil javítások (V17) ----
+ * Telefonon az ikonrail a képernyő ~15%-át elvette és duplikálta a fejléc ☰ gombját,
+ * emiatt a tartalom összenyomódott. 600px alatt a navigáció a ☰ menüből nyílik.
+ */
+@media(max-width:600px){
+  .admin-mobile-rail{display:none!important}
+  .admin-body{margin-left:0!important}
+  .admin-mobile-menu span{display:inline}
+  .quote-row{display:grid;grid-template-columns:38px minmax(0,1fr) auto;align-items:center;column-gap:10px;row-gap:6px}
+  .quote-row .quote-arrow{grid-column:3;grid-row:1}
+  .quote-row .status{grid-column:2;justify-self:start;max-width:none;white-space:nowrap}
+  .quote-name small{overflow-wrap:anywhere;word-break:break-word}
+  .metric small,.metric>span{padding-right:40px}
+  .metric b{font-size:26px;right:11px;bottom:11px}
+}
+.quote-unread-badge{align-self:flex-start;display:inline-flex;gap:5px;padding:3px 9px;border-radius:999px;background:#55e5c71f;border:1px solid #55e5c766;color:#7ff0d6;font-size:10px;font-weight:800;letter-spacing:.3px}
+
+.deposit-status{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:4px 0 16px;padding:12px 14px;border-radius:12px;border:1px solid #f5b94b66;background:#f5b94b14;font-size:12.5px}
+.deposit-status.paid{border-color:#55e5c766;background:#55e5c714}
+.care-billing{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;padding-top:10px;border-top:1px dashed var(--border);font-size:11px;color:var(--muted)}
+.care-billing[data-billing='active']{color:#7ff0d6}
+.care-billing[data-billing='past_due']{color:#ff8da0}
+.care-toggle span{display:flex;gap:9px;align-items:center;font-weight:700}
+
+.expiry-alert{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;margin:0 0 16px;padding:13px 16px;border-radius:14px;border:1px solid #f5b94b80;background:#f5b94b14;font-size:12.5px;color:#f8d48f}
+.expiry-alert strong{flex-basis:100%}
+
+.en-fields{margin:4px 0 16px;padding:12px 14px;border:1px dashed var(--border);border-radius:12px}
+.en-fields summary{cursor:pointer;font-weight:700;font-size:12px;color:var(--accent)}
+.en-fields[open] summary{margin-bottom:12px}

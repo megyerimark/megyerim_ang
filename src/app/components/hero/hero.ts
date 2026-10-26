@@ -1,6 +1,8 @@
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnDestroy, ViewChild, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ScrollScrubber, range } from '../../core/scroll-scrubber';
+import { TPipe } from '../../i18n/t.pipe';
+import { I18nService } from '../../i18n/i18n.service';
 
 /**
  * Főoldali nyitójelenet. Görgetésre a kamera „beúszik” a monitorba (rögzített, görgetésvezérelt
@@ -9,11 +11,12 @@ import { ScrollScrubber, range } from '../../core/scroll-scrubber';
 @Component({
     selector: 'app-hero',
     standalone: true,
-    imports: [RouterLink],
+    imports: [RouterLink, TPipe],
     templateUrl: './hero.html',
     styleUrl: './hero.scss'
 })
 export class Hero implements AfterViewInit, OnDestroy {
+    readonly i18n = inject(I18nService);
     @ViewChild('heroSection', { static: true }) private section!: ElementRef<HTMLElement>;
     @Input()
     headline = 'Ne csak jelen legyél online. Emelkedj ki.';
@@ -24,8 +27,10 @@ export class Hero implements AfterViewInit, OnDestroy {
     private readonly chapterIds = ['cinematic-story'];
     private scrubber?: ScrollScrubber;
 
-    get titleLead(): string { const idx = this.headline.lastIndexOf('. '); return idx > 0 ? this.headline.slice(0, idx + 1) : this.headline; }
-    get titleAccent(): string { const idx = this.headline.lastIndexOf('. '); return idx > 0 ? this.headline.slice(idx + 2) : ''; }
+    /** A teljes főcím az aktuális nyelven (fordítás után bontjuk sorokra). */
+    private get text(): string { return this.i18n.t(this.headline); }
+    get titleLead(): string { const t = this.text; const idx = t.lastIndexOf('. '); return idx > 0 ? t.slice(0, idx + 1) : t; }
+    get titleAccent(): string { const t = this.text; const idx = t.lastIndexOf('. '); return idx > 0 ? t.slice(idx + 2) : ''; }
     /** A főcím első része két, kiegyensúlyozott sorba törve (pl. „Ne csak jelen / legyél online.”). */
     get leadLines(): string[] {
         const words = this.titleLead.split(' ');

@@ -25,7 +25,8 @@
     Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
     Header always set Cross-Origin-Opener-Policy "same-origin"
     # Csak saját domainről tölthető be szkript, betűtípus és adat. Inline stílus az Angular komponensek miatt kell.
-    Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+    # A Trustindex (Google-vélemények) csak a látogató hozzájárulása után töltődik be; ehhez kell a cdn.trustindex.io.
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https://cdn.trustindex.io; style-src 'self' 'unsafe-inline' https://cdn.trustindex.io; img-src 'self' data: blob: https://cdn.trustindex.io https://*.googleusercontent.com; font-src 'self' https://cdn.trustindex.io; connect-src 'self' https://cdn.trustindex.io; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
     # HSTS: a böngésző 1 évig csak HTTPS-en kapcsolódik. Csak akkor hagyd bent, ha a HTTPS (és minden aldomain) már működik!
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" "expr=%{HTTPS} == 'on' || %{HTTP:X-Forwarded-Proto} == 'https'"
 

@@ -4,9 +4,12 @@ import { RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiService } from '../../core/api.service';
 import { ConsultationSlot } from '../../core/models';
+import { TPipe } from '../../i18n/t.pipe';
+import { I18nService } from '../../i18n/i18n.service';
 
-@Component({ selector: 'app-consultation', standalone: true, imports: [FormsModule, RouterLink], templateUrl: './consultation.html', styleUrl: './consultation.scss' })
+@Component({ selector: 'app-consultation', standalone: true, imports: [FormsModule, RouterLink, TPipe], templateUrl: './consultation.html', styleUrl: './consultation.scss' })
 export class ConsultationPage implements OnInit {
+    readonly i18n = inject(I18nService);
     private readonly api = inject(ApiService);
     slots = signal<ConsultationSlot[]>([]);
     loading = signal(true);
@@ -24,7 +27,7 @@ export class ConsultationPage implements OnInit {
         });
     }
     date(date: string): string {
-        return new Date(date).toLocaleString('hu-HU', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Europe/Budapest' });
+        return new Date(date).toLocaleString(this.i18n.lang() === 'en' ? 'en-GB' : 'hu-HU', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Europe/Budapest' });
     }
     book(): void {
         if (this.sending() || !this.selectedSlot()) return;

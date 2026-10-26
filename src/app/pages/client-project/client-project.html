@@ -27,8 +27,10 @@
       </section>
       @if(p.quoted_at && p.proposal_summary && p.quoted_price_huf!==null){
         <section class="client-panel client-proposal" id="ajanlat">
-          <div class="client-section-title"><div><span class="client-eyebrow">SZEMÉLYRE SZABOTT AJÁNLAT</span><h2>Az ajánlat részletei</h2></div><button class="client-print" type="button" (click)="printProposal()">Nyomtatás / PDF ↗</button></div>
-          <div class="proposal-meta"><div><small>Ajánlati díj</small><strong>{{money(p.quoted_price_huf)}}</strong></div><div><small>Érvényesség</small><strong>{{date(p.proposal_valid_until)}}</strong></div></div>
+          <div class="client-section-title"><div><span class="client-eyebrow">SZEMÉLYRE SZABOTT AJÁNLAT</span><h2>Az ajánlat részletei</h2></div><button class="client-print" type="button" (click)="printProposal()">Nyomtatás / PDF ↗︎</button></div>
+          <div class="proposal-meta"><div><small>Ajánlati díj</small><strong>{{money(p.quoted_price_huf)}}</strong></div><div><small>Érvényesség</small><strong>{{date(p.proposal_valid_until)}}</strong></div>
+            @if(p.deposit_amount_huf){<div><small>Előleg ({{p.deposit_percent}}%)</small><strong>{{money(p.deposit_amount_huf)}}</strong></div>}</div>
+          @if(p.deposit_amount_huf){<p class="client-note">A munka az előleg beérkezése után indul. Az előleget a végszámlából levonom.</p>}
           <div class="proposal-letterhead"><span>MEGYERI MÁRK MÁTÉ / WEBFEJLESZTÉS</span><strong>SZEMÉLYRE SZABOTT AJÁNLAT</strong><small>Hivatkozás: #{{p.reference}} · Készült: {{date(p.quoted_at)}}</small></div>
           <h3>Az ajánlat tartalma</h3><p class="proposal-text">{{p.proposal_summary}}</p>
           @if(p.proposal_schedule){<h3>Tervezett ütemezés</h3><p class="proposal-text">{{p.proposal_schedule}}</p>}
@@ -37,11 +39,37 @@
           @if(p.status==='accepted') {<div class="client-success" role="status">{{p.proposal_accepted_at?'Az ajánlat elfogadását rögzítettük: '+date(p.proposal_accepted_at):'Az ajánlat elfogadott állapotban van.'}}</div>}
           @else if(canAccept(p)){
             <div class="accept-area">
-              <label><input type="checkbox" [checked]="consent()" (change)="consent.set(!consent())"><span>Elolvastam a teljes ajánlatot, annak ütemezését és feltételeit (amennyiben fel vannak tüntetve), és elfogadom a megadott tartalmat és összeget.</span></label>
-              <button class="btn btn-primary" type="button" [disabled]="!consent()||accepting()" (click)="accept()">{{accepting()?'Elfogadás folyamatban…':'Ajánlat elfogadása ↗'}}</button>
+              <label><input type="checkbox" [checked]="consent()" (change)="consent.set(!consent())"><span>Elolvastam a teljes ajánlatot és az <a routerLink="/aszf" target="_blank" rel="noopener">Általános Szerződési Feltételeket</a>, és elfogadom a megadott tartalmat és összeget. Tudomásul veszem, hogy az elfogadással a szerződés létrejön.</span></label>
+              <label class="accept-optional"><input type="checkbox" [checked]="earlyStart()" (change)="earlyStart.set(!earlyStart())"><span>Magánszemélyként (fogyasztóként) kifejezetten kérem, hogy a munka a 14 napos elállási határidő lejárta előtt elkezdődjön. Tudomásul veszem, hogy elállás esetén az addig elvégzett munka arányos díját meg kell fizetnem. <small>(Cégeknek nem szükséges.)</small></span></label>
+              <button class="btn btn-primary" type="button" [disabled]="!consent()||accepting()" (click)="accept()">{{accepting()?'Elfogadás folyamatban…':'Ajánlat elfogadása ↗︎'}}</button>
             </div>
           } @else if(p.status==='quoted') {<p class="client-note">Az ajánlat érvényessége lejárt. Kérj aktualizált ajánlatot e-mailben.</p>}
           @if(message()){<div class="client-success" role="status">{{message()}}</div>}
+        </section>
+      }
+      @if(p.status==='accepted' && p.deposit_amount_huf){
+        <section class="client-panel client-payment" id="fizetes">
+          <div class="client-section-title"><div><span class="client-eyebrow">FIZETÉS</span><h2>Előleg</h2></div></div>
+          @if(p.deposit_paid_at){
+            <div class="client-success" role="status">✓ Az előleg ({{money(p.deposit_amount_huf)}}) beérkezett: {{date(p.deposit_paid_at)}}. Köszönöm, a munka indulhat!</div>
+          } @else {
+            <div class="payment-due"><div><small>Fizetendő előleg</small><strong>{{money(p.deposit_amount_huf)}}</strong></div>
+              @if(p.online_payment){<button class="btn btn-primary" type="button" [disabled]="paying()" (click)="payDeposit()">{{paying()?'Fizetési oldal megnyitása…':'Fizetés bankkártyával ↗︎'}}</button>}
+            </div>
+            <p class="client-note">@if(p.online_payment){A fizetés a Stripe biztonságos oldalán történik; a kártyaadataidat én nem látom. }Átutalással is fizethetsz: írj üzenetet, és elküldöm a díjbekérőt.</p>
+          }
+        </section>
+      }
+      @if(p.maintenance; as m){
+        <section class="client-panel client-payment">
+          <div class="client-section-title"><div><span class="client-eyebrow">KARBANTARTÁS</span><h2>{{m.plan_name}}</h2></div></div>
+          <div class="payment-due"><div><small>Havidíj</small><strong>{{money(m.monthly_fee_huf)}} / hó</strong></div>
+            @if(m.can_start && p.online_payment){<button class="btn btn-primary" type="button" [disabled]="paying()" (click)="startMaintenance()">{{paying()?'Megnyitás…':'Előfizetés indítása ↗︎'}}</button>}
+            @if(m.can_manage && p.online_payment){<button class="btn btn-outline" type="button" [disabled]="paying()" (click)="manageBilling()">Kártya, számlák, lemondás ↗︎</button>}
+          </div>
+          @if(m.included_services){<p class="proposal-text">{{m.included_services}}</p>}
+          @if(m.subscription_status){<p class="client-note">Állapot: <strong>{{subscriptionLabel(m.subscription_status)}}</strong>@if(m.current_period_end){ · Következő terhelés / időszak vége: {{date(m.current_period_end)}}}</p>}
+          @else {<p class="client-note">A havidíjat a Stripe havonta automatikusan terheli a kártyádra; bármikor lemondható.</p>}
         </section>
       }
       @if(p.status==='accepted'||p.status==='completed'){
@@ -70,7 +98,7 @@
         <label class="project-field">Üzenet küldése
           <textarea class="project-textarea" rows="4" maxlength="3000" [(ngModel)]="newMessage" placeholder="Írd le a kérdésedet vagy visszajelzésedet..."></textarea>
         </label>
-        <button class="btn btn-primary" type="button" [disabled]="sendingMessage() || newMessage.trim().length<2" (click)="sendMessage()">{{sendingMessage()?'Küldés…':'Üzenet elküldése ↗'}}</button>
+        <button class="btn btn-primary" type="button" [disabled]="sendingMessage() || newMessage.trim().length<2" (click)="sendMessage()">{{sendingMessage()?'Küldés…':'Üzenet elküldése ↗︎'}}</button>
       </section>
       <section class="client-panel project-collaboration">
         <div class="client-section-title"><div><span class="client-eyebrow">PRIVÁT FÁJLOK</span><h2>Projekt dokumentumai</h2></div></div>

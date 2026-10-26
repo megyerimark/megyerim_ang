@@ -1,0 +1,125 @@
+<div class="fin-toolbar">
+  <div class="fin-year">
+    <button type="button" class="mini-action" aria-label="Előző év" (click)="changeYear(-1)">←</button>
+    <strong>{{ year() }}</strong>
+    <button type="button" class="mini-action" aria-label="Következő év" (click)="changeYear(1)">→</button>
+  </div>
+  <button type="button" class="btn btn-outline btn-sm" (click)="showSettings.set(!showSettings())">Adózási beállítások ⚙︎</button>
+</div>
+
+@if (summary(); as s) {
+  @for (w of s.warnings; track $index) {<div class="fin-warning" role="alert">⚠︎ {{ w }}</div>}
+
+  @if (showSettings() && settings; as st) {
+    <section class="admin-panel card fin-settings">
+      <div class="panel-title"><h2>Adózási beállítások</h2></div>
+      <p class="muted">Átalányadós egyéni vállalkozó, 2026-os alapértékekkel. A számítás <strong>becslés</strong> – a végleges adót a könyvelőd és a bevallás adja.</p>
+      <div class="fin-grid">
+        <label class="form-field fin-check"><span><input type="checkbox" [(ngModel)]="st.vat_registered"> ÁFA-körös vagyok (27%)</span><small class="muted">Kikapcsolva: alanyi adómentes (AAM)</small></label>
+        <label class="form-field fin-check"><span><input type="checkbox" [(ngModel)]="st.full_time"> Főállású egyéni vállalkozó</span><small class="muted">Havi minimum járulékalap után fizetsz</small></label>
+        <label class="form-field">Költséghányad (%)
+          <select class="input" [(ngModel)]="st.cost_ratio_percent"><option [ngValue]="45">45% – általános (2026)</option><option [ngValue]="50">50% – általános (2027)</option><option [ngValue]="40">40% – általános (2025)</option><option [ngValue]="80">80%</option><option [ngValue]="90">90%</option></select>
+        </label>
+        <label class="form-field">Minimum járulékalap / hó (Ft)<input class="input" type="number" [(ngModel)]="st.min_base_monthly_huf"><small class="muted">2026: garantált bérminimum 373 200, minimálbér 322 800</small></label>
+        <label class="form-field">Éves adómentes jövedelemrész (Ft)<input class="input" type="number" [(ngModel)]="st.tax_free_income_huf"><small class="muted">A minimálbér éves összegének fele</small></label>
+        <label class="form-field">AAM értékhatár (Ft)<input class="input" type="number" [(ngModel)]="st.vat_exempt_limit_huf"><small class="muted">2026: 20 000 000</small></label>
+        <label class="form-field">Átalányadó bevételi határ (Ft)<input class="input" type="number" [(ngModel)]="st.atalany_income_limit_huf"></label>
+        <label class="form-field">SZJA (%)<input class="input" type="number" step="0.1" [(ngModel)]="st.szja_percent"></label>
+        <label class="form-field">TB-járulék (%)<input class="input" type="number" step="0.1" [(ngModel)]="st.tb_percent"></label>
+        <label class="form-field">Szocho (%)<input class="input" type="number" step="0.1" [(ngModel)]="st.szocho_percent"></label>
+      </div>
+      <button type="button" class="btn btn-primary" [disabled]="busy()" (click)="saveSettings()">Beállítások mentése</button>
+    </section>
+  }
+
+  <div class="fin-kpis">
+    <div class="fin-kpi"><small>Bruttó bevétel</small><strong>{{ money(s.totals.income_gross) }}</strong><span>ÁFA-val együtt</span></div>
+    <div class="fin-kpi"><small>Nettó bevétel</small><strong>{{ money(s.totals.income_net) }}</strong><span>{{ s.settings.vat_registered ? 'ÁFA nélkül' : 'AAM – nincs ÁFA' }}</span></div>
+    <div class="fin-kpi"><small>Becsült adó + járulék</small><strong>{{ money(s.totals.taxes_total) }}</strong><span>SZJA {{ money(s.totals.szja) }} · TB {{ money(s.totals.tb) }} · szocho {{ money(s.totals.szocho) }}</span></div>
+    <div class="fin-kpi accent"><small>Adózás után</small><strong>{{ money(s.totals.net_after_tax) }}</strong><span>nettó bevétel − adók</span></div>
+    <div class="fin-kpi"><small>Kiadások</small><strong>{{ money(s.totals.expense_gross) }}</strong><span>bruttó</span></div>
+    <div class="fin-kpi accent2"><small>Ténylegesen marad</small><strong>{{ money(s.totals.net_after_tax_and_expenses) }}</strong><span>adók és kiadások után</span></div>
+    @if (s.settings.vat_registered) {<div class="fin-kpi"><small>Fizetendő ÁFA</small><strong>{{ money(s.totals.vat_payable) }}</strong><span>kimenő − levonható</span></div>}
+  </div>
+
+  <section class="admin-panel card">
+    <div class="panel-title"><h2>Havi bontás</h2><span class="muted fin-legend"><i class="lg-in"></i> bevétel <i class="lg-out"></i> kiadás <i class="lg-net"></i> adózás után</span></div>
+    <div class="fin-bars" role="img" [attr.aria-label]="year() + ' havi bevételei és kiadásai'">
+      @for (m of s.months; track m.month) {
+        <button type="button" class="fin-bar" [class.active]="monthFilter() === m.month" (click)="monthFilter.set(monthFilter() === m.month ? null : m.month)" [attr.title]="monthNames[m.month - 1] + ': ' + money(m.income_gross)">
+          <span class="bars">
+            <i class="in" [style.height.%]="pct(m.income_gross, maxBar())"></i>
+            <i class="out" [style.height.%]="pct(m.expense_gross, maxBar())"></i>
+            <i class="net" [style.height.%]="pct(m.net_after_tax_and_expenses, maxBar())"></i>
+          </span>
+          <small>{{ monthNames[m.month - 1] }}</small>
+        </button>
+      }
+    </div>
+    <div class="table-scroll">
+      <table class="fin-table">
+        <thead><tr><th>Hónap</th><th>Bruttó bevétel</th><th>Nettó bevétel</th><th>Adóköteles jöv.</th><th>SZJA</th><th>TB</th><th>Szocho</th>@if (s.settings.vat_registered) {<th>ÁFA</th>}<th>Adózás után</th><th>Kiadás</th><th>Marad</th></tr></thead>
+        <tbody>
+          @for (m of s.months; track m.month) {
+            <tr [class.dim]="!m.income_gross && !m.expense_gross && !m.taxes_total">
+              <td>{{ monthNames[m.month - 1] }}</td><td>{{ money(m.income_gross) }}</td><td>{{ money(m.income_net) }}</td><td>{{ money(m.taxable_income) }}</td>
+              <td>{{ money(m.szja) }}</td><td>{{ money(m.tb) }}</td><td>{{ money(m.szocho) }}</td>@if (s.settings.vat_registered) {<td>{{ money(m.vat_payable) }}</td>}
+              <td><strong>{{ money(m.net_after_tax) }}</strong></td><td>{{ money(m.expense_gross) }}</td><td [class.neg]="m.net_after_tax_and_expenses < 0"><strong>{{ money(m.net_after_tax_and_expenses) }}</strong></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="muted fin-note">Becslés átalányadóra: jövedelem = nettó bevétel × (100 − {{ s.settings.cost_ratio_percent }})%; az éves adómentes rész ({{ money(s.settings.tax_free_income_huf) }}) az év elejétől fogy.
+      @if (s.settings.full_time) {Főállásban havonta legalább {{ money(s.settings.min_base_monthly_huf) }} után jár TB és szocho.} A jövőbeli hónapokra nem számol járulékot.</p>
+  </section>
+
+  <div class="fin-layout">
+    <section class="admin-panel card">
+      <div class="panel-title">
+        <h2>{{ editingId ? 'Tétel szerkesztése' : form.type === 'income' ? 'Új bevétel' : 'Új kiadás' }}</h2>
+        <div class="fin-type">
+          <button type="button" [class.on]="form.type === 'income'" [disabled]="!!editingId" (click)="newEntry('income')">+ Bevétel</button>
+          <button type="button" [class.on]="form.type === 'expense'" [disabled]="!!editingId" (click)="newEntry('expense')">− Kiadás</button>
+        </div>
+      </div>
+      @if (isStripe(editingId)) {<p class="muted">Stripe-befizetés: az összeg és a dátum a valós terhelés, nem módosítható.</p>}
+      <div class="fin-grid">
+        <label class="form-field">Dátum<input class="input" type="date" [(ngModel)]="form.occurred_on" [disabled]="isStripe(editingId)"></label>
+        <label class="form-field">Bruttó összeg (Ft)<input class="input" type="number" min="1" [(ngModel)]="form.amount_huf" [disabled]="isStripe(editingId)"></label>
+        <label class="form-field">ÁFA-kulcs
+          <select class="input" [(ngModel)]="form.vat_rate">@for (r of vatRates; track r) {<option [ngValue]="r">{{ r === 0 ? '0% / AAM / ÁFA-mentes' : r + '%' }}</option>}</select>
+          <small class="muted">{{ preview() }}</small>
+        </label>
+        <label class="form-field">Kategória
+          <input class="input" list="fin-cats" maxlength="60" [(ngModel)]="form.category">
+          <datalist id="fin-cats">@for (c of (form.type === 'income' ? incomeCategories : expenseCategories); track c) {<option [value]="c"></option>}</datalist>
+        </label>
+        <label class="form-field wide">Leírás<input class="input" maxlength="255" [(ngModel)]="form.description" [placeholder]="form.type === 'income' ? 'Pl. Kovács Bt. – weboldal végszámla' : 'Pl. Adobe előfizetés október'"></label>
+      </div>
+      <div class="fin-actions">
+        <button type="button" class="btn btn-primary" [disabled]="busy()" (click)="save()">{{ editingId ? 'Módosítás mentése' : 'Rögzítés' }}</button>
+        @if (editingId) {<button type="button" class="btn btn-outline" (click)="newEntry(form.type)">Mégse</button>}
+      </div>
+    </section>
+
+    <section class="admin-panel card">
+      <div class="panel-title">
+        <h2>Tételek{{ monthFilter() ? ' – ' + monthNames[monthFilter()! - 1] : '' }} ({{ filteredEntries().length }})</h2>
+        @if (monthFilter()) {<button type="button" class="action-link" (click)="monthFilter.set(null)">Egész év</button>}
+      </div>
+      <div class="fin-list">
+        @for (e of filteredEntries(); track e.id) {
+          <div class="fin-row" [class.expense]="e.type === 'expense'">
+            <span class="fin-sign">{{ e.type === 'income' ? '+' : '−' }}</span>
+            <span class="fin-main"><strong>{{ e.category }}@if (e.source === 'stripe') {<em class="stripe-tag">Stripe</em>}</strong><small>{{ date(e.occurred_on) }}@if (e.description) { · {{ e.description }} }@if (e.vat_rate) { · ÁFA {{ e.vat_rate }}% }</small></span>
+            <strong class="fin-amount">{{ money(e.amount_huf) }}</strong>
+            <span class="fin-row-actions"><button type="button" class="mini-action" (click)="edit(e)">Szerk.</button><button type="button" class="mini-action danger-text" (click)="remove(e)">Törlés</button></span>
+          </div>
+        } @empty {<p class="empty-state">Nincs tétel ebben az időszakban. A Stripe-befizetések és a jóváírt előlegek automatikusan megjelennek itt.</p>}
+      </div>
+    </section>
+  </div>
+} @else {
+  <p class="muted">Pénzügyi adatok betöltése…</p>
+}

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, switchMap } from 'rxjs';
-import { AdminUser, Activity, Client, ClientProject, ConsultationConfirmation, ConsultationSlot, Dashboard, Envelope, Paged, Project, ProjectMilestone, ProjectMessage, ProjectDocument, ProjectCollaboration, Quote, QuotePayload, QuoteBoard, Service, SiteSettings, StudioTask, StudioClientNote, WorkspaceProject, CommunicationCenter, MaintenanceData, MaintenanceAgreement, MaintenanceEditor, Testimonial, TestimonialInput, GrowthData } from './models';
+import { ClientSite, ClientSiteInput, FinanceEntry, FinanceEntryInput, FinanceSettings, FinanceSummary, AdminUser, Activity, Client, ClientProject, ConsultationConfirmation, ConsultationSlot, Dashboard, Envelope, Paged, Project, ProjectMilestone, ProjectMessage, ProjectDocument, ProjectCollaboration, Quote, QuotePayload, QuoteBoard, Service, SiteSettings, StudioTask, StudioClientNote, WorkspaceProject, CommunicationCenter, MaintenanceData, MaintenanceAgreement, MaintenanceEditor, Testimonial, TestimonialInput, GrowthData } from './models';
 import { AttributionService } from './attribution.service';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
@@ -54,9 +54,27 @@ export class ApiService {
     clientProject(token: string) {
         return this.csrf().pipe(switchMap(() => this.http.post<Envelope<ClientProject>>('/api/client/project', { token }, this.opts)));
     }
-    acceptProposal(token: string) {
-        return this.csrf().pipe(switchMap(() => this.http.post<Envelope<ClientProject>>('/api/client/project/accept', { token, accept_terms: true }, this.opts)));
+    acceptProposal(token: string, early_start_consent = false) {
+        return this.csrf().pipe(switchMap(() => this.http.post<Envelope<ClientProject>>('/api/client/project/accept', { token, accept_terms: true, early_start_consent }, this.opts)));
     }
+    // Online fizetés (Stripe Checkout) – a privát kulcs a kérés törzsében utazik.
+    depositCheckout(token: string) { return this.csrf().pipe(switchMap(() => this.http.post<{ url: string }>('/api/client/project/deposit/checkout', { token }, this.opts))); }
+    maintenanceCheckout(token: string) { return this.csrf().pipe(switchMap(() => this.http.post<{ url: string }>('/api/client/project/maintenance/checkout', { token }, this.opts))); }
+    billingPortal(token: string) { return this.csrf().pipe(switchMap(() => this.http.post<{ url: string }>('/api/client/project/maintenance/portal', { token }, this.opts))); }
+    markDepositPaid(id: number, paid_on?: string) { return this.http.post<{ message: string; data: Quote }>(`/api/admin/quote-requests/${id}/deposit-paid`, paid_on ? { paid_on } : {}, this.opts); }
+    cancelSubscription(id: number) { return this.http.post<{ message: string; data: MaintenanceAgreement }>(`/api/admin/maintenance-agreements/${id}/cancel-subscription`, {}, this.opts); }
+    // Kész projektek + zero-knowledge széf
+    sites() { return this.http.get<Envelope<ClientSite[]>>('/api/admin/sites', this.opts); }
+    saveSite(id: number | null, data: Partial<ClientSiteInput>) { return id ? this.http.patch<Envelope<ClientSite>>('/api/admin/sites/' + id, data, this.opts) : this.http.post<Envelope<ClientSite>>('/api/admin/sites', data, this.opts); }
+    deleteSite(id: number) { return this.http.delete<{ message: string }>('/api/admin/sites/' + id, this.opts); }
+    vault() { return this.http.get<Envelope<{ salt: string; iterations: number; verifier: string } | null>>('/api/admin/vault', this.opts); }
+    saveVault(data: { salt: string; iterations: number; verifier: string; blobs?: { id: number; vault_blob: string }[] }) { return this.http.put<{ message: string }>('/api/admin/vault', data, this.opts); }
+    // Pénzügyek
+    financeSummary(year: number) { return this.http.get<Envelope<FinanceSummary>>('/api/admin/finance/summary', { ...this.opts, params: this.params({ year }) }); }
+    financeEntries(year: number, month?: number) { return this.http.get<Envelope<FinanceEntry[]>>('/api/admin/finance/entries', { ...this.opts, params: this.params({ year, month }) }); }
+    saveFinanceEntry(id: number | null, data: FinanceEntryInput) { return id ? this.http.patch<Envelope<FinanceEntry>>('/api/admin/finance/entries/' + id, data, this.opts) : this.http.post<Envelope<FinanceEntry>>('/api/admin/finance/entries', data, this.opts); }
+    deleteFinanceEntry(id: number) { return this.http.delete<{ message: string }>('/api/admin/finance/entries/' + id, this.opts); }
+    saveFinanceSettings(data: Partial<FinanceSettings>) { return this.http.put<Envelope<FinanceSettings>>('/api/admin/finance/settings', data, this.opts); }
     rotateClientAccess(id: number) { return this.http.post(`/api/admin/quote-requests/${id}/rotate-client-access`, {}, this.opts); }
     sendProposal(id: number) { return this.http.post<Envelope<Quote>>(`/api/admin/quote-requests/${id}/send-proposal`, {}, this.opts); }
     login(email: string, password: string) {
@@ -103,7 +121,7 @@ export class ApiService {
     deleteStudioClientNote(id:number) { return this.http.delete(`/api/admin/workspace/client-notes/${id}`, this.opts); }
     quotes(q = '', status = '', page = 1) { return this.http.get<Paged<Quote>>('/api/admin/quote-requests', { ...this.opts, params: this.params({ q, status, page, per_page: 15 }) }); }
     quote(id: number) { return this.http.get<Envelope<Quote>>('/api/admin/quote-requests/' + id, this.opts); }
-    saveQuote(id: number, data: Partial<Pick<Quote, 'status' | 'admin_notes' | 'quoted_price_huf' | 'proposal_summary' | 'proposal_schedule' | 'proposal_terms' | 'proposal_valid_until' | 'follow_up_at'>>) { return this.http.patch<Envelope<Quote>>('/api/admin/quote-requests/' + id, data, this.opts); }
+    saveQuote(id: number, data: Partial<Pick<Quote, 'status' | 'admin_notes' | 'quoted_price_huf' | 'deposit_percent' | 'proposal_summary' | 'proposal_schedule' | 'proposal_terms' | 'proposal_valid_until' | 'follow_up_at'>>) { return this.http.patch<Envelope<Quote>>('/api/admin/quote-requests/' + id, data, this.opts); }
     milestones(id: number) { return this.http.get<Envelope<ProjectMilestone[]>>(`/api/admin/quote-requests/${id}/milestones`, this.opts); }
     addMilestone(id: number, data: {title: string; description?: string; due_date?: string | null; status?: string}) { return this.http.post<Envelope<ProjectMilestone>>(`/api/admin/quote-requests/${id}/milestones`, data, this.opts); }
     updateMilestone(id: number, milestoneId: number, data: {status: ProjectMilestone['status']}) { return this.http.patch<Envelope<ProjectMilestone>>(`/api/admin/quote-requests/${id}/milestones/${milestoneId}`, data, this.opts); }

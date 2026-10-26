@@ -40,3 +40,6 @@
 [data-theme='light'] .nav-wrap.is-compact .theme-btn,[data-theme='light'] .nav-wrap.is-compact .menu-btn{background:#fff;color:#2b3360;border-color:#cfd0ee}
 @media(max-width:1020px){[data-theme='light'] .nav-wrap.is-compact .nav-links{background:#fffffff7}}
 @media(prefers-reduced-motion:reduce){.nav-wrap,.nav-links,.nav-links a::after{transition:none}}
+
+.lang-btn{display:inline-grid;place-items:center;min-width:42px;height:38px;padding:0 10px;border:1px solid #ffffff2e;border-radius:999px;background:#ffffff0d;color:inherit;font:inherit;font-size:12px;font-weight:800;letter-spacing:.08em;cursor:pointer;transition:background .2s ease,border-color .2s ease}
+.lang-btn:hover,.lang-btn:focus-visible{background:#ffffff1f;border-color:#c4b5fd99}

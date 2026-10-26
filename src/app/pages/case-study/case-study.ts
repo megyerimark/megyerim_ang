@@ -3,9 +3,13 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { ApiService } from '../../core/api.service';
 import { Project } from '../../core/models';
+import { TPipe } from '../../i18n/t.pipe';
+import { I18nService } from '../../i18n/i18n.service';
 
-@Component({selector:'app-case-study',standalone:true,imports:[RouterLink],templateUrl:'./case-study.html',styleUrl:'./case-study.scss'})
+@Component({selector:'app-case-study',standalone:true,imports:[RouterLink, TPipe],templateUrl:'./case-study.html',styleUrl:'./case-study.scss'})
 export class CaseStudyPage implements OnInit, OnDestroy {
+    readonly i18n = inject(I18nService);
+    loc(obj: object | null | undefined, field: string): string { return this.i18n.loc(obj, field); }
     private readonly api = inject(ApiService);
     private readonly route = inject(ActivatedRoute);
     private readonly title = inject(Title);

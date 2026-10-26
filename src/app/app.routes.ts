@@ -47,6 +47,23 @@ export const routes: Routes = [
         title: 'Impresszum | Megyeri Márk Máté'
     },
     {
+        path: 'aszf',
+        loadComponent: () => import('./pages/terms/terms').then(module => module.TermsPage),
+        title: 'Általános Szerződési Feltételek | Megyeri Márk Máté'
+    },
+    {
+        path: 'fizetes/sikeres',
+        data: { success: true },
+        loadComponent: () => import('./pages/payment-result/payment-result').then(module => module.PaymentResultPage),
+        title: 'Sikeres fizetés | Megyeri Márk Máté'
+    },
+    {
+        path: 'fizetes/megszakitva',
+        data: { success: false },
+        loadComponent: () => import('./pages/payment-result/payment-result').then(module => module.PaymentResultPage),
+        title: 'Megszakított fizetés | Megyeri Márk Máté'
+    },
+    {
         path: 'admin/bejelentkezes',
         loadComponent: () => import('./pages/login/login').then(module => module.LoginPage),
         title: 'Admin bejelentkezés | Megyeri Márk Máté'

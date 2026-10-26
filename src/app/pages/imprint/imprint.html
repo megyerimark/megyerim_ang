@@ -1,5 +1,6 @@
 <main class="container legal">
   <a routerLink="/" class="back">← Vissza a főoldalra</a>
+  @if (i18n.lang() === 'en') {<p class="notice" lang="en">{{ 'Ez a jogi dokumentum csak magyar nyelven érhető el.' | t }}</p>}
   <span class="overline">JOGI INFORMÁCIÓK</span>
   <h1>Impresszum</h1>
 
