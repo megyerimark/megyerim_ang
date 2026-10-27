@@ -86,6 +86,7 @@ export const routes: Routes = [
     },
     {
         path: '**',
-        redirectTo: ''
+        loadComponent: () => import('./pages/not-found/not-found').then(module => module.NotFoundPage),
+        title: 'Az oldal nem található | Megyeri Márk Máté'
     }
 ];

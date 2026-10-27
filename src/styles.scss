@@ -346,3 +346,21 @@ hr {
 
 /* iOS-en egyes ikonkarakterek (↗ ⚙ ✳) színes emojiként jelennének meg. */
 body { font-variant-emoji: text; }
+
+/* Jelölőnégyzet / rádiógomb: hosszú szöveg melletti flex-sorban se nyomódjon össze (mobilon 3 px-es pötty lett belőle). */
+input[type='checkbox'], input[type='radio'] {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+/* Mobilon a lábléc jogi linkjei is kényelmesen koppinthatók legyenek (min. 44 px magas célterület). */
+.footer-legal a, .footer-legal .footer-cookie { display:inline-flex; align-items:center; min-height:44px; padding:0 4px; }
+
+/* „Ugrás a tartalomra” – csak billentyűzetes fókuszkor látszik. */
+.skip-link { position:fixed; left:12px; top:-60px; z-index:10000; padding:10px 16px; border-radius:10px; background:#111; color:#fff; font-weight:600; text-decoration:none; transition:top .15s; }
+.skip-link:focus { top:12px; outline:2px solid #fff; outline-offset:2px; }
+main:focus { outline:none; }

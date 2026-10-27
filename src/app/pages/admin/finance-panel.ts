@@ -1,8 +1,8 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpErrorResponse } from '@angular/common/http';
 import { ApiService } from '../../core/api.service';
 import { ToastService } from '../../core/toast.service';
+import { apiErrorMessage } from '../../core/http-error';
 import { FinanceEntry, FinanceEntryInput, FinanceSettings, FinanceSummary } from '../../core/models';
 
 const MONTHS = ['jan.', 'febr.', 'márc.', 'ápr.', 'máj.', 'jún.', 'júl.', 'aug.', 'szept.', 'okt.', 'nov.', 'dec.'];
@@ -106,8 +106,6 @@ export class FinancePanel implements OnInit {
 
     private fail(e: unknown): void {
         this.busy.set(false);
-        const err = e as HttpErrorResponse;
-        const fields = err.error?.errors as Record<string, string[]> | undefined;
-        this.toast.error(fields ? Object.values(fields).flat().join(' · ') : err.error?.message || 'Szerverhiba. Próbáld újra.');
+        this.toast.error(apiErrorMessage(e));
     }
 }

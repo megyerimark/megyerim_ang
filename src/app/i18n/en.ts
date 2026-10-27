@@ -667,5 +667,9 @@ export const EN: Record<string, string> = {
   "✓ Átlátható ajánlat": "✓ Transparent proposal",
   "✳︎ Gondosan megtervezett részletek": "✳︎ Carefully designed details",
   "✳︎ Közvetlen kommunikáció": "✳︎ Direct communication",
-  "✳︎ Átlátható folyamat": "✳︎ Transparent process"
+  "✳︎ Átlátható folyamat": "✳︎ Transparent process",
+  "Ez az oldal nem található": "This page could not be found",
+  "Lehet, hogy elírás van a címben, vagy az oldal időközben megszűnt.": "There may be a typo in the address, or the page no longer exists.",
+  "Az oldal nem található | Megyeri Márk Máté": "Page not found | Megyeri Márk Máté",
+  "Ugrás a tartalomra": "Skip to content"
 };

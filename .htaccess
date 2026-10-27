@@ -9,14 +9,22 @@
     RewriteCond %{HTTP_HOST} !^localhost [NC]
     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-    # A Laravel backend útvonalai nem az Angularhoz mennek
-    RewriteRule ^(api|sanctum|storage)(/|$) - [L]
-    RewriteRule ^admin/(login|logout|forgot-password|reset-password|verify-login|resend-login-code)$ - [L]
+    # A Laravel backend útvonalai nem az Angularhoz mennek.
+    # Rackhost: a Laravel a /private/laravel_mmm mappában van, ezt az aurora-api.php tölti be
+    # (az aurora-api.php a szerveren marad, nem része a buildnek – rsyncnél ne töröld!).
+    RewriteRule ^(api|sanctum)(/|$) aurora-api.php [L,QSA]
+    RewriteRule ^admin/(login|logout|forgot-password|reset-password|verify-login|resend-login-code)$ aurora-api.php [L,QSA]
+    RewriteRule ^up$ aurora-api.php [L,QSA]
 
+    # Csak a létező Angular-útvonalak kapnak 200-at; minden más valódi 404-et (lent: ErrorDocument),
+    # az Angular ilyenkor is betölt, és a „nem található” oldalt mutatja. Új útvonalnál bővítsd a listát!
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^ index.html [L]
+    RewriteRule ^(tervezo|ajanlatkeres|projekt-kviz|konzultacio|adatkezeles|impresszum|aszf|ugyfel/projekt|fizetes/(sikeres|megszakitva)|admin|admin/(bejelentkezes|elfelejtett-jelszo|jelszo-visszaallitas)|munkak/[A-Za-z0-9_-]+)/?$ index.html [L]
 </IfModule>
+
+# Ismeretlen cím: 404-es HTTP-státusz, de a tartalom az Angular alkalmazás (NotFoundPage).
+ErrorDocument 404 /index.html
 
 <IfModule mod_headers.c>
     Header always set X-Content-Type-Options "nosniff"
@@ -26,9 +34,11 @@
     Header always set Cross-Origin-Opener-Policy "same-origin"
     # Csak saját domainről tölthető be szkript, betűtípus és adat. Inline stílus az Angular komponensek miatt kell.
     # A Trustindex (Google-vélemények) csak a látogató hozzájárulása után töltődik be; ehhez kell a cdn.trustindex.io.
-    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https://cdn.trustindex.io; style-src 'self' 'unsafe-inline' https://cdn.trustindex.io; img-src 'self' data: blob: https://cdn.trustindex.io https://*.googleusercontent.com; font-src 'self' https://cdn.trustindex.io; connect-src 'self' https://cdn.trustindex.io; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+    # ELSŐ ÉLESÍTÉS: „Report-Only” – a böngésző csak a konzolba írja, mit tiltana, de nem tilt.
+    # Ha 1-2 napig nincs „Content-Security-Policy” figyelmeztetés a konzolban, töröld a „-Report-Only” részt.
+    Header always set Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self' https://cdn.trustindex.io; style-src 'self' 'unsafe-inline' https://cdn.trustindex.io; img-src 'self' data: blob: https://cdn.trustindex.io https://*.googleusercontent.com; font-src 'self' https://cdn.trustindex.io; connect-src 'self' https://cdn.trustindex.io; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
     # HSTS: a böngésző 1 évig csak HTTPS-en kapcsolódik. Csak akkor hagyd bent, ha a HTTPS (és minden aldomain) már működik!
-    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" "expr=%{HTTPS} == 'on' || %{HTTP:X-Forwarded-Proto} == 'https'"
+    Header always set Strict-Transport-Security "max-age=31536000" "expr=%{HTTPS} == 'on' || %{HTTP:X-Forwarded-Proto} == 'https'"
 
     # Gyorsítótárazás: a hash-elt build-fájlok és a betűtípusok 1 évig, az index.html soha.
     <FilesMatch "\.[0-9a-zA-Z]{8,}\.(js|css)$">

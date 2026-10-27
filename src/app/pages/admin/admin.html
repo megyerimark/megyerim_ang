@@ -106,6 +106,13 @@
       </div>
       }
 @if(tab()==='dashboard'){
+      @if(systemStatusError()==='outdated' || (systemStatus() && !systemStatus()!.ok)){
+      <div class="status-alert" role="alert">
+        <strong>⚠︎ A szerver beállítása hiányos.</strong>
+        {{systemStatusError()==='outdated' ? 'A backend régebbi verziójú – az új fülek nem működnek.' : 'Néhány élesítési ellenőrzés nem teljesül.'}}
+        <button type="button" class="mini-action" (click)="use('account')">Részletek: Rendszerállapot →</button>
+      </div>
+      }
       @if(dashboard()?.sites_expiring?.length){
       <div class="expiry-alert" role="status">
         <strong>⚠︎ Közelgő lejáratok (30 napon belül)</strong>
@@ -814,8 +821,8 @@
             <input id="admin-price" class="input" type="text" inputmode="numeric" [(ngModel)]="selectedPrice" [disabled]="!!q.quoted_at" placeholder="Ajánlati összeg forintban">
           </div>
           <div class="form-field">
-            <label for="admin-deposit">Előleg (%) – a munka csak a befizetése után indul</label>
-            <input id="admin-deposit" class="input" type="number" min="0" max="100" step="5" [(ngModel)]="selectedDeposit" [disabled]="!!q.quoted_at" placeholder="Pl. 30 (üresen: nincs előleg)">
+            <label for="admin-deposit">Előleg (%) – a munka csak a befizetése után indul @if(depositMin()){<span class="muted">(kötelező, min. {{depositMin()}}%)</span>}</label>
+            <input id="admin-deposit" class="input" type="number" [min]="depositMin()" max="100" step="5" [(ngModel)]="selectedDeposit" [disabled]="!!q.quoted_at" [placeholder]="depositMin() ? 'Legalább ' + depositMin() : 'Pl. 30 (üresen: nincs előleg)'">
             @if(depositPreview(q); as dep){<small class="muted">Előleg összege: {{money(dep)}}</small>}
           </div>
           @if(q.proposal_accepted_at && q.deposit_percent){
@@ -1443,6 +1450,28 @@
       </section>
       }
 @if(tab()==='account'){
+      <section class="admin-panel card settings-editor system-status">
+        <div class="panel-title"><h2>Rendszerállapot</h2><button type="button" class="action-link" (click)="loadSystemStatus()">Újraellenőrzés ↻</button></div>
+        @if(systemStatusError()==='outdated'){
+          <div class="status-alert" role="alert"><strong>A szerveren futó backend régebbi verziójú, mint az admin felület ({{frontendVersion}}).</strong>
+            Ezért nem működnek az új fülek (Pénzügyek, Kész projektek). A szerveren, a backend mappájában futtasd: <code>bash deploy.sh</code>
+            – vagy legalább: <code>php artisan migrate --force</code> és <code>php artisan optimize:clear</code>.</div>
+        } @else if(systemStatusError()==='error'){
+          <p class="muted">Az állapot most nem kérdezhető le.</p>
+        } @else if(systemStatus(); as st){
+          <p class="muted">Backend: <strong>{{st.backend_version}}</strong> · Admin: <strong>{{frontendVersion}}</strong> · {{st.environment}} · PHP {{st.php_version}} · Laravel {{st.laravel_version}}
+            @if(st.backend_version!==frontendVersion){ · <strong class="status-bad">verzióeltérés – telepítsd a legújabb backendet!</strong>}</p>
+          <ul class="status-list">
+            @for(c of st.checks; track c.key){
+              <li [class.ok]="c.ok"><span class="status-dot" aria-hidden="true">{{c.ok?'✓':'!'}}</span>
+                <div><strong>{{c.label}}</strong><small>{{c.hint}}</small>
+                  @if(c.missing_tables?.length){<small>Hiányzó táblák: @for(m of c.missing_tables; track m.table){<code>{{m.table}}</code> ({{m.feature}}) }</small>}
+                  @if(c.pending; as pend){@if(pend.length){<small>Függő migrációk: {{pend.length}} db – {{pend.slice(0,4).join(', ')}}</small>}}
+                </div></li>
+            }
+          </ul>
+        } @else {<p class="muted">Ellenőrzés…</p>}
+      </section>
       <section class="admin-panel card settings-editor">
         <div class="panel-title">
           <h2>

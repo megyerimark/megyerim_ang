@@ -46,3 +46,5 @@
 .payment-due strong{font-size:26px;letter-spacing:-.5px}
 .accept-optional{opacity:.92;font-size:.94em}
 .accept-optional small{color:var(--muted)}
+
+.proposal-meta>div.deposit-highlight{border:1px solid var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--surface-alt))}

@@ -26,8 +26,11 @@ export class App {
     private readonly api = inject(ApiService);
     private readonly attribution = inject(AttributionService);
     private readonly consent = inject(ConsentService);
+    readonly consentPanelOpen = this.consent.panelOpen;
     private seoSettings: SiteSettings | null = null;
     readonly showNavbar = signal(!this.router.url.startsWith('/admin'));
+    /** Külső (hozzájárulásköteles) tartalom csak a főoldalon van – a süti-sáv is csak ott jelenik meg. */
+    readonly onHome = signal(this.router.url.split(/[?#]/)[0] === '/');
     readonly showTop = signal(false);
     readonly phone = signal('');
     readonly showMobileCta = signal(false);
@@ -56,6 +59,15 @@ export class App {
         if (path === '/konzultacio') this.api.trackEvent('consultation_start', path);
     }
     scrollTop(): void { window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); }
+    /** Billentyűzetes / felolvasós látogatóknak: a menü átugrása a fő tartalomra. */
+    skipToMain(event: Event): void {
+        event.preventDefault();
+        const main = document.querySelector<HTMLElement>('main');
+        if (!main) return;
+        main.setAttribute('tabindex', '-1');
+        main.focus();
+    }
+
     constructor() {
         // AURORA V4: switch existing installations to the approved dark presentation once.
         // A tárolás privát böngészési módban vagy tiltott sütiknél kivételt dobhat – ez nem törheti el az oldalt.
@@ -82,6 +94,7 @@ export class App {
             .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
             .subscribe(event => {
             this.showNavbar.set(!event.urlAfterRedirects.startsWith('/admin'));
+            this.onHome.set(event.urlAfterRedirects.split(/[?#]/)[0] === '/');
             const p = event.urlAfterRedirects.split(/[?#]/)[0];
             this.ctaRoute = p === '/' || p.startsWith('/munkak/') || p === '/tervezo';
             this.showMobileCta.set(this.ctaRoute && window.scrollY > 700);
@@ -91,7 +104,10 @@ export class App {
     }
     private updateRouteMeta(url: string): void {
         const path = url.split(/[?#]/)[0];
-        const isPrivate = path.startsWith('/admin') || path.startsWith('/ugyfel') || path === '/adatkezeles';
+        let leaf = this.router.routerState.snapshot.root;
+        while (leaf.firstChild) leaf = leaf.firstChild;
+        const notFound = leaf.routeConfig?.path === '**';
+        const isPrivate = notFound || path.startsWith('/admin') || path.startsWith('/ugyfel');
         this.meta.updateTag({ name: 'robots', content: isPrivate ? 'noindex, nofollow, noarchive' : 'index, follow' });
         const descriptions: Record<string, string> = {
             '/': 'Ne csak jelen legyél online. Emelkedj ki. Egyedi weboldalak és prémium digitális megoldások vállalkozásoknak Megyeri Márk Mátétól.',

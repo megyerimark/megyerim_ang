@@ -1127,3 +1127,14 @@ td small {
 .en-fields{margin:4px 0 16px;padding:12px 14px;border:1px dashed var(--border);border-radius:12px}
 .en-fields summary{cursor:pointer;font-weight:700;font-size:12px;color:var(--accent)}
 .en-fields[open] summary{margin-bottom:12px}
+
+.status-alert{margin:0 0 16px;padding:14px 16px;border-radius:14px;border:1px solid #ff7a8f80;background:#ff5d7a14;color:#ffc7d1;font-size:12.5px;line-height:1.65}
+.status-alert code,.system-status code{padding:1px 6px;border-radius:6px;background:#ffffff14;font-size:11.5px}
+.status-list{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px}
+.status-list li{display:grid;grid-template-columns:26px minmax(0,1fr);gap:10px;align-items:start;padding:10px 12px;border:1px solid #ff7a8f55;border-radius:12px;background:#ff5d7a0d}
+.status-list li.ok{border-color:#55e5c744;background:#55e5c70a}
+.status-list li div{display:flex;flex-direction:column;gap:3px;min-width:0}
+.status-list li small{color:var(--muted);font-size:11.5px;overflow-wrap:anywhere}
+.status-dot{display:grid;place-items:center;width:26px;height:26px;border-radius:8px;font-weight:800;background:#ff5d7a26;color:#ff9db0}
+.status-list li.ok .status-dot{background:#2fd6a426;color:#7ff0d6}
+.status-bad{color:#ff9db0}

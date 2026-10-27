@@ -67,7 +67,21 @@ export class ClientProjectPage implements OnInit, OnDestroy {
         this.accepting.set(true);
         this.error.set('');
         this.api.acceptProposal(this.token, this.earlyStart()).subscribe({
-            next: result => { this.project.set(result.data); this.message.set('Az ajánlat elfogadását rögzítettük. Hamarosan egyeztetünk a következő lépésekről.'); this.accepting.set(false); },
+            next: result => {
+                this.project.set(result.data);
+                // Kötelező előleg: azonnal a Stripe biztonságos fizetési oldalára irányítjuk.
+                if (result.payment_url) {
+                    this.message.set('Az ajánlat elfogadását rögzítettük. Átirányítás az előleg fizetéséhez…');
+                    this.toast.info('Ajánlat elfogadva – átirányítás a biztonságos fizetési oldalra…');
+                    setTimeout(() => { location.href = result.payment_url as string; }, 900);
+                    return;
+                }
+                this.accepting.set(false);
+                this.message.set(result.data.deposit_amount_huf && !result.data.deposit_paid_at
+                    ? 'Az ajánlat elfogadását rögzítettük. A munka az előleg beérkezése után indul – lent fizetheted, vagy írj, és küldöm a díjbekérőt.'
+                    : 'Az ajánlat elfogadását rögzítettük. Hamarosan egyeztetünk a következő lépésekről.');
+                setTimeout(() => document.getElementById('fizetes')?.scrollIntoView({ behavior: 'smooth' }), 200);
+            },
             error: (e: HttpErrorResponse) => { this.error.set(e.error?.message || 'Nem sikerült az ajánlat elfogadása.'); this.accepting.set(false); }
         });
     }

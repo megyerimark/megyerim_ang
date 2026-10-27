@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, switchMap } from 'rxjs';
-import { ClientSite, ClientSiteInput, FinanceEntry, FinanceEntryInput, FinanceSettings, FinanceSummary, AdminUser, Activity, Client, ClientProject, ConsultationConfirmation, ConsultationSlot, Dashboard, Envelope, Paged, Project, ProjectMilestone, ProjectMessage, ProjectDocument, ProjectCollaboration, Quote, QuotePayload, QuoteBoard, Service, SiteSettings, StudioTask, StudioClientNote, WorkspaceProject, CommunicationCenter, MaintenanceData, MaintenanceAgreement, MaintenanceEditor, Testimonial, TestimonialInput, GrowthData } from './models';
+import { SystemStatus, ClientSite, ClientSiteInput, FinanceEntry, FinanceEntryInput, FinanceSettings, FinanceSummary, AdminUser, Activity, Client, ClientProject, ConsultationConfirmation, ConsultationSlot, Dashboard, Envelope, Paged, Project, ProjectMilestone, ProjectMessage, ProjectDocument, ProjectCollaboration, Quote, QuotePayload, QuoteBoard, Service, SiteSettings, StudioTask, StudioClientNote, WorkspaceProject, CommunicationCenter, MaintenanceData, MaintenanceAgreement, MaintenanceEditor, Testimonial, TestimonialInput, GrowthData } from './models';
 import { AttributionService } from './attribution.service';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
@@ -55,7 +55,7 @@ export class ApiService {
         return this.csrf().pipe(switchMap(() => this.http.post<Envelope<ClientProject>>('/api/client/project', { token }, this.opts)));
     }
     acceptProposal(token: string, early_start_consent = false) {
-        return this.csrf().pipe(switchMap(() => this.http.post<Envelope<ClientProject>>('/api/client/project/accept', { token, accept_terms: true, early_start_consent }, this.opts)));
+        return this.csrf().pipe(switchMap(() => this.http.post<Envelope<ClientProject> & { payment_url?: string | null }>('/api/client/project/accept', { token, accept_terms: true, early_start_consent }, this.opts)));
     }
     // Online fizetés (Stripe Checkout) – a privát kulcs a kérés törzsében utazik.
     depositCheckout(token: string) { return this.csrf().pipe(switchMap(() => this.http.post<{ url: string }>('/api/client/project/deposit/checkout', { token }, this.opts))); }
@@ -63,6 +63,7 @@ export class ApiService {
     billingPortal(token: string) { return this.csrf().pipe(switchMap(() => this.http.post<{ url: string }>('/api/client/project/maintenance/portal', { token }, this.opts))); }
     markDepositPaid(id: number, paid_on?: string) { return this.http.post<{ message: string; data: Quote }>(`/api/admin/quote-requests/${id}/deposit-paid`, paid_on ? { paid_on } : {}, this.opts); }
     cancelSubscription(id: number) { return this.http.post<{ message: string; data: MaintenanceAgreement }>(`/api/admin/maintenance-agreements/${id}/cancel-subscription`, {}, this.opts); }
+    systemStatus() { return this.http.get<Envelope<SystemStatus>>('/api/admin/system-status', this.opts); }
     // Kész projektek + zero-knowledge széf
     sites() { return this.http.get<Envelope<ClientSite[]>>('/api/admin/sites', this.opts); }
     saveSite(id: number | null, data: Partial<ClientSiteInput>) { return id ? this.http.patch<Envelope<ClientSite>>('/api/admin/sites/' + id, data, this.opts) : this.http.post<Envelope<ClientSite>>('/api/admin/sites', data, this.opts); }

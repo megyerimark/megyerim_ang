@@ -166,6 +166,7 @@ export interface Dashboard {
     accepted_proposals_value_huf: number;
     upcoming_tasks: StudioTask[];
     messages_unread?: number;
+    deposit_min_percent?: number;
     sites_expiring?: { id: number; name: string; domain: string | null; domain_expires_on: string | null; hosting_expires_on: string | null; ssl_expires_on: string | null }[];
     unread_threads?: { quote_request_id: number; customer_name: string | null; unread: number; last_at: string }[];
 }
@@ -426,4 +427,10 @@ export interface FinanceSummary {
     totals: Omit<FinanceMonth, 'month'>;
     warnings: string[];
     categories: { expense: { category: string; total: number }[]; income: { category: string; total: number }[] };
+}
+
+export interface SystemCheck { key: string; label: string; ok: boolean; hint: string; pending?: string[]; missing_tables?: { table: string; feature: string }[]; }
+export interface SystemStatus {
+    backend_version: string; environment: string; php_version: string; laravel_version: string;
+    routes_cached: boolean; config_cached: boolean; database: boolean; checks: SystemCheck[]; ok: boolean;
 }

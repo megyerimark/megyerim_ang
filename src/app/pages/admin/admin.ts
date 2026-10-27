@@ -3,11 +3,12 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastService } from '../../core/toast.service';
+import { apiErrorMessage, FRONTEND_VERSION } from '../../core/http-error';
 import { SitesPanel } from './sites-panel';
 import { FinancePanel } from './finance-panel';
 import { ApiService } from '../../core/api.service';
 import { AuthService } from '../../core/auth.service';
-import { Activity, Client, ConsultationSlot, Dashboard, Project, ProjectMilestone, ProjectCollaboration, ProjectDocument, Quote, QuoteStatus, Service, SiteSettings, SITE_DEFAULTS, STATUS_OPTIONS, MaintenanceAgreement, MaintenanceEditor, MaintenanceData, QuoteBoard, StudioTask, GrowthData, Testimonial } from '../../core/models';
+import { SystemStatus, Activity, Client, ConsultationSlot, Dashboard, Project, ProjectMilestone, ProjectCollaboration, ProjectDocument, Quote, QuoteStatus, Service, SiteSettings, SITE_DEFAULTS, STATUS_OPTIONS, MaintenanceAgreement, MaintenanceEditor, MaintenanceData, QuoteBoard, StudioTask, GrowthData, Testimonial } from '../../core/models';
 type Tab = 'dashboard' | 'growth' | 'testimonials' | 'workspace' | 'maintenance' | 'sites' | 'finance' | 'consultations' | 'quotes' | 'clients' | 'projects' | 'services' | 'settings' | 'activity' | 'account';
 /** Fejléc-cím és alcím fülenként. */
 const HEADINGS: Record<Tab, [string, string]> = {
@@ -203,6 +204,7 @@ export class AdminPage implements OnInit, OnDestroy {
     private poll: ReturnType<typeof setInterval> | null = null;
     ngOnInit() {
         this.loadDashboard();
+        this.loadSystemStatus();
         // Az e-mailben kapott „Megnyitás az adminban” link: /admin?ajanlat=12
         const quoteParam = Number(new URLSearchParams(location.search).get('ajanlat'));
         if (Number.isInteger(quoteParam) && quoteParam > 0) this.openBoardQuote(quoteParam);
@@ -237,7 +239,7 @@ export class AdminPage implements OnInit, OnDestroy {
         this.message.set(''); this.isError.set(error);
         if (message) error ? this.toast.error(message) : this.toast.success(message);
     }
-    fail(e: unknown) { const err = e as HttpErrorResponse; const fields = err.error?.errors as Record<string, string[]> | undefined; this.notify(fields ? Object.values(fields).flat().join(' · ') : err.status === 419 ? 'Lejárt a munkamenet. Frissítsd az oldalt.' : err.status === 401 ? 'A munkamenet lejárt. Jelentkezz be újra.' : err.error?.message || 'Szerverhiba. Próbáld újra.', true); this.busy.set(false); }
+    fail(e: unknown) { this.notify(apiErrorMessage(e), true); this.busy.set(false); }
     use(tab: Tab) {
         this.tab.set(tab);
         this.menuOpen.set(false);
@@ -266,8 +268,10 @@ export class AdminPage implements OnInit, OnDestroy {
             this.loadSettings();
         if (tab === 'activity')
             this.loadActivities();
-        if (tab === 'account')
+        if (tab === 'account') {
             this.loadSecurity();
+            this.loadSystemStatus();
+        }
     }
     consultationDate(value: string): string { return new Date(value).toLocaleString('hu-HU', {dateStyle:'medium', timeStyle:'short', timeZone:'Europe/Budapest'}); }
     loadConsultations() { this.busy.set(true); this.api.adminConsultations().subscribe({next:r=>{this.consultations.set(r.data); this.busy.set(false);}, error:e=>this.fail(e)}); }
@@ -370,7 +374,7 @@ export class AdminPage implements OnInit, OnDestroy {
         });
     }
     loadQuotes(page = 1) { this.busy.set(true); this.api.quotes(this.searchQuote, this.filterStatus, page).subscribe({ next: r => { this.quotes.set(r.data); this.quotePage.set(r.current_page); this.quotePages.set(r.last_page); this.quoteTotal.set(r.total); this.busy.set(false); }, error: e => this.fail(e) }); }
-    showQuote(q: Quote) { this.selectedQuote.set(q); this.selectedStatus = q.status; this.selectedNotes = q.admin_notes || ''; this.selectedPrice = q.quoted_price_huf === null ? '' : String(q.quoted_price_huf); this.selectedDeposit = q.deposit_percent ?? ''; this.selectedProposal = q.proposal_summary || ''; this.selectedSchedule = q.proposal_schedule || ''; this.selectedTerms = q.proposal_terms || ''; this.selectedValidUntil = q.proposal_valid_until ? q.proposal_valid_until.slice(0, 10) : ''; this.selectedFollowUp = q.follow_up_at ? q.follow_up_at.slice(0, 10) : ''; this.loadMilestones(q.id); this.loadCollaboration(q.id); }
+    showQuote(q: Quote) { this.selectedQuote.set(q); this.selectedStatus = q.status; this.selectedNotes = q.admin_notes || ''; this.selectedPrice = q.quoted_price_huf === null ? '' : String(q.quoted_price_huf); this.selectedDeposit = q.deposit_percent ?? (q.quoted_at ? '' : (this.depositMin() || '')); this.selectedProposal = q.proposal_summary || ''; this.selectedSchedule = q.proposal_schedule || ''; this.selectedTerms = q.proposal_terms || ''; this.selectedValidUntil = q.proposal_valid_until ? q.proposal_valid_until.slice(0, 10) : ''; this.selectedFollowUp = q.follow_up_at ? q.follow_up_at.slice(0, 10) : ''; this.loadMilestones(q.id); this.loadCollaboration(q.id); }
     saveQuote() {
         const q = this.selectedQuote();
         if (!q)
@@ -466,15 +470,26 @@ export class AdminPage implements OnInit, OnDestroy {
         this.busy.set(true);
         this.api.deleteMilestone(q.id, m.id).subscribe({next: () => { this.busy.set(false); this.loadMilestones(q.id); this.notify('Mérföldkő törölve.'); }, error: e => this.fail(e)});
     }
+    /** Kötelező minimum előleg (%) a szerver beállításából (PORTFOLIO_MIN_DEPOSIT_PERCENT). */
+    depositMin(): number { return this.dashboard()?.deposit_min_percent ?? 0; }
     sendProposal() {
         const q = this.selectedQuote();
         if (!q || !q.quoted_price_huf || !q.proposal_summary || !q.proposal_valid_until || q.quoted_at) {
             this.notify('Előbb mentsd az ajánlati összeget, a pontos tartalmat és az érvényességet.', true);
             return;
         }
-        if (!confirm('Biztosan elküldöd a mentett, személyre szabott ajánlatot az ügyfél e-mail-címére?')) return;
+        const deposit = this.depositPercent() ?? 0;
+        if (deposit < this.depositMin()) {
+            this.notify(`Az ajánlathoz legalább ${this.depositMin()}% előleget kell megadni.`, true);
+            return;
+        }
+        const amount = Math.round((q.quoted_price_huf * deposit) / 100);
+        if (!confirm(`Elküldöd az ajánlatot az ügyfélnek?\n\nÁr: ${this.money(q.quoted_price_huf)}\nKötelező előleg: ${deposit}% = ${this.money(amount)}\n\nElfogadás után az ügyfél azonnal a fizetési oldalra kerül.`)) return;
         this.busy.set(true);
-        this.api.sendProposal(q.id).subscribe({ next: r => { this.showQuote(r.data); this.notify('Az ajánlatot valóban elküldtem e-mailben.'); this.loadQuotes(this.quotePage()); }, error: e => this.fail(e) });
+        // Az előleg %-át az elküldés előtt mentjük, hogy az e-mail és a szerver ugyanazt lássa.
+        const send = () => this.api.sendProposal(q.id).subscribe({ next: r => { this.showQuote(r.data); this.notify('Az ajánlatot elküldtem e-mailben, az előleggel együtt.'); this.loadQuotes(this.quotePage()); }, error: e => this.fail(e) });
+        if (q.deposit_percent === deposit) send();
+        else this.api.saveQuote(q.id, { deposit_percent: deposit }).subscribe({ next: () => send(), error: e => this.fail(e) });
     }
     rotateClientAccess() {
         const q = this.selectedQuote();
@@ -576,6 +591,17 @@ export class AdminPage implements OnInit, OnDestroy {
         }
         this.busy.set(true);
         this.api.changePassword(this.oldPassword, this.newPassword, this.confirmPassword).subscribe({ next: () => { this.busy.set(false); this.oldPassword = ''; this.newPassword = ''; this.confirmPassword = ''; this.notify('Jelszó módosítva.'); }, error: e => this.fail(e) });
+    }
+    // --- Rendszerállapot (élesítés utáni önellenőrzés) ---
+    readonly frontendVersion = FRONTEND_VERSION;
+    systemStatus = signal<SystemStatus | null>(null);
+    /** null = még nem töltött; 'outdated' = a backend nem ismeri a végpontot (régi verzió / route-cache). */
+    systemStatusError = signal<'outdated' | 'error' | null>(null);
+    loadSystemStatus() {
+        this.api.systemStatus().subscribe({
+            next: r => { this.systemStatus.set(r.data); this.systemStatusError.set(null); },
+            error: (e: HttpErrorResponse) => { this.systemStatus.set(null); this.systemStatusError.set(e.status === 404 ? 'outdated' : 'error'); }
+        });
     }
     // --- Biztonság: kétlépcsős belépés és aktív munkamenetek ---
     security = signal<{ two_factor_email_enabled: boolean; two_factor_required?: boolean; session_driver: string } | null>(null);
