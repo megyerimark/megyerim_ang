@@ -20,7 +20,7 @@
     # az Angular ilyenkor is betölt, és a „nem található” oldalt mutatja. Új útvonalnál bővítsd a listát!
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(tervezo|ajanlatkeres|projekt-kviz|konzultacio|adatkezeles|impresszum|aszf|ugyfel/projekt|fizetes/(sikeres|megszakitva)|admin|admin/(bejelentkezes|elfelejtett-jelszo|jelszo-visszaallitas)|munkak/[A-Za-z0-9_-]+)/?$ index.html [L]
+    RewriteRule ^(tervezo|ajanlatkeres|projekt-kviz|konzultacio|adatkezeles|impresszum|aszf|ugyfel/projekt|fizetes/(sikeres|megszakitva)|admin|admin/(bejelentkezes|elfelejtett-jelszo|jelszo-visszaallitas)|hirlevel/(megerosites|leiratkozas)|munkak/[A-Za-z0-9_-]+)/?$ index.html [L]
 </IfModule>
 
 # Ismeretlen cím: 404-es HTTP-státusz, de a tartalom az Angular alkalmazás (NotFoundPage).

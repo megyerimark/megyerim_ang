@@ -2,6 +2,7 @@ User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /ugyfel
+Disallow: /hirlevel
 Disallow: /demos
 Sitemap: https://megyerimarkmate.hu/sitemap.xml
 Sitemap: https://megyerimarkmate.hu/api/sitemap.xml

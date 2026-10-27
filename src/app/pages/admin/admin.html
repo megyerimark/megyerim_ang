@@ -45,6 +45,7 @@
       }
     </nav>
     <div class="side-bottom">
+      <button type="button" class="admin-lang" translate="no" (click)="i18n.toggle()" [attr.aria-label]="i18n.lang() === 'hu' ? 'Switch to English' : 'Váltás magyar nyelvre'">{{ i18n.lang() === 'hu' ? '🌐 English' : '🌐 Magyar' }}</button>
       <a routerLink="/" target="_blank" rel="noopener noreferrer">
         ↗︎ Weboldal megtekintése
       </a>
@@ -514,6 +515,7 @@
 }
 @if(tab()==='sites'){<app-sites-panel></app-sites-panel>}
 @if(tab()==='finance'){<app-finance-panel></app-finance-panel>}
+@if(tab()==='newsletter'){<app-newsletter-panel></app-newsletter-panel>}
 @if(tab()==='maintenance'){
   <div class="care-banner">
     <span class="panel-eyebrow">AURORA CARE / KARBANTARTÁS</span>
@@ -732,6 +734,12 @@
                 {{q.budget_range||'—'}}
               </span>
             </div>
+            @if (q.promo_percent) {
+            <div>
+              <small>Akció a beküldéskor</small>
+              <span><strong>−{{ q.promo_percent }}%</strong> {{ q.promo_title }}</span>
+            </div>
+            }
             <div>
               <small>
                 Határidő
@@ -792,7 +800,7 @@
               }
             </div>
           } @else {
-            <div class="detail-block"><small>Projektleírás</small><p class="description">{{q.project_description}}</p></div>
+            <div class="detail-block"><small>Projektleírás</small><p class="description" translate="no">{{q.project_description}}</p></div>
           }
           @if(q.wants_maintenance){
             <div class="detail-block care-detail-cta">
@@ -903,7 +911,7 @@
             <p class="proposal-hint">A beszélgetés csak az adott ügyfél projektportálján és itt látható. Az új üzenetek nem küldenek automatikus e-mailt.</p>
             <div class="admin-message-list">
               @for(m of collaboration().messages;track m.id){
-                <article class="admin-message" [class.admin-reply]="m.author==='admin'"><small>{{m.author==='client'?'ÜGYFÉL':'TE'}} · {{date(m.created_at)}}</small><p>{{m.body}}</p></article>
+                <article class="admin-message" [class.admin-reply]="m.author==='admin'"><small>{{m.author==='client'?'ÜGYFÉL':'TE'}} · {{date(m.created_at)}}</small><p translate="no">{{m.body}}</p></article>
               } @empty {<p class="muted">Még nincs üzenet.</p>}
             </div>
             <label class="form-field">Válasz az ügyfélnek<textarea class="input" rows="3" maxlength="3000" [(ngModel)]="adminMessage" placeholder="A következő lépésről tájékoztatás…"></textarea></label>
@@ -1154,7 +1162,7 @@
           @for(p of projects();track p.id){
           <div class="content-row">
             @if(p.cover_image_url){
-            <img class="content-thumbnail" [src]="p.cover_image_url" [alt]="p.title">
+            <img class="content-thumbnail" [src]="p.cover_image_url" [alt]="p.title" loading="lazy">
             }@else{
             <span class="content-icon">
               ▧
@@ -1399,6 +1407,48 @@
             <input class="input" type="url" [(ngModel)]="settings.instagram_url">
           </div>
         </div>
+        <fieldset class="promo-admin" aria-labelledby="promo-admin-title">
+          <div class="promo-admin-head">
+            <div>
+              <h3 id="promo-admin-title">Akció a főoldalon</h3>
+              <p class="muted">Bekapcsolva a főoldalon görgetésre animált akció-szekció jelenik meg, a szolgáltatások akciós árral látszanak, és az ajánlatkérésnél rögzül a kedvezmény.</p>
+            </div>
+            <label class="promo-switch">
+              <input type="checkbox" [ngModel]="settings.promo_enabled === '1' || settings.promo_enabled === true" (ngModelChange)="settings.promo_enabled = $event">
+              <span>{{ (settings.promo_enabled === '1' || settings.promo_enabled === true) ? 'Bekapcsolva' : 'Kikapcsolva' }}</span>
+            </label>
+          </div>
+          <div class="promo-admin-grid">
+            <div class="form-field">
+              <label for="promo-percent">Kedvezmény (%)</label>
+              <div class="promo-percent-row">
+                <input id="promo-percent" class="input" type="number" min="0" max="90" step="1" [(ngModel)]="settings.promo_percent">
+                <span class="promo-preview-number" aria-hidden="true">−{{ settings.promo_percent || 0 }}%</span>
+              </div>
+            </div>
+            <div class="form-field">
+              <label for="promo-ends">Akció vége (utolsó nap)</label>
+              <input id="promo-ends" class="input" type="date" [(ngModel)]="settings.promo_ends_at">
+              <small class="muted">Üresen hagyva addig tart, amíg ki nem kapcsolod. Lejárat után magától eltűnik.</small>
+            </div>
+            <div class="form-field">
+              <label for="promo-title">Cím (magyar)</label>
+              <input id="promo-title" class="input" maxlength="80" [(ngModel)]="settings.promo_title" placeholder="Pl. Őszi akció – most kedvezménnyel indulhat az új weboldalad">
+            </div>
+            <div class="form-field">
+              <label for="promo-title-en">Cím (angol)</label>
+              <input id="promo-title-en" class="input" maxlength="80" [(ngModel)]="settings.promo_title_en" placeholder="E.g. Autumn offer – start your new website at a discount">
+            </div>
+            <div class="form-field">
+              <label for="promo-text">Rövid leírás (magyar)</label>
+              <textarea id="promo-text" class="input" rows="3" maxlength="240" [(ngModel)]="settings.promo_text" placeholder="Pl. November 30-ig minden új weboldal-projektre."></textarea>
+            </div>
+            <div class="form-field">
+              <label for="promo-text-en">Rövid leírás (angol)</label>
+              <textarea id="promo-text-en" class="input" rows="3" maxlength="240" [(ngModel)]="settings.promo_text_en"></textarea>
+            </div>
+          </div>
+        </fieldset>
         <button class="btn btn-primary" type="button" [disabled]="busy()" (click)="saveSettings()">
           Beállítások mentése ↗︎
         </button>

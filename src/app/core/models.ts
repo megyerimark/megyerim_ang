@@ -23,7 +23,22 @@ export interface SiteSettings {
     github_url: string;
     reviews_widget_id?: string;
     google_review_url?: string;
+    promo_enabled?: string | boolean;
+    promo_percent?: string | number;
+    promo_title?: string;
+    promo_title_en?: string;
+    promo_text?: string;
+    promo_text_en?: string;
+    promo_ends_at?: string;
+    /** A szerver számolja (lejárat, bekapcsolás) – csak olvasható. */
+    promo?: Promotion;
 }
+export interface Promotion { active: boolean; percent: number; title: string; ends_at: string | null; }
+export interface NewsletterSubscriber {
+    id: number; email: string; status: 'pending' | 'confirmed' | 'unsubscribed'; lang: string; source: string | null;
+    consent_ip: string | null; confirmed_at: string | null; unsubscribed_at: string | null; created_at: string;
+}
+export interface NewsletterCounts { confirmed: number; pending: number; unsubscribed: number; }
 export interface Service {
     id: number;
     slug: string;
@@ -79,6 +94,8 @@ export interface Quote {
     features: string[] | null;
     inspiration_urls: string[] | null;
     budget_range: string | null;
+    promo_percent?: number | null;
+    promo_title?: string | null;
     desired_deadline: string | null;
     project_description: string;
     wants_maintenance: boolean;

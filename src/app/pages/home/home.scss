@@ -1616,3 +1616,10 @@
 .review-cta{margin:24px 0 0;text-align:center}
 .footer-cookie{border:0;background:none;color:inherit;font:inherit;padding:0;cursor:pointer}
 .footer-cookie:hover{color:var(--text)}
+
+/* Akciós ár a szolgáltatáskártyán */
+.price-sale { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; }
+.price-sale s { font-size: .82em; opacity: .55; }
+.price-sale strong { color: #fff; }
+.price-sale em { font-style: normal; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 999px; background: linear-gradient(90deg, #8657fa, #316df8); color: #fff; }
+:host-context([data-theme='light']) .price-sale strong { color: #191e28; }

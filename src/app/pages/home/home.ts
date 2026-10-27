@@ -1,6 +1,8 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
+import { PromoSpotlight } from '../../components/promo-spotlight/promo-spotlight';
+import { NewsletterSignup } from '../../components/newsletter-signup/newsletter-signup';
 import { Hero } from '../../components/hero/hero';
 import { CinematicStory } from '../../components/cinematic-story/cinematic-story';
 import { PremiumReveal } from '../../directives/premium-reveal';
@@ -30,7 +32,7 @@ interface PreviewPalette {
 @Component({
     selector: 'app-home',
     standalone: true,
-    imports: [Hero, CinematicStory, RouterLink, DecimalPipe, PremiumReveal, ExternalReviews, TPipe],
+    imports: [Hero, CinematicStory, RouterLink, DecimalPipe, PremiumReveal, ExternalReviews, TPipe, PromoSpotlight, NewsletterSignup],
     templateUrl: './home.html',
     styleUrl: './home.scss'
 })
@@ -47,6 +49,15 @@ export class Home implements OnInit {
     projectsUnavailable = signal(false);
     settingsUnavailable = signal(false);
     openFaq = signal<number | null>(0);
+    /** Az adminban beállított akció (a szerver dönti el, aktív-e). */
+    readonly promo = computed(() => { const p = this.settings().promo; return p?.active && p.percent > 0 ? p : null; });
+    readonly promoTitle = computed(() => this.i18n.loc(this.settings(), 'promo_title'));
+    readonly promoText = computed(() => this.i18n.loc(this.settings(), 'promo_text'));
+    discounted(amount: number | null): string | null {
+        const p = this.promo();
+        if (!p || amount === null) return null;
+        return this.money(Math.round(amount * (100 - p.percent) / 100 / 1000) * 1000);
+    }
     readonly year = new Date().getFullYear();
     readonly heroHeadline = computed(() => {
         const value = this.settings().hero_headline?.trim();

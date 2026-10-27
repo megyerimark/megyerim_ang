@@ -7,6 +7,7 @@ import { AttributionService } from './core/attribution.service';
 import { SiteSettings } from './core/models';
 import { Navbar } from './components/navbar/navbar';
 import { ToastHost } from './components/toast/toast-host';
+import { DomTranslator } from './i18n/dom-translator';
 import { CookieBanner } from './components/cookie-banner/cookie-banner';
 import { ConsentService } from './core/consent.service';
 import { TPipe } from './i18n/t.pipe';
@@ -31,6 +32,8 @@ export class App {
     readonly showNavbar = signal(!this.router.url.startsWith('/admin'));
     /** Külső (hozzájárulásköteles) tartalom csak a főoldalon van – a süti-sáv is csak ott jelenik meg. */
     readonly onHome = signal(this.router.url.split(/[?#]/)[0] === '/');
+    private readonly domTranslator = inject(DomTranslator);
+    readonly currentPath = signal(typeof location !== 'undefined' ? location.pathname : '/');
     readonly showTop = signal(false);
     readonly phone = signal('');
     readonly showMobileCta = signal(false);
@@ -86,6 +89,11 @@ export class App {
         this.updateRouteMeta(this.router.url);
         // Nyelvváltáskor a címet és a leírást is frissítjük.
         effect(() => { this.i18n.lang(); this.updateRouteMeta(this.router.url); });
+        // Admin angol nézete: a magyar sablonokat szótár alapján, megjelenítéskor fordítjuk (lásd DomTranslator).
+        effect(() => {
+            const adminEn = this.i18n.lang() === 'en' && this.currentPath().startsWith('/admin');
+            if (adminEn) void this.domTranslator.enable(); else this.domTranslator.disable();
+        });
         this.api.publicSettings().subscribe({
             next: response => { this.seoSettings = response.data; this.consent.needed.set(!!response.data.reviews_widget_id); this.phone.set((response.data.contact_phone || '').replace(/[^0-9+]/g, '')); this.updateRouteMeta(this.router.url); },
             error: () => { /* Static metadata is a safe fallback when the API is unavailable. */ }
@@ -95,6 +103,7 @@ export class App {
             .subscribe(event => {
             this.showNavbar.set(!event.urlAfterRedirects.startsWith('/admin'));
             this.onHome.set(event.urlAfterRedirects.split(/[?#]/)[0] === '/');
+            this.currentPath.set(event.urlAfterRedirects.split(/[?#]/)[0]);
             const p = event.urlAfterRedirects.split(/[?#]/)[0];
             this.ctaRoute = p === '/' || p.startsWith('/munkak/') || p === '/tervezo';
             this.showMobileCta.set(this.ctaRoute && window.scrollY > 700);
@@ -107,7 +116,7 @@ export class App {
         let leaf = this.router.routerState.snapshot.root;
         while (leaf.firstChild) leaf = leaf.firstChild;
         const notFound = leaf.routeConfig?.path === '**';
-        const isPrivate = notFound || path.startsWith('/admin') || path.startsWith('/ugyfel');
+        const isPrivate = notFound || path.startsWith('/admin') || path.startsWith('/ugyfel') || path.startsWith('/hirlevel');
         this.meta.updateTag({ name: 'robots', content: isPrivate ? 'noindex, nofollow, noarchive' : 'index, follow' });
         const descriptions: Record<string, string> = {
             '/': 'Ne csak jelen legyél online. Emelkedj ki. Egyedi weboldalak és prémium digitális megoldások vállalkozásoknak Megyeri Márk Mátétól.',

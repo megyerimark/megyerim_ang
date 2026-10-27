@@ -1,0 +1,30 @@
+<div class="fin-toolbar">
+  <div>
+    <span class="panel-eyebrow">HÍRLEVÉL / FELIRATKOZÓK</span>
+    <h2 class="nl-title">Akciókra feliratkozott érdeklődők</h2>
+  </div>
+  <button type="button" class="btn btn-outline btn-sm" (click)="exportCsv()" [disabled]="!counts().confirmed">CSV letöltése (megerősítettek) ↓</button>
+</div>
+<div class="fin-kpis">
+  <div class="fin-kpi"><span>Megerősítve</span><strong>{{ counts().confirmed }}</strong><small>Nekik küldhetsz levelet</small></div>
+  <div class="fin-kpi"><span>Megerősítésre vár</span><strong>{{ counts().pending }}</strong><small>30 nap után automatikusan törlődik</small></div>
+  <div class="fin-kpi"><span>Leiratkozott</span><strong>{{ counts().unsubscribed }}</strong><small>Nekik nem küldhetsz</small></div>
+</div>
+<p class="fin-warning nl-hint">Leveleket külső hírlevélküldővel (pl. MailerLite, Brevo) érdemes küldeni: töltsd le a CSV-t, és importáld. Minden levélben legyen leiratkozási lehetőség.</p>
+<div class="fin-toolbar">
+  <input class="input" type="search" placeholder="Keresés e-mail-címre…" aria-label="Keresés e-mail-címre" [(ngModel)]="q" (keyup.enter)="load()">
+  <select class="input" aria-label="Állapot szűrése" [(ngModel)]="status" (ngModelChange)="load()">
+    <option value="">Mind</option><option value="confirmed">Megerősítve</option><option value="pending">Megerősítésre vár</option><option value="unsubscribed">Leiratkozott</option>
+  </select>
+</div>
+@if (loading()) { <p class="muted">Betöltés…</p> }
+@else {
+  <div class="nl-list">
+    @for (s of items(); track s.id) {
+      <div class="nl-row">
+        <div><strong>{{ s.email }}</strong><small>{{ statusLabel[s.status] }} · {{ s.lang.toUpperCase() }} · feliratkozott: {{ date(s.created_at) }}@if (s.confirmed_at) { · megerősítve: {{ date(s.confirmed_at) }} }</small></div>
+        <button type="button" class="danger-text" (click)="remove(s)">Törlés</button>
+      </div>
+    } @empty { <p class="empty-state">Még nincs feliratkozó. A főoldal alján lévő űrlapon tudnak feliratkozni.</p> }
+  </div>
+}

@@ -4,6 +4,7 @@
       <a routerLink="/" class="back">
         ← Vissza a weboldalra
       </a>
+      <button type="button" class="admin-lang login-lang" translate="no" (click)="i18n.toggle()" [attr.aria-label]="i18n.lang() === 'hu' ? 'Switch to English' : 'Váltás magyar nyelvre'">{{ i18n.lang() === 'hu' ? '🌐 English' : '🌐 Magyar' }}</button>
       <div class="login-art">
         <span>
           MEGYERI MÁRK MÁTÉ / DIGITAL STUDIO

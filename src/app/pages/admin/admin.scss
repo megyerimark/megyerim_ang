@@ -1138,3 +1138,13 @@ td small {
 .status-dot{display:grid;place-items:center;width:26px;height:26px;border-radius:8px;font-weight:800;background:#ff5d7a26;color:#ff9db0}
 .status-list li.ok .status-dot{background:#2fd6a426;color:#7ff0d6}
 .status-bad{color:#ff9db0}
+.promo-admin{margin:22px 0 18px;padding:20px;border:1px solid #8b6cff55;border-radius:18px;background:radial-gradient(80% 120% at 0 0,#7c5cff1f,transparent 60%),#ffffff05;min-width:0}
+.promo-admin-head{display:flex;gap:16px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap}
+.promo-admin h3{margin:0 0 4px;font-size:18px}.promo-admin-head p{margin:0;max-width:560px;font-size:12.5px}
+.promo-switch{display:inline-flex;gap:10px;align-items:center;padding:8px 14px;border-radius:999px;border:1px solid var(--border);cursor:pointer;font-weight:600;font-size:13px}
+.promo-admin-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 16px;margin-top:16px}
+.promo-percent-row{display:flex;gap:12px;align-items:center}.promo-percent-row .input{max-width:120px}
+.promo-preview-number{font:700 34px/1 'Space Grotesk',sans-serif;background:linear-gradient(135deg,#fff,#c9b8ff,#66c8ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+@media(max-width:700px){.promo-admin-grid{grid-template-columns:1fr}}
+.admin-lang{display:inline-flex;align-items:center;gap:6px;width:max-content;padding:7px 12px;border-radius:999px;border:1px solid var(--border);background:transparent;color:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
+.admin-lang:hover{border-color:var(--accent)}

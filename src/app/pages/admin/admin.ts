@@ -1,4 +1,5 @@
 import { Component, HostListener, inject, OnDestroy, OnInit, signal, computed } from '@angular/core';
+import { I18nService } from '../../i18n/i18n.service';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -6,10 +7,11 @@ import { ToastService } from '../../core/toast.service';
 import { apiErrorMessage, FRONTEND_VERSION } from '../../core/http-error';
 import { SitesPanel } from './sites-panel';
 import { FinancePanel } from './finance-panel';
+import { NewsletterPanel } from './newsletter-panel';
 import { ApiService } from '../../core/api.service';
 import { AuthService } from '../../core/auth.service';
 import { SystemStatus, Activity, Client, ConsultationSlot, Dashboard, Project, ProjectMilestone, ProjectCollaboration, ProjectDocument, Quote, QuoteStatus, Service, SiteSettings, SITE_DEFAULTS, STATUS_OPTIONS, MaintenanceAgreement, MaintenanceEditor, MaintenanceData, QuoteBoard, StudioTask, GrowthData, Testimonial } from '../../core/models';
-type Tab = 'dashboard' | 'growth' | 'testimonials' | 'workspace' | 'maintenance' | 'sites' | 'finance' | 'consultations' | 'quotes' | 'clients' | 'projects' | 'services' | 'settings' | 'activity' | 'account';
+type Tab = 'dashboard' | 'growth' | 'newsletter' | 'testimonials' | 'workspace' | 'maintenance' | 'sites' | 'finance' | 'consultations' | 'quotes' | 'clients' | 'projects' | 'services' | 'settings' | 'activity' | 'account';
 /** Fejléc-cím és alcím fülenként. */
 const HEADINGS: Record<Tab, [string, string]> = {
     dashboard: ['Üdv újra!', 'Valós üzleti adatok és következő lépések.'],
@@ -18,6 +20,7 @@ const HEADINGS: Record<Tab, [string, string]> = {
     workspace: ['MM Munkatér', 'Ajánlatfolyamat és napi teendők egy helyen.'],
     maintenance: ['Aurora Care', 'Havi karbantartás, előfizetések és esedékességek.'],
     sites: ['Kész projektek', 'Élesített oldalak, domainek, lejáratok és titkosított hozzáférések.'],
+    newsletter: ['Hírlevél', 'Az akciókra feliratkozott, megerősített e-mail-címek és a CSV-export.'],
     finance: ['Pénzügyek', 'Bevételek, kiadások, ÁFA és becsült átalányadó havonta.'],
     quotes: ['Ajánlatkérések', 'Beérkező megkeresések és ajánlatok kezelése.'],
     consultations: ['Konzultációk', 'Szabad és lefoglalt konzultációk kezelése.'],
@@ -72,13 +75,14 @@ interface TestimonialEditor {
     is_published: boolean;
     sort_order: number;
 }
-@Component({ selector: 'app-admin', standalone: true, imports: [FormsModule, RouterLink, SitesPanel, FinancePanel], templateUrl: './admin.html', styleUrl: './admin.scss' })
+@Component({ selector: 'app-admin', standalone: true, imports: [FormsModule, RouterLink, SitesPanel, FinancePanel, NewsletterPanel], templateUrl: './admin.html', styleUrl: './admin.scss' })
 export class AdminPage implements OnInit, OnDestroy {
+    readonly i18n = inject(I18nService);
     private api = inject(ApiService);
     private auth = inject(AuthService);
     private router = inject(Router);
     user = this.auth.user;
-    todayLabel = new Intl.DateTimeFormat('hu-HU', { dateStyle: 'long' }).format(new Date());
+    get todayLabel(): string { return new Intl.DateTimeFormat(this.i18n.lang() === 'en' ? 'en-GB' : 'hu-HU', { dateStyle: 'long' }).format(new Date()); }
     tab = signal<Tab>('dashboard');
     busy = signal(false);
     message = signal('');
@@ -147,7 +151,7 @@ export class AdminPage implements OnInit, OnDestroy {
         value: Tab;
         title: string;
         icon: string;
-    }[] = [{ value: 'dashboard', title: 'Áttekintés', icon: '◫' }, { value: 'growth', title: 'Növekedés', icon: '↗︎' }, {value:'workspace',title:'MM Munkatér',icon:'▦'}, { value: 'quotes', title: 'Ajánlatkérések', icon: '▤' }, {value:'maintenance',title:'Karbantartás',icon:'✧'}, { value: 'sites', title: 'Kész projektek', icon: '◈' }, { value: 'finance', title: 'Pénzügyek', icon: '¤' }, { value: 'consultations', title: 'Konzultációk', icon: '◷' }, { value: 'clients', title: 'Ügyfelek', icon: '♙' }, { value: 'projects', title: 'Referenciák', icon: '▧' }, { value: 'testimonials', title: 'Vélemények', icon: '❝' }, { value: 'services', title: 'Szolgáltatások', icon: '◇' }, { value: 'settings', title: 'Weboldal beállításai', icon: '⚙︎' }, { value: 'activity', title: 'Tevékenységnapló', icon: '◷' }, { value: 'account', title: 'Fiók és jelszó', icon: '⌘' }];
+    }[] = [{ value: 'dashboard', title: 'Áttekintés', icon: '◫' }, { value: 'growth', title: 'Növekedés', icon: '↗︎' }, {value:'workspace',title:'MM Munkatér',icon:'▦'}, { value: 'quotes', title: 'Ajánlatkérések', icon: '▤' }, {value:'maintenance',title:'Karbantartás',icon:'✧'}, { value: 'sites', title: 'Kész projektek', icon: '◈' }, { value: 'finance', title: 'Pénzügyek', icon: '¤' }, { value: 'consultations', title: 'Konzultációk', icon: '◷' }, { value: 'clients', title: 'Ügyfelek', icon: '♙' }, { value: 'projects', title: 'Referenciák', icon: '▧' }, { value: 'testimonials', title: 'Vélemények', icon: '❝' }, { value: 'newsletter', title: 'Hírlevél', icon: '✉︎' }, { value: 'services', title: 'Szolgáltatások', icon: '◇' }, { value: 'settings', title: 'Weboldal beállításai', icon: '⚙︎' }, { value: 'activity', title: 'Tevékenységnapló', icon: '◷' }, { value: 'account', title: 'Fiók és jelszó', icon: '⌘' }];
     readonly boardStatuses = STATUS_OPTIONS;
     readonly pipelinePalette: Record<QuoteStatus,string> = {
         new:'#9681fd', reviewing:'#579bea', quoted:'#36c8c2',

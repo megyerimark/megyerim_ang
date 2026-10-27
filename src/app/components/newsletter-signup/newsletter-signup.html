@@ -1,0 +1,33 @@
+<section class="newsletter" id="hirlevel" aria-labelledby="newsletter-title">
+  <div class="container newsletter-inner">
+    <div class="newsletter-copy">
+      <span class="overline">{{ 'HÍRLEVÉL / KEDVEZMÉNYEK' | t }}</span>
+      <h2 id="newsletter-title">{{ 'Értesülj elsőként' | t }} <span>{{ 'az akciókról.' | t }}</span></h2>
+      <p>{{ 'Ritkán írok, akkor is csak lényegeset: időszakos kedvezmények, új szolgáltatások, hasznos tippek a weboldaladhoz. Bármikor leiratkozhatsz.' | t }}</p>
+      @if (highlight() > 0) {<p class="newsletter-hot"><i aria-hidden="true">✦</i> {{ 'Most is fut egy akció:' | t }} <strong>−{{ highlight() }}%</strong></p>}
+    </div>
+    @if (done(); as message) {
+      <div class="newsletter-done" role="status">
+        <span aria-hidden="true">✉︎</span>
+        <strong>{{ 'Már csak egy lépés!' | t }}</strong>
+        <p>{{ message }}</p>
+      </div>
+    } @else {
+      <form class="newsletter-form" (ngSubmit)="submit()" novalidate>
+        <label for="newsletter-email">{{ 'E-mail-cím' | t }}</label>
+        <div class="newsletter-row">
+          <input id="newsletter-email" name="email" type="email" autocomplete="email" inputmode="email" [(ngModel)]="email"
+                 [attr.aria-invalid]="error() ? 'true' : null" aria-describedby="newsletter-error" [placeholder]="'pelda@cegnev.hu' | t" maxlength="254" required>
+          <button class="btn btn-primary" type="submit" [disabled]="busy()">{{ busy() ? ('Küldés…' | t) : ('Feliratkozom' | t) }}</button>
+        </div>
+        <div class="hp" aria-hidden="true"><label for="newsletter-website">Website</label><input id="newsletter-website" type="text" name="website" tabindex="-1" autocomplete="off" [(ngModel)]="website"></div>
+        <label class="newsletter-consent">
+          <input type="checkbox" name="consent" [(ngModel)]="consent">
+          <span>{{ 'Hozzájárulok, hogy akciókról, kedvezményekről és újdonságokról e-mailt kapjak. Bármikor leiratkozhatok.' | t }}
+            <a routerLink="/adatkezeles">{{ 'Adatkezelési tájékoztató' | t }}</a></span>
+        </label>
+        <p class="newsletter-error" id="newsletter-error" role="alert">@if (error()) {<span aria-hidden="true">⚠︎</span> {{ error() }}}</p>
+      </form>
+    }
+  </div>
+</section>

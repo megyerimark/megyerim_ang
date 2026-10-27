@@ -1,6 +1,5 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { TPipe } from '../../i18n/t.pipe';
 import { I18nService } from '../../i18n/i18n.service';
 import { LEGAL_INFO, missingLegalFields } from '../../core/legal-info';
 
@@ -8,7 +7,7 @@ import { LEGAL_INFO, missingLegalFields } from '../../core/legal-info';
 @Component({
     selector: 'app-imprint',
     standalone: true,
-    imports: [RouterLink, TPipe],
+    imports: [RouterLink],
     templateUrl: './imprint.html',
     styleUrl: '../privacy/privacy.scss'
 })
@@ -17,4 +16,5 @@ export class ImprintPage {
     readonly legal = LEGAL_INFO;
     readonly missing = missingLegalFields();
     readonly todo = '[kitöltendő]';
+    readonly todoEn = '[to be completed]';
 }

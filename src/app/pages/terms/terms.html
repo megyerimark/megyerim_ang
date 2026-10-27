@@ -1,6 +1,112 @@
 <main class="container legal">
+@if (i18n.lang() === 'en') {
+  <a routerLink="/" class="back">← Back to home</a>
+  <span class="overline">LEGAL INFORMATION</span>
+  <h1>General Terms and Conditions</h1>
+  <p class="legal-meta">Version: {{ version }}@if (legal.effectiveDate) { · Effective from: {{ legal.effectiveDate }} }</p>
+  <p class="notice">This is an English translation for convenience. The contract language is Hungarian, and in case of any discrepancy the Hungarian version prevails.</p>
+  @if (missing.length) {
+  <div class="notice error" role="alert"><strong>Incomplete Terms.</strong> To be completed in <code>src/app/core/legal-info.ts</code>: {{ missing.join(', ') }}.</div>
+  }
+  <section>
+    <h2>1. The service provider</h2>
+    <p>
+      {{ legal.operatorName || todoEn }} (registered address: {{ legal.address || todoEn }}; tax number: {{ legal.taxNumber || todoEn }};
+      registration number: {{ legal.registrationNumber || todoEn }}; email: {{ legal.email || todoEn }}),
+      hereinafter the <strong>Provider</strong>. The customer is hereinafter the <strong>Client</strong>.
+    </p>
+
+    <h2>2. Subject and conclusion of the contract</h2>
+    <p>
+      Based on an individual proposal, the Provider undertakes the design, development and/or maintenance of websites and web
+      systems. The content of the contract is defined by the proposal personalised for the Client (fee, scope, schedule,
+      deposit, special terms) together with these Terms; in case of discrepancy, the proposal prevails.
+    </p>
+    <p>
+      The contract is concluded electronically when the Client accepts the proposal on their private project page. The Provider
+      confirms the acceptance by email without delay. The Provider records the concluded contract (the content of the proposal,
+      the time of acceptance and the version of these Terms), which remains available to the Client on the project page. The
+      language of the contract is Hungarian.
+    </p>
+
+    <h2>3. Fee and deposit</h2>
+    <p>
+      The fee is set out in the proposal. If the proposal specifies a deposit, the Provider starts work after the deposit has
+      been received; the deposit is deducted from the final invoice. The deposit can be paid by card (on Stripe's secure payment
+      page) or by bank transfer. The remaining fee is due after handover, based on the invoice issued, by its payment deadline.
+    </p>
+    <p>
+      If work is suspended for more than 60 days for reasons attributable to the Client (e.g. missing content or approvals), or
+      the Client withdraws from the contract after work has started, the Provider is entitled to a proportionate fee for the work
+      done so far; the deposit is settled against it.
+    </p>
+
+    <h2>4. Client's cooperation</h2>
+    <p>
+      The Client provides the necessary text and image content, access and approvals at the agreed time, and warrants that they
+      are entitled to use them. Any delay by the Client changes the schedule proportionately.
+    </p>
+
+    <h2>5. Changes and additional work</h2>
+    <p>
+      Requests not included in the proposal are additional work; the parties agree in writing (by email or on the project page)
+      on their fee and deadline before the work starts.
+    </p>
+
+    <h2>6. Handover and acceptance</h2>
+    <p>
+      The Provider offers the completed work for handover. The Client reports any defects deviating from the proposal within
+      8 days; the Provider fixes these free of charge. If the Client reports no defect within this period, or starts using the
+      website live, the work is deemed accepted.
+    </p>
+
+    <h2>7. Late payment</h2>
+    <p>
+      In case of late payment, default interest under the Hungarian Civil Code and, between businesses, the statutory recovery
+      cost lump sum may be charged. The Provider may withhold the launch and the handover of source files until the full fee is paid.
+    </p>
+
+    <h2>8. Copyright and references</h2>
+    <p>
+      An unlimited-term right of use of the completed custom work, in line with the purpose of the contract, passes to the
+      Client upon payment of the full fee. Open-source components and third-party elements used (e.g. fonts, images) may be
+      used under their own licences. The Provider may show the completed work as a reference unless the Client forbids it in writing.
+    </p>
+
+    <h2>9. Liability</h2>
+    <p>
+      The Provider's liability for damage caused by breach of contract – except for damage caused intentionally, by gross
+      negligence, or to life, physical integrity or health – is limited to the fee under the given contract. The Provider is not
+      liable for outages of third-party services (hosting, domain, payment provider, external APIs) or for the consequences of
+      changes made later by the Client.
+    </p>
+
+    <h2>10. Maintenance subscription</h2>
+    <p>
+      Monthly maintenance includes the services set out in the proposal or agreement. For online subscriptions, Stripe charges
+      the monthly fee automatically to the card provided. The subscription can be cancelled at any time on the project page;
+      cancellation takes effect at the end of the period already paid for.
+    </p>
+
+    <h2>11. Consumer's right of withdrawal</h2>
+    <p>
+      If the Client is a consumer (private individual), under Hungarian Government Decree 45/2014 (II. 26.) they may withdraw
+      from the contract within 14 days of its conclusion without giving reasons. If the Client expressly requests the Provider
+      to start performance before the withdrawal period expires, in case of withdrawal they must pay a proportionate fee for the
+      service provided so far; after full performance, the right of withdrawal can no longer be exercised. Withdrawal can be
+      declared by a statement sent to {{ legal.email || todoEn }}.
+    </p>
+
+    <h2>12. Complaints and disputes</h2>
+    <p>
+      Complaints can be sent to {{ legal.email || todoEn }}; I reply in writing within 30 days. As a consumer, you may turn to
+      the conciliation board competent for your place of residence or the Provider's registered address. The contract is
+      governed by Hungarian law, in particular the Civil Code and Act CVIII of 2001 on electronic commerce.
+    </p>
+  </section>
+  <p class="legal-meta">Related: <a routerLink="/adatkezeles">Privacy notice</a> · <a routerLink="/impresszum">Legal notice</a></p>
+} @else {
   <a routerLink="/" class="back">← Vissza a főoldalra</a>
-  @if (i18n.lang() === 'en') {<p class="notice" lang="en">{{ 'Ez a jogi dokumentum csak magyar nyelven érhető el.' | t }}</p>}
   <span class="overline">JOGI INFORMÁCIÓK</span>
   <h1>Általános Szerződési Feltételek</h1>
   <p class="legal-meta">Verzió: {{ version }}@if (legal.effectiveDate) { · Hatályos: {{ legal.effectiveDate }} }</p>
@@ -116,4 +222,5 @@
   <p class="legal-meta">
     Kapcsolódó: <a routerLink="/adatkezeles">Adatkezelési tájékoztató</a> · <a routerLink="/impresszum">Impresszum</a>
   </p>
+}
 </main>

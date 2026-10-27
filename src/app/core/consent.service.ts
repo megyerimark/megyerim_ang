@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 
-export type ConsentState = 'unknown' | 'granted' | 'denied';
+/** acknowledged = a látogató tudomásul vette a sáv szövegét, amikor még nem volt külső tartalom (arra nem adott hozzájárulást). */
+export type ConsentState = 'unknown' | 'granted' | 'denied' | 'acknowledged';
 const KEY = 'mm-consent-v1';
 
 /**
@@ -17,7 +18,7 @@ export class ConsentService {
     private read(): ConsentState {
         try {
             const raw = localStorage.getItem(KEY);
-            return raw === 'granted' || raw === 'denied' ? raw : 'unknown';
+            return raw === 'granted' || raw === 'denied' || raw === 'acknowledged' ? raw : 'unknown';
         } catch { return 'unknown'; }
     }
 
@@ -26,6 +27,9 @@ export class ConsentService {
         this.panelOpen.set(false);
         try { localStorage.setItem(KEY, state); } catch { /* privát mód: csak erre a látogatásra él */ }
     }
+
+    /** „Elfogadom”: külső tartalom esetén hozzájárulás, egyébként csak tudomásulvétel. */
+    accept(): void { this.set(this.needed() ? 'granted' : 'acknowledged'); }
 
     openSettings(): void { this.panelOpen.set(true); }
 }

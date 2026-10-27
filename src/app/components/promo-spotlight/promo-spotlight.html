@@ -1,0 +1,30 @@
+<section class="promo" aria-labelledby="promo-title">
+  <div class="promo-sky" aria-hidden="true">
+    <i class="ring ring-a"></i><i class="ring ring-b"></i><i class="ring ring-c"></i>
+    <i class="spark s1"></i><i class="spark s2"></i><i class="spark s3"></i><i class="spark s4"></i>
+  </div>
+  <div class="container promo-grid">
+    <div class="promo-number" aria-hidden="true">
+      <span class="minus">−</span><span class="digits">{{ shownPercent() }}</span><span class="pct">%</span>
+    </div>
+    <div class="promo-card">
+      <span class="promo-badge"><i aria-hidden="true">✦</i> {{ 'IDŐSZAKOS AKCIÓ' | t }}</span>
+      <h2 id="promo-title">{{ title() || ('Most kedvezménnyel indulhat az új weboldalad' | t) }}</h2>
+      <p class="sr-only">{{ percent() }}% {{ 'kedvezmény' | t }}</p>
+      @if (text()) {<p class="promo-text">{{ text() }}</p>}
+      @if (countdown(); as c) {
+        <div class="promo-countdown" [attr.aria-label]="('Az akció vége' | t) + ': ' + endsLabel()">
+          <span><strong>{{ c.days }}</strong><small>{{ 'nap' | t }}</small></span>
+          <span><strong>{{ c.hours }}</strong><small>{{ 'óra' | t }}</small></span>
+          <span><strong>{{ c.minutes }}</strong><small>{{ 'perc' | t }}</small></span>
+          <em>{{ 'Érvényes eddig:' | t }} {{ endsLabel() }}</em>
+        </div>
+      }
+      <div class="promo-actions">
+        <a routerLink="/ajanlatkeres" class="btn btn-primary">{{ 'Ajánlatot kérek akcióval' | t }} <span aria-hidden="true">↗︎</span></a>
+        <a href="#hirlevel" class="btn btn-outline">{{ 'Értesítést kérek a következőről' | t }}</a>
+      </div>
+      <p class="promo-fine">{{ 'A kedvezmény az akció ideje alatt beküldött ajánlatkérésekre vonatkozik, a végső árat a személyre szabott ajánlat tartalmazza.' | t }}</p>
+    </div>
+  </div>
+</section>

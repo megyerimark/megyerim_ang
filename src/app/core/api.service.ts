@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, switchMap } from 'rxjs';
-import { SystemStatus, ClientSite, ClientSiteInput, FinanceEntry, FinanceEntryInput, FinanceSettings, FinanceSummary, AdminUser, Activity, Client, ClientProject, ConsultationConfirmation, ConsultationSlot, Dashboard, Envelope, Paged, Project, ProjectMilestone, ProjectMessage, ProjectDocument, ProjectCollaboration, Quote, QuotePayload, QuoteBoard, Service, SiteSettings, StudioTask, StudioClientNote, WorkspaceProject, CommunicationCenter, MaintenanceData, MaintenanceAgreement, MaintenanceEditor, Testimonial, TestimonialInput, GrowthData } from './models';
+import { SystemStatus, ClientSite, ClientSiteInput, FinanceEntry, FinanceEntryInput, FinanceSettings, FinanceSummary, AdminUser, Activity, Client, ClientProject, ConsultationConfirmation, ConsultationSlot, Dashboard, Envelope, Paged, Project, ProjectMilestone, ProjectMessage, ProjectDocument, ProjectCollaboration, Quote, QuotePayload, QuoteBoard, Service, SiteSettings, StudioTask, StudioClientNote, WorkspaceProject, CommunicationCenter, MaintenanceData, MaintenanceAgreement, MaintenanceEditor, Testimonial, TestimonialInput, GrowthData, NewsletterSubscriber, NewsletterCounts } from './models';
 import { AttributionService } from './attribution.service';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
@@ -152,5 +152,14 @@ export class ApiService {
     deleteTestimonial(id: number) { return this.http.delete<{message?: string}>('/api/admin/testimonials/' + id, this.opts); }
     adminQuote(id: number) { return this.http.get<Envelope<Quote>>('/api/admin/quote-requests/' + id, this.opts); }
     markContacted(id: number) { return this.http.post<Envelope<Quote>>('/api/admin/quote-requests/' + id + '/contacted', {}, this.opts); }
+    // Hírlevél (nyilvános: CSRF-süti után; a kulcsok a törzsben)
+    newsletterSubscribe(email: string, lang: string, source: string, website: string) {
+        return this.csrf().pipe(switchMap(() => this.http.post<{ message: string }>('/api/newsletter/subscribe', { email, consent: true, lang, source, website }, this.opts)));
+    }
+    newsletterConfirm(token: string) { return this.csrf().pipe(switchMap(() => this.http.post<{ message: string; unsubscribe_token: string }>('/api/newsletter/confirm', { token }, this.opts))); }
+    newsletterUnsubscribe(token: string) { return this.csrf().pipe(switchMap(() => this.http.post<{ message: string }>('/api/newsletter/unsubscribe', { token }, this.opts))); }
+    adminNewsletter(q = '', status = '') { return this.http.get<{ data: NewsletterSubscriber[]; counts: NewsletterCounts }>('/api/admin/newsletter', { ...this.opts, params: this.params({ q, status }) }); }
+    deleteNewsletterSubscriber(id: number) { return this.http.delete<{ message: string }>('/api/admin/newsletter/' + id, this.opts); }
+    exportNewsletter() { return this.http.get('/api/admin/exports/newsletter', { ...this.opts, responseType: 'blob' }); }
     exportQuotes(status?: string) { return this.http.get('/api/admin/exports/quote-requests', { ...this.opts, params: this.params({ status }), responseType: 'blob' }); }
 }

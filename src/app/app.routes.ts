@@ -85,6 +85,18 @@ export const routes: Routes = [
         title: 'Admin | Megyeri Márk Máté'
     },
     {
+        path: 'hirlevel/megerosites',
+        loadComponent: () => import('./pages/newsletter/newsletter-page').then(module => module.NewsletterPage),
+        data: { mode: 'confirm' },
+        title: 'Hírlevél | Megyeri Márk Máté'
+    },
+    {
+        path: 'hirlevel/leiratkozas',
+        loadComponent: () => import('./pages/newsletter/newsletter-page').then(module => module.NewsletterPage),
+        data: { mode: 'unsubscribe' },
+        title: 'Hírlevél | Megyeri Márk Máté'
+    },
+    {
         path: '**',
         loadComponent: () => import('./pages/not-found/not-found').then(module => module.NotFoundPage),
         title: 'Az oldal nem található | Megyeri Márk Máté'

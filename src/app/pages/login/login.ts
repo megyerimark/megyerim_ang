@@ -1,4 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { I18nService } from '../../i18n/i18n.service';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -6,6 +7,7 @@ import { AuthService } from '../../core/auth.service';
 import { ApiService } from '../../core/api.service';
 @Component({ selector: 'app-login', standalone: true, imports: [FormsModule, RouterLink], templateUrl: './login.html', styleUrl: './login.scss' })
 export class LoginPage implements OnInit {
+    readonly i18n = inject(I18nService);
     private auth = inject(AuthService);
     private router = inject(Router);
     private api = inject(ApiService);

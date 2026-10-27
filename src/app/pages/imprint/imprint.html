@@ -1,6 +1,40 @@
 <main class="container legal">
+@if (i18n.lang() === 'en') {
+  <a routerLink="/" class="back">← Back to home</a>
+  <span class="overline">LEGAL INFORMATION</span>
+  <h1>Legal notice</h1>
+  <p class="notice">Information under Section 4 of Hungarian Act CVIII of 2001 on electronic commerce. English translation for convenience; the Hungarian version prevails.</p>
+  @if (missing.length) {
+  <div class="notice error" role="alert"><strong>Incomplete legal notice.</strong> To be completed in <code>src/app/core/legal-info.ts</code>: {{ missing.join(', ') }}.</div>
+  }
+  <section>
+    <h2>Service provider</h2>
+    <ul class="legal-list">
+      <li><strong>Name:</strong> {{ legal.operatorName || todoEn }}</li>
+      <li><strong>Registered address:</strong> {{ legal.address || todoEn }}</li>
+      <li><strong>Email:</strong> @if (legal.email) { <a [href]="'mailto:' + legal.email">{{ legal.email }}</a> } @else { {{ todoEn }} }</li>
+      @if (legal.phone) { <li><strong>Phone:</strong> <a [href]="'tel:' + legal.phone">{{ legal.phone }}</a></li> }
+      <li><strong>Registration / company number:</strong> {{ legal.registrationNumber || todoEn }}</li>
+      <li><strong>Registering authority:</strong> {{ legal.registry || todoEn }}</li>
+      <li><strong>Tax number:</strong> {{ legal.taxNumber || todoEn }}</li>
+      @if (legal.chamber) { <li><strong>Chamber membership:</strong> {{ legal.chamber }}</li> }
+    </ul>
+    <h2>Hosting provider</h2>
+    <ul class="legal-list">
+      <li><strong>Name:</strong> {{ legal.hosting.name || todoEn }}</li>
+      <li><strong>Address:</strong> {{ legal.hosting.address || todoEn }}</li>
+      <li><strong>Contact:</strong> {{ legal.hosting.email || todoEn }}</li>
+      @if (legal.hosting.website) { <li><strong>Website:</strong> {{ legal.hosting.website }}</li> }
+    </ul>
+    <h2>Copyright</h2>
+    <p>
+      The texts, graphics and source code of this website are protected by copyright; using them without permission is not
+      allowed. The demo pages show fictitious brands and are not real client work. The fonts are licensed under the SIL Open Font License.
+    </p>
+  </section>
+  <p class="legal-meta">Related: <a routerLink="/adatkezeles">Privacy notice</a> · <a routerLink="/aszf">Terms and Conditions</a></p>
+} @else {
   <a routerLink="/" class="back">← Vissza a főoldalra</a>
-  @if (i18n.lang() === 'en') {<p class="notice" lang="en">{{ 'Ez a jogi dokumentum csak magyar nyelven érhető el.' | t }}</p>}
   <span class="overline">JOGI INFORMÁCIÓK</span>
   <h1>Impresszum</h1>
 
@@ -41,4 +75,5 @@
   </section>
 
   <p class="legal-meta">Kapcsolódó: <a routerLink="/adatkezeles">Adatkezelési tájékoztató</a></p>
+}
 </main>

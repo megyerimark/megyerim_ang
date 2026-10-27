@@ -1,6 +1,155 @@
 <main class="container legal">
+@if (i18n.lang() === 'en') {
+  <a routerLink="/" class="back">← Back to home</a>
+  <span class="overline">PRIVACY</span>
+  <h1>Privacy Notice</h1>
+  <p class="notice">This is an English translation for convenience. In case of any discrepancy, the Hungarian version prevails.</p>
+  @if (missing.length) {
+  <div class="notice error" role="alert"><strong>Incomplete notice.</strong> Missing controller details (<code>src/app/core/legal-info.ts</code>): {{ missing.join(', ') }}.</div>
+  }
+  <section>
+    <p>
+      This notice explains, in line with Regulation (EU) 2016/679 (GDPR) and Hungarian Act CXII of 2011 on informational
+      self-determination (Infotv.), how we process the personal data you provide on megyerimarkmate.hu.
+      @if (legal.effectiveDate) { Effective from: {{ legal.effectiveDate }}. }
+    </p>
+
+    <h2>1. The controller</h2>
+    <ul class="legal-list">
+      <li><strong>Name:</strong> {{ legal.operatorName || todoEn }}</li>
+      <li><strong>Registered / postal address:</strong> {{ legal.address || todoEn }}</li>
+      <li><strong>Email:</strong> @if (legal.email) { <a [href]="'mailto:' + legal.email">{{ legal.email }}</a> } @else { {{ todoEn }} }</li>
+      @if (legal.phone) { <li><strong>Phone:</strong> {{ legal.phone }}</li> }
+      <li><strong>Tax number:</strong> {{ legal.taxNumber || todoEn }}</li>
+    </ul>
+    <p>We are not required to appoint a data protection officer.</p>
+
+    <h2>2. What data we process, for what purpose and on what legal basis</h2>
+
+    <h3>Quote requests and the project quiz</h3>
+    <p>
+      <strong>Data:</strong> name, email address, optionally phone number and business name, project description, budget,
+      deadline, the style, colour and feature preferences chosen in the planner or quiz, inspiration links.<br>
+      <strong>Purpose:</strong> answering your request, assessing your needs, preparing a proposal and keeping in touch.<br>
+      <strong>Legal basis:</strong> steps taken at your request prior to entering into a contract (GDPR Art. 6(1)(b)).<br>
+      <strong>Retention:</strong> {{ legal.retentionMonths }} months from the last activity, then deleted automatically;
+      if a proposal is accepted, for the duration of the contractual relationship.
+    </p>
+
+    <h3>Consultation booking</h3>
+    <p>
+      <strong>Data:</strong> name, email address, optional phone number and note, the chosen time slot.<br>
+      <strong>Purpose:</strong> organising and confirming the meeting. <strong>Legal basis:</strong> GDPR Art. 6(1)(b).<br>
+      <strong>Retention:</strong> {{ legal.retentionMonths }} months after the appointment.
+    </p>
+
+    <h3>Newsletter (offers and discounts)</h3>
+    <p>
+      <strong>Data:</strong> email address, chosen language, where you subscribed, and proof of consent (the consent text,
+      time, IP address, browser identifier).<br>
+      <strong>Purpose:</strong> informing you about offers, discounts and news.<br>
+      <strong>Legal basis:</strong> your consent (GDPR Art. 6(1)(a); Section 6 of Hungarian Act XLVIII of 2008 on commercial advertising).
+      The subscription only becomes valid after you click the link in the confirmation email (double opt-in).<br>
+      <strong>Withdrawal:</strong> at any time, without giving reasons, via the unsubscribe link in every email or by email to us;
+      this does not affect the lawfulness of earlier mailings.<br>
+      <strong>Retention:</strong> until you unsubscribe; unconfirmed sign-ups are deleted automatically after 30 days.
+      After unsubscribing, we keep the address only to prove that we no longer send emails to it.
+    </p>
+
+    <h3>Private project page, messages and documents</h3>
+    <p>
+      Each quote request has a personal, random access link sent to you by email. It shows the status, content and amount
+      of the proposal and the project milestones; you can send messages and download documents uploaded for you there.
+      Messages (content, author, time) and documents are kept in private storage, and the time of accepting the proposal is
+      recorded. Please do not share the link; it expires and can be replaced on request (the old one then stops working).
+      The access key is stored only encrypted or in a non-reversible (hashed) form.<br>
+      <strong>Legal basis:</strong> GDPR Art. 6(1)(b). <strong>Retention:</strong> as for quote requests.
+    </p>
+
+    <h3>Contract, invoicing and payment</h3>
+    <p>
+      When a proposal is accepted, we record the time of acceptance, a fingerprint of the accepted proposal, the version of
+      the Terms and Conditions, and the IP address and browser identifier used, to prove the conclusion of the contract
+      (GDPR Art. 6(1)(b) and (f)). Invoice data must be kept for 8 years under Section 169 of Hungarian Act C of 2000 on
+      accounting (GDPR Art. 6(1)(c)).
+    </p>
+    <p>
+      Card payments (deposit, maintenance subscription) take place on the secure payment page of Stripe Payments Europe Ltd.
+      (Ireland); we never see or store card details. We pass your name, email address and the amount to Stripe. Stripe also
+      acts as an independent controller for fraud prevention and its legal obligations (stripe.com/privacy).
+    </p>
+
+    <h3>Visitor statistics</h3>
+    <p>
+      We use anonymous, aggregated event counting (e.g. page views, button clicks, traffic source). We do <strong>not</strong>
+      store IP addresses, browser identifiers or cookies for this, so the data cannot be linked to a person. If “Do Not Track”
+      is enabled in your browser, we do not count. The traffic source is kept in the browser's session storage until the tab
+      is closed. Anonymous events are deleted after 13 months.
+    </p>
+
+    <h3>Cookies and local storage</h3>
+    <p>
+      We only use strictly necessary cookies: when a form is submitted, a security (CSRF protection) cookie and a session
+      cookie that prevent abuse and expire at the end of the browsing session or after 2 hours at most. Your chosen language,
+      your cookie-banner choice and display settings are kept in your browser's local storage. We use no advertising or
+      tracking cookies.
+    </p>
+    <p>
+      <strong>Google reviews (external content):</strong> if Google reviews are shown on the home page, they are loaded by
+      Trustindex, which receives the visitor's IP address and may set cookies. We load this content <strong>only after your
+      consent</strong> (GDPR Art. 6(1)(a)); your choice is stored in your browser and can be changed at any time with the
+      “Cookie settings” button in the footer. See the Trustindex privacy policy at trustindex.io.
+    </p>
+
+    <h3>Security logging</h3>
+    <p>
+      To prevent abuse and fix errors, the server may keep technical logs for a short period (e.g. IP address, time, requested
+      address). Legal basis: legitimate interest in operating the service securely (GDPR Art. 6(1)(f)). Retention: according to
+      the hosting provider's logging policy, typically up to 30 days.
+    </p>
+
+    <h2>3. Who has access to the data (processors)</h2>
+    <ul class="legal-list">
+      <li><strong>Hosting provider:</strong> {{ legal.hosting.name || todoEn }} @if (legal.hosting.address) { <span>({{ legal.hosting.address }})</span> } – operating the website and database.</li>
+      <li><strong>Stripe Payments Europe Ltd.</strong> (1 Grand Canal Street Lower, Dublin 2, Ireland) – online card payments.</li>
+      @if (legal.emailProvider) { <li><strong>Email delivery:</strong> {{ legal.emailProvider }} – delivering notification and confirmation emails.</li> }
+    </ul>
+    <p>
+      We do not sell your data or use it for advertising. We do not transfer it outside the EEA ourselves; Stripe may do so
+      under its own safeguards that comply with EU law. Fonts and all other resources are served from our own hosting, so no
+      connection is made to third parties (e.g. Google) when you visit.
+    </p>
+
+    <h2>4. Data security</h2>
+    <p>
+      The site is only available over an encrypted (HTTPS) connection. The admin area is protected by two-step verification,
+      login attempts are limited, and uploaded documents are kept in non-public storage. The database is backed up regularly;
+      backups are deleted at the end of the backup cycle.
+    </p>
+
+    <h2>5. Your rights</h2>
+    <p>You can request at any time via the controller's contact details:</p>
+    <ul class="legal-list">
+      <li><strong>access</strong> to the data we hold about you (GDPR Art. 15);</li>
+      <li><strong>rectification</strong> (Art. 16) and <strong>erasure</strong> (“right to be forgotten”, Art. 17);</li>
+      <li><strong>restriction</strong> of processing (Art. 18);</li>
+      <li><strong>data portability</strong> in a structured, machine-readable format (Art. 20);</li>
+      <li><strong>objection</strong> to processing based on legitimate interest (Art. 21).</li>
+    </ul>
+    <p>We respond to your request within one month at the latest.</p>
+
+    <h2>6. Remedies</h2>
+    <p>
+      If you feel your data protection rights have been infringed, please contact us first – we will try to resolve it quickly.
+      You may lodge a complaint with the Hungarian National Authority for Data Protection and Freedom of Information (NAIH,
+      1055 Budapest, Falk Miksa utca 9–11; postal address: 1363 Budapest, Pf. 9; email: ugyfelszolgalat&#64;naih.hu; naih.hu),
+      or go to court (including the regional court of your place of residence).
+    </p>
+  </section>
+  <p class="legal-meta">Related: <a routerLink="/impresszum">Legal notice</a> · <a routerLink="/aszf">Terms and Conditions</a></p>
+  <a class="btn btn-outline" routerLink="/ajanlatkeres">Back to the quote request</a>
+} @else {
   <a routerLink="/" class="back">← Vissza a főoldalra</a>
-  @if (i18n.lang() === 'en') {<p class="notice" lang="en">{{ 'Ez a jogi dokumentum csak magyar nyelven érhető el.' | t }}</p>}
   <span class="overline">ADATVÉDELEM</span>
   <h1>Adatkezelési tájékoztató</h1>
 
@@ -50,6 +199,18 @@
       <strong>Megőrzés:</strong> az időpontot követő {{ legal.retentionMonths }} hónapig.
     </p>
 
+    <h3>Hírlevél (akciók, kedvezmények)</h3>
+    <p>
+      <strong>Adatok:</strong> e-mail-cím, a választott nyelv, a feliratkozás helye, valamint a hozzájárulás bizonyítéka
+      (a hozzájáruló szöveg, időpont, IP-cím, böngészőazonosító).<br>
+      <strong>Cél:</strong> értesítés akciókról, kedvezményekről és újdonságokról.<br>
+      <strong>Jogalap:</strong> a hozzájárulásod (GDPR 6. cikk (1) a) pont; a gazdasági reklámtevékenységről szóló 2008. évi XLVIII. törvény 6. §).
+      A feliratkozás csak a megerősítő e-mailben kapott linkre kattintva lesz érvényes (kettős megerősítés).<br>
+      <strong>Visszavonás:</strong> bármikor, indoklás nélkül, a levelekben található leiratkozási linkkel vagy e-mailben; ez nem érinti a korábbi küldések jogszerűségét.<br>
+      <strong>Megőrzés:</strong> leiratkozásig; a meg nem erősített feliratkozás 30 nap után automatikusan törlődik.
+      Leiratkozás után az e-mail-címet csak annak igazolására őrizzük, hogy több levelet nem küldünk.
+    </p>
+
     <h3>Privát projektoldal, üzenetek és dokumentumok</h3>
     <p>
       Az ajánlatkéréshez személyes, véletlenszerű hozzáférési link tartozik, amelyet e-mailben kapsz meg.
@@ -87,8 +248,9 @@
     <p>
       Csak a működéshez feltétlenül szükséges sütiket használjuk: űrlapküldéskor egy biztonsági (CSRF-védelmi)
       sütit és egy munkamenet-sütit, amelyek a visszaélések kivédését szolgálják, és a böngészési munkamenet
-      végén vagy legfeljebb 2 óra után lejárnak. A választott világos/sötét téma a böngésződ helyi tárolójában
-      (localStorage) marad meg. Hirdetési vagy követő sütit nem használunk.
+      végén vagy legfeljebb 2 óra után lejárnak. A választott nyelv, a süti-sávval kapcsolatos döntésed és a
+      megjelenítési beállítások a böngésződ helyi tárolójában (localStorage) maradnak meg. Hirdetési vagy követő
+      sütit nem használunk.
     </p>
     <p>
       <strong>Google-vélemények (külső tartalom):</strong> ha a főoldalon Google-értékelések jelennek meg, azokat a
@@ -155,4 +317,5 @@
     Kapcsolódó: <a routerLink="/impresszum">Impresszum</a>
   </p>
   <a class="btn btn-outline" routerLink="/ajanlatkeres">Vissza az ajánlatkéréshez</a>
+}
 </main>

@@ -15,6 +15,9 @@
     }
   </div>
 </section>
+@if (promo(); as p) {
+<app-promo-spotlight [percent]="p.percent" [title]="promoTitle()" [text]="promoText()" [endsAt]="p.ends_at"></app-promo-spotlight>
+}
 <section premiumReveal class="section audience" aria-labelledby="audience-title">
   <div class="container">
     <div class="audience-intro">
@@ -274,9 +277,17 @@
           </p>
         </div>
         <div class="service-tile-bottom">
+          @if (discounted(service.starting_price_huf); as sale) {
+          <span class="price-sale">
+            <s [attr.aria-label]="'Eredeti ár' | t">{{ money(service.starting_price_huf) }}</s>
+            <strong>{{ sale }}</strong>
+            <em>−{{ promo()!.percent }}%</em>
+          </span>
+          } @else {
           <span>
             {{ money(service.starting_price_huf) }}
           </span>
+          }
           <a routerLink="/ajanlatkeres" [attr.aria-label]="'Ajánlatot kérek' | t">
             {{ 'Érdekel' | t }}
             <span aria-hidden="true">
@@ -650,6 +661,7 @@
   </div>
 </section>
 
+<app-newsletter-signup source="home" [highlight]="promo()?.percent ?? 0"></app-newsletter-signup>
 <section class="bottom-cta" aria-labelledby="cta-title">
   <div class="container"><div class="cta-panel"><div class="cta-panel-grid" aria-hidden="true"></div><div class="cta-glow" aria-hidden="true"></div>
     <span class="overline">{{ 'A TE PROJEKTED KÖVETKEZIK' | t }}</span>
@@ -730,7 +742,7 @@
       <a routerLink="/adatkezeles">{{ 'Adatkezelési tájékoztató' | t }}</a>
       <a routerLink="/aszf">{{ 'ÁSZF' | t }}</a>
       <a routerLink="/impresszum">{{ 'Impresszum' | t }}</a>
-      @if (settings().reviews_widget_id) {<button type="button" class="footer-cookie" (click)="consent.openSettings()">{{ 'Süti-beállítások' | t }}</button>}
+      <button type="button" class="footer-cookie" (click)="consent.openSettings()">{{ 'Süti-beállítások' | t }}</button>
     </span>
   </div>
 </footer>
