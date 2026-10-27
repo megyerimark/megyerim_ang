@@ -1,6 +1,7 @@
 import { Component, HostListener, inject, OnDestroy, OnInit, signal, computed } from '@angular/core';
 import { I18nService } from '../../i18n/i18n.service';
 import { FormsModule } from '@angular/forms';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastService } from '../../core/toast.service';
@@ -10,7 +11,7 @@ import { FinancePanel } from './finance-panel';
 import { NewsletterPanel } from './newsletter-panel';
 import { ApiService } from '../../core/api.service';
 import { AuthService } from '../../core/auth.service';
-import { SystemStatus, Activity, Client, ConsultationSlot, Dashboard, Project, ProjectMilestone, ProjectCollaboration, ProjectDocument, Quote, QuoteStatus, Service, SiteSettings, SITE_DEFAULTS, STATUS_OPTIONS, MaintenanceAgreement, MaintenanceEditor, MaintenanceData, QuoteBoard, StudioTask, GrowthData, Testimonial } from '../../core/models';
+import { AdminSecurityStatus, SystemStatus, Activity, Client, ConsultationSlot, Dashboard, Project, ProjectMilestone, ProjectCollaboration, ProjectDocument, Quote, QuoteStatus, Service, SiteSettings, SITE_DEFAULTS, STATUS_OPTIONS, MaintenanceAgreement, MaintenanceEditor, MaintenanceData, QuoteBoard, StudioTask, GrowthData, Testimonial } from '../../core/models';
 type Tab = 'dashboard' | 'growth' | 'newsletter' | 'testimonials' | 'workspace' | 'maintenance' | 'sites' | 'finance' | 'consultations' | 'quotes' | 'clients' | 'projects' | 'services' | 'settings' | 'activity' | 'account';
 /** Fejléc-cím és alcím fülenként. */
 const HEADINGS: Record<Tab, [string, string]> = {
@@ -608,7 +609,7 @@ export class AdminPage implements OnInit, OnDestroy {
         });
     }
     // --- Biztonság: kétlépcsős belépés és aktív munkamenetek ---
-    security = signal<{ two_factor_email_enabled: boolean; two_factor_required?: boolean; session_driver: string } | null>(null);
+    security = signal<AdminSecurityStatus | null>(null);
     sessions = signal<{ id: string; ip_address: string | null; user_agent: string; last_activity: number; current: boolean }[]>([]);
     twoFactorPassword = '';
     loadSecurity() {
@@ -622,6 +623,55 @@ export class AdminPage implements OnInit, OnDestroy {
             next: () => { this.busy.set(false); this.twoFactorPassword = ''; this.notify(enabled ? 'Kétlépcsős belépés bekapcsolva.' : 'Kétlépcsős belépés kikapcsolva.'); this.loadSecurity(); },
             error: e => this.fail(e)
         });
+    }
+    // --- Hitelesítő alkalmazás (TOTP) ---
+    totpPassword = '';
+    totpCode = '';
+    totpSetupData = signal<{ secret: string; otpauth_uri: string } | null>(null);
+    private sanitizer = inject(DomSanitizer);
+    /** Az otpauth:// sémát az Angular alapból „unsafe:”-re cseréli; csak a saját, ellenőrzött TOTP-linket engedjük. */
+    readonly totpLink = computed<SafeUrl | null>(() => {
+        const uri = this.totpSetupData()?.otpauth_uri;
+        return uri && uri.startsWith('otpauth://totp/') ? this.sanitizer.bypassSecurityTrustUrl(uri) : null;
+    });
+    recoveryCodes = signal<string[]>([]);
+    startTotpSetup() {
+        if (!this.totpPassword) { this.notify('Add meg a jelenlegi jelszavadat.', true); return; }
+        this.busy.set(true);
+        this.api.totpSetup(this.totpPassword).subscribe({
+            next: r => { this.busy.set(false); this.totpPassword = ''; this.totpCode = ''; this.recoveryCodes.set([]); this.totpSetupData.set(r.data); },
+            error: e => this.fail(e)
+        });
+    }
+    confirmTotp() {
+        if (!/^[0-9]{6}$/.test(this.totpCode.trim())) { this.notify('Írd be az alkalmazás 6 jegyű kódját.', true); return; }
+        this.busy.set(true);
+        this.api.totpConfirm(this.totpCode.trim()).subscribe({
+            next: r => { this.busy.set(false); this.totpCode = ''; this.totpSetupData.set(null); this.recoveryCodes.set(r.data.recovery_codes); this.notify(r.message); this.loadSecurity(); },
+            error: e => this.fail(e)
+        });
+    }
+    cancelTotpSetup() { this.totpSetupData.set(null); this.totpCode = ''; }
+    disableTotp() {
+        if (!this.totpPassword || !this.totpCode.trim()) { this.notify('A kikapcsoláshoz add meg a jelszavadat és egy aktuális kódot.', true); return; }
+        if (!confirm('Biztosan kikapcsolod a hitelesítő alkalmazásos belépést?')) return;
+        this.busy.set(true);
+        this.api.totpDisable(this.totpPassword, this.totpCode.trim()).subscribe({
+            next: r => { this.busy.set(false); this.totpPassword = ''; this.totpCode = ''; this.recoveryCodes.set([]); this.notify(r.message); this.loadSecurity(); },
+            error: e => this.fail(e)
+        });
+    }
+    regenerateRecoveryCodes() {
+        if (!this.totpPassword) { this.notify('Add meg a jelenlegi jelszavadat.', true); return; }
+        if (!confirm('Új helyreállítási kódok készülnek, a régiek érvénytelenné válnak. Folytatod?')) return;
+        this.busy.set(true);
+        this.api.totpRecoveryCodes(this.totpPassword).subscribe({
+            next: r => { this.busy.set(false); this.totpPassword = ''; this.recoveryCodes.set(r.data.recovery_codes); this.notify(r.message); this.loadSecurity(); },
+            error: e => this.fail(e)
+        });
+    }
+    copyText(text: string) {
+        navigator.clipboard?.writeText(text).then(() => this.notify('Vágólapra másolva.'), () => this.notify('Nem sikerült másolni – jelöld ki kézzel.', true));
     }
     revokeOtherSessions() {
         if (!confirm('Minden más eszközön kijelentkeztetünk. Folytatod?')) return;

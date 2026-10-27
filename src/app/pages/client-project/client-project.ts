@@ -77,6 +77,14 @@ export class ClientProjectPage implements OnInit, OnDestroy {
                     return;
                 }
                 this.accepting.set(false);
+                // Ha a szerver nem tudott fizetési oldalt nyitni, de online fizetés van és előleg jár:
+                // egyszer automatikusan újrapróbáljuk (a szerver a már nyitott munkamenetet adja vissza, dupla fizetés nem lehet).
+                const depositDue = !!result.data.deposit_amount_huf && !result.data.deposit_paid_at;
+                if (depositDue && result.data.online_payment && result.payment_status !== 'transfer_only') {
+                    this.message.set('Az ajánlat elfogadását rögzítettük. Átirányítás az előleg fizetéséhez…');
+                    this.payDeposit();
+                    return;
+                }
                 this.message.set(result.data.deposit_amount_huf && !result.data.deposit_paid_at
                     ? 'Az ajánlat elfogadását rögzítettük. A munka az előleg beérkezése után indul – lent fizetheted, vagy írj, és küldöm a díjbekérőt.'
                     : 'Az ajánlat elfogadását rögzítettük. Hamarosan egyeztetünk a következő lépésekről.');
@@ -118,7 +126,13 @@ export class ClientProjectPage implements OnInit, OnDestroy {
         this.paying.set(true);
         request.subscribe({
             next: r => { location.href = r.url; },
-            error: (e: HttpErrorResponse) => { this.paying.set(false); this.toast.error(e.error?.errors?.payment?.[0] || e.error?.message || 'A fizetési oldal most nem nyitható meg.'); }
+            error: (e: HttpErrorResponse) => {
+                this.paying.set(false);
+                const text = e.error?.errors?.payment?.[0] || e.error?.message || 'A fizetési oldal most nem nyitható meg.';
+                this.toast.error(text);
+                this.error.set(text + ' A lenti „Fizetés” gombbal később újra megpróbálhatod, vagy fizethetsz átutalással is.');
+                setTimeout(() => document.getElementById('fizetes')?.scrollIntoView({ behavior: 'smooth' }), 200);
+            }
         });
     }
     payDeposit(): void { this.redirect(this.api.depositCheckout(this.token)); }

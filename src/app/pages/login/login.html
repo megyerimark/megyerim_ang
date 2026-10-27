@@ -69,10 +69,14 @@
         </div>
         <div class="forgot-line"><a routerLink="/admin/elfelejtett-jelszo">Elfelejtetted a jelszavad? →</a></div>
         } @else {
+        @if (codeMethod() === 'totp') {
+        <p>Nyisd meg a hitelesítő alkalmazásodat, és írd be a 6 jegyű kódot. Ha nincs nálad a telefonod, egy helyreállítási kódot is használhatsz.</p>
+        } @else {
         <p>Az admin e-mail-címedre hatjegyű ellenőrzőkódot küldtünk. A kód 10 percig érvényes.</p>
+        }
         <div class="form-field">
-          <label for="login-code">Ellenőrzőkód</label>
-          <input class="input" type="text" id="login-code" name="code" [(ngModel)]="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required>
+          <label for="login-code">{{ codeMethod() === 'totp' ? 'Hitelesítő- vagy helyreállítási kód' : 'Ellenőrzőkód' }}</label>
+          <input class="input" type="text" id="login-code" name="code" [(ngModel)]="code" [attr.inputmode]="codeMethod() === 'totp' ? 'text' : 'numeric'" autocomplete="one-time-code" [attr.maxlength]="codeMethod() === 'totp' ? 11 : 6" required>
         </div>
         }
         @if(error()){
@@ -84,7 +88,7 @@
           {{loading()?'Ellenőrzés…':needsCode()?'Kód megerősítése ↗︎':'Belépés az adminba ↗︎'}}
         </button>
       </form>
-      @if(needsCode()){<button class="btn btn-outline" type="button" [disabled]="loading()" (click)="resendCode()">Új kód küldése</button>}
+      @if(needsCode() && codeMethod() === 'email'){<button class="btn btn-outline" type="button" [disabled]="loading()" (click)="resendCode()">Új kód küldése</button>}
       <div class="login-foot">
         🌌
       </div>

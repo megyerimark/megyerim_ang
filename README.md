@@ -71,3 +71,10 @@ Adminban felvett szolgáltatás csak `is_active=true`, referencia csak `is_publi
 ## Valós API-kapcsolat ellenőrzése
 
 Futtasd: `npm run check:api`. A részletes hibaelhárítás: `LARAVEL_KAPCSOLAT_ELLENORZES.md`. Fejlesztéskor a proxy már `ng serve`-vel is aktív.
+
+## v20 – biztonsági frissítés (2026-10-28)
+
+- **CSP élesítve** (`.htaccess`): a `Content-Security-Policy-Report-Only` helyett kényszerített `Content-Security-Policy`. Inline szkript és `eval` tiltva. Ha egy új külső szolgáltatás (pl. widget) nem töltődik be, a böngésző konzolja (F12) kiírja, melyik címet kell felvenni a szabályba.
+- **Hitelesítő alkalmazásos belépés (TOTP)**: Admin → Fiók és biztonság → *Hitelesítő alkalmazás*. A belépési oldal a 6 jegyű app-kódot és a helyreállítási kódot is elfogadja.
+- **Kisebb build**: a `public/demos` alól törölve a ~12 MB-nyi, sehol nem hivatkozott eredeti JPG/PNG (az eredetik a `design-sources` mappában megvannak). A buildbe csak a használt WebP képek kerülnek.
+- A backend v20 kell hozzá (migráció: `bash deploy.sh`).

@@ -1148,3 +1148,8 @@ td small {
 @media(max-width:700px){.promo-admin-grid{grid-template-columns:1fr}}
 .admin-lang{display:inline-flex;align-items:center;gap:6px;width:max-content;padding:7px 12px;border-radius:999px;border:1px solid var(--border);background:transparent;color:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
 .admin-lang:hover{border-color:var(--accent)}
+
+/* Hitelesítő alkalmazás (TOTP) beállítása */
+.totp-steps { margin: 0 0 16px; padding-left: 20px; display: grid; gap: 10px; font-size: 14px; line-height: 1.6; }
+.totp-secret { display: inline-block; margin: 6px 8px 6px 0; padding: 6px 10px; border-radius: 8px; background: #ffffff12; font-size: 15px; letter-spacing: .08em; word-break: break-all; }
+.recovery-codes { margin: 12px 0; padding: 14px 16px; border-radius: 12px; background: #ffffff0d; border: 1px solid #ffffff1a; font-size: 15px; line-height: 1.8; letter-spacing: .06em; columns: 2; }

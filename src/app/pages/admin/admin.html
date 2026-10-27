@@ -1579,6 +1579,64 @@
       </section>
       <section class="admin-panel card settings-editor">
         <div class="panel-title">
+          <h2>Hitelesítő alkalmazás (ajánlott)</h2>
+        </div>
+        @if (security(); as sec) {
+          <p class="muted">
+            Google Authenticator, Microsoft Authenticator, 1Password, Bitwarden… Bekapcsolva a belépéshez nem e-mailes kód kell, hanem
+            az alkalmazás kódja – így egy feltört e-mail-fiókkal (jelszó-visszaállítás + kód) sem vehető át az admin.
+          </p>
+          @if (recoveryCodes().length) {
+          <div class="notice" role="status">
+            <strong>Helyreállítási kódok – most mentsd el őket biztonságos helyre (pl. jelszókezelő)!</strong>
+            Mindegyik egyszer használható, ha nincs nálad a telefonod. Később nem jelennek meg újra.
+          </div>
+          <pre class="recovery-codes" translate="no">{{ recoveryCodes().join('\n') }}</pre>
+          <button type="button" class="btn btn-outline" (click)="copyText(recoveryCodes().join('\n'))">Kódok másolása</button>
+          <button type="button" class="btn btn-outline" (click)="recoveryCodes.set([])">Elmentettem</button>
+          }
+          @if (sec.totp_enabled) {
+          <p class="muted">Állapot: <strong>bekapcsolva</strong> · megmaradt helyreállítási kódok: <strong>{{ sec.recovery_codes_remaining ?? 0 }}</strong></p>
+          <div class="form-field">
+            <label>Jelenlegi jelszó</label>
+            <input class="input" type="password" autocomplete="current-password" [(ngModel)]="totpPassword">
+          </div>
+          <div class="form-field">
+            <label>Aktuális kód (csak kikapcsoláshoz)</label>
+            <input class="input" type="text" autocomplete="one-time-code" maxlength="11" [(ngModel)]="totpCode">
+          </div>
+          <button type="button" class="btn btn-outline" [disabled]="busy()" (click)="regenerateRecoveryCodes()">Új helyreállítási kódok</button>
+          <button type="button" class="btn btn-outline" [disabled]="busy()" (click)="disableTotp()">Kikapcsolás</button>
+          } @else {
+          @if (totpSetupData(); as setup) {
+          <ol class="totp-steps">
+            <li>A telefonodon nyisd meg a hitelesítő alkalmazást → „Kód hozzáadása” → <strong>kulcs megadása kézzel</strong> (időalapú).</li>
+            <li>Írd be ezt a kulcsot:
+              <code class="totp-secret" translate="no">{{ setup.secret }}</code>
+              <button type="button" class="btn btn-outline" (click)="copyText(setup.secret.replaceAll(' ', ''))">Másolás</button>
+              <br>@if (totpLink(); as link) {<span class="muted">Ha ezt az oldalt a telefonodon nyitottad meg, elég a linkre koppintani: <a [href]="link" translate="no">Hozzáadás az alkalmazáshoz</a></span>}
+            </li>
+            <li>Írd be az alkalmazás által mutatott 6 jegyű kódot:</li>
+          </ol>
+          <div class="form-field">
+            <label>Kód az alkalmazásból</label>
+            <input class="input" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" [(ngModel)]="totpCode">
+          </div>
+          <button type="button" class="btn btn-primary" [disabled]="busy()" (click)="confirmTotp()">Megerősítés és bekapcsolás</button>
+          <button type="button" class="btn btn-outline" [disabled]="busy()" (click)="cancelTotpSetup()">Mégse</button>
+          } @else {
+          <p class="muted">Állapot: <strong>kikapcsolva</strong>{{ sec.two_factor_required || sec.two_factor_email_enabled ? ' (jelenleg e-mailes kód védi a belépést)' : '' }}.</p>
+          <div class="form-field">
+            <label>Jelenlegi jelszó</label>
+            <input class="input" type="password" autocomplete="current-password" [(ngModel)]="totpPassword">
+          </div>
+          <button type="button" class="btn btn-primary" [disabled]="busy()" (click)="startTotpSetup()">Beállítás indítása</button>
+          }
+          }
+        }
+      </section>
+      <section class="admin-panel card settings-editor">
+        <div class="panel-title">
           <h2>Aktív munkamenetek</h2>
         </div>
         @if (sessions().length) {

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, switchMap } from 'rxjs';
-import { SystemStatus, ClientSite, ClientSiteInput, FinanceEntry, FinanceEntryInput, FinanceSettings, FinanceSummary, AdminUser, Activity, Client, ClientProject, ConsultationConfirmation, ConsultationSlot, Dashboard, Envelope, Paged, Project, ProjectMilestone, ProjectMessage, ProjectDocument, ProjectCollaboration, Quote, QuotePayload, QuoteBoard, Service, SiteSettings, StudioTask, StudioClientNote, WorkspaceProject, CommunicationCenter, MaintenanceData, MaintenanceAgreement, MaintenanceEditor, Testimonial, TestimonialInput, GrowthData, NewsletterSubscriber, NewsletterCounts } from './models';
+import { AdminSecurityStatus, SystemStatus, ClientSite, ClientSiteInput, FinanceEntry, FinanceEntryInput, FinanceSettings, FinanceSummary, AdminUser, Activity, Client, ClientProject, ConsultationConfirmation, ConsultationSlot, Dashboard, Envelope, Paged, Project, ProjectMilestone, ProjectMessage, ProjectDocument, ProjectCollaboration, Quote, QuotePayload, QuoteBoard, Service, SiteSettings, StudioTask, StudioClientNote, WorkspaceProject, CommunicationCenter, MaintenanceData, MaintenanceAgreement, MaintenanceEditor, Testimonial, TestimonialInput, GrowthData, NewsletterSubscriber, NewsletterCounts } from './models';
 import { AttributionService } from './attribution.service';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
@@ -55,7 +55,7 @@ export class ApiService {
         return this.csrf().pipe(switchMap(() => this.http.post<Envelope<ClientProject>>('/api/client/project', { token }, this.opts)));
     }
     acceptProposal(token: string, early_start_consent = false) {
-        return this.csrf().pipe(switchMap(() => this.http.post<Envelope<ClientProject> & { payment_url?: string | null }>('/api/client/project/accept', { token, accept_terms: true, early_start_consent }, this.opts)));
+        return this.csrf().pipe(switchMap(() => this.http.post<Envelope<ClientProject> & { payment_url?: string | null; payment_status?: 'redirect' | 'failed' | 'transfer_only' | 'none' }>('/api/client/project/accept', { token, accept_terms: true, early_start_consent }, this.opts)));
     }
     // Online fizetés (Stripe Checkout) – a privát kulcs a kérés törzsében utazik.
     depositCheckout(token: string) { return this.csrf().pipe(switchMap(() => this.http.post<{ url: string }>('/api/client/project/deposit/checkout', { token }, this.opts))); }
@@ -83,11 +83,17 @@ export class ApiService {
             message: string;
             user?: AdminUser;
             requires_two_factor?: boolean;
+            two_factor_method?: 'email' | 'totp';
         }>('/admin/login', { email, password }, this.opts)));
     }
     verifyAdminLogin(code: string) { return this.http.post<{message: string; user: AdminUser}>('/admin/verify-login', {code}, this.opts); }
     resendAdminLoginCode() { return this.http.post<{message: string}>('/admin/resend-login-code', {}, this.opts); }
-    adminSecurity() { return this.http.get<Envelope<{two_factor_email_enabled: boolean; two_factor_required?: boolean; session_driver: string}>>('/api/admin/security', this.opts); }
+    adminSecurity() { return this.http.get<Envelope<AdminSecurityStatus>>('/api/admin/security', this.opts); }
+    /** Hitelesítő alkalmazás (TOTP): beállítás → megerősítés → helyreállítási kódok. */
+    totpSetup(current_password: string) { return this.http.post<Envelope<{secret: string; otpauth_uri: string}>>('/api/admin/security/totp/setup', {current_password}, this.opts); }
+    totpConfirm(code: string) { return this.http.post<{message: string; data: {recovery_codes: string[]}}>('/api/admin/security/totp/confirm', {code}, this.opts); }
+    totpDisable(current_password: string, code: string) { return this.http.post<{message: string}>('/api/admin/security/totp/disable', {current_password, code}, this.opts); }
+    totpRecoveryCodes(current_password: string) { return this.http.post<{message: string; data: {recovery_codes: string[]}}>('/api/admin/security/totp/recovery-codes', {current_password}, this.opts); }
     setAdminTwoFactor(enabled: boolean, current_password: string) { return this.http.put<Envelope<{two_factor_email_enabled: boolean}>>('/api/admin/security/two-factor', {enabled, current_password}, this.opts); }
     adminSessions() { return this.http.get<Envelope<{id:string;ip_address:string|null;user_agent:string;last_activity:number;current:boolean}[]>>('/api/admin/security/sessions', this.opts); }
     revokeOtherAdminSessions() { return this.http.delete<{message:string;removed:number}>('/api/admin/security/sessions/others', this.opts); }

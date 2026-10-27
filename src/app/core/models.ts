@@ -451,3 +451,12 @@ export interface SystemStatus {
     backend_version: string; environment: string; php_version: string; laravel_version: string;
     routes_cached: boolean; config_cached: boolean; database: boolean; checks: SystemCheck[]; ok: boolean;
 }
+
+/** Admin biztonsági állapot (Fiók és biztonság fül). */
+export interface AdminSecurityStatus {
+    two_factor_email_enabled: boolean;
+    two_factor_required?: boolean;
+    totp_enabled?: boolean;
+    recovery_codes_remaining?: number;
+    session_driver: string;
+}
