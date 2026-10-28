@@ -1,6 +1,13 @@
 /* eslint-disable */
 // Angol fordítások. Kulcs = a magyar szöveg (szóközök normalizálva). Hiányzó kulcsnál a magyar szöveg jelenik meg.
 export const EN: Record<string, string> = {
+  "Időszakos akció": "Limited-time offer",
+  "A kedvezmény automatikusan rögzül az ajánlatkérésedhez, az ajánlatban az eredeti és az akciós árat is látni fogod.": "The discount is recorded with your request automatically; your proposal will show both the regular and the discounted price.",
+  "Még": "Ends in",
+  "még": "ends in",
+  "Időszakos akció az új weboldalakra": "Limited-time offer on new websites",
+  "Akciós sáv bezárása": "Close offer banner",
+  "akciós kedvezmény rögzítve az ajánlatkérésedhez. Az ajánlatban érvényesítem.": "discount recorded with your request. It will be applied in your proposal.",
   "(legfeljebb 6)": "(up to 6)",
   "(nem kötelező)": "(optional)",
   ", és kérem a megkeresésem feldolgozását.": ", and I request that my enquiry be processed.",

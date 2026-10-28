@@ -1,4 +1,4 @@
-import { Component, HostListener, effect, inject, signal } from '@angular/core';
+import { Component, HostListener, computed, effect, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { Meta, Title } from '@angular/platform-browser';
@@ -6,6 +6,7 @@ import { ApiService } from './core/api.service';
 import { AttributionService } from './core/attribution.service';
 import { SiteSettings } from './core/models';
 import { Navbar } from './components/navbar/navbar';
+import { PromoBar } from './components/promo-bar/promo-bar';
 import { ToastHost } from './components/toast/toast-host';
 import { DomTranslator } from './i18n/dom-translator';
 import { CookieBanner } from './components/cookie-banner/cookie-banner';
@@ -15,7 +16,7 @@ import { I18nService } from './i18n/i18n.service';
 @Component({
     selector: 'app-root',
     standalone: true,
-    imports: [RouterOutlet, RouterLink, Navbar, ToastHost, CookieBanner, TPipe],
+    imports: [RouterOutlet, RouterLink, Navbar, PromoBar, ToastHost, CookieBanner, TPipe],
     templateUrl: './app.html',
     styleUrl: './app.scss'
 })
@@ -35,6 +36,8 @@ export class App {
     private readonly domTranslator = inject(DomTranslator);
     readonly currentPath = signal(typeof location !== 'undefined' ? location.pathname : '/');
     readonly showTop = signal(false);
+    /** Akciós sáv: a nyilvános oldalakon igen; az ajánlatkérő/kvíz saját akciós dobozt mutat, a privát oldalakon nem releváns. */
+    readonly showPromoBar = computed(() => !/^\/(ajanlatkeres|projekt-kviz|ugyfel|fizetes|hirlevel|admin)/.test(this.currentPath()));
     readonly phone = signal('');
     readonly showMobileCta = signal(false);
     private lastTracked = '';

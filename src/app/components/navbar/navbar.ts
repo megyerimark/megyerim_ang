@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
@@ -18,6 +18,7 @@ interface NavItem { label: string; link: string; fragment?: string; spy?: string
 export class Navbar implements OnInit, OnDestroy {
     readonly i18n = inject(I18nService);
     private readonly router = inject(Router);
+    private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
     isDark = signal(true);
     menuOpen = signal(false);
     /** Az éppen látható főoldali szekció azonosítója (scroll-spy). */
@@ -95,6 +96,8 @@ export class Navbar implements OnInit, OnDestroy {
 
     toggleMenu(): void {
         this.menuOpen.update(value => !value);
+        // A menü a menüsor tényleges alja alatt nyíljon (fölötte lehet pl. az akciós sáv).
+        if (this.menuOpen()) this.host.nativeElement.style.setProperty('--menu-top', Math.max(0, Math.round(this.host.nativeElement.getBoundingClientRect().bottom)) + 'px');
         // Mobilmenü nyitva: ne görögjön a háttér.
         document.body.style.overflow = this.menuOpen() ? 'hidden' : '';
     }

@@ -28,6 +28,7 @@
       @if(p.quoted_at && p.proposal_summary && p.quoted_price_huf!==null){
         <section class="client-panel client-proposal" id="ajanlat">
           <div class="client-section-title"><div><span class="client-eyebrow">SZEMÉLYRE SZABOTT AJÁNLAT</span><h2>Az ajánlat részletei</h2></div><button class="client-print" type="button" (click)="printProposal()">Nyomtatás / PDF ↗︎</button></div>
+          @if(p.promo_percent){<div class="promo-applied" role="note">✦ −{{p.promo_percent}}% akciós kedvezmény@if(p.promo_title){ ({{p.promo_title}})} – az ajánlatkérésed beküldésekor rögzítve. @if(p.list_price_huf){Akció előtti ár: <s>{{money(p.list_price_huf)}}</s>, megtakarítás: <strong>{{money(p.list_price_huf - p.quoted_price_huf)}}</strong>.}</div>}
           <div class="proposal-meta"><div><small>Ajánlati díj</small><strong>{{money(p.quoted_price_huf)}}</strong></div><div><small>Érvényesség</small><strong>{{date(p.proposal_valid_until)}}</strong></div>
             @if(p.deposit_amount_huf){<div class="deposit-highlight"><small>Kötelező előleg ({{p.deposit_percent}}%)</small><strong>{{money(p.deposit_amount_huf)}}</strong></div>}</div>
           @if(p.deposit_amount_huf){<p class="client-note">A munka az előleg beérkezése után indul; az előleget a végszámlából levonom. @if(p.online_payment){Elfogadás után azonnal bankkártyával fizethetsz a Stripe biztonságos oldalán.}@else{Elfogadás után díjbekérőt küldök az átutaláshoz.}</p>}

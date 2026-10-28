@@ -109,6 +109,8 @@ export class AdminPage implements OnInit, OnDestroy {
     selectedStatus: QuoteStatus = 'new';
     selectedNotes = '';
     selectedPrice = '';
+    /** Akció előtti ár – csak akció idején beküldött ajánlatkérésnél. */
+    selectedListPrice = '';
     selectedDeposit: number | string | null = '';
     selectedProposal = '';
     selectedSchedule = '';
@@ -381,7 +383,7 @@ export class AdminPage implements OnInit, OnDestroy {
         });
     }
     loadQuotes(page = 1) { this.busy.set(true); this.api.quotes(this.searchQuote, this.filterStatus, page).subscribe({ next: r => { this.quotes.set(r.data); this.quotePage.set(r.current_page); this.quotePages.set(r.last_page); this.quoteTotal.set(r.total); this.busy.set(false); }, error: e => this.fail(e) }); }
-    showQuote(q: Quote) { this.selectedQuote.set(q); this.selectedStatus = q.status; this.selectedNotes = q.admin_notes || ''; this.selectedPrice = q.quoted_price_huf === null ? '' : String(q.quoted_price_huf); this.selectedDeposit = q.deposit_percent ?? (q.quoted_at ? '' : (this.depositMin() || '')); this.selectedProposal = q.proposal_summary || ''; this.selectedSchedule = q.proposal_schedule || ''; this.selectedTerms = q.proposal_terms || ''; this.selectedValidUntil = q.proposal_valid_until ? q.proposal_valid_until.slice(0, 10) : ''; this.selectedFollowUp = q.follow_up_at ? q.follow_up_at.slice(0, 10) : ''; this.loadMilestones(q.id); this.loadCollaboration(q.id); }
+    showQuote(q: Quote) { this.selectedQuote.set(q); this.selectedStatus = q.status; this.selectedNotes = q.admin_notes || ''; this.selectedPrice = q.quoted_price_huf === null ? '' : String(q.quoted_price_huf); this.selectedListPrice = q.list_price_huf ? String(q.list_price_huf) : ''; this.selectedDeposit = q.deposit_percent ?? (q.quoted_at ? '' : (this.depositMin() || '')); this.selectedProposal = q.proposal_summary || ''; this.selectedSchedule = q.proposal_schedule || ''; this.selectedTerms = q.proposal_terms || ''; this.selectedValidUntil = q.proposal_valid_until ? q.proposal_valid_until.slice(0, 10) : ''; this.selectedFollowUp = q.follow_up_at ? q.follow_up_at.slice(0, 10) : ''; this.loadMilestones(q.id); this.loadCollaboration(q.id); }
     saveQuote() {
         const q = this.selectedQuote();
         if (!q)
@@ -394,9 +396,17 @@ export class AdminPage implements OnInit, OnDestroy {
                 return;
             }
         }
+        const listPrice = this.selectedListPrice.trim() ? Number(this.selectedListPrice.replace(/\s/g, '')) : null;
+        if (listPrice !== null && (!Number.isInteger(listPrice) || listPrice <= 0)) { this.notify('Az akció előtti ár pozitív egész szám legyen.', true); return; }
         this.busy.set(true);
-        this.api.saveQuote(q.id, { status: this.selectedStatus, admin_notes: this.selectedNotes, follow_up_at: this.selectedFollowUp || null, ...(q.quoted_at ? {} : { quoted_price_huf: amount, deposit_percent: this.depositPercent(), proposal_summary: this.selectedProposal, proposal_schedule: this.selectedSchedule || null, proposal_terms: this.selectedTerms || null, proposal_valid_until: this.selectedValidUntil || null }) }).subscribe({ next: r => { this.showQuote(r.data); this.notify('Ajánlatkérés módosítva.'); this.loadQuotes(this.quotePage()); }, error: e => this.fail(e) });
+        this.api.saveQuote(q.id, { status: this.selectedStatus, admin_notes: this.selectedNotes, follow_up_at: this.selectedFollowUp || null, ...(q.quoted_at ? {} : { quoted_price_huf: amount, ...(q.promo_percent ? { list_price_huf: listPrice } : {}), deposit_percent: this.depositPercent(), proposal_summary: this.selectedProposal, proposal_schedule: this.selectedSchedule || null, proposal_terms: this.selectedTerms || null, proposal_valid_until: this.selectedValidUntil || null }) }).subscribe({ next: r => { this.showQuote(r.data); this.notify('Ajánlatkérés módosítva.'); this.loadQuotes(this.quotePage()); }, error: e => this.fail(e) });
     }
+    /** Akciós ár az akció előtti árból: a rögzített kedvezmény levonása, forintra kerekítve. */
+    promoPrice(q: Quote): number | null {
+        const list = Number(this.selectedListPrice.replace(/\s/g, ''));
+        return q.promo_percent && list > 0 ? Math.round(list * (100 - q.promo_percent) / 100) : null;
+    }
+    applyPromoPrice(q: Quote) { const price = this.promoPrice(q); if (price) this.selectedPrice = String(price); }
     /** Az előleg %-a (0–100), üres mező = nincs előleg. type="number" mezőből szám vagy null is jöhet. */
     depositPercent(): number | null {
         const raw = String(this.selectedDeposit ?? '').trim();

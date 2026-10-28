@@ -1116,6 +1116,10 @@ td small {
 
 .deposit-status{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:4px 0 16px;padding:12px 14px;border-radius:12px;border:1px solid #f5b94b66;background:#f5b94b14;font-size:12.5px}
 .deposit-status.paid{border-color:#55e5c766;background:#55e5c714}
+.promo-reminder{display:grid;gap:8px;margin:0 0 16px;padding:14px 16px;border-radius:12px;border:1px solid #a58cff80;background:#7c5cff14;font-size:12.5px}
+.promo-reminder p{margin:0;line-height:1.6;color:var(--muted)}
+.promo-reminder-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.promo-reminder-row .input{flex:1;min-width:160px}
 .handover-block{display:grid;gap:10px;margin:6px 0 18px;padding:16px;border:1px solid #a99cf04d;border-radius:14px;background:#141c3a80}
 .handover-block p{margin:0;font-size:13px;line-height:1.6}
 .handover-block .deposit-status{margin:0}
