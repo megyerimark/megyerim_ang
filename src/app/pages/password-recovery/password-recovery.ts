@@ -1,11 +1,12 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiService } from '../../core/api.service';
+import { Turnstile } from '../../components/turnstile/turnstile';
 @Component({
   selector: 'app-password-recovery', standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, Turnstile],
   templateUrl: './password-recovery.html', styleUrl: './password-recovery.scss'
 })
 export class PasswordRecoveryPage {
@@ -18,6 +19,8 @@ export class PasswordRecoveryPage {
   token = new URLSearchParams(this.route.snapshot.fragment ?? '').get('token') ?? '';
   password = '';
   confirmation = '';
+  captchaToken = '';
+  private readonly captcha = viewChild(Turnstile);
   readonly busy = signal(false);
   readonly error = signal('');
   readonly success = signal('');
@@ -28,14 +31,19 @@ export class PasswordRecoveryPage {
       this.error.set('Legalább 12 karakteres, egyező jelszavakat adj meg. Ha nincs token, kérj új linket.');
       return;
     }
+    if (!this.isReset() && this.captcha() && !this.captcha()!.ready()) {
+      this.error.set('Várd meg, amíg a robotszűrő ellenőrzése befejeződik.');
+      return;
+    }
     this.busy.set(true);
     const action = this.isReset()
       ? this.api.resetAdminPassword(this.email, this.token, this.password, this.confirmation)
-      : this.api.forgotAdminPassword(this.email);
+      : this.api.forgotAdminPassword(this.email, this.captchaToken);
     action.subscribe({
-      next: r => { this.busy.set(false); this.success.set(r.message); this.password = ''; this.confirmation = ''; },
+      next: r => { this.busy.set(false); this.captcha()?.reset(); this.success.set(r.message); this.password = ''; this.confirmation = ''; },
       error: (e: HttpErrorResponse) => {
         this.busy.set(false);
+        this.captcha()?.reset();
         this.error.set(e.status === 429 ? 'Túl sok próbálkozás. Kérlek, próbáld később.'
           : e.status === 422 ? (e.error?.message || 'Az adatok nem megfelelőek, vagy a link lejárt.')
           : 'A művelet nem sikerült. Ellenőrizd a Laravel-kapcsolatot, és próbáld újra.');

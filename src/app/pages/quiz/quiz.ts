@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
@@ -6,16 +6,19 @@ import { ApiService } from '../../core/api.service';
 import { QuotePayload } from '../../core/models';
 import { TPipe } from '../../i18n/t.pipe';
 import { I18nService } from '../../i18n/i18n.service';
+import { Turnstile } from '../../components/turnstile/turnstile';
 
 type QuizKey = 'industry' | 'goal' | 'website' | 'solution' | 'timeline';
 interface QuizOption { value:string; label:string; detail:string; icon:string; }
 interface QuizQuestion { key:QuizKey; eyebrow:string; title:string; hint:string; options:QuizOption[]; }
 const option=(value:string,label:string,detail:string,icon='✦'):QuizOption=>({value,label,detail,icon});
 
-@Component({selector:'app-quiz',standalone:true,imports:[FormsModule,RouterLink, TPipe],templateUrl:'./quiz.html',styleUrl:'./quiz.scss'})
+@Component({selector:'app-quiz',standalone:true,imports:[FormsModule,RouterLink, TPipe, Turnstile],templateUrl:'./quiz.html',styleUrl:'./quiz.scss'})
 export class QuizPage {
     readonly i18n = inject(I18nService);
     private readonly api=inject(ApiService);
+    private readonly captcha=viewChild(Turnstile);
+    captchaToken='';
     readonly questions:QuizQuestion[]=[
         {key:'industry',eyebrow:'A VÁLLALKOZÁSOD',title:'Mivel foglalkozol leginkább?',hint:'Így a neked releváns megoldásokra fókuszálhatunk.',options:[
             option('Szolgáltatás','Szolgáltató','Tanácsadás, oktatás, szakmai szolgáltatás'),option('Egészség és szépség','Egészség és szépség','Kozmetika, egészségügy, wellness','✳︎'),
@@ -60,11 +63,13 @@ export class QuizPage {
         if(this.questions.some(q=>!this.answers()[q.key])){this.error.set('Előbb válaszold meg a kvíz kérdéseit.');return;}
         if(!this.contact.customer_name.trim()||!/^\S+@\S+\.\S+$/.test(this.contact.email.trim())){this.error.set('Add meg a neved és egy érvényes e-mail-címet.');return;}
         if(!this.contact.privacy_notice_acknowledged){this.error.set('Az adatkezelési tájékoztató elfogadása szükséges.');return;}
-        const payload:QuotePayload={customer_name:this.contact.customer_name.trim(),email:this.contact.email.trim(),phone:this.contact.phone.trim(),company_name:this.contact.company_name.trim(),website_type:this.websiteType(),design_style:'undecided',industry:this.answers().industry||null,layout_style:null,font_style:null,colors:[],features:[],inspiration_urls:[],budget_range:'',desired_deadline:null,project_description:this.description(),wants_maintenance:false,consultation_preference:'email',privacy_notice_acknowledged:true,website:this.contact.website};
+        if(this.captcha()&&!this.captcha()!.ready()){this.error.set('Várd meg, amíg a robotszűrő ellenőrzése befejeződik.');return;}
+        const payload:QuotePayload={customer_name:this.contact.customer_name.trim(),email:this.contact.email.trim(),phone:this.contact.phone.trim(),company_name:this.contact.company_name.trim(),website_type:this.websiteType(),design_style:'undecided',industry:this.answers().industry||null,layout_style:null,font_style:null,colors:[],features:[],inspiration_urls:[],budget_range:'',desired_deadline:null,project_description:this.description(),wants_maintenance:false,consultation_preference:'email',privacy_notice_acknowledged:true,website:this.contact.website,turnstile_token:this.captchaToken};
         this.sending.set(true);
         this.api.sendQuote(payload).subscribe({next:r=>{this.sent.set(r.reference);this.sending.set(false);window.scrollTo({top:0,behavior:'smooth'});},error:(e:HttpErrorResponse)=>{
-            this.sending.set(false);
-            if(e.status===422){this.validationErrors.set(e.error?.errors||{});this.error.set('Kérlek, ellenőrizd a megadott adatokat.');}
+            this.sending.set(false);this.captcha()?.reset();
+            if(e.error?.error_code==='TURNSTILE_FAILED')this.error.set(e.error.message);
+            else if(e.status===422){this.validationErrors.set(e.error?.errors||{});this.error.set('Kérlek, ellenőrizd a megadott adatokat.');}
             else if(e.status===429)this.error.set('Túl sok kérés érkezett. Próbáld újra később.');
             else if(e.status===419)this.error.set('Lejárt a munkamenet. Frissítsd az oldalt, majd próbáld újra.');
             else this.error.set('Az ajánlatkérést most nem sikerült elküldeni. Ellenőrizd a szerverkapcsolatot.');

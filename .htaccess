@@ -35,9 +35,9 @@ ErrorDocument 404 /index.html
     # Content-Security-Policy – ÉLES (kényszerített). Csak saját domainről tölthető be szkript, betűtípus és adat;
     # inline szkript és eval tiltva (az XSS elleni fő védelem – ezen múlik az admin és a jelszószéf biztonsága is).
     # Inline stílus az Angular komponensek miatt kell. A Trustindex (Google-vélemények) csak a látogató hozzájárulása
-    # után töltődik be. Ha új külső szolgáltatást kötsz be és nem működik, a böngésző konzolja megmutatja,
+    # után töltődik be. A Cloudflare Turnstile (robotszűrő) szkriptje és iframe-je a challenges.cloudflare.com-ról jön. Ha új külső szolgáltatást kötsz be és nem működik, a böngésző konzolja megmutatja,
     # melyik címet kell ide felvenni.
-    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https://cdn.trustindex.io https://*.trustindex.io; style-src 'self' 'unsafe-inline' https://cdn.trustindex.io https://*.trustindex.io; img-src 'self' data: blob: https://*.trustindex.io https://*.googleusercontent.com; font-src 'self' https://*.trustindex.io; connect-src 'self' https://*.trustindex.io; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https://challenges.cloudflare.com https://cdn.trustindex.io https://*.trustindex.io; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn.trustindex.io https://*.trustindex.io; img-src 'self' data: blob: https://*.trustindex.io https://*.googleusercontent.com; font-src 'self' https://*.trustindex.io; connect-src 'self' https://*.trustindex.io; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
     # HSTS: a böngésző 1 évig csak HTTPS-en kapcsolódik. Csak akkor hagyd bent, ha a HTTPS (és minden aldomain) már működik!
     Header always set Strict-Transport-Security "max-age=31536000" "expr=%{HTTPS} == 'on' || %{HTTP:X-Forwarded-Proto} == 'https'"
 

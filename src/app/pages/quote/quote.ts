@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -6,7 +6,8 @@ import { ApiService } from '../../core/api.service';
 import { QuotePayload } from '../../core/models';
 import { TPipe } from '../../i18n/t.pipe';
 import { I18nService } from '../../i18n/i18n.service';
-@Component({ selector: 'app-quote', standalone: true, imports: [FormsModule, RouterLink, TPipe], templateUrl: './quote.html', styleUrl: './quote.scss' })
+import { Turnstile } from '../../components/turnstile/turnstile';
+@Component({ selector: 'app-quote', standalone: true, imports: [FormsModule, RouterLink, TPipe, Turnstile], templateUrl: './quote.html', styleUrl: './quote.scss' })
 export class QuotePage {
     readonly i18n = inject(I18nService);
     private api = inject(ApiService);
@@ -21,7 +22,8 @@ export class QuotePage {
     palette = ['#8259ee', '#4fc6e9', '#0a1530', '#F6F4ED', '#F0B08F', '#75C0A5', '#FF6583', '#F4D35E'];
     featureOptions = ['Kapcsolatfelvételi űrlap', 'Időpontfoglalás', 'Adminfelület', 'Blog / hírek', 'Többnyelvűség', 'Online fizetés', 'Keresőoptimalizálás', 'Animációk / 3D', 'Hírlevél', 'Ügyfélfiók'];
     budgets = [{ v: '', l: 'Még nem tudom' }, { v: '50000-150000', l: '50 – 150 ezer Ft' }, { v: '150000-300000', l: '150 – 300 ezer Ft' }, { v: '300000-600000', l: '300 – 600 ezer Ft' }, { v: '600000+', l: '600 ezer Ft felett' }];
-    data: QuotePayload = { customer_name: '', email: '', phone: '', company_name: '', website_type: '', design_style: '', industry: null, layout_style: null, font_style: null, colors: [], features: [], inspiration_urls: [], budget_range: '', desired_deadline: null, project_description: '', wants_maintenance: false, consultation_preference: 'email', privacy_notice_acknowledged: false, website: '' };
+    data: QuotePayload = { customer_name: '', email: '', phone: '', company_name: '', website_type: '', design_style: '', industry: null, layout_style: null, font_style: null, colors: [], features: [], inspiration_urls: [], budget_range: '', desired_deadline: null, project_description: '', wants_maintenance: false, consultation_preference: 'email', privacy_notice_acknowledged: false, website: '', turnstile_token: '' };
+    private readonly captcha = viewChild(Turnstile);
     inspiration = '';
     constructor() {
         const type = this.route.snapshot.queryParamMap.get('type');
@@ -101,10 +103,18 @@ export class QuotePage {
             this.generalError.set('Legfeljebb öt teljes http(s) inspirációs linket adj meg.');
             return;
         }
+        if (this.captcha() && !this.captcha()!.ready()) {
+            this.generalError.set('Várd meg, amíg a robotszűrő ellenőrzése befejeződik.');
+            return;
+        }
         this.sending.set(true);
         this.api.sendQuote({ ...this.data, inspiration_urls: urls, desired_deadline: this.data.desired_deadline || null }).subscribe({ next: r => { this.sent.set(r.reference); this.sending.set(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }, error: (e: HttpErrorResponse) => {
                 this.sending.set(false);
-                if (e.status === 422) {
+                this.captcha()?.reset();
+                if (e.error?.error_code === 'TURNSTILE_FAILED') {
+                    this.generalError.set(e.error.message);
+                }
+                else if (e.status === 422) {
                     this.errors.set(e.error?.errors || {});
                     this.generalError.set('Ellenőrizd a megadott adatokat.');
                 }

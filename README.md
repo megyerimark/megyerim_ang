@@ -57,6 +57,7 @@ Adminban felvett szolgáltatás csak `is_active=true`, referencia csak `is_publi
 - **Közösségi megosztás:** `public/og-image.jpg` (1200×630) – Facebook/LinkedIn/Messenger előnézet.
 - **Oldaltérkép:** statikus `public/sitemap.xml` + a backend dinamikus `/api/sitemap.xml`-je (referenciák), mindkettő a `robots.txt`-ben.
 - **CI:** `.github/workflows/ci.yml` – minden push után `npm audit` és éles build.
+- **Bot-védelem (Cloudflare Turnstile):** `components/turnstile` – az ajánlatkérő űrlapon és kvízen, az időpontfoglaláson, a hírlevélen, az admin belépésen és az elfelejtett jelszó oldalon. A nyilvános kulcsot a backend adja (`/api/site-settings` → `turnstile_site_key`); ha nincs beállítva, a widget nem jelenik meg, és a szkript sem töltődik be. A CSP-ben a `challenges.cloudflare.com` engedélyezve van (`script-src`, `frame-src`).
 
 ## V17 újdonságok
 

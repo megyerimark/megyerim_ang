@@ -57,6 +57,7 @@
               </div>
               <div class="quiz-honeypot" aria-hidden="true"><label for="quiz-website">{{ 'Weboldal' | t }}</label><input id="quiz-website" name="website" tabindex="-1" autocomplete="off" [(ngModel)]="contact.website" /></div>
               <label class="quiz-consent"><input name="privacy" type="checkbox" required [(ngModel)]="contact.privacy_notice_acknowledged" /><span>{{ 'Megismertem és elfogadom az' | t }} <a routerLink="/adatkezeles" target="_blank" rel="noopener noreferrer">{{ 'adatkezelési tájékoztatót' | t }}</a>{{ ', és kérem a megkeresésem feldolgozását.' | t }}</span></label>
+              <app-turnstile [(token)]="captchaToken" action="quiz" />
               <div class="quiz-footer-actions"><button type="button" class="quiz-back" (click)="back()">{{ '← Vissza' | t }}</button><button type="submit" class="btn btn-primary quiz-next" [disabled]="sending()||!contact.privacy_notice_acknowledged">{{ (sending()?'Küldés folyamatban…':'Személyre szabott ajánlatot kérek') | t }} <span aria-hidden="true">↗︎</span></button></div>
             </form>
           </div>

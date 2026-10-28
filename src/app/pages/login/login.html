@@ -67,6 +67,7 @@
           </label>
           <input class="input" type="password" id="login-password" name="password" [(ngModel)]="password" autocomplete="current-password" required>
         </div>
+        <app-turnstile [(token)]="captchaToken" action="admin_login" />
         <div class="forgot-line"><a routerLink="/admin/elfelejtett-jelszo">Elfelejtetted a jelszavad? →</a></div>
         } @else {
         @if (codeMethod() === 'totp') {
