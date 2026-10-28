@@ -470,13 +470,13 @@
       <div class="section-heading-row">
         <div>
           <span class="overline">{{ 'MUNKÁIM / KONCEPCIÓK' | t }}</span>
-          <h2 class="section-title" id="concepts-title">{{ 'Három stílus.' | t }} <span class="subtle-heading">{{ 'Három irány.' | t }}</span></h2>
+          <h2 class="section-title" id="concepts-title">{{ 'Négy világ.' | t }} <span class="subtle-heading">{{ 'Egy szemlélet.' | t }}</span></h2>
         </div>
         <p class="lead">{{ 'Önálló, interaktív bemutató-weboldalak – saját koncepciók, nem ügyfélmunkák. Kattints, és próbáld ki őket élőben.' | t }}</p>
       </div>
       <div class="concept-grid">
         @for (demo of demoSites; track demo.slug) {
-          <a class="concept-card" [href]="'/demos/' + demo.slug + '/index.html'" target="_blank" rel="noopener">
+          <a class="concept-card" [class.concept-card--featured]="demo.featured" [href]="'/demos/' + demo.slug + '/index.html'" target="_blank" rel="noopener">
             <span class="concept-shot"><img [src]="'/demos/previews/' + demo.preview + '.webp'" [alt]="(demo.title | t) + ' – ' + ('koncepció előnézete' | t)" loading="lazy" width="640" height="400"></span>
             <span class="concept-meta"><small>{{ demo.kind | t }}</small><strong>{{ demo.title | t }}</strong><span>{{ demo.text | t }}</span></span>
             <span class="concept-arrow" aria-hidden="true">↗︎</span>

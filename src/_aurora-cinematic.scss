@@ -202,5 +202,13 @@ body .admin-shell .admin-content :where(.metric,.admin-panel,.card,.aurora-insig
 .concept-meta span{font-size:14px;line-height:1.6;color:#aebcd5}
 .concept-arrow{position:absolute;top:16px;right:16px;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:#0b1126cc;border:1px solid #b5a9ff66;backdrop-filter:blur(10px);transition:transform .3s,background .3s}
 .concept-card:hover .concept-arrow{transform:rotate(45deg);background:#b19cff;color:#10102c}
-@media(max-width:980px){.concept-grid{grid-template-columns:1fr;max-width:620px;margin-inline:auto}}
+/* Kiemelt demó: teljes szélesség, kép és szöveg egymás mellett, saját prémium (fekete–arany) akcentussal. */
+.concept-card--featured{grid-column:1/-1;display:grid;grid-template-columns:1.6fr 1fr;border-color:#c9a96a59;background:linear-gradient(160deg,#16130ee6,#0b0a07f0)}
+.concept-card--featured .concept-shot{aspect-ratio:16/10;border-bottom:0;border-right:1px solid #c9a96a33}
+.concept-card--featured .concept-meta{align-content:center;padding:34px 40px}
+.concept-card--featured .concept-meta small{color:#c9a96a}
+.concept-card--featured .concept-meta strong{font-size:clamp(34px,3.2vw,52px)}
+.concept-card--featured:hover{border-color:#ecd9a8a6;box-shadow:0 34px 90px #000a,0 0 40px #c9a96a33}
+.concept-card--featured:hover .concept-arrow{background:#d9bf86;color:#17120a}
+@media(max-width:980px){.concept-grid{grid-template-columns:1fr;max-width:620px;margin-inline:auto}.concept-card--featured{grid-template-columns:1fr}.concept-card--featured .concept-shot{border-right:0;border-bottom:1px solid #c9a96a33}.concept-card--featured .concept-meta{padding:22px 26px 28px}}
 [data-theme='light'] .concept-card{background:#fff;border-color:#d4d6ef}[data-theme='light'] .concept-meta span{color:#4b587c}

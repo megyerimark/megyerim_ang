@@ -89,6 +89,7 @@ export class Home implements OnInit {
     readonly selectedStyle = signal<PreviewStyle>('graphite');
     readonly selectedDevice = signal<'desktop' | 'mobile'>('desktop');
     readonly demoSites = [
+        { slug: 'nobile-autoszalon', preview: 'nobile', title: 'NOBILE Autószalon', kind: 'PRÉMIUM AUTÓSZALON / DEMÓ', text: 'Görgetéses 3D kollekció aranyporrá bomló panelekkel, konfigurátor, finanszírozási kalkulátor és tesztvezetés-foglalás.', featured: true },
         { slug: 'vagat-barber', preview: 'vagat', title: 'VÁGAT Barber Studio', kind: 'BARBER SHOP / DEMÓ', text: 'Fiktív barber shop weboldal prémium megjelenéssel.' },
         { slug: 'axis-detailing', preview: 'axis', title: 'AXIS Auto Detailing', kind: 'AUTÓKOZMETIKA / DEMÓ', text: 'Prémium autókozmetikai oldal interaktív csomagokkal.' },
         { slug: 'pulse-fitness', preview: 'pulse', title: 'PULSE Training', kind: 'SZEMÉLYI EDZŐ / DEMÓ', text: 'Modern bemutatóoldal programválasztóval.' }
