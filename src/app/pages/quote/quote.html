@@ -274,6 +274,7 @@
               . *
             </span>
           </label>
+          <app-turnstile [(token)]="data.turnstile_token" action="quote" />
           <div class="summary-line">
             {{ 'A beküldés díjmentes, nem jár megrendelési kötelezettséggel.' | t }}
           </div>

@@ -711,5 +711,9 @@ export const EN: Record<string, string> = {
   "Leiratkoztál a hírlevélről. Több levelet nem küldök erre a címre.": "You have unsubscribed from the newsletter. No more emails will be sent to this address.",
   "A megerősítő link lejárt – iratkozz fel újra.": "The confirmation link has expired – please subscribe again.",
   "A megerősítő link érvénytelen vagy már felhasználták.": "The confirmation link is invalid or has already been used.",
-  "Hírlevél | Megyeri Márk Máté": "Newsletter | Megyeri Márk Máté"
+  "Hírlevél | Megyeri Márk Máté": "Newsletter | Megyeri Márk Máté",
+  "Várd meg, amíg a robotszűrő ellenőrzése befejeződik.": "Please wait until the bot check has finished.",
+  "A robotszűrő nem töltődött be. Kapcsold ki a reklámblokkolót, vagy frissítsd az oldalt.": "The bot check did not load. Disable your ad blocker or refresh the page.",
+  "Az automatikus robotszűrés nem sikerült. Frissítsd az oldalt, és próbáld újra.": "The automatic bot check failed. Refresh the page and try again.",
+  "Ezzel az e-mail-címmel már van lefoglalt időpontod. Ha módosítanád, írj nekem e-mailt.": "You already have a booked slot with this email address. If you want to change it, send me an email.",
 };

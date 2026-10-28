@@ -17,6 +17,7 @@
         <div class="booking-field"><label for="booking-notes">{{ 'Miről szeretnél beszélni?' | t }}</label><textarea class="input" id="booking-notes" rows="3" maxlength="1000" [(ngModel)]="data.notes"></textarea></div>
         <div class="booking-honeypot" aria-hidden="true"><label for="booking-website">{{ 'Weboldal' | t }}</label><input id="booking-website" tabindex="-1" autocomplete="off" [(ngModel)]="data.website"></div>
         <label class="booking-consent"><input type="checkbox" [(ngModel)]="data.privacy_notice_acknowledged"><span>{{ 'Elolvastam és tudomásul vettem az' | t }} <a routerLink="/adatkezeles" target="_blank" rel="noopener noreferrer">{{ 'adatkezelési tájékoztatót' | t }}</a>. *</span></label>
+        <app-turnstile [(token)]="data.turnstile_token" action="consultation" />
         @if(error()){<p class="booking-error" role="alert">{{ error() | t }}</p>}
         <button type="button" class="btn btn-primary book-btn" [disabled]="sending()||!selectedSlot()" (click)="book()">{{ (sending()?'Foglalás folyamatban…':'Időpont lefoglalása ↗︎') | t }}</button>
         <p class="time-note">{{ 'A konzultáció díjmentes és nem jár megrendelési kötelezettséggel.' | t }}</p>

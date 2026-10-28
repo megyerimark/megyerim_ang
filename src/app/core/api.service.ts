@@ -35,7 +35,7 @@ export class ApiService {
         this.http.post('/api/events', { event, path: path.split(/[?#]/)[0].slice(0, 160), ...(source ? { source } : {}) }, this.opts).subscribe({ error: () => { /* nem kritikus */ } });
     }
     availableConsultations() { return this.http.get<Envelope<ConsultationSlot[]>>('/api/consultations/available', this.opts); }
-    bookConsultation(data: {consultation_slot_id: number; customer_name: string; email: string; phone: string; notes: string; privacy_notice_acknowledged: boolean; website: string}) {
+    bookConsultation(data: {consultation_slot_id: number; customer_name: string; email: string; phone: string; notes: string; privacy_notice_acknowledged: boolean; website: string; turnstile_token: string}) {
         return this.csrf().pipe(switchMap(() => this.http.post<ConsultationConfirmation>('/api/consultations/book', data, this.opts)));
     }
     adminConsultations() { return this.http.get<Envelope<ConsultationSlot[]>>('/api/admin/consultations', this.opts); }
@@ -78,13 +78,13 @@ export class ApiService {
     saveFinanceSettings(data: Partial<FinanceSettings>) { return this.http.put<Envelope<FinanceSettings>>('/api/admin/finance/settings', data, this.opts); }
     rotateClientAccess(id: number) { return this.http.post(`/api/admin/quote-requests/${id}/rotate-client-access`, {}, this.opts); }
     sendProposal(id: number) { return this.http.post<Envelope<Quote>>(`/api/admin/quote-requests/${id}/send-proposal`, {}, this.opts); }
-    login(email: string, password: string) {
+    login(email: string, password: string, turnstile_token = '') {
         return this.csrf().pipe(switchMap(() => this.http.post<{
             message: string;
             user?: AdminUser;
             requires_two_factor?: boolean;
             two_factor_method?: 'email' | 'totp';
-        }>('/admin/login', { email, password }, this.opts)));
+        }>('/admin/login', { email, password, turnstile_token }, this.opts)));
     }
     verifyAdminLogin(code: string) { return this.http.post<{message: string; user: AdminUser}>('/admin/verify-login', {code}, this.opts); }
     resendAdminLoginCode() { return this.http.post<{message: string}>('/admin/resend-login-code', {}, this.opts); }
@@ -97,8 +97,8 @@ export class ApiService {
     setAdminTwoFactor(enabled: boolean, current_password: string) { return this.http.put<Envelope<{two_factor_email_enabled: boolean}>>('/api/admin/security/two-factor', {enabled, current_password}, this.opts); }
     adminSessions() { return this.http.get<Envelope<{id:string;ip_address:string|null;user_agent:string;last_activity:number;current:boolean}[]>>('/api/admin/security/sessions', this.opts); }
     revokeOtherAdminSessions() { return this.http.delete<{message:string;removed:number}>('/api/admin/security/sessions/others', this.opts); }
-    forgotAdminPassword(email: string) {
-        return this.csrf().pipe(switchMap(() => this.http.post<{message: string}>('/admin/forgot-password', {email}, this.opts)));
+    forgotAdminPassword(email: string, turnstile_token = '') {
+        return this.csrf().pipe(switchMap(() => this.http.post<{message: string}>('/admin/forgot-password', {email, turnstile_token}, this.opts)));
     }
     resetAdminPassword(email: string, token: string, password: string, password_confirmation: string) {
         return this.csrf().pipe(switchMap(() => this.http.post<{message: string}>('/admin/reset-password', {email, token, password, password_confirmation}, this.opts)));
@@ -159,8 +159,8 @@ export class ApiService {
     adminQuote(id: number) { return this.http.get<Envelope<Quote>>('/api/admin/quote-requests/' + id, this.opts); }
     markContacted(id: number) { return this.http.post<Envelope<Quote>>('/api/admin/quote-requests/' + id + '/contacted', {}, this.opts); }
     // Hírlevél (nyilvános: CSRF-süti után; a kulcsok a törzsben)
-    newsletterSubscribe(email: string, lang: string, source: string, website: string) {
-        return this.csrf().pipe(switchMap(() => this.http.post<{ message: string }>('/api/newsletter/subscribe', { email, consent: true, lang, source, website }, this.opts)));
+    newsletterSubscribe(email: string, lang: string, source: string, website: string, turnstile_token = '') {
+        return this.csrf().pipe(switchMap(() => this.http.post<{ message: string }>('/api/newsletter/subscribe', { email, consent: true, lang, source, website, turnstile_token }, this.opts)));
     }
     newsletterConfirm(token: string) { return this.csrf().pipe(switchMap(() => this.http.post<{ message: string; unsubscribe_token: string }>('/api/newsletter/confirm', { token }, this.opts))); }
     newsletterUnsubscribe(token: string) { return this.csrf().pipe(switchMap(() => this.http.post<{ message: string }>('/api/newsletter/unsubscribe', { token }, this.opts))); }

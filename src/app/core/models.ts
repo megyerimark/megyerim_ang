@@ -32,6 +32,8 @@ export interface SiteSettings {
     promo_ends_at?: string;
     /** A szerver számolja (lejárat, bekapcsolás) – csak olvasható. */
     promo?: Promotion;
+    /** Cloudflare Turnstile nyilvános kulcsa; null = a robotszűrő ki van kapcsolva. Csak olvasható. */
+    turnstile_site_key?: string | null;
 }
 export interface Promotion { active: boolean; percent: number; title: string; ends_at: string | null; }
 export interface NewsletterSubscriber {
@@ -145,6 +147,7 @@ export interface QuotePayload {
     consultation_preference: string;
     privacy_notice_acknowledged: boolean;
     website: string;
+    turnstile_token: string;
     source?: string;
     utm_source?: string;
     utm_medium?: string;
