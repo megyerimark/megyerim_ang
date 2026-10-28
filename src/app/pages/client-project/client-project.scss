@@ -48,3 +48,4 @@
 .accept-optional small{color:var(--muted)}
 
 .proposal-meta>div.deposit-highlight{border:1px solid var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--surface-alt))}
+.project-document.locked{opacity:.75}.project-document.locked>span{font-size:20px}

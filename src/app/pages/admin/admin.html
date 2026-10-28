@@ -816,7 +816,7 @@
             </label>
             <select id="admin-status" class="input" [(ngModel)]="selectedStatus">
               @for(s of statuses;track s.value){
-              <option [value]="s.value" [disabled]="s.value==='quoted' && !q.quoted_at">
+              <option [value]="s.value" [disabled]="(s.value==='quoted' && !q.quoted_at) || (s.value==='completed' && q.status!=='completed')">
                 {{s.label}}
               </option>
               }
@@ -839,6 +839,36 @@
             @else {Előleg ({{q.deposit_percent}}%) még nem érkezett meg.
               <button type="button" class="btn btn-outline btn-sm" [disabled]="busy()" (click)="markDepositPaid()">Átutalás beérkezett ✓</button>}
           </div>
+          }
+          @if(q.proposal_accepted_at && (q.status==='accepted' || q.status==='completed')){
+          <section class="detail-block handover-block" aria-labelledby="handover-title">
+            <small id="handover-title">Projektlezárás és kódátadás</small>
+            @if(!q.completed_at){
+              <p>Ha elkészültél, zárd le a projektet: az ügyfél végleges e-mailt kap a fennmaradó <strong>{{money(remainingAmount(q))}}</strong> összeggel és a fizetési lehetőséggel. A kódot csak a kifizetés után adhatod át.</p>
+              <button type="button" class="btn btn-primary" [disabled]="busy() || (!!q.deposit_percent && !q.deposit_paid_at)" (click)="completeProject()">Projekt kész – végleges e-mail az ügyfélnek ↗︎</button>
+              @if(q.deposit_percent && !q.deposit_paid_at){<p class="muted">Előbb az előlegnek kell beérkeznie.</p>}
+            } @else {
+              <p>✓ Lezárva: {{date(q.completed_at)}} – a végleges e-mail kiment.</p>
+              @if(remainingAmount(q) > 0){
+                <div class="deposit-status" [class.paid]="!!q.final_paid_at" role="status">
+                  @if(q.final_paid_at){✓ Fennmaradó összeg ({{money(remainingAmount(q))}}) beérkezett: {{date(q.final_paid_at)}} ({{q.final_paid_via==='stripe'?'bankkártya':'átutalás'}})}
+                  @else {Fennmaradó összeg: <strong>{{money(remainingAmount(q))}}</strong> – még nem érkezett meg.
+                    <button type="button" class="btn btn-outline btn-sm" [disabled]="busy()" (click)="markFinalPaid()">Átutalás beérkezett ✓</button>}
+                </div>
+              } @else {<p class="muted">Nincs fennmaradó összeg.</p>}
+              @if(q.handed_over_at){
+                <p class="handover-done">✓ Kód átadva: {{date(q.handed_over_at)}}</p>
+                @if(q.handover_note){<p class="muted" style="white-space:pre-line">{{q.handover_note}}</p>}
+              } @else if(handoverUnlocked(q)){
+                <label class="form-field">Átadás módja (az e-mailben is megjelenik)<textarea class="input" rows="3" maxlength="3000" [(ngModel)]="handoverNote" placeholder="Pl. GitHub-repó meghívót küldtem, a tárhely belépési adatai a jelszókezelőben…"></textarea></label>
+                @if(!hasDeliverable()){<p class="muted">Tölts fel lent egy átadási csomagot (ZIP), vagy írd le, hogyan adod át a kódot.</p>}
+                <button type="button" class="btn btn-primary" [disabled]="busy() || (!hasDeliverable() && !handoverNote.trim())" (click)="handoverProject()">Kód átadása az ügyfélnek ↗︎</button>
+              } @else {
+                <p class="handover-locked" role="status">🔒 A kód átadása a fennmaradó {{money(remainingAmount(q))}} beérkezése után nyílik meg.</p>
+                <button type="button" class="btn btn-outline" disabled>Kód átadása az ügyfélnek</button>
+              }
+            }
+          </section>
           }
           @if(q.terms_version){<p class="muted" style="font-size:11px">Elfogadva az ÁSZF {{q.terms_version}} verziójával; az ajánlat ujjlenyomata rögzítve.</p>}
           <div class="form-field">
@@ -921,10 +951,11 @@
             <h3>Projektfájlok – csak az ügyfélnek</h3>
             <p class="proposal-hint">PDF, JPG, PNG vagy WebP, maximum 10 MB; a szerver privát tárhelyére kerül.</p>
             @for(doc of collaboration().documents;track doc.id){
-              <div class="milestone-row"><div><strong>{{doc.title}}</strong><small>{{doc.filename}}</small></div><button type="button" class="mini-action" (click)="downloadDocument(doc)">Letöltés</button><button type="button" class="danger-text" (click)="removeDocument(doc)" [disabled]="busy()">Törlés</button></div>
+              <div class="milestone-row"><div><strong>{{doc.title}} @if(doc.is_deliverable){<span class="doc-badge">{{doc.locked ? '🔒 átadási csomag' : '✓ átadva'}}</span>}</strong><small>{{doc.filename}}</small></div><button type="button" class="mini-action" (click)="downloadDocument(doc)">Letöltés</button><button type="button" class="danger-text" (click)="removeDocument(doc)" [disabled]="busy()">Törlés</button></div>
             } @empty {<p class="muted">Még nincs megosztott fájl.</p>}
             <label class="form-field">Dokumentum címe<input class="input" maxlength="160" [(ngModel)]="documentTitle" placeholder="Pl. Végleges látványterv"></label>
-            <label class="form-field">Fájl<input class="input" type="file" accept=".pdf,.png,.jpg,.jpeg,.webp" (change)="pickDocument($event)"></label>
+            <label class="check-row"><input type="checkbox" [(ngModel)]="documentDeliverable" (ngModelChange)="documentFile=null"> Átadandó kód / csomag (ZIP, max. 100 MB) – az ügyfél csak a kifizetés és a kódátadás után töltheti le</label>
+            <label class="form-field">Fájl<input class="input" type="file" [attr.accept]="documentDeliverable ? '.zip,.pdf' : '.pdf,.png,.jpg,.jpeg,.webp'" (change)="pickDocument($event)"></label>
             <button type="button" class="btn btn-outline" [disabled]="busy() || !documentFile || !documentTitle.trim()" (click)="uploadDocument()">Fájl privát feltöltése +</button>
           </section>
           <div class="detail-block"><small>Ügyfélportál hozzáférés</small><p>A privát link csak az ügyfélnek küldött e-mailben érhető el. Ha a link illetéktelenhez kerül, új hozzáférés küldhető.</p><button class="btn btn-outline" type="button" [disabled]="busy()" (click)="rotateClientAccess()">Új privát link küldése, régi visszavonása ↗︎</button></div>
