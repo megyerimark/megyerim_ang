@@ -71,6 +71,7 @@
         const op = pn.gone ? 0 : clamp((z + 2600) / 1800) * (z > 40 ? clamp(1 - (z - 40) / 80) : 1);
         pn.el.style.opacity = op.toFixed(3);
         pn.el.style.visibility = op < .01 ? 'hidden' : 'visible';
+        pn.el.style.zIndex = String(Math.round(z + 20000)); // a közelebbi panel mindig elöl legyen
         if (op >= .01) pn.el.style.transform = `translate(-50%,-50%) translate3d(${xs}px,${ys}px,${z}px) rotateY(${ry}deg)`;
       }
 
