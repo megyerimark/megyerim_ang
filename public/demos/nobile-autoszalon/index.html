@@ -7,7 +7,7 @@
     <meta name="theme-color" content="#0a0907">
     <title>NOBILE. Prémium Autószalon | Demó</title>
     <link rel="preload" href="/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" as="image" href="img/hero.webp" imagesrcset="img/hero-1100.webp 1100w, img/hero.webp 2200w" imagesizes="(max-width:860px) 118vw, 78vw">
+    <link rel="preload" as="image" href="img/hero-photo.webp" imagesrcset="img/hero-photo-1200.webp 1200w, img/hero-photo.webp 2400w" imagesizes="100vw">
     <link rel="stylesheet" href="/fonts/fonts.css"><link rel="stylesheet" href="../shared/scroll3d.css"><link rel="stylesheet" href="style.css">
     <script src="../shared/scroll3d.js" defer></script><script src="script.js" defer></script>
   </head>
@@ -35,7 +35,7 @@
       <!-- 01 HERO: fénysáv söpör végig az autón -->
       <section class="scene hero" data-scene data-ease=".09" style="--h:230vh" aria-labelledby="hero-title">
         <div class="scene-pin">
-          <div class="spot" aria-hidden="true"></div>
+          
           <div class="hud hud-tl" aria-hidden="true"><span>SHOWROOM · BUDAPEST XII.</span><span>KÉSZLETEN: 24 AUTÓ</span></div>
           <div class="hud hud-tr" aria-hidden="true"><span>ÉRTÉKBECSLÉS 24 ÓRÁN BELÜL</span><span id="clock">--:--</span></div>
           <div class="hero-copy">
@@ -47,12 +47,11 @@
               <a class="btn btn-line" href="#tesztvezetes">Időpont a szalonba</a>
             </div>
           </div>
-          <div class="hero-car" aria-hidden="true">
-            <img src="img/hero.webp" srcset="img/hero-1100.webp 1100w, img/hero.webp 2200w" sizes="(max-width:860px) 118vw, 78vw" width="2200" height="900" alt="" fetchpriority="high" decoding="async">
-            <span class="sheen"></span>
+          <div class="hero-photo" aria-hidden="true">
+            <img src="img/hero-photo.webp" srcset="img/hero-photo-1200.webp 1200w, img/hero-photo.webp 2400w" sizes="100vw" width="2400" height="1600" alt="" fetchpriority="high" decoding="async">
           </div>
           <div class="hero-specs" aria-hidden="true">
-            <div><small>TELJESÍTMÉNY</small><strong><span data-t=".15,.75" data-count="625">0</span><em> LE</em></strong></div>
+            <div><small>PANAMERA TURBO</small><strong><span data-t=".15,.75" data-count="550">0</span><em> LE</em></strong></div>
             <div><small>0–100 KM/H</small><strong id="sprint">9.9</strong><em> s</em></div>
             <div><small>V8 · BITURBO</small><strong><span data-t=".2,.85" data-count="4">0</span>.0<em> L</em></strong></div>
           </div>
@@ -75,28 +74,28 @@
                 <small>2026 · ŐSZI KOLLEKCIÓ</small>
                 <strong>Öt autó.<br><em>Öt történet.</em></strong>
               </div>
-              <article class="panel car-panel" data-x="-1" data-color="#121214" data-name="Grand Tourer V8">
-                <div class="pc-car"><img src="img/panel-obsidian.webp" srcset="img/panel-obsidian-640.webp 640w, img/panel-obsidian.webp 1200w" sizes="(max-width:860px) 84vw, 560px" width="1200" height="560" alt="GT Coupé V8 – obszidián fényezés" decoding="async"></div>
-                <div class="pc-meta"><small>01 · GRAND TOURER</small><h3>GT Coupé V8</h3><p>2023 · 14 200 km · 625 LE · Obszidián</p><b>68 900 000 Ft</b></div>
+              <article class="panel car-panel" data-x="-1" data-color="#6b6e74" data-name="Mercedes-AMG GT R">
+                <div class="pc-car"><img src="img/photo-amg.webp" srcset="img/photo-amg-640.webp 640w, img/photo-amg.webp 1200w" sizes="(max-width:860px) 84vw, 560px" width="1200" height="750" alt="Mercedes-AMG GT R" decoding="async"></div>
+                <div class="pc-meta"><small>01 · GRAND TOURER</small><h3>Mercedes-AMG GT R</h3><p>2020 · 18 400 km · 585 LE · Matt fekete</p><b>54 900 000 Ft</b></div>
               </article>
-              <article class="panel car-panel" data-x="1" data-color="#b89b68" data-name="Executive Sedan">
-                <div class="pc-car"><img src="img/panel-champagne.webp" srcset="img/panel-champagne-640.webp 640w, img/panel-champagne.webp 1200w" sizes="(max-width:860px) 84vw, 560px" width="1200" height="560" alt="GT Coupé Hybrid – pezsgő fényezés" decoding="async"></div>
-                <div class="pc-meta"><small>02 · HIBRID</small><h3>GT Coupé Hybrid</h3><p>2024 · 6 800 km · 680 LE · Pezsgő</p><b>52 400 000 Ft</b></div>
+              <article class="panel car-panel" data-x="1" data-color="#a9adb3" data-name="Porsche 911 Turbo S">
+                <div class="pc-car"><img src="img/photo-p911.webp" srcset="img/photo-p911-640.webp 640w, img/photo-p911.webp 1200w" sizes="(max-width:860px) 84vw, 560px" width="1200" height="750" alt="Porsche 911 Turbo S" decoding="async"></div>
+                <div class="pc-meta"><small>02 · SPORTKUPÉ</small><h3>Porsche 911 Turbo S</h3><p>2021 · 9 800 km · 650 LE · GT ezüst</p><b>89 500 000 Ft</b></div>
               </article>
               <div class="panel quote-panel" data-x="0" data-y="-.2">
                 <blockquote>„A jó autó nem visz el valahová.<br><em>Hazahoz.”</em></blockquote>
               </div>
-              <article class="panel car-panel" data-x="-1" data-color="#5b1720" data-name="Roadster">
-                <div class="pc-car"><img src="img/panel-bordeaux.webp" srcset="img/panel-bordeaux-640.webp 640w, img/panel-bordeaux.webp 1200w" sizes="(max-width:860px) 84vw, 560px" width="1200" height="560" alt="GT Coupé S – bordó fényezés" decoding="async"></div>
-                <div class="pc-meta"><small>03 · SPORT</small><h3>GT Coupé S</h3><p>2022 · 21 500 km · 510 LE · Bordó</p><b>44 900 000 Ft</b></div>
+              <article class="panel car-panel" data-x="-1" data-color="#f39a1e" data-name="Lamborghini Huracán EVO Spyder">
+                <div class="pc-car"><img src="img/photo-huracan.webp" srcset="img/photo-huracan-640.webp 640w, img/photo-huracan.webp 1200w" sizes="(max-width:860px) 84vw, 560px" width="1200" height="750" alt="Lamborghini Huracán EVO Spyder" decoding="async"></div>
+                <div class="pc-meta"><small>03 · SUPERCAR</small><h3>Lamborghini Huracán EVO Spyder</h3><p>2021 · 7 200 km · 640 LE · Arancio</p><b>99 900 000 Ft</b></div>
               </article>
-              <article class="panel car-panel" data-x="1" data-color="#1d3a2c" data-name="SUV Coupé">
-                <div class="pc-car"><img src="img/panel-racing.webp" srcset="img/panel-racing-640.webp 640w, img/panel-racing.webp 1200w" sizes="(max-width:860px) 84vw, 560px" width="1200" height="560" alt="GT Coupé Touring – brit zöld fényezés" decoding="async"></div>
-                <div class="pc-meta"><small>04 · TOURING</small><h3>GT Coupé Touring</h3><p>2024 · 3 100 km · 571 LE · Brit zöld</p><b>61 700 000 Ft</b></div>
+              <article class="panel car-panel" data-x="1" data-color="#e9e4da" data-name="Rolls-Royce Wraith">
+                <div class="pc-car"><img src="img/photo-wraith.webp" srcset="img/photo-wraith-640.webp 640w, img/photo-wraith.webp 1200w" sizes="(max-width:860px) 84vw, 560px" width="1200" height="750" alt="Rolls-Royce Wraith" decoding="async"></div>
+                <div class="pc-meta"><small>04 · LUXUS</small><h3>Rolls-Royce Wraith</h3><p>2019 · 22 000 km · 632 LE · Kéttónusú</p><b>92 000 000 Ft</b></div>
               </article>
-              <article class="panel car-panel" data-x="0" data-color="#e9e4da" data-name="Limousine">
-                <div class="pc-car"><img src="img/panel-pearl.webp" srcset="img/panel-pearl-640.webp 640w, img/panel-pearl.webp 1200w" sizes="(max-width:860px) 84vw, 560px" width="1200" height="560" alt="Launch Edition – gyöngyház fényezés" decoding="async"></div>
-                <div class="pc-meta"><small>05 · KÜLÖNLEGESSÉG</small><h3>Launch Edition</h3><p>2021 · 9 400 km · 1 / 99 · Gyöngyház</p><b>Ár kérésre</b></div>
+              <article class="panel car-panel" data-x="0" data-color="#b3121b" data-name="Ferrari LaFerrari">
+                <div class="pc-car"><img src="img/photo-laferrari.webp" srcset="img/photo-laferrari-640.webp 640w, img/photo-laferrari.webp 1200w" sizes="(max-width:860px) 84vw, 560px" width="1200" height="750" alt="Ferrari LaFerrari" decoding="async"></div>
+                <div class="pc-meta"><small>05 · GYŰJTŐI DARAB</small><h3>Ferrari LaFerrari</h3><p>2015 · 3 900 km · 963 LE · Rosso Corsa</p><b>Ár kérésre</b></div>
               </article>
               <div class="panel title-panel end-panel" data-x="0" data-y="0">
                 <small>A KÉSZLET TOVÁBBI 19 AUTÓJA</small>
@@ -147,9 +146,9 @@
       <section class="config" id="konfigurator" aria-labelledby="cfg-title">
         <div class="wrap">
           <div class="section-head">
-            <span class="chapter">— 04 / AZ ÖN AUTÓJA</span>
+            <span class="chapter">— 04 / EGYEDI RENDELÉS</span>
             <h2 id="cfg-title">Szín, felni,<br><em>havi részlet.</em></h2>
-            <p>Állítsa össze kedvenc konfigurációját, és nézze meg azonnal, mennyi lenne a havi törlesztő. A végleges ajánlatot személyre szabva küldjük.</p>
+            <p>Nem talál a készletben? Rendeljen újat saját specifikációval: válasszon színt és felnit, és nézze meg azonnal, mennyi lenne a havi törlesztő.</p>
           </div>
           <div class="cfg-grid">
             <div class="cfg-stage">
@@ -247,7 +246,7 @@
     <footer class="foot">
       <div class="wrap foot-grid">
         <div class="brand-big">NOBILE</div>
-        <p>Fiktív vállalkozás – a weboldal a <strong>Megyeri Márk Máté | Webfejlesztés</strong> portfóliódemója. Szeretne hasonló élményt a saját vállalkozásának?<small class="credit">3D modell: „Car Concept” – Eric Chadwick / Darmstadt Graphics Group, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>, a demóhoz átszínezve és logók nélkül renderelve.</small></p>
+        <p>Fiktív vállalkozás – a weboldal a <strong>Megyeri Márk Máté | Webfejlesztés</strong> portfóliódemója. Szeretne hasonló élményt a saját vállalkozásának?<small class="credit">Fotók: <a href="https://unsplash.com/license" target="_blank" rel="noopener">Unsplash</a>. Az autók és márkák a tulajdonosaik védjegyei, a kínálat és az árak kitaláltak. Konfigurátor: „Car Concept” 3D modell – Eric Chadwick / Darmstadt Graphics Group, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>, átszínezve, logók nélkül renderelve.</small></p>
         <a class="btn btn-gold" href="/ajanlatkeres?type=business">Ilyen oldalt kérek <span aria-hidden="true">↗</span></a>
       </div>
     </footer>

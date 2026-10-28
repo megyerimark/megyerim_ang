@@ -47,10 +47,7 @@ h1 em,h2 em,.panel em,blockquote em{font-style:italic;background:var(--metal);-w
 
 /* HERO */
 .hero .scene-pin{display:grid;align-items:center;padding:0 clamp(20px,5vw,80px)}
-.hero .scene-pin{background:radial-gradient(ellipse 70% 60% at 60% 60%,#2a2216 0,transparent 60%),var(--bg)}
-.spot{position:absolute;left:50%;top:-10%;width:90vw;height:120vh;transform:translateX(-30%);pointer-events:none;
-  background:conic-gradient(from 180deg at 50% 0%,transparent 160deg,#f3e3bb14 175deg,#f3e3bb26 180deg,#f3e3bb14 185deg,transparent 200deg);
-  opacity:calc(.4 + var(--p,0) * .8);filter:blur(6px)}
+.hero .scene-pin{background:var(--bg)}
 .hud{position:absolute;display:grid;gap:6px;font:400 10px var(--mono);letter-spacing:.24em;color:var(--dim);z-index:3}
 .hud-tl{top:28px;left:clamp(20px,3vw,44px)}
 .hud-tr{top:28px;right:clamp(20px,3vw,44px);text-align:right}
@@ -59,9 +56,7 @@ h1 em,h2 em,.panel em,blockquote em{font-style:italic;background:var(--metal);-w
 .hero h1{font-size:clamp(52px,7.6vw,124px)}
 .hero-lead{max-width:440px;margin:28px 0 36px;color:var(--muted);line-height:1.85}
 .hero-cta{display:flex;flex-wrap:wrap;gap:12px}
-.hero-car{position:absolute;z-index:2;right:-4vw;bottom:8vh;width:min(78vw,1180px);
-  transform:translateX(calc((1 - var(--p,0)) * 6vw - var(--p,0) * 18vw)) scale(calc(.92 + var(--p,0) * .16));transform-origin:70% 80%}
-.hero-specs{position:absolute;z-index:3;right:clamp(20px,5vw,80px);top:22vh;display:flex;text-align:right;gap:clamp(24px,4vw,64px);opacity:calc((var(--p,0) - .35) * 2.5)}
+.hero-specs{position:absolute;z-index:3;left:clamp(20px,5vw,80px);bottom:14vh;display:flex;text-align:left;gap:clamp(24px,4vw,64px);opacity:calc((var(--p,0) - .35) * 2.5)}
 .hero-specs small{display:block;font:400 9.5px var(--mono);letter-spacing:.26em;color:var(--dim)}
 .hero-specs strong{font:300 clamp(40px,4.4vw,68px)/1 var(--serif);color:var(--ink)}
 .hero-specs em{font-style:normal;font:400 13px var(--mono);color:var(--gold)}
@@ -69,13 +64,14 @@ h1 em,h2 em,.panel em,blockquote em{font-style:italic;background:var(--metal);-w
 .scroll-hint span{width:1px;height:42px;background:linear-gradient(var(--gold),transparent);animation:drip 2.2s infinite var(--ease)}
 @keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 
-/* fotószerű render + görgetésre végigsöprő fénysáv (az autó alakjára maszkolva) */
-.hero-car img{display:block;width:100%;height:auto}
-.hero-car .sheen{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;
-  -webkit-mask:url(img/hero-mask.webp) center/100% 100% no-repeat;mask:url(img/hero-mask.webp) center/100% 100% no-repeat;
-  background:linear-gradient(100deg,transparent 0 44%,#fff3d840 48%,#fffaf099 50%,#fff3d840 52%,transparent 56% 100%) no-repeat;
-  background-size:300% 100%;background-position:calc(100% - var(--p,0) * 100%) 0}
-
+/* valódi fotó: görgetésre „felkapcsolnak a fények” és a kamera lassan hátrál */
+.hero-photo{position:absolute;inset:0;z-index:1;overflow:hidden}
+.hero-photo img{width:100%;height:100%;object-fit:cover;object-position:62% 55%;
+  transform:scale(calc(1.16 - var(--p,0) * .16)) translateX(calc(var(--p,0) * -2%));
+  filter:brightness(calc(.55 + var(--p,0) * .5)) saturate(calc(.85 + var(--p,0) * .25)) sepia(.12)}
+.hero-photo::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,#0a0907f2 0%,#0a0907c4 30%,#0a090722 62%,transparent 80%),linear-gradient(0deg,#0a0907 0%,transparent 30%),linear-gradient(180deg,#0a0907cc 0%,transparent 22%);
+  opacity:calc(1 - var(--p,0) * .45)}
 /* CORRIDOR — a védjegy-effekt */
 .corridor .scene-pin{background:radial-gradient(ellipse 60% 50% at 50% 50%,#1d1810 0,var(--bg) 70%)}
 .dust{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
@@ -84,8 +80,8 @@ h1 em,h2 em,.panel em,blockquote em{font-style:italic;background:var(--metal);-w
 .panel{position:absolute;left:0;top:0;width:min(560px,78vw);transform-style:preserve-3d;will-change:transform,opacity;backface-visibility:hidden}
 .car-panel{padding:22px 22px 26px;border:1px solid #c9a96a40;background:linear-gradient(160deg,#1a1610f2,#0d0b08f5);box-shadow:0 40px 100px #000c,inset 0 1px #ecd9a826}
 .car-panel::before{content:'';position:absolute;inset:8px;border:1px solid #c9a96a14;pointer-events:none}
-.pc-car{aspect-ratio:1200/560;margin:-14px -8px 4px;background:radial-gradient(ellipse 60% 40% at 50% 70%,#3a2f1d88,transparent 70%)}
-.pc-car img{display:block;width:100%;height:100%;object-fit:contain}
+.pc-car{aspect-ratio:16/10;margin:0 0 16px;overflow:hidden;background:#000}
+.pc-car img{display:block;width:100%;height:100%;object-fit:cover}
 .pc-meta small{font:400 10px var(--mono);letter-spacing:.28em;color:var(--gold)}
 .pc-meta h3{font-size:clamp(30px,3vw,44px);margin:8px 0 6px}
 .pc-meta p{margin:0 0 14px;color:var(--muted);font-size:14px}
@@ -237,8 +233,10 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;transform:rotate(45de
 @media (max-width:860px){
   .hero .scene-pin{min-height:100svh;padding-top:110px;padding-bottom:40px;align-items:start}
   .hero-copy{opacity:1;transform:none}
-  .hero-car{position:relative;right:auto;bottom:auto;width:118%;margin:30px -9% 0;transform:none}
-  .hero-specs{position:relative;right:auto;top:auto;text-align:left;opacity:1;margin-top:10px;gap:22px}
+  .hero-photo img{object-position:70% 50%}
+  .hero-photo img{filter:brightness(.7) saturate(.9) sepia(.12);transform:none}
+  .hero-photo::after{opacity:1;background:linear-gradient(180deg,#0a0907f0 0%,#0a0907c7 50%,#0a0907e6 80%,#0a0907 100%)}
+  .hero-specs{position:relative;left:auto;bottom:auto;opacity:1;margin-top:44px;gap:22px}
   .hero-specs strong{font-size:34px}
   .scroll-hint,.hud-tr{display:none}
   .panel{width:min(420px,84vw)}

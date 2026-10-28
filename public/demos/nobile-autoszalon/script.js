@@ -19,7 +19,7 @@
   /* ---------- HERO: a fénysöprés tisztán CSS (--p), itt csak a sprintidő fut le ---------- */
   const sprint = $('#sprint');
   $('.hero').addEventListener('scene:frame', e => {
-    sprint.textContent = (9.9 - clamp((e.detail.p - .15) / .7) * 6.5).toFixed(1);
+    sprint.textContent = (9.9 - clamp((e.detail.p - .15) / .7) * 6.1).toFixed(1);
   });
 
   /* ---------- KOLLEKCIÓ: 3D repülés + aranypor ---------- */
