@@ -136,6 +136,7 @@ export class ClientProjectPage implements OnInit, OnDestroy {
         });
     }
     payDeposit(): void { this.redirect(this.api.depositCheckout(this.token)); }
+    payFinal(): void { this.redirect(this.api.finalCheckout(this.token)); }
     startMaintenance(): void { this.redirect(this.api.maintenanceCheckout(this.token)); }
     manageBilling(): void { this.redirect(this.api.billingPortal(this.token)); }
     subscriptionLabel(status: string): string {

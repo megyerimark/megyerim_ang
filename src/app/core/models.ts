@@ -126,6 +126,12 @@ export interface Quote {
     deposit_paid_at?: string | null;
     deposit_paid_via?: 'stripe' | 'transfer' | null;
     terms_version?: string | null;
+    completed_at?: string | null;
+    final_amount_huf?: number | null;
+    final_paid_at?: string | null;
+    final_paid_via?: 'stripe' | 'transfer' | null;
+    handed_over_at?: string | null;
+    handover_note?: string | null;
 }
 export interface QuotePayload {
     customer_name: string;
@@ -317,6 +323,11 @@ export interface ClientProject {
     deposit_amount_huf?: number | null;
     deposit_paid_at?: string | null;
     terms_version?: string | null;
+    completed_at?: string | null;
+    final_amount_huf?: number | null;
+    final_paid_at?: string | null;
+    handed_over_at?: string | null;
+    handover_note?: string | null;
     online_payment?: boolean;
     maintenance?: {
         plan_name: string; monthly_fee_huf: number; included_services: string | null;
@@ -345,7 +356,7 @@ export interface ConsultationConfirmation {
 }
 
 export interface ProjectMessage { id: number; author: 'client' | 'admin'; body: string; created_at: string; }
-export interface ProjectDocument { id: number; title: string; filename: string; mime_type: string; size_bytes: number; created_at: string; }
+export interface ProjectDocument { id: number; title: string; filename: string; mime_type: string; size_bytes: number; created_at: string; is_deliverable?: boolean; locked?: boolean; }
 export interface ProjectCollaboration { messages: ProjectMessage[]; documents: ProjectDocument[]; }
 
 export interface Testimonial {
