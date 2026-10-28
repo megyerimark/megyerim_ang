@@ -74,7 +74,7 @@ window.DEMO_EN = {
     'Obszidián': 'Obsidian', 'OBSZIDIÁN': 'OBSIDIAN', 'obszidián': 'obsidian',
     'Pezsgő': 'Champagne', 'PEZSGŐ': 'CHAMPAGNE', 'pezsgő': 'champagne',
     'Bordó': 'Bordeaux', 'BORDÓ': 'BORDEAUX', 'bordó': 'bordeaux',
-    'Brit zöld': 'British racing green', 'BRIT ZÖLD': 'BRITISH RACING GREEN', 'brit zöld': 'British racing green',
+    'Brit zöld': 'Racing green', 'BRIT ZÖLD': 'RACING GREEN', 'brit zöld': 'racing green',
     'Gyöngyház': 'Pearl', 'GYÖNGYHÁZ': 'PEARL', 'gyöngyház': 'pearl',
     'Felni': 'Wheels',
     '20″ Ezüst': '20″ Silver', '21″ Fekete': '21″ Black', '22″ Bronz': '22″ Bronze',
