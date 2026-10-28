@@ -14,6 +14,7 @@
       <p>
         {{ 'Az ajánlatkérésed sikeresen beérkezett. Hamarosan egyeztetünk a részletekről.' | t }}
       </p>
+      @if(sentPromo()){<div class="prefill-note" role="status">✦ −{{sentPromo()}}% {{ 'akciós kedvezmény rögzítve az ajánlatkérésedhez. Az ajánlatban érvényesítem.' | t }}</div>}
       <div class="ref-code">
         {{ 'Ajánlatkérés azonosítója' | t }}
         <strong>
@@ -44,6 +45,7 @@
         {{ '← Vissza a főoldalra' | t }}
       </a>
     </div>
+    <app-promo-note></app-promo-note>
     @if(data.design_style && (data.website_type || data.features.length)) {
       <div class="prefill-note" role="status">{{ 'A tervezőasztalon választott elképzelésedet áthoztam. Itt mindent módosíthatsz.' | t }}</div>
     }
@@ -278,6 +280,7 @@
           <div class="summary-line">
             {{ 'A beküldés díjmentes, nem jár megrendelési kötelezettséggel.' | t }}
           </div>
+          <app-promo-note [compact]="true"></app-promo-note>
         </div>
         }
  @if(generalError()){

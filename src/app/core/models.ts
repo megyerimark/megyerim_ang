@@ -111,6 +111,7 @@ export interface Quote {
     status: QuoteStatus;
     admin_notes: string | null;
     quoted_price_huf: number | null;
+    list_price_huf?: number | null;
     source?: string | null;
     utm_source?: string | null;
     utm_medium?: string | null;
@@ -312,6 +313,9 @@ export interface ClientProject {
     updated_at: string;
     quoted_at: string | null;
     quoted_price_huf: number | null;
+    list_price_huf?: number | null;
+    promo_percent?: number | null;
+    promo_title?: string | null;
     proposal_summary: string | null;
     proposal_schedule: string | null;
     proposal_terms: string | null;

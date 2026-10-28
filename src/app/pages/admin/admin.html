@@ -828,6 +828,16 @@
             </label>
             <input id="admin-price" class="input" type="text" inputmode="numeric" [(ngModel)]="selectedPrice" [disabled]="!!q.quoted_at" placeholder="Ajánlati összeg forintban">
           </div>
+          @if(q.promo_percent){
+          <div class="promo-reminder" role="note">
+            <strong>✦ Akciós ajánlatkérés: −{{q.promo_percent}}% @if(q.promo_title){({{q.promo_title}})}</strong>
+            <p>A beküldéskor rögzített kedvezményt az ajánlatban érvényesíteni kell. Add meg az akció előtti árat: az ügyfél az e-mailben és a projektoldalon az eredeti és az akciós árat is látja. Enélkül az ajánlat nem küldhető el.</p>
+            <div class="promo-reminder-row">
+              <input class="input" type="text" inputmode="numeric" aria-label="Akció előtti ár (Ft)" [(ngModel)]="selectedListPrice" [disabled]="!!q.quoted_at" placeholder="Akció előtti ár (Ft)">
+              @if(!q.quoted_at && promoPrice(q); as pp){<button type="button" class="btn btn-outline btn-sm" (click)="applyPromoPrice(q)">Akciós ár: {{money(pp)}} → ajánlati összeg</button>}
+            </div>
+          </div>
+          }
           <div class="form-field">
             <label for="admin-deposit">Előleg (%) – a munka csak a befizetése után indul @if(depositMin()){<span class="muted">(kötelező, min. {{depositMin()}}%)</span>}</label>
             <input id="admin-deposit" class="input" type="number" [min]="depositMin()" max="100" step="5" [(ngModel)]="selectedDeposit" [disabled]="!!q.quoted_at" [placeholder]="depositMin() ? 'Legalább ' + depositMin() : 'Pl. 30 (üresen: nincs előleg)'">
