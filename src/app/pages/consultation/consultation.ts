@@ -7,9 +7,9 @@ import { ConsultationSlot } from '../../core/models';
 import { TPipe } from '../../i18n/t.pipe';
 import { I18nService } from '../../i18n/i18n.service';
 import { Turnstile } from '../../components/turnstile/turnstile';
-import { SubmitLoader, SubmitLoaderState } from '../../components/submit-loader/submit-loader';
+import { SubmitLoaderService } from '../../core/submit-loader.service';
 
-@Component({ selector: 'app-consultation', standalone: true, imports: [FormsModule, RouterLink, TPipe, Turnstile, SubmitLoader], templateUrl: './consultation.html', styleUrl: './consultation.scss' })
+@Component({ selector: 'app-consultation', standalone: true, imports: [FormsModule, RouterLink, TPipe, Turnstile], templateUrl: './consultation.html', styleUrl: './consultation.scss' })
 export class ConsultationPage implements OnInit {
     readonly i18n = inject(I18nService);
     private readonly api = inject(ApiService);
@@ -21,8 +21,7 @@ export class ConsultationPage implements OnInit {
     error = signal('');
     data = {customer_name: '', email: '', phone: '', notes: '', privacy_notice_acknowledged: false, website: '', turnstile_token: ''};
     private readonly captcha = viewChild(Turnstile);
-    readonly loader = signal<SubmitLoaderState>('idle');
-    readonly loaderSteps = ['Időpont ellenőrzése…', 'Foglalás rögzítése…', 'Visszaigazolás előkészítése…'];
+    private readonly loader = inject(SubmitLoaderService);
     ngOnInit(): void { this.load(); }
     load(): void {
         this.loading.set(true);
@@ -40,11 +39,12 @@ export class ConsultationPage implements OnInit {
             this.error.set('A név, érvényes e-mail-cím és az adatkezelés tudomásulvétele kötelező.'); return;
         }
         if (this.captcha() && !this.captcha()!.ready()) { this.error.set('Várd meg, amíg a robotszűrő ellenőrzése befejeződik.'); return; }
-        this.error.set(''); this.sending.set(true); this.loader.set('loading');
+        this.error.set(''); this.sending.set(true);
+        this.loader.start(['Időpont ellenőrzése…', 'Foglalás rögzítése…', 'Visszaigazolás előkészítése…']);
         this.api.bookConsultation({...this.data, consultation_slot_id: this.selectedSlot()!}).subscribe({
-            next: r => { this.confirmation.set(r); this.sending.set(false); this.slots.set([]); this.loader.set('success'); },
+            next: r => { this.confirmation.set(r); this.sending.set(false); this.slots.set([]); this.loader.succeed('Időpont lefoglalva!'); },
             error: (e: HttpErrorResponse) => {
-                this.loader.set('idle');
+                this.loader.stop();
                 this.captcha()?.reset();
                 const fieldError = e.error?.errors?.email?.[0] ?? e.error?.errors?.turnstile_token?.[0];
                 this.error.set(e.status === 422 ? (fieldError || 'Az adatok vagy az időpont nem érvényes. Frissítsd az időpontokat és próbáld újra.') : 'A foglalás nem sikerült. Próbáld újra.');

@@ -5,6 +5,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Meta } from '@angular/platform-browser';
 import { ApiService } from '../../core/api.service';
 import { ToastService } from '../../core/toast.service';
+import { SubmitLoaderService } from '../../core/submit-loader.service';
 import { ClientProject, ProjectCollaboration, ProjectDocument, QuoteStatus } from '../../core/models';
 
 @Component({ selector: 'app-client-project', standalone: true, imports: [RouterLink, FormsModule], templateUrl: './client-project.html', styleUrl: './client-project.scss' })
@@ -13,6 +14,9 @@ export class ClientProjectPage implements OnInit, OnDestroy {
     private readonly route = inject(ActivatedRoute);
     private readonly meta = inject(Meta);
     private readonly toast = inject(ToastService);
+    private readonly loader = inject(SubmitLoaderService);
+    /** Vissza gombbal a Stripe-ról visszatérve (bfcache) a gombok ne maradjanak letiltva. */
+    private readonly onPageShow = (e: PageTransitionEvent) => { if (e.persisted) { this.paying.set(false); this.accepting.set(false); } };
     private token = '';
     project = signal<ClientProject | null>(null);
     loading = signal(true);
@@ -36,6 +40,7 @@ export class ClientProjectPage implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.meta.updateTag({ name: 'robots', content: 'noindex, nofollow, noarchive' });
+        addEventListener('pageshow', this.onPageShow);
         // The secret is only in the URL fragment, which is never sent to the web server.
         this.token = this.route.snapshot.fragment || '';
         if (!/^[a-f0-9]{64}$/.test(this.token)) {
@@ -48,7 +53,7 @@ export class ClientProjectPage implements OnInit, OnDestroy {
             error: () => { this.error.set('Ez a hozzáférési link nem érvényes, vagy a szolgáltatás átmenetileg nem érhető el.'); this.loading.set(false); }
         });
     }
-    ngOnDestroy(): void { this.meta.removeTag('name="robots"'); }
+    ngOnDestroy(): void { this.meta.removeTag('name="robots"'); removeEventListener('pageshow', this.onPageShow); }
     money(value: number): string { return new Intl.NumberFormat('hu-HU').format(value) + ' Ft'; }
     date(value: string | null): string { return value ? new Date(value).toLocaleDateString('hu-HU') : '—'; }
     status(status: QuoteStatus): string {
@@ -66,6 +71,7 @@ export class ClientProjectPage implements OnInit, OnDestroy {
         if (!item || !this.consent() || !this.canAccept(item)) return;
         this.accepting.set(true);
         this.error.set('');
+        this.loader.start(['Ajánlat ellenőrzése…', 'Elfogadás rögzítése…', 'Szerződés véglegesítése…']);
         this.api.acceptProposal(this.token, this.earlyStart()).subscribe({
             next: result => {
                 this.project.set(result.data);
@@ -73,7 +79,7 @@ export class ClientProjectPage implements OnInit, OnDestroy {
                 if (result.payment_url) {
                     this.message.set('Az ajánlat elfogadását rögzítettük. Átirányítás az előleg fizetéséhez…');
                     this.toast.info('Ajánlat elfogadva – átirányítás a biztonságos fizetési oldalra…');
-                    setTimeout(() => { location.href = result.payment_url as string; }, 900);
+                    this.loader.redirect(result.payment_url, 'Ajánlat elfogadva – átirányítás a biztonságos fizetéshez…', 900);
                     return;
                 }
                 this.accepting.set(false);
@@ -85,12 +91,13 @@ export class ClientProjectPage implements OnInit, OnDestroy {
                     this.payDeposit();
                     return;
                 }
+                this.loader.succeed('Ajánlat elfogadva!');
                 this.message.set(result.data.deposit_amount_huf && !result.data.deposit_paid_at
                     ? 'Az ajánlat elfogadását rögzítettük. A munka az előleg beérkezése után indul – lent fizetheted, vagy írj, és küldöm a díjbekérőt.'
                     : 'Az ajánlat elfogadását rögzítettük. Hamarosan egyeztetünk a következő lépésekről.');
                 setTimeout(() => document.getElementById('fizetes')?.scrollIntoView({ behavior: 'smooth' }), 200);
             },
-            error: (e: HttpErrorResponse) => { this.error.set(e.error?.message || 'Nem sikerült az ajánlat elfogadása.'); this.accepting.set(false); }
+            error: (e: HttpErrorResponse) => { this.loader.stop(); this.error.set(e.error?.message || 'Nem sikerült az ajánlat elfogadása.'); this.accepting.set(false); }
         });
     }
     loadCollaboration(): void {
@@ -102,9 +109,10 @@ export class ClientProjectPage implements OnInit, OnDestroy {
     sendMessage(): void {
         if (this.sendingMessage() || this.newMessage.trim().length < 2) return;
         this.sendingMessage.set(true);
+        this.loader.start(['Üzenet küldése…']);
         this.api.sendClientMessage(this.token, this.newMessage.trim()).subscribe({
-            next: () => { this.newMessage = ''; this.sendingMessage.set(false); this.loadCollaboration(); this.toast.success('Üzenet elküldve. Hamarosan válaszolok.'); },
-            error: () => { this.sendingMessage.set(false); this.toast.error('Az üzenetet nem sikerült elküldeni. Próbáld újra.'); }
+            next: () => { this.loader.succeed('Üzenet elküldve!'); this.newMessage = ''; this.sendingMessage.set(false); this.loadCollaboration(); this.toast.success('Üzenet elküldve. Hamarosan válaszolok.'); },
+            error: () => { this.loader.stop(); this.sendingMessage.set(false); this.toast.error('Az üzenetet nem sikerült elküldeni. Próbáld újra.'); }
         });
     }
     downloadDocument(doc: ProjectDocument): void {
@@ -121,12 +129,16 @@ export class ClientProjectPage implements OnInit, OnDestroy {
     }
     printProposal(): void { window.print(); }
     /** Stripe Checkout: a szerver friss fizetési munkamenetet nyit, mi csak átirányítunk. */
-    private redirect(request: ReturnType<ApiService['depositCheckout']>): void {
+    private redirect(request: ReturnType<ApiService['depositCheckout']>, portal = false): void {
         if (this.paying()) return;
         this.paying.set(true);
+        this.loader.start(portal
+            ? ['Számlázási portál megnyitása…', 'Biztonságos kapcsolat a Stripe-pal…']
+            : ['Fizetés előkészítése…', 'Biztonságos kapcsolat a Stripe-pal…', 'Átirányítás a fizetési oldalra…']);
         request.subscribe({
-            next: r => { location.href = r.url; },
+            next: r => this.loader.redirect(r.url, portal ? 'Átirányítás a számlázási portálra…' : 'Átirányítás a biztonságos fizetési oldalra…'),
             error: (e: HttpErrorResponse) => {
+                this.loader.stop();
                 this.paying.set(false);
                 const text = e.error?.errors?.payment?.[0] || e.error?.message || 'A fizetési oldal most nem nyitható meg.';
                 this.toast.error(text);
@@ -137,7 +149,7 @@ export class ClientProjectPage implements OnInit, OnDestroy {
     }
     payDeposit(): void { this.redirect(this.api.depositCheckout(this.token)); }
     startMaintenance(): void { this.redirect(this.api.maintenanceCheckout(this.token)); }
-    manageBilling(): void { this.redirect(this.api.billingPortal(this.token)); }
+    manageBilling(): void { this.redirect(this.api.billingPortal(this.token), true); }
     subscriptionLabel(status: string): string {
         const labels: Record<string, string> = { active: 'Aktív', trialing: 'Próbaidőszak', past_due: 'Sikertelen terhelés – frissítsd a kártyádat', canceled: 'Lemondva', unpaid: 'Kifizetetlen', paused: 'Szüneteltetve', incomplete: 'Függőben' };
         return status.endsWith('_cancel_scheduled') ? 'Aktív – az időszak végén megszűnik' : (labels[status] ?? status);

@@ -4,6 +4,7 @@ import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiService } from '../../core/api.service';
 import { Turnstile } from '../../components/turnstile/turnstile';
+import { SubmitLoaderService } from '../../core/submit-loader.service';
 @Component({
   selector: 'app-password-recovery', standalone: true,
   imports: [FormsModule, RouterLink, Turnstile],
@@ -11,6 +12,7 @@ import { Turnstile } from '../../components/turnstile/turnstile';
 })
 export class PasswordRecoveryPage {
   private api = inject(ApiService);
+  private loader = inject(SubmitLoaderService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   readonly isReset = signal(this.router.url.startsWith('/admin/jelszo-visszaallitas'));
@@ -36,12 +38,14 @@ export class PasswordRecoveryPage {
       return;
     }
     this.busy.set(true);
+    this.loader.start(this.isReset() ? ['Új jelszó mentése…', 'Munkamenetek frissítése…'] : ['Kérés feldolgozása…', 'Visszaállító e-mail előkészítése…']);
     const action = this.isReset()
       ? this.api.resetAdminPassword(this.email, this.token, this.password, this.confirmation)
       : this.api.forgotAdminPassword(this.email, this.captchaToken);
     action.subscribe({
-      next: r => { this.busy.set(false); this.captcha()?.reset(); this.success.set(r.message); this.password = ''; this.confirmation = ''; },
+      next: r => { this.loader.succeed(this.isReset() ? 'Jelszó módosítva!' : 'Kérés elküldve!'); this.busy.set(false); this.captcha()?.reset(); this.success.set(r.message); this.password = ''; this.confirmation = ''; },
       error: (e: HttpErrorResponse) => {
+        this.loader.stop();
         this.busy.set(false);
         this.captcha()?.reset();
         this.error.set(e.status === 429 ? 'Túl sok próbálkozás. Kérlek, próbáld később.'

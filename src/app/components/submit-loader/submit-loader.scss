@@ -8,8 +8,11 @@
   animation: veil-in .45s cubic-bezier(.2, .8, .2, 1) both;
 }
 .veil.is-leaving { animation: veil-out .45s ease forwards; }
+/* Biztosíték: siker után a fátyol CSS-ből is eltűnik és nem fog meg kattintást – akkor is, ha az oldal
+   frissítése (change detection) valamiért megakadna, és a JS-es elrejtés nem futna le. */
+.veil.is-success { animation: veil-in .45s cubic-bezier(.2, .8, .2, 1) both, veil-out .45s ease 1.7s forwards; }
 @keyframes veil-in { from { opacity: 0; } }
-@keyframes veil-out { to { opacity: 0; transform: scale(1.02); } }
+@keyframes veil-out { to { opacity: 0; transform: scale(1.02); visibility: hidden; pointer-events: none; } }
 
 /* lassan úszó, színes háttérfény */
 .aurora {

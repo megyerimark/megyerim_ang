@@ -5,6 +5,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastService } from '../../core/toast.service';
+import { SubmitLoaderService } from '../../core/submit-loader.service';
 import { apiErrorMessage, FRONTEND_VERSION } from '../../core/http-error';
 import { SitesPanel } from './sites-panel';
 import { FinancePanel } from './finance-panel';
@@ -239,12 +240,15 @@ export class AdminPage implements OnInit, OnDestroy {
     @HostListener('document:keydown.escape')
     closeMobileNavigation() { this.menuOpen.set(false); }
     private readonly toast = inject(ToastService);
+    private readonly loader = inject(SubmitLoaderService);
     /** Visszajelzés: toastként jelenik meg (mobilon is látszik, görgetéstől függetlenül). */
     notify(message: string, error = false) {
         this.message.set(''); this.isError.set(error);
         if (message) error ? this.toast.error(message) : this.toast.success(message);
     }
     fail(e: unknown) { this.notify(apiErrorMessage(e), true); this.busy.set(false); }
+    /** Ügyfél felé küldő / Stripe-os műveletek hibája: a beküldés-animáció is eltűnik. */
+    private failSubmit(e: unknown) { this.loader.stop(); this.fail(e); }
     use(tab: Tab) {
         this.tab.set(tab);
         this.menuOpen.set(false);
@@ -360,7 +364,8 @@ export class AdminPage implements OnInit, OnDestroy {
     cancelSubscription(row: MaintenanceAgreement) {
         if (!confirm('Lemondod az online előfizetést? A már kifizetett hónap végén szűnik meg.')) return;
         this.busy.set(true);
-        this.api.cancelSubscription(row.id).subscribe({ next: r => { this.busy.set(false); this.notify(r.message); this.loadMaintenance(); }, error: e => this.fail(e) });
+        this.loader.start(['Kapcsolódás a Stripe-hoz…', 'Előfizetés lemondása…']);
+        this.api.cancelSubscription(row.id).subscribe({ next: r => { this.loader.succeed('Előfizetés lemondva'); this.busy.set(false); this.notify(r.message); this.loadMaintenance(); }, error: e => this.failSubmit(e) });
     }
     subscriptionLabel(status?: string | null): string {
         if (!status) return 'Nincs online előfizetés';
@@ -411,7 +416,8 @@ export class AdminPage implements OnInit, OnDestroy {
         const q = this.selectedQuote();
         if (!q || !confirm('Jóváírod az előleget (átutalás beérkezett)? Bevételként is rögzül.')) return;
         this.busy.set(true);
-        this.api.markDepositPaid(q.id).subscribe({ next: r => { this.busy.set(false); this.showQuote(r.data); this.notify(r.message); }, error: e => this.fail(e) });
+        this.loader.start(['Előleg jóváírása…', 'Bevétel rögzítése…', 'Ügyfél értesítése…']);
+        this.api.markDepositPaid(q.id).subscribe({ next: r => { this.loader.succeed('Előleg jóváírva!'); this.busy.set(false); this.showQuote(r.data); this.notify(r.message); }, error: e => this.failSubmit(e) });
     }
     loadCollaboration(id: number) {
         this.api.adminCollaboration(id).subscribe({ next: r => {
@@ -424,8 +430,9 @@ export class AdminPage implements OnInit, OnDestroy {
     sendProjectMessage() {
         const q = this.selectedQuote(); if(!q || this.adminMessage.trim().length < 2) return;
         this.busy.set(true);
+        this.loader.start(['Üzenet küldése…']);
         this.api.sendAdminMessage(q.id, this.adminMessage.trim()).subscribe({
-            next: () => { this.adminMessage=''; this.busy.set(false); this.loadCollaboration(q.id); this.notify('Üzenet rögzítve az ügyfélportálon.'); }, error: e => this.fail(e)
+            next: () => { this.loader.succeed('Üzenet elküldve!'); this.adminMessage=''; this.busy.set(false); this.loadCollaboration(q.id); this.notify('Üzenet rögzítve az ügyfélportálon.'); }, error: e => this.failSubmit(e)
         });
     }
     pickDocument(event: Event) {
@@ -439,8 +446,9 @@ export class AdminPage implements OnInit, OnDestroy {
     uploadDocument() {
         const q = this.selectedQuote(); if(!q || !this.documentFile || !this.documentTitle.trim()) return;
         this.busy.set(true);
+        this.loader.start(['Dokumentum feltöltése…', 'Titkosított tárolás…']);
         this.api.uploadProjectDocument(q.id, this.documentFile, this.documentTitle.trim()).subscribe({
-            next: () => { this.documentTitle=''; this.documentFile=null; this.busy.set(false); this.loadCollaboration(q.id); this.notify('A privát dokumentum feltöltve.'); }, error: e => this.fail(e)
+            next: () => { this.loader.succeed('Dokumentum feltöltve!'); this.documentTitle=''; this.documentFile=null; this.busy.set(false); this.loadCollaboration(q.id); this.notify('A privát dokumentum feltöltve.'); }, error: e => this.failSubmit(e)
         });
     }
     private saveDownloaded(blob: Blob, filename: string) {
@@ -491,16 +499,19 @@ export class AdminPage implements OnInit, OnDestroy {
         const amount = Math.round((q.quoted_price_huf * deposit) / 100);
         if (!confirm(`Elküldöd az ajánlatot az ügyfélnek?\n\nÁr: ${this.money(q.quoted_price_huf)}\nKötelező előleg: ${deposit}% = ${this.money(amount)}\n\nElfogadás után az ügyfél azonnal a fizetési oldalra kerül.`)) return;
         this.busy.set(true);
+        this.loader.start(['Ajánlat összeállítása…', 'E-mail küldése az ügyfélnek…', 'Fizetési adatok rögzítése…']);
+        const failed = (e: unknown) => this.failSubmit(e);
         // Az előleg %-át az elküldés előtt mentjük, hogy az e-mail és a szerver ugyanazt lássa.
-        const send = () => this.api.sendProposal(q.id).subscribe({ next: r => { this.showQuote(r.data); this.notify('Az ajánlatot elküldtem e-mailben, az előleggel együtt.'); this.loadQuotes(this.quotePage()); }, error: e => this.fail(e) });
+        const send = () => this.api.sendProposal(q.id).subscribe({ next: r => { this.loader.succeed('Ajánlat elküldve!'); this.showQuote(r.data); this.notify('Az ajánlatot elküldtem e-mailben, az előleggel együtt.'); this.loadQuotes(this.quotePage()); }, error: failed });
         if (q.deposit_percent === deposit) send();
-        else this.api.saveQuote(q.id, { deposit_percent: deposit }).subscribe({ next: () => send(), error: e => this.fail(e) });
+        else this.api.saveQuote(q.id, { deposit_percent: deposit }).subscribe({ next: () => send(), error: failed });
     }
     rotateClientAccess() {
         const q = this.selectedQuote();
         if (!q || !confirm('Biztosan új privát linket küldesz az ügyfélnek? A korábbi projektlink érvénytelenné válik.')) return;
         this.busy.set(true);
-        this.api.rotateClientAccess(q.id).subscribe({next:()=>{this.busy.set(false);this.notify('Új hozzáférési link elküldve. A régi érvénytelen.');},error:e=>this.fail(e)});
+        this.loader.start(['Új privát link készítése…', 'E-mail küldése az ügyfélnek…']);
+        this.api.rotateClientAccess(q.id).subscribe({next:()=>{this.loader.succeed('Új link elküldve!');this.busy.set(false);this.notify('Új hozzáférési link elküldve. A régi érvénytelen.');},error:e=>this.failSubmit(e)});
     }
     deleteQuote() {
         const q = this.selectedQuote();

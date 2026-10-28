@@ -12,10 +12,11 @@ import { CookieBanner } from './components/cookie-banner/cookie-banner';
 import { ConsentService } from './core/consent.service';
 import { TPipe } from './i18n/t.pipe';
 import { I18nService } from './i18n/i18n.service';
+import { SubmitLoader } from './components/submit-loader/submit-loader';
 @Component({
     selector: 'app-root',
     standalone: true,
-    imports: [RouterOutlet, RouterLink, Navbar, ToastHost, CookieBanner, TPipe],
+    imports: [RouterOutlet, RouterLink, Navbar, ToastHost, CookieBanner, TPipe, SubmitLoader],
     templateUrl: './app.html',
     styleUrl: './app.scss'
 })

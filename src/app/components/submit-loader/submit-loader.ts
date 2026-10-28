@@ -1,13 +1,13 @@
-import { Component, DestroyRef, ElementRef, afterNextRender, computed, effect, inject, input, output, signal, untracked } from '@angular/core';
+import { Component, DestroyRef, ElementRef, afterNextRender, computed, effect, inject, signal, untracked } from '@angular/core';
 import { TPipe } from '../../i18n/t.pipe';
-
-export type SubmitLoaderState = 'idle' | 'loading' | 'success';
+import { SubmitLoaderService, SubmitLoaderState } from '../../core/submit-loader.service';
 
 /**
  * Teljes képernyős „feldolgozás” animáció beküldéskor (foglalás, ajánlatkérés):
  * loading – forgó aurora-gyűrűk, keringő fénypontok, lüktető mag és váltakozó állapotszövegek;
  * success – a gyűrűk összehúzódnak, kirajzolódik a pipa, majd a fátyol elhalványul (closed esemény).
- * Hibánál a szülő 'idle'-re állítja: azonnal eltűnik, a hibaüzenet az űrlapon jelenik meg.
+ * Hibánál a szolgáltatás stop()-ja azonnal eltünteti, a hibaüzenet az űrlapon jelenik meg.
+ * Egyetlen példány az app.html-ben; a SubmitLoaderService vezérli.
  * Csökkentett mozgás esetén a globális szabály kikapcsolja a mozgást, csak a végállapotok látszanak.
  */
 @Component({
@@ -39,11 +39,10 @@ export type SubmitLoaderState = 'idle' | 'loading' | 'success';
     styleUrl: './submit-loader.scss',
 })
 export class SubmitLoader {
-    readonly state = input<SubmitLoaderState>('idle');
-    readonly messages = input<string[]>(['Feldolgozás…']);
-    readonly successTitle = input('Kész!');
-    /** A siker-animáció után, amikor a fátyol eltűnt. */
-    readonly closed = output<void>();
+    private readonly loader = inject(SubmitLoaderService);
+    readonly state = this.loader.state;
+    readonly messages = this.loader.steps;
+    readonly successTitle = this.loader.successTitle;
 
     readonly visible = signal(false);
     readonly leaving = signal(false);
@@ -57,6 +56,7 @@ export class SubmitLoader {
         // csak az állapotváltozás indítja újra; a belső jelek olvasása/írása nem
         effect(() => {
             const state = this.state();
+            this.loader.run(); // új start() = új futás, akkor is, ha az állapot már 'loading' volt
             untracked(() => this.apply(state));
         });
         // A fátyol a <body> közvetlen gyereke legyen: az oldalak beúszó animációja (transform) miatt
@@ -74,10 +74,10 @@ export class SubmitLoader {
             this.ticker = setInterval(() => this.step.update(i => Math.min(i + 1, this.messages().length - 1)), 1500);
         } else if (state === 'success' && this.visible()) {
             this.timers.push(setTimeout(() => this.leaving.set(true), 1650));
-            this.timers.push(setTimeout(() => { this.visible.set(false); this.leaving.set(false); this.closed.emit(); }, 2100));
+            this.timers.push(setTimeout(() => { this.visible.set(false); this.leaving.set(false); this.loader.stop(); }, 2100));
         } else {
             this.visible.set(false); this.leaving.set(false);
-            if (state === 'success') this.closed.emit();
+            if (state === 'success') this.loader.stop();
         }
     }
 

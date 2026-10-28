@@ -6,12 +6,14 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../core/auth.service';
 import { ApiService } from '../../core/api.service';
 import { Turnstile } from '../../components/turnstile/turnstile';
+import { SubmitLoaderService } from '../../core/submit-loader.service';
 @Component({ selector: 'app-login', standalone: true, imports: [FormsModule, RouterLink, Turnstile], templateUrl: './login.html', styleUrl: './login.scss' })
 export class LoginPage implements OnInit {
     readonly i18n = inject(I18nService);
     private auth = inject(AuthService);
     private router = inject(Router);
     private api = inject(ApiService);
+    private loader = inject(SubmitLoaderService);
     email = '';
     password = '';
     code = '';
@@ -32,9 +34,10 @@ export class LoginPage implements OnInit {
             if (!valid) { this.error.set(this.codeMethod() === 'totp' ? 'Írd be az alkalmazás 6 jegyű kódját vagy egy helyreállítási kódot.' : 'Írd be a hatjegyű ellenőrzőkódot.'); return; }
             this.code = code;
             this.loading.set(true);
+            this.loader.start(['Kód ellenőrzése…', 'Biztonságos munkamenet indítása…']);
             this.auth.verifyTwoFactor(this.code).subscribe({
-                next: () => { this.loading.set(false); this.code = ''; this.router.navigateByUrl('/admin'); },
-                error: (e: HttpErrorResponse) => { this.loading.set(false); this.error.set(e.status === 422 ? 'Hibás vagy lejárt ellenőrzőkód.' : 'Nem sikerült az ellenőrzés.'); }
+                next: () => { this.loader.succeed('Sikeres belépés!'); this.loading.set(false); this.code = ''; this.router.navigateByUrl('/admin'); },
+                error: (e: HttpErrorResponse) => { this.loader.stop(); this.loading.set(false); this.error.set(e.status === 422 ? 'Hibás vagy lejárt ellenőrzőkód.' : 'Nem sikerült az ellenőrzés.'); }
             });
             return;
         }
@@ -44,7 +47,9 @@ export class LoginPage implements OnInit {
         }
         if (this.captcha() && !this.captcha()!.ready()) { this.error.set('Várd meg, amíg a robotszűrő ellenőrzése befejeződik.'); return; }
         this.loading.set(true);
-        this.auth.login(this.email, this.password, this.captchaToken).subscribe({ next: method => { this.loading.set(false); this.password = ''; if (method) { this.codeMethod.set(method); this.needsCode.set(true); } else this.router.navigateByUrl('/admin'); }, error: (e: HttpErrorResponse) => { this.loading.set(false); this.captcha()?.reset(); this.error.set(e.error?.error_code === 'TURNSTILE_FAILED' ? e.error.message : e.status === 401 || e.status === 422 ? 'Hibás bejelentkezési adatok.' : e.status === 429 ? 'Túl sok próbálkozás. Próbáld később.' : 'Nem sikerült csatlakozni a backendhez. Ellenőrizd az SMTP- és Laravel-kapcsolatot.'); } });
+        this.loader.start(['Belépési adatok ellenőrzése…', 'Biztonságos munkamenet indítása…']);
+        // kétlépcsős belépésnél nincs „siker” – a kódmező jön; különben siker-animáció az admin betöltése fölött
+        this.auth.login(this.email, this.password, this.captchaToken).subscribe({ next: method => { this.loading.set(false); this.password = ''; if (method) { this.loader.stop(); this.codeMethod.set(method); this.needsCode.set(true); } else { this.loader.succeed('Sikeres belépés!'); this.router.navigateByUrl('/admin'); } }, error: (e: HttpErrorResponse) => { this.loader.stop(); this.loading.set(false); this.captcha()?.reset(); this.error.set(e.error?.error_code === 'TURNSTILE_FAILED' ? e.error.message : e.status === 401 || e.status === 422 ? 'Hibás bejelentkezési adatok.' : e.status === 429 ? 'Túl sok próbálkozás. Próbáld később.' : 'Nem sikerült csatlakozni a backendhez. Ellenőrizd az SMTP- és Laravel-kapcsolatot.'); } });
     }
     resendCode() { this.api.resendAdminLoginCode().subscribe({ next: r => this.error.set(r.message), error: () => this.error.set('Nem sikerült új kódot küldeni.') }); }
 }

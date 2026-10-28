@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/api.service';
 import { apiErrorMessage } from '../../core/http-error';
+import { SubmitLoaderService } from '../../core/submit-loader.service';
 import { I18nService } from '../../i18n/i18n.service';
 import { TPipe } from '../../i18n/t.pipe';
 import { Turnstile } from '../turnstile/turnstile';
@@ -20,6 +21,7 @@ export class NewsletterSignup {
     readonly highlight = input<number>(0);
     private readonly api = inject(ApiService);
     readonly i18n = inject(I18nService);
+    private readonly loader = inject(SubmitLoaderService);
 
     email = '';
     consent = false;
@@ -37,9 +39,10 @@ export class NewsletterSignup {
         if (!this.consent) { this.error.set(this.i18n.t('A feliratkozáshoz pipáld be a hozzájárulást.')); return; }
         if (this.captcha() && !this.captcha()!.ready()) { this.error.set(this.i18n.t('Várd meg, amíg a robotszűrő ellenőrzése befejeződik.')); return; }
         this.busy.set(true);
+        this.loader.start(['Feliratkozás rögzítése…', 'Megerősítő e-mail előkészítése…']);
         this.api.newsletterSubscribe(email, this.i18n.lang(), this.source(), this.website, this.captchaToken).subscribe({
-            next: r => { this.busy.set(false); this.done.set(this.i18n.t(r.message)); this.email = ''; this.consent = false; },
-            error: e => { this.busy.set(false); this.captcha()?.reset(); this.error.set(this.i18n.t(apiErrorMessage(e))); }
+            next: r => { this.loader.succeed('Már csak egy lépés!'); this.busy.set(false); this.done.set(this.i18n.t(r.message)); this.email = ''; this.consent = false; },
+            error: e => { this.loader.stop(); this.busy.set(false); this.captcha()?.reset(); this.error.set(this.i18n.t(apiErrorMessage(e))); }
         });
     }
 }
