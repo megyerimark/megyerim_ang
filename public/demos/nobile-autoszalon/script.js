@@ -1,4 +1,4 @@
-/* NOBILE. Prémium Autószalon — autórajzoló, fénysöprés, 3D kollekció aranypor-szétbomlással, konfigurátor, foglalás. */
+/* NOBILE. Prémium Autószalon — fénysöprés, 3D kollekció aranypor-szétbomlással, konfigurátor, foglalás. */
 (() => {
   const $ = (s, r = document) => r.querySelector(s);
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -11,81 +11,20 @@
     return '#' + c.map(v => Math.round(k >= 0 ? v + (255 - v) * k : v * (1 + k)).toString(16).padStart(2, '0')).join('');
   }
 
-  /* ---------- Stilizált GT-kupé oldalnézetből (SVG) ---------- */
-  const RIMS = { silver: ['#c4c7cc', '#24262a'], black: ['#3a3a3e', '#0b0b0d'], gold: ['#d2b07a', '#3a2c16'] };
-  let uid = 0;
-  function carSVG(color, rim = 'silver') {
-    const id = 'c' + (++uid), [r1, r2] = RIMS[rim];
-    const body = 'M38,214C36,196 48,184 78,180L214,160C262,152 300,136 352,108C392,86 440,78 500,80C560,82 610,98 656,126C700,142 742,152 760,166C774,178 774,206 766,222L748,232L670,232A62,62 0 0 0 546,232L254,232A62,62 0 0 0 130,232L58,232C44,230 38,224 38,214Z';
-    const roof = 'M78,180L214,160C262,152 300,136 352,108C392,86 440,78 500,80C560,82 610,98 656,126C700,142 742,152 760,166';
-    const wheel = (cx) => `<g class="wheel" data-cx="${cx}" transform="translate(${cx} 232)">
-        <circle r="52" fill="#060606"/><circle r="50" fill="none" stroke="#1d1d1d" stroke-width="3"/>
-        <circle r="38" fill="url(#${id}r)"/>
-        <g class="spokes">${[0, 1, 2, 3, 4].map(k => `<path transform="rotate(${k * 72})" d="M-3,-10L-8,-37L-2,-37L0,-14L2,-37L8,-37L3,-10Z" fill="${r1}"/>`).join('')}</g>
-        <path d="M-22,-26A34,34 0 0 1 8,-33" stroke="#c9a96a" stroke-width="7" fill="none" stroke-linecap="round" opacity=".9"/>
-        <circle r="11" fill="#0c0c0c" stroke="${r1}" stroke-width="2"/><circle r="3" fill="#c9a96a"/>
-      </g>`;
-    return `<svg class="car" viewBox="0 0 800 300" aria-hidden="true">
-      <defs>
-        <linearGradient id="${id}b" x1="0" y1="80" x2="0" y2="235" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stop-color="${shade(color, .5)}"/><stop offset=".32" stop-color="${shade(color, .14)}"/>
-          <stop offset=".6" stop-color="${color}"/><stop offset="1" stop-color="${shade(color, -.75)}"/>
-        </linearGradient>
-        <linearGradient id="${id}s" x1="0" x2="220" gradientUnits="userSpaceOnUse" gradientTransform="translate(-300 0)">
-          <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff6e0" stop-opacity=".42"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
-        </linearGradient>
-        <linearGradient id="${id}l" x1="78" x2="760" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stop-color="#8a6d3b"/><stop offset=".45" stop-color="#fbeac0"/><stop offset="1" stop-color="#c9a96a"/>
-        </linearGradient>
-        <radialGradient id="${id}r"><stop offset=".55" stop-color="${r2}"/><stop offset="1" stop-color="${r1}"/></radialGradient>
-        <radialGradient id="${id}g"><stop offset="0" stop-color="#000" stop-opacity=".85"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
-        <radialGradient id="${id}h"><stop offset="0" stop-color="#fff8e6"/><stop offset="1" stop-color="#fff8e6" stop-opacity="0"/></radialGradient>
-      </defs>
-      <ellipse cx="400" cy="284" rx="390" ry="16" fill="url(#${id}g)"/>
-      <path d="${body}" fill="url(#${id}b)"/>
-      <path d="M366,112C402,92 444,86 498,87C548,88 590,100 628,124C600,128 420,130 366,128Z" fill="#07080a" stroke="#ffffff22"/>
-      <path d="M520,88L524,128" stroke="${shade(color, -.4)}" stroke-width="5"/>
-      <path d="M366,112C402,92 444,86 498,87" fill="none" stroke="#ffffff38" stroke-width="1.5"/>
-      <path d="M70,198C260,184 520,178 764,186" fill="none" stroke="#ffffff26" stroke-width="1.2"/>
-      <path d="M332,140C328,170 332,204 342,228M540,132C548,170 548,204 540,228" fill="none" stroke="#00000066" stroke-width="1.2"/>
-      <path d="M356,124l-16,-6l-6,10l18,4z" fill="${shade(color, -.3)}"/>
-      <path d="M466,150h26" stroke="#ffffff40" stroke-width="3" stroke-linecap="round"/>
-      <path d="M44,200C60,192 90,188 120,186L116,194C92,196 66,200 46,206Z" fill="#fff8e6"/>
-      <ellipse cx="70" cy="196" rx="70" ry="18" fill="url(#${id}h)" opacity=".35"/>
-      <path d="M744,170C758,174 768,182 770,190L762,190C758,184 752,180 742,177Z" fill="#c2202e"/>
-      <path class="sheen" d="${body}" fill="url(#${id}s)"/>
-      <path class="rim-light" d="${roof}" fill="none" stroke="url(#${id}l)" stroke-width="1.8" stroke-linecap="round" pathLength="100" stroke-dasharray="100 100"/>
-      ${wheel(192)}${wheel(608)}
-    </svg>`;
-  }
-  // a fénysöprés, a „rajzoló” peremfény és a kerekek forgása egy 0–1 értékből
-  function lightCar(root, t, spin = t) {
-    const sheen = root.querySelector('linearGradient[id$="s"]');
-    if (sheen) sheen.setAttribute('gradientTransform', `translate(${-300 + t * 1200} 0)`);
-    const rl = root.querySelector('.rim-light');
-    if (rl) rl.style.strokeDashoffset = String(100 - clamp(t * 1.4) * 100);
-    root.querySelectorAll('.spokes').forEach(g => g.setAttribute('transform', `rotate(${-spin * 900})`));
-  }
-
   /* ---------- Óra ---------- */
   const clock = $('#clock');
   const tick = () => { clock.textContent = new Date().toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' }); };
   tick(); setInterval(tick, 15000);
 
-  /* ---------- HERO ---------- */
-  const heroCar = $('#heroCar'), sprint = $('#sprint');
-  heroCar.innerHTML = carSVG('#121214', 'silver');
-  lightCar(heroCar, reduced ? 1 : .05);
+  /* ---------- HERO: a fénysöprés tisztán CSS (--p), itt csak a sprintidő fut le ---------- */
+  const sprint = $('#sprint');
   $('.hero').addEventListener('scene:frame', e => {
-    const p = e.detail.p;
-    lightCar(heroCar, .05 + p * .95);
-    sprint.textContent = (9.9 - clamp((p - .15) / .7) * 6.5).toFixed(1);
+    sprint.textContent = (9.9 - clamp((e.detail.p - .15) / .7) * 6.5).toFixed(1);
   });
 
   /* ---------- KOLLEKCIÓ: 3D repülés + aranypor ---------- */
   const corridor = $('#kollekcio'), world = $('#world'), pin = corridor.querySelector('.scene-pin');
   const panels = [...world.children].map((el, i) => ({ el, i, x: Number(el.dataset.x || 0), y: Number(el.dataset.y || 0), gone: false, color: el.dataset.color || '#c9a96a' }));
-  panels.forEach(pn => { const slot = pn.el.querySelector('.pc-car'); if (slot) slot.innerHTML = carSVG(pn.color, 'silver'); if (slot) lightCar(slot, .7, 0); });
 
   if (reduced) {
     corridor.classList.add('flat');
@@ -179,19 +118,24 @@
   }).join('');
 
   /* ---------- KONFIGURÁTOR + FINANSZÍROZÁS ---------- */
-  const paints = { obsidian: ['#121214', 'Obszidián', 0], champagne: ['#b89b68', 'Pezsgő', 1200000], bordeaux: ['#5b1720', 'Bordó', 950000], racing: ['#1d3a2c', 'Brit zöld', 950000], pearl: ['#e9e4da', 'Gyöngyház', 1450000] };
+  const paints = { obsidian: ['Obszidián', 0], champagne: ['Pezsgő', 1200000], bordeaux: ['Bordó', 950000], racing: ['Brit zöld', 950000], pearl: ['Gyöngyház', 1450000] };
   const rims = { silver: ['20″ ezüst', 0], black: ['21″ fekete', 680000], gold: ['22″ bronz', 1150000] };
   const BASE = 68900000;
-  const form = $('#cfgForm'), cfgCar = $('#cfgCar'), down = $('#down'), term = $('#term');
-  let price = BASE, cfg = {};
+  const form = $('#cfgForm'), cfgImg = $('#cfgImg'), down = $('#down'), term = $('#term');
+  let price = BASE, cfg = {}, swapId = 0;
   function paintCar() {
     const f = new FormData(form);
     cfg = { paint: f.get('paint'), rim: f.get('rim') };
-    cfgCar.innerHTML = carSVG(paints[cfg.paint][0], cfg.rim);
-    lightCar(cfgCar, .62, 0);
-    if (!reduced) cfgCar.animate([{ opacity: 0, transform: 'translateX(24px)' }, { opacity: 1, transform: 'none' }], { duration: 500, easing: 'cubic-bezier(.2,.8,.2,1)' });
-    $('#cfgName').textContent = `GT COUPÉ V8 · ${paints[cfg.paint][1].toUpperCase()}`;
-    price = BASE + paints[cfg.paint][2] + rims[cfg.rim][1];
+    // a következő render előtöltése, majd áttűnés – ne villanjon üres kép
+    const src = `img/cfg-${cfg.paint}-${cfg.rim}.webp`, id = ++swapId, next = new Image();
+    next.src = src;
+    next.decode().catch(() => {}).then(() => {
+      if (id !== swapId) return;
+      cfgImg.src = src;
+      if (!reduced) cfgImg.animate([{ opacity: 0, transform: 'translateX(28px)' }, { opacity: 1, transform: 'none' }], { duration: 550, easing: 'cubic-bezier(.2,.8,.2,1)' });
+    });
+    $('#cfgName').textContent = `GT COUPÉ V8 · ${paints[cfg.paint][0].toUpperCase()}`;
+    price = BASE + paints[cfg.paint][1] + rims[cfg.rim][1];
     calc();
   }
   function calc() {
@@ -212,7 +156,7 @@
   const note = $('#cfgNote');
   $('#takeCfg').addEventListener('click', () => {
     note.hidden = false;
-    note.textContent = `Csatolt konfiguráció: GT Coupé V8, ${paints[cfg.paint][1].toLowerCase()} fényezés, ${rims[cfg.rim][0]} felni – ${ft(price)}, havi ${$('#monthly').textContent}.`;
+    note.textContent = `Csatolt konfiguráció: GT Coupé V8, ${paints[cfg.paint][0].toLowerCase()} fényezés, ${rims[cfg.rim][0]} felni – ${ft(price)}, havi ${$('#monthly').textContent}.`;
   });
 
   /* ---------- Időpontfoglalás (demó, nem küld adatot) ---------- */

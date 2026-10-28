@@ -7,6 +7,7 @@
     <meta name="theme-color" content="#0a0907">
     <title>NOBILE. Prémium Autószalon | Demó</title>
     <link rel="preload" href="/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" as="image" href="img/hero.webp" imagesrcset="img/hero-1100.webp 1100w, img/hero.webp 2200w" imagesizes="(max-width:860px) 118vw, 78vw">
     <link rel="stylesheet" href="/fonts/fonts.css"><link rel="stylesheet" href="../shared/scroll3d.css"><link rel="stylesheet" href="style.css">
     <script src="../shared/scroll3d.js" defer></script><script src="script.js" defer></script>
   </head>
@@ -46,7 +47,10 @@
               <a class="btn btn-line" href="#tesztvezetes">Időpont a szalonba</a>
             </div>
           </div>
-          <div class="hero-car" id="heroCar" aria-hidden="true"></div>
+          <div class="hero-car" aria-hidden="true">
+            <img src="img/hero.webp" srcset="img/hero-1100.webp 1100w, img/hero.webp 2200w" sizes="(max-width:860px) 118vw, 78vw" width="2200" height="900" alt="" fetchpriority="high" decoding="async">
+            <span class="sheen"></span>
+          </div>
           <div class="hero-specs" aria-hidden="true">
             <div><small>TELJESÍTMÉNY</small><strong><span data-t=".15,.75" data-count="625">0</span><em> LE</em></strong></div>
             <div><small>0–100 KM/H</small><strong id="sprint">9.9</strong><em> s</em></div>
@@ -72,27 +76,27 @@
                 <strong>Öt autó.<br><em>Öt történet.</em></strong>
               </div>
               <article class="panel car-panel" data-x="-1" data-color="#121214" data-name="Grand Tourer V8">
-                <div class="pc-car"></div>
+                <div class="pc-car"><img src="img/panel-obsidian.webp" srcset="img/panel-obsidian-640.webp 640w, img/panel-obsidian.webp 1200w" sizes="(max-width:860px) 84vw, 560px" width="1200" height="560" alt="GT Coupé V8 – obszidián fényezés" decoding="async"></div>
                 <div class="pc-meta"><small>01 · GRAND TOURER</small><h3>GT Coupé V8</h3><p>2023 · 14 200 km · 625 LE · Obszidián</p><b>68 900 000 Ft</b></div>
               </article>
               <article class="panel car-panel" data-x="1" data-color="#b89b68" data-name="Executive Sedan">
-                <div class="pc-car"></div>
-                <div class="pc-meta"><small>02 · LIMUZIN</small><h3>Executive Hybrid</h3><p>2024 · 6 800 km · 489 LE · Pezsgő</p><b>52 400 000 Ft</b></div>
+                <div class="pc-car"><img src="img/panel-champagne.webp" srcset="img/panel-champagne-640.webp 640w, img/panel-champagne.webp 1200w" sizes="(max-width:860px) 84vw, 560px" width="1200" height="560" alt="GT Coupé Hybrid – pezsgő fényezés" decoding="async"></div>
+                <div class="pc-meta"><small>02 · HIBRID</small><h3>GT Coupé Hybrid</h3><p>2024 · 6 800 km · 680 LE · Pezsgő</p><b>52 400 000 Ft</b></div>
               </article>
               <div class="panel quote-panel" data-x="0" data-y="-.2">
                 <blockquote>„A jó autó nem visz el valahová.<br><em>Hazahoz.”</em></blockquote>
               </div>
               <article class="panel car-panel" data-x="-1" data-color="#5b1720" data-name="Roadster">
-                <div class="pc-car"></div>
-                <div class="pc-meta"><small>03 · ROADSTER</small><h3>Roadster S</h3><p>2022 · 21 500 km · 510 LE · Bordó</p><b>44 900 000 Ft</b></div>
+                <div class="pc-car"><img src="img/panel-bordeaux.webp" srcset="img/panel-bordeaux-640.webp 640w, img/panel-bordeaux.webp 1200w" sizes="(max-width:860px) 84vw, 560px" width="1200" height="560" alt="GT Coupé S – bordó fényezés" decoding="async"></div>
+                <div class="pc-meta"><small>03 · SPORT</small><h3>GT Coupé S</h3><p>2022 · 21 500 km · 510 LE · Bordó</p><b>44 900 000 Ft</b></div>
               </article>
               <article class="panel car-panel" data-x="1" data-color="#1d3a2c" data-name="SUV Coupé">
-                <div class="pc-car"></div>
-                <div class="pc-meta"><small>04 · SUV COUPÉ</small><h3>Touring SUV</h3><p>2024 · 3 100 km · 571 LE · Brit zöld</p><b>61 700 000 Ft</b></div>
+                <div class="pc-car"><img src="img/panel-racing.webp" srcset="img/panel-racing-640.webp 640w, img/panel-racing.webp 1200w" sizes="(max-width:860px) 84vw, 560px" width="1200" height="560" alt="GT Coupé Touring – brit zöld fényezés" decoding="async"></div>
+                <div class="pc-meta"><small>04 · TOURING</small><h3>GT Coupé Touring</h3><p>2024 · 3 100 km · 571 LE · Brit zöld</p><b>61 700 000 Ft</b></div>
               </article>
               <article class="panel car-panel" data-x="0" data-color="#e9e4da" data-name="Limousine">
-                <div class="pc-car"></div>
-                <div class="pc-meta"><small>05 · KÜLÖNLEGESSÉG</small><h3>Heritage Coupé</h3><p>1998 · 48 000 km · Gyöngyház · gyűjtői darab</p><b>Ár kérésre</b></div>
+                <div class="pc-car"><img src="img/panel-pearl.webp" srcset="img/panel-pearl-640.webp 640w, img/panel-pearl.webp 1200w" sizes="(max-width:860px) 84vw, 560px" width="1200" height="560" alt="Launch Edition – gyöngyház fényezés" decoding="async"></div>
+                <div class="pc-meta"><small>05 · KÜLÖNLEGESSÉG</small><h3>Launch Edition</h3><p>2021 · 9 400 km · 1 / 99 · Gyöngyház</p><b>Ár kérésre</b></div>
               </article>
               <div class="panel title-panel end-panel" data-x="0" data-y="0">
                 <small>A KÉSZLET TOVÁBBI 19 AUTÓJA</small>
@@ -150,8 +154,8 @@
           <div class="cfg-grid">
             <div class="cfg-stage">
               <div class="stage-hud"><span id="cfgName">GT COUPÉ V8 · OBSZIDIÁN</span><span>360° · STÚDIÓ</span></div>
-              <div class="cfg-car" id="cfgCar" aria-hidden="true"></div>
-              <div class="turntable" aria-hidden="true"></div>
+              <img class="cfg-car" id="cfgImg" src="img/cfg-obsidian-silver.webp" width="1400" height="600" alt="A konfigurált GT Coupé V8 oldalnézetből" decoding="async">
+              
             </div>
             <form class="cfg-panel" id="cfgForm" aria-label="Konfigurátor és finanszírozási kalkulátor">
               <fieldset>
@@ -243,7 +247,7 @@
     <footer class="foot">
       <div class="wrap foot-grid">
         <div class="brand-big">NOBILE</div>
-        <p>Fiktív vállalkozás – a weboldal a <strong>Megyeri Márk Máté | Webfejlesztés</strong> portfóliódemója. Szeretne hasonló élményt a saját vállalkozásának?</p>
+        <p>Fiktív vállalkozás – a weboldal a <strong>Megyeri Márk Máté | Webfejlesztés</strong> portfóliódemója. Szeretne hasonló élményt a saját vállalkozásának?<small class="credit">3D modell: „Car Concept” – Eric Chadwick / Darmstadt Graphics Group, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>, a demóhoz átszínezve és logók nélkül renderelve.</small></p>
         <a class="btn btn-gold" href="/ajanlatkeres?type=business">Ilyen oldalt kérek <span aria-hidden="true">↗</span></a>
       </div>
     </footer>

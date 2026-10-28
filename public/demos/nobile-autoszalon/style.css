@@ -69,9 +69,12 @@ h1 em,h2 em,.panel em,blockquote em{font-style:italic;background:var(--metal);-w
 .scroll-hint span{width:1px;height:42px;background:linear-gradient(var(--gold),transparent);animation:drip 2.2s infinite var(--ease)}
 @keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 
-/* car svg közös */
-.car{width:100%;height:auto;overflow:visible}
-.car .rim-light{filter:drop-shadow(0 0 6px #f3dca5aa)}
+/* fotószerű render + görgetésre végigsöprő fénysáv (az autó alakjára maszkolva) */
+.hero-car img{display:block;width:100%;height:auto}
+.hero-car .sheen{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;
+  -webkit-mask:url(img/hero-mask.webp) center/100% 100% no-repeat;mask:url(img/hero-mask.webp) center/100% 100% no-repeat;
+  background:linear-gradient(100deg,transparent 0 44%,#fff3d840 48%,#fffaf099 50%,#fff3d840 52%,transparent 56% 100%) no-repeat;
+  background-size:300% 100%;background-position:calc(100% - var(--p,0) * 100%) 0}
 
 /* CORRIDOR — a védjegy-effekt */
 .corridor .scene-pin{background:radial-gradient(ellipse 60% 50% at 50% 50%,#1d1810 0,var(--bg) 70%)}
@@ -81,7 +84,8 @@ h1 em,h2 em,.panel em,blockquote em{font-style:italic;background:var(--metal);-w
 .panel{position:absolute;left:0;top:0;width:min(560px,78vw);transform-style:preserve-3d;will-change:transform,opacity;backface-visibility:hidden}
 .car-panel{padding:22px 22px 26px;border:1px solid #c9a96a40;background:linear-gradient(160deg,#1a1610f2,#0d0b08f5);box-shadow:0 40px 100px #000c,inset 0 1px #ecd9a826}
 .car-panel::before{content:'';position:absolute;inset:8px;border:1px solid #c9a96a14;pointer-events:none}
-.pc-car{aspect-ratio:2.6/1;margin:-10px 0 8px;background:radial-gradient(ellipse 60% 40% at 50% 75%,#3a2f1d88,transparent 70%)}
+.pc-car{aspect-ratio:1200/560;margin:-14px -8px 4px;background:radial-gradient(ellipse 60% 40% at 50% 70%,#3a2f1d88,transparent 70%)}
+.pc-car img{display:block;width:100%;height:100%;object-fit:contain}
 .pc-meta small{font:400 10px var(--mono);letter-spacing:.28em;color:var(--gold)}
 .pc-meta h3{font-size:clamp(30px,3vw,44px);margin:8px 0 6px}
 .pc-meta p{margin:0 0 14px;color:var(--muted);font-size:14px}
@@ -141,8 +145,8 @@ h1 em,h2 em,.panel em,blockquote em{font-style:italic;background:var(--metal);-w
 .cfg-stage::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 79px,#c9a96a0a 80px);pointer-events:none}
 .stage-hud{position:absolute;top:22px;left:24px;right:24px;display:flex;justify-content:space-between;font:400 10px var(--mono);letter-spacing:.24em;color:var(--dim)}
 .stage-hud span:first-child{color:var(--gold)}
-.cfg-car{position:relative;z-index:2;width:92%}
-.turntable{position:absolute;bottom:13%;width:80%;height:56px;border-radius:50%;border:1px solid #c9a96a33;background:radial-gradient(ellipse,#c9a96a22,transparent 70%)}
+.cfg-car{position:relative;z-index:2;width:100%;height:auto;margin-top:30px}
+
 .cfg-panel{display:grid;gap:14px;align-content:start}
 fieldset{margin:0;padding:20px 22px;border:1px solid #c9a96a26;background:#100e0b}
 legend{padding:0 8px;font:400 10.5px var(--mono);letter-spacing:.28em;text-transform:uppercase;color:var(--gold)}
@@ -219,6 +223,8 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;transform:rotate(45de
 .foot-grid{display:grid;grid-template-columns:auto 1fr auto;gap:44px;align-items:center}
 .brand-big{font:300 clamp(48px,8vw,120px)/1 var(--serif);letter-spacing:.3em;background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent}
 .foot p{color:var(--muted);max-width:420px}
+.credit{display:block;margin-top:14px;font-size:11px;line-height:1.5;color:var(--dim)}
+.credit a{color:var(--muted)}
 
 /* RESPONSIVE */
 @media (max-width:1100px){
