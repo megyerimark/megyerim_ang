@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="NOBILE Autószalon – fiktív prémium autókereskedés weboldal-demó: 3D görgetéses kollekció, konfigurátor, finanszírozási kalkulátor és tesztvezetés-foglalás.">
+    <meta name="theme-color" content="#0a0907">
+    <title>NOBILE. Prémium Autószalon | Demó</title>
+    <link rel="preload" href="/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" as="image" href="img/hero-photo.webp" imagesrcset="img/hero-photo-1200.webp 1200w, img/hero-photo.webp 2400w" imagesizes="100vw">
+    <link rel="stylesheet" href="/fonts/fonts.css"><link rel="stylesheet" href="../shared/scroll3d.css"><link rel="stylesheet" href="style.css">
+    <script src="../shared/scroll3d.js" defer></script><script src="script.js" defer></script>
+  </head>
+  <body>
+    <div class="demo-ribbon">
+      PORTFÓLIÓ DEMÓ — FIKTÍV AUTÓSZALON, AZ ÁRAK ÉS AJÁNLATOK SZEMLÉLTETŐK
+      <a href="../index.html">← Összes demó</a>
+    </div>
+
+    <header class="nav" id="top">
+      <a class="brand" href="#top" aria-label="NOBILE Autószalon – vissza a tetejére">
+        <span class="crest" aria-hidden="true">N</span>
+        <span><b>NOBILE</b><small>PRÉMIUM AUTÓSZALON · EST. 2004</small></span>
+      </a>
+      <nav aria-label="Fő navigáció">
+        <a href="#kollekcio">Kollekció</a>
+        <a href="#reszletek">Részletek</a>
+        <a href="#konfigurator">Konfigurátor</a>
+        <a href="#tesztvezetes">Tesztvezetés</a>
+      </nav>
+      <a class="btn btn-gold" href="#tesztvezetes">Tesztvezetés</a>
+    </header>
+
+    <main>
+      <!-- 01 HERO: fénysáv söpör végig az autón -->
+      <section class="scene hero" data-scene data-ease=".09" style="--h:230vh" aria-labelledby="hero-title">
+        <div class="scene-pin">
+          
+          <div class="hud hud-tl" aria-hidden="true"><span>SHOWROOM · BUDAPEST XII.</span><span>KÉSZLETEN: 24 AUTÓ</span></div>
+          <div class="hud hud-tr" aria-hidden="true"><span>ÉRTÉKBECSLÉS 24 ÓRÁN BELÜL</span><span id="clock">--:--</span></div>
+          <div class="hero-copy">
+            <span class="chapter">— 01 / A MEGÉRKEZÉS</span>
+            <h1 id="hero-title">Nem autót választ.<br><em>Egy érzést.</em></h1>
+            <p class="hero-lead">Válogatott prémium és sportautók, átvizsgálva, garanciával. Személyes tanácsadás, beszámítás és finanszírozás egy helyen.</p>
+            <div class="hero-cta">
+              <a class="btn btn-gold" href="#kollekcio">A kollekció <span aria-hidden="true">↓</span></a>
+              <a class="btn btn-line" href="#tesztvezetes">Időpont a szalonba</a>
+            </div>
+          </div>
+          <div class="hero-photo" aria-hidden="true">
+            <img src="img/hero-photo.webp" srcset="img/hero-photo-1200.webp 1200w, img/hero-photo.webp 2400w" sizes="100vw" width="2400" height="1600" alt="" fetchpriority="high" decoding="async">
+          </div>
+          <div class="hero-specs" aria-hidden="true">
+            <div><small>PANAMERA TURBO</small><strong><span data-t=".15,.75" data-count="550">0</span><em> LE</em></strong></div>
+            <div><small>0–100 KM/H</small><strong id="sprint">9.9</strong><em> s</em></div>
+            <div><small>V8 · BITURBO</small><strong><span data-t=".2,.85" data-count="4">0</span>.0<em> L</em></strong></div>
+          </div>
+          <div class="scroll-hint" aria-hidden="true"><span></span>GÖRGESSEN</div>
+        </div>
+      </section>
+
+      <!-- 02 KOLLEKCIÓ: 3D repülés a lebegő paneleken át, amelyek aranyporrá esnek szét -->
+      <section class="scene corridor" id="kollekcio" data-scene data-pin="0" data-ease=".08" style="--h:640vh" aria-labelledby="col-title">
+        <div class="scene-pin">
+          <canvas class="dust" id="dust" aria-hidden="true"></canvas>
+          <div class="corridor-hud" aria-hidden="true">
+            <span>— 02 / A KOLLEKCIÓ</span>
+            <span class="depth">MÉLYSÉG <b id="depth">000</b> M</span>
+          </div>
+          <h2 class="sr-only" id="col-title">A kollekció</h2>
+          <div class="space">
+            <div class="world" id="world">
+              <div class="panel title-panel" data-x="0" data-y="0">
+                <small>2026 · ŐSZI KOLLEKCIÓ</small>
+                <strong>Öt autó.<br><em>Öt történet.</em></strong>
+              </div>
+              <article class="panel car-panel" data-x="-1" data-color="#6b6e74" data-name="Mercedes-AMG GT R">
+                <div class="pc-car"><img src="img/photo-amg.webp" srcset="img/photo-amg-640.webp 640w, img/photo-amg.webp 1200w" sizes="(max-width:860px) 84vw, 560px" width="1200" height="750" alt="Mercedes-AMG GT R" decoding="async"></div>
+                <div class="pc-meta"><small>01 · GRAND TOURER</small><h3>Mercedes-AMG GT R</h3><p>2020 · 18 400 km · 585 LE · Matt fekete</p><b>54 900 000 Ft</b></div>
+              </article>
+              <article class="panel car-panel" data-x="1" data-color="#a9adb3" data-name="Porsche 911 Turbo S">
+                <div class="pc-car"><img src="img/photo-p911.webp" srcset="img/photo-p911-640.webp 640w, img/photo-p911.webp 1200w" sizes="(max-width:860px) 84vw, 560px" width="1200" height="750" alt="Porsche 911 Turbo S" decoding="async"></div>
+                <div class="pc-meta"><small>02 · SPORTKUPÉ</small><h3>Porsche 911 Turbo S</h3><p>2021 · 9 800 km · 650 LE · GT ezüst</p><b>89 500 000 Ft</b></div>
+              </article>
+              <div class="panel quote-panel" data-x="0" data-y="-.2">
+                <blockquote>„A jó autó nem visz el valahová.<br><em>Hazahoz.”</em></blockquote>
+              </div>
+              <article class="panel car-panel" data-x="-1" data-color="#f39a1e" data-name="Lamborghini Huracán EVO Spyder">
+                <div class="pc-car"><img src="img/photo-huracan.webp" srcset="img/photo-huracan-640.webp 640w, img/photo-huracan.webp 1200w" sizes="(max-width:860px) 84vw, 560px" width="1200" height="750" alt="Lamborghini Huracán EVO Spyder" decoding="async"></div>
+                <div class="pc-meta"><small>03 · SUPERCAR</small><h3>Lamborghini Huracán EVO Spyder</h3><p>2021 · 7 200 km · 640 LE · Arancio</p><b>99 900 000 Ft</b></div>
+              </article>
+              <article class="panel car-panel" data-x="1" data-color="#e9e4da" data-name="Rolls-Royce Wraith">
+                <div class="pc-car"><img src="img/photo-wraith.webp" srcset="img/photo-wraith-640.webp 640w, img/photo-wraith.webp 1200w" sizes="(max-width:860px) 84vw, 560px" width="1200" height="750" alt="Rolls-Royce Wraith" decoding="async"></div>
+                <div class="pc-meta"><small>04 · LUXUS</small><h3>Rolls-Royce Wraith</h3><p>2019 · 22 000 km · 632 LE · Kéttónusú</p><b>92 000 000 Ft</b></div>
+              </article>
+              <article class="panel car-panel" data-x="0" data-color="#b3121b" data-name="Ferrari LaFerrari">
+                <div class="pc-car"><img src="img/photo-laferrari.webp" srcset="img/photo-laferrari-640.webp 640w, img/photo-laferrari.webp 1200w" sizes="(max-width:860px) 84vw, 560px" width="1200" height="750" alt="Ferrari LaFerrari" decoding="async"></div>
+                <div class="pc-meta"><small>05 · GYŰJTŐI DARAB</small><h3>Ferrari LaFerrari</h3><p>2015 · 3 900 km · 963 LE · Rosso Corsa</p><b>Ár kérésre</b></div>
+              </article>
+              <div class="panel title-panel end-panel" data-x="0" data-y="0">
+                <small>A KÉSZLET TOVÁBBI 19 AUTÓJA</small>
+                <strong>Személyesen<br><em>még szebb.</em></strong>
+                <a class="btn btn-gold" href="#tesztvezetes">Időpontot kérek</a>
+              </div>
+            </div>
+          </div>
+          <div class="corridor-progress" aria-hidden="true"><i></i></div>
+        </div>
+      </section>
+
+      <!-- 03 RÉSZLETEK -->
+      <section class="scene details" id="reszletek" data-scene data-steps="4" style="--h:300vh" aria-labelledby="det-title">
+        <div class="scene-pin">
+          <div class="det-grid">
+            <div class="det-copy">
+              <span class="chapter">— 03 / A RÉSZLETEK</span>
+              <h2 id="det-title">Minden autó<br><em>147 ponton átvizsgálva.</em></h2>
+              <ol class="det-steps">
+                <li data-i="0"><b>I.</b><span><strong>Eredetiség</strong>Szervizmúlt, kilométer-hitelesítés, tulajdonosi lánc.</span></li>
+                <li data-i="1"><b>II.</b><span><strong>Műszaki állapot</strong>Diagnosztika, futómű, fékrendszer, motor és váltó.</span></li>
+                <li data-i="2"><b>III.</b><span><strong>Karosszéria &amp; fényezés</strong>Rétegvastagság-mérés minden elemen.</span></li>
+                <li data-i="3"><b>IV.</b><span><strong>Átadás</strong>Kerámia bevonat, teli tank, 12 hónap garancia.</span></li>
+              </ol>
+            </div>
+            <div class="det-stage" aria-hidden="true">
+              <div class="dial">
+                <svg viewBox="0 0 300 300">
+                  <circle cx="150" cy="150" r="128" class="d-track"/>
+                  <circle cx="150" cy="150" r="128" class="d-fill" pathLength="100"/>
+                  <g id="dialTicks"></g>
+                </svg>
+                <div class="dial-read"><strong><span data-t="0,.9" data-count="147">0</span></strong><small>/ 147 ELLENŐRZÖTT PONT</small></div>
+              </div>
+              <div class="det-chips">
+                <span data-t=".1,.3">Fényezés <b>112 µm ✓</b></span>
+                <span data-t=".3,.5">Fékbetét <b>86% ✓</b></span>
+                <span data-t=".5,.7">Akkumulátor <b>98% ✓</b></span>
+                <span data-t=".7,.9">Gumiabroncs <b>7,2 mm ✓</b></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 04 KONFIGURÁTOR + FINANSZÍROZÁS -->
+      <section class="config" id="konfigurator" aria-labelledby="cfg-title">
+        <div class="wrap">
+          <div class="section-head">
+            <span class="chapter">— 04 / EGYEDI RENDELÉS</span>
+            <h2 id="cfg-title">Szín, felni,<br><em>havi részlet.</em></h2>
+            <p>Nem talál a készletben? Rendeljen újat saját specifikációval: válasszon színt és felnit, és nézze meg azonnal, mennyi lenne a havi törlesztő.</p>
+          </div>
+          <div class="cfg-grid">
+            <div class="cfg-stage">
+              <div class="stage-hud"><span id="cfgName">GT COUPÉ V8 · OBSZIDIÁN</span><span>360° · STÚDIÓ</span></div>
+              <img class="cfg-car" id="cfgImg" src="img/cfg-obsidian-silver.webp" width="1400" height="600" alt="A konfigurált GT Coupé V8 oldalnézetből" decoding="async">
+              
+            </div>
+            <form class="cfg-panel" id="cfgForm" aria-label="Konfigurátor és finanszírozási kalkulátor">
+              <fieldset>
+                <legend>Fényezés</legend>
+                <div class="swatches">
+                  <label><input type="radio" name="paint" value="obsidian" checked><span style="--c:#121214"></span><em>Obszidián</em></label>
+                  <label><input type="radio" name="paint" value="champagne"><span style="--c:#b89b68"></span><em>Pezsgő</em></label>
+                  <label><input type="radio" name="paint" value="bordeaux"><span style="--c:#5b1720"></span><em>Bordó</em></label>
+                  <label><input type="radio" name="paint" value="racing"><span style="--c:#1d3a2c"></span><em>Brit zöld</em></label>
+                  <label><input type="radio" name="paint" value="pearl"><span style="--c:#e9e4da"></span><em>Gyöngyház</em></label>
+                </div>
+              </fieldset>
+              <fieldset>
+                <legend>Felni</legend>
+                <div class="chips">
+                  <label><input type="radio" name="rim" value="silver" checked><span>20″ Ezüst</span></label>
+                  <label><input type="radio" name="rim" value="black"><span>21″ Fekete</span></label>
+                  <label><input type="radio" name="rim" value="gold"><span>22″ Bronz</span></label>
+                </div>
+              </fieldset>
+              <fieldset class="finance">
+                <legend>Finanszírozás</legend>
+                <label class="range"><span>Önerő <output id="downOut">30%</output></span><input type="range" id="down" min="20" max="60" step="5" value="30"></label>
+                <label class="range"><span>Futamidő <output id="termOut">60 hónap</output></span><input type="range" id="term" min="12" max="84" step="12" value="60"></label>
+                <div class="fin-sum">
+                  <div><small>VÉTELÁR</small><strong id="priceOut">0 Ft</strong></div>
+                  <div><small>HAVI RÉSZLET*</small><strong class="gold" id="monthly">0 Ft</strong></div>
+                </div>
+              </fieldset>
+              <a class="btn btn-gold btn-block" href="#tesztvezetes" id="takeCfg">Tesztvezetést kérek ezzel <span aria-hidden="true">→</span></a>
+              <p class="fine">* Tájékoztató jellegű számítás, 9,9% THM-mel. Nem minősül ajánlattételnek.</p>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- SZOLGÁLTATÁSOK -->
+      <section class="services" aria-labelledby="srv-title">
+        <div class="wrap">
+          <h2 id="srv-title" class="srv-title">A vásárlás csak<br><em>a kezdet.</em></h2>
+          <div class="srv-grid">
+            <article><b>I.</b><h3>Beszámítás</h3><p>Jelenlegi autóját 24 órán belül felértékeljük, az összeget levonjuk a vételárból.</p></article>
+            <article><b>II.</b><h3>Finanszírozás</h3><p>Hitel, lízing vagy céges konstrukció – több bank ajánlatát hasonlítjuk össze.</p></article>
+            <article><b>III.</b><h3>Garancia</h3><p>12 hónap, kiterjeszthető 36 hónapra. Minden autó átvizsgálva érkezik.</p></article>
+            <article><b>IV.</b><h3>Házhoz szállítás</h3><p>Zárt trélerrel, az ország bármely pontjára, papírmunkával együtt.</p></article>
+          </div>
+          <div class="stats" data-scene data-pin="99999">
+            <div><strong><span data-t="0,.5" data-count="20">0</span></strong><small>ÉV A PIACON</small></div>
+            <div><strong><span data-t=".05,.55" data-count="3200">0</span>+</strong><small>ÁTADOTT AUTÓ</small></div>
+            <div><strong><span data-t=".1,.6" data-count="24">0</span></strong><small>AUTÓ KÉSZLETEN</small></div>
+            <div><strong>4,9<em>★</em></strong><small>ÜGYFÉLÉRTÉKELÉS*</small></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 05 TESZTVEZETÉS -->
+      <section class="booking" id="tesztvezetes" aria-labelledby="book-title">
+        <div class="wrap booking-grid">
+          <div class="section-head">
+            <span class="chapter">— 05 / A TALÁLKOZÁS</span>
+            <h2 id="book-title">Az első kör<br><em>a miénk.</em></h2>
+            <p>Foglaljon időpontot tesztvezetésre vagy személyes konzultációra. Kávéval és előkészített autóval várjuk.</p>
+            <ul class="contact">
+              <li><small>SZALON</small>1123 Budapest, Alkotás utca 1. (fiktív cím)</li>
+              <li><small>TELEFON</small><a href="tel:+3611234567">+36 1 123 4567</a></li>
+              <li><small>NYITVA</small>H–P 9–18 · Szo 10–14 · előzetes egyeztetéssel</li>
+            </ul>
+          </div>
+          <form class="book-card" id="bookForm" novalidate>
+            <div class="seg" role="radiogroup" aria-label="Időpont típusa">
+              <label><input type="radio" name="kind" value="Tesztvezetés" checked><span>Tesztvezetés</span></label>
+              <label><input type="radio" name="kind" value="Konzultáció"><span>Konzultáció</span></label>
+              <label><input type="radio" name="kind" value="Értékbecslés"><span>Értékbecslés</span></label>
+            </div>
+            <div class="days" id="days" role="radiogroup" aria-label="Nap kiválasztása"></div>
+            <div class="slots" id="slots" role="radiogroup" aria-label="Időpont kiválasztása"></div>
+            <div class="fields">
+              <label><span>Név</span><input name="name" autocomplete="name" required placeholder="Kovács Péter"></label>
+              <label><span>Telefon vagy e-mail</span><input name="contact" autocomplete="email" required placeholder="peter@pelda.hu"></label>
+            </div>
+            <p class="cfg-note" id="cfgNote" hidden></p>
+            <button class="btn btn-gold btn-block" type="submit">Időpont lefoglalása</button>
+            <p class="form-msg" id="formMsg" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <div class="wrap foot-grid">
+        <div class="brand-big">NOBILE</div>
+        <p>Fiktív vállalkozás – a weboldal a <strong>Megyeri Márk Máté | Webfejlesztés</strong> portfóliódemója. Szeretne hasonló élményt a saját vállalkozásának?<small class="credit">Fotók: <a href="https://unsplash.com/license" target="_blank" rel="noopener">Unsplash</a>. Az autók és márkák a tulajdonosaik védjegyei, a kínálat és az árak kitaláltak. Konfigurátor: „Car Concept” 3D modell – Eric Chadwick / Darmstadt Graphics Group, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>, átszínezve, logók nélkül renderelve.</small></p>
+        <a class="btn btn-gold" href="/ajanlatkeres?type=business">Ilyen oldalt kérek <span aria-hidden="true">↗</span></a>
+      </div>
+    </footer>
+  </body>
+</html>
