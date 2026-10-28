@@ -569,14 +569,11 @@
   padding-bottom: 75px;
 }
 .footer-brand {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 45px;
-  font-weight: 650;
-  letter-spacing: -4px;
+  display: inline-block;
+  font-size: 56px;
+  color: #f6f5f1;
   text-decoration: none;
-  span {
-    color: #9d9eff;
-  }
+  filter: drop-shadow(0 8px 24px #8e78ff40);
 }
 .footer-intro {
   p {

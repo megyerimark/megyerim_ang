@@ -1,3 +1,4 @@
+<app-submit-loader [state]="loader()" [messages]="loaderSteps" successTitle="Ajánlatkérés elküldve!" (closed)="loader.set('idle')" />
 <main class="quiz-page">
   <div class="quiz-aurora" aria-hidden="true"></div>
   <div class="container quiz-container">

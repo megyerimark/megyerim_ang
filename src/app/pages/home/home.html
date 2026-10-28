@@ -548,10 +548,7 @@
       <div class="about-art-ring about-art-ring--b">
       </div>
       <strong>
-        {{ 'MMM' | t }}
-        <span>
-          —
-        </span>
+        M<span>.</span>
       </strong>
       <small>
         {{ 'INDEPENDENT DIGITAL CRAFT / BUDAPEST' | t }}
@@ -673,11 +670,8 @@
 <footer class="footer">
   <div class="container footer-main">
     <div class="footer-intro">
-      <a class="footer-brand" routerLink="/">
-        {{ 'MMM' | t }}
-        <span>
-          .
-        </span>
+      <a class="footer-brand" routerLink="/" [attr.aria-label]="'Megyeri Márk – főoldal' | t">
+        <app-brand-mark />
       </a>
       <p>
         {{ 'Megyeri Márk Máté | Webfejlesztés' | t }}

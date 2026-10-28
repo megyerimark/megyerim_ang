@@ -7,7 +7,8 @@ import { QuotePayload } from '../../core/models';
 import { TPipe } from '../../i18n/t.pipe';
 import { I18nService } from '../../i18n/i18n.service';
 import { Turnstile } from '../../components/turnstile/turnstile';
-@Component({ selector: 'app-quote', standalone: true, imports: [FormsModule, RouterLink, TPipe, Turnstile], templateUrl: './quote.html', styleUrl: './quote.scss' })
+import { SubmitLoader, SubmitLoaderState } from '../../components/submit-loader/submit-loader';
+@Component({ selector: 'app-quote', standalone: true, imports: [FormsModule, RouterLink, TPipe, Turnstile, SubmitLoader], templateUrl: './quote.html', styleUrl: './quote.scss' })
 export class QuotePage {
     readonly i18n = inject(I18nService);
     private api = inject(ApiService);
@@ -24,6 +25,8 @@ export class QuotePage {
     budgets = [{ v: '', l: 'Még nem tudom' }, { v: '50000-150000', l: '50 – 150 ezer Ft' }, { v: '150000-300000', l: '150 – 300 ezer Ft' }, { v: '300000-600000', l: '300 – 600 ezer Ft' }, { v: '600000+', l: '600 ezer Ft felett' }];
     data: QuotePayload = { customer_name: '', email: '', phone: '', company_name: '', website_type: '', design_style: '', industry: null, layout_style: null, font_style: null, colors: [], features: [], inspiration_urls: [], budget_range: '', desired_deadline: null, project_description: '', wants_maintenance: false, consultation_preference: 'email', privacy_notice_acknowledged: false, website: '', turnstile_token: '' };
     private readonly captcha = viewChild(Turnstile);
+    readonly loader = signal<SubmitLoaderState>('idle');
+    readonly loaderSteps = ['Adatok ellenőrzése…', 'Ajánlatkérés rögzítése…', 'Visszaigazolás előkészítése…'];
     inspiration = '';
     constructor() {
         const type = this.route.snapshot.queryParamMap.get('type');
@@ -107,9 +110,9 @@ export class QuotePage {
             this.generalError.set('Várd meg, amíg a robotszűrő ellenőrzése befejeződik.');
             return;
         }
-        this.sending.set(true);
-        this.api.sendQuote({ ...this.data, inspiration_urls: urls, desired_deadline: this.data.desired_deadline || null }).subscribe({ next: r => { this.sent.set(r.reference); this.sending.set(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }, error: (e: HttpErrorResponse) => {
-                this.sending.set(false);
+        this.sending.set(true); this.loader.set('loading');
+        this.api.sendQuote({ ...this.data, inspiration_urls: urls, desired_deadline: this.data.desired_deadline || null }).subscribe({ next: r => { this.sent.set(r.reference); this.sending.set(false); this.loader.set('success'); window.scrollTo({ top: 0, behavior: 'smooth' }); }, error: (e: HttpErrorResponse) => {
+                this.sending.set(false); this.loader.set('idle');
                 this.captcha()?.reset();
                 if (e.error?.error_code === 'TURNSTILE_FAILED') {
                     this.generalError.set(e.error.message);
