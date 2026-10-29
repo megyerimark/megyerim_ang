@@ -8,7 +8,8 @@ import { TPipe } from '../../i18n/t.pipe';
 import { I18nService } from '../../i18n/i18n.service';
 import { Turnstile } from '../../components/turnstile/turnstile';
 import { SubmitLoaderService } from '../../core/submit-loader.service';
-@Component({ selector: 'app-quote', standalone: true, imports: [FormsModule, RouterLink, TPipe, Turnstile], templateUrl: './quote.html', styleUrl: './quote.scss' })
+import { PromoNote } from '../../components/promo-note/promo-note';
+@Component({ selector: 'app-quote', standalone: true, imports: [FormsModule, RouterLink, TPipe, Turnstile, PromoNote], templateUrl: './quote.html', styleUrl: './quote.scss' })
 export class QuotePage {
     readonly i18n = inject(I18nService);
     private api = inject(ApiService);
@@ -16,6 +17,8 @@ export class QuotePage {
     step = signal(1);
     sending = signal(false);
     sent = signal<number | null>(null);
+    /** A szerver által ténylegesen rögzített akció (a visszaigazoló kártyán jelenik meg). */
+    sentPromo = signal<number | null>(null);
     generalError = signal('');
     errors = signal<Record<string, string[]>>({});
     websiteTypes = [{ v: 'landing', title: 'Landing oldal', desc: 'Egyoldalas, fókuszált weboldal', icon: '↗︎' }, { v: 'business', title: 'Céges weboldal', desc: 'Teljes üzleti online jelenlét', icon: '▣' }, { v: 'webshop', title: 'Webshop', desc: 'Online termékértékesítés', icon: '◇' }, { v: 'custom', title: 'Egyedi rendszer', desc: 'Speciális funkciók, adminfelület', icon: '⌘' }];
@@ -111,7 +114,7 @@ export class QuotePage {
         }
         this.sending.set(true);
         this.loader.start(['Adatok ellenőrzése…', 'Ajánlatkérés rögzítése…', 'Visszaigazolás előkészítése…']);
-        this.api.sendQuote({ ...this.data, inspiration_urls: urls, desired_deadline: this.data.desired_deadline || null }).subscribe({ next: r => { this.sent.set(r.reference); this.sending.set(false); this.loader.succeed('Ajánlatkérés elküldve!'); window.scrollTo({ top: 0, behavior: 'smooth' }); }, error: (e: HttpErrorResponse) => {
+        this.api.sendQuote({ ...this.data, inspiration_urls: urls, desired_deadline: this.data.desired_deadline || null }).subscribe({ next: r => { this.sentPromo.set(r.promo_percent ?? null); this.sent.set(r.reference); this.sending.set(false); this.loader.succeed('Ajánlatkérés elküldve!'); window.scrollTo({ top: 0, behavior: 'smooth' }); }, error: (e: HttpErrorResponse) => {
                 this.sending.set(false); this.loader.stop();
                 this.captcha()?.reset();
                 if (e.error?.error_code === 'TURNSTILE_FAILED') {

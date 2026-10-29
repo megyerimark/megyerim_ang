@@ -1,5 +1,5 @@
 /* GENERÁLT FÁJL – ne szerkeszd kézzel. Forrás: scripts/build-palettes.mjs (npm run palettes) */
-/* Alaptéma: nightblue. 1141 márkaszín-változó. */
+/* Alaptéma: nightblue. 1161 márkaszín-változó. */
 :root {
   --mm-photo-coast: url('/palettes/photos/coast-nightblue.webp');
   --mm-photo-architecture: url('/palettes/photos/architecture-nightblue.webp');
@@ -222,6 +222,7 @@
   --k-111e3c: #0a203c;
   --k-121935: #0a1b35;
   --k-121a39-d9: #091c39d9;
+  --k-123a52: #1e3a49;
   --k-131a39: #091c39;
   --k-131b3e: #081e3e;
   --k-131c40-f5: #081f40f5;
@@ -232,6 +233,7 @@
   --k-141b40-f0: #071e40f0;
   --k-141c34-a8: #0e1e34a8;
   --k-141c38-ef: #0c1e38ef;
+  --k-141c3a-80: #0b1e3a80;
   --k-141c3e-f7: #091f3ef7;
   --k-141c40: #081f40;
   --k-141d3a-e8: #0c1f3ae8;
@@ -239,6 +241,7 @@
   --k-141d3d-e8: #0b1f3de8;
   --k-141f3d-9c: #0d213d9c;
   --k-14203f-ca: #0d223fca;
+  --k-14204a-cc: #07234acc;
   --k-142347: #0b2546;
   --k-142e59-35: #203d5235;
   --k-151b29: #131c29;
@@ -292,9 +295,11 @@
   --k-1b2130: #182230;
   --k-1b265a: #082a5a;
   --k-1b285a-c7: #0a2b59c7;
+  --k-1b2c5e: #1f3d55;
   --k-1b2e64-a3: #1f405aa3;
   --k-1c2354-e6: #0a2754e6;
   --k-1c2442: #142642;
+  --k-1d1b3a: #101f3b;
   --k-1d2250: #0c2650;
   --k-1d2340-1f: #1425401f;
   --k-1e2531: #1d2531;
@@ -335,8 +340,10 @@
   --k-293144: #323d46;
   --k-293343: #343e46;
   --k-2977ff: #3595d4;
+  --k-2a1f5c-cc: #0d275fcc;
   --k-2a245d: #1f3b56;
   --k-2a2f6a-1f: #2444601f;
+  --k-2b1f63: #0b2866;
   --k-2b2f7a: #1f486b;
   --k-2b2f7a-1a: #1f486b1a;
   --k-2b3360: #2c445a;
@@ -386,6 +393,7 @@
   --k-47389a: #2a5a88;
   --k-474bdb-25: #1c75b625;
   --k-474bf9-50: #007dc850;
+  --k-47506f: #4e5f6e;
   --k-47516e: #4f5f6d;
   --k-47568c-80: #4b688280;
   --k-48558a: #4b6881;
@@ -600,6 +608,7 @@
   --k-7c5cf0-55: #4991ce55;
   --k-7c5cff: #4495d7;
   --k-7c5cff-14: #4495d714;
+  --k-7c5cff-17: #4495d717;
   --k-7c5cff-1f: #4495d71f;
   --k-7c5cff-22: #4495d722;
   --k-7c5cff-26: #4495d726;
@@ -740,6 +749,7 @@
   --k-8fd8f2: #a5d4e9;
   --k-8fd8f2-33: #a5d4e933;
   --k-8fd8f2-66: #a5d4e966;
+  --k-8fdcf0: #a7d7ea;
   --k-8fe3f2: #a9ddef;
   --k-916dff: #5ea2df;
   --k-9182ff: #71ade1;
@@ -831,6 +841,8 @@
   --k-a49bf8-79: #92bee579;
   --k-a4b0d2: #aec0d0;
   --k-a58cff: #83b7e8;
+  --k-a58cff-73: #83b7e873;
+  --k-a58cff-80: #83b7e880;
   --k-a595ff-2e: #8bbce92e;
   --k-a59cff: #92c0ea;
   --k-a5a3fa-20: #96bfe920;
@@ -859,6 +871,7 @@
   --k-a99cf0-33: #98bee233;
   --k-a99cf0-40: #98bee240;
   --k-a99cf0-4d: #98bee24d;
+  --k-a99cf0-66: #98bee266;
   --k-a99cf2: #97bee3;
   --k-a99dff-80: #94c2eb80;
   --k-a9a3f2-71: #9ec3e471;
@@ -868,6 +881,7 @@
   --k-a9b2c6: #b5c0ca;
   --k-a9b3d6: #b1c4d4;
   --k-a9b9d7: #b6c8d6;
+  --k-a9e9f5: #bce4f3;
   --k-aa89fc: #83b6e8;
   --k-aa91f4: #8cb9e4;
   --k-aa9afd: #92c0ea;
@@ -1028,17 +1042,20 @@
   --k-c8c5ff: #c6e0f9;
   --k-c8d1e9: #d3e0ec;
   --k-c9b0ff: #b2d4f8;
+  --k-c9b2ff: #b4d5f8;
   --k-c9b3ff: #b5d6f8;
   --k-c9b8ff: #b9d9f8;
   --k-c9bdff: #bedcf8;
   --k-c9bdff-bb: #bedcf8bb;
   --k-c9c1fa: #c3ddf6;
   --k-c9cae9: #cedceb;
+  --k-c9d1ec: #d3e1ee;
   --k-c9d2f3: #d2e3f2;
   --k-c9d3f1: #d3e3f1;
   --k-cbb1ff: #b3d5f8;
   --k-cbb6ff: #b8d8f9;
   --k-cbd2e8: #d6e1ec;
+  --k-cdbfff: #c1defa;
   --k-cdbfff-77: #c1defa77;
   --k-cdd2ee: #d5e3f0;
   --k-cdd3ea: #d7e3ee;
@@ -1052,6 +1069,7 @@
   --k-cfc7ff-aa: #cae3fbaa;
   --k-cfc7ff-bb: #cae3fbbb;
   --k-cfd0ee: #d4e2f0;
+  --k-cfd3f3: #d5e5f4;
   --k-cfd4ec: #d8e4ef;
   --k-cfd4ff-00: #d3e7fc00;
   --k-cfd4ff-66: #d3e7fc66;
@@ -1077,6 +1095,7 @@
   --k-d7d0ff-aa: #d5eaffaa;
   --k-d7d8ee: #dee9f3;
   --k-d7e1ff: #e2f1ff;
+  --k-d8c9ff: #cfe6fe;
   --k-d8ccff: #d2e8ff;
   --k-d9cfff: #d5eaff;
   --k-d9d0ff-99: #d6ebff99;
@@ -1133,6 +1152,7 @@
   --k-f1f2fb-d5: #eef3fad5;
   --k-f1f3ff: #edf5fe;
   --k-f2f3ff: #eef5fe;
+  --k-f3efff: #eaf2ff;
   --k-f3f1ff: #ecf4ff;
   --k-f3f2ff: #edf4fe;
   --k-f3f5ff: #f0f6fe;

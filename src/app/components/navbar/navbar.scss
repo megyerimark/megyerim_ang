@@ -31,7 +31,7 @@
 @media(max-width:1020px){
   .navbar{height:70px;padding:0 18px}:host(.overlay){margin-bottom:-70px}
   .menu-btn{display:inline-grid;place-items:center}.nav-cta{display:none}
-  .nav-links{position:fixed;inset:70px 0 auto 0;max-height:calc(100dvh - 70px);overflow-y:auto;margin:0;padding:10px 22px 26px;flex-direction:column;align-items:stretch;gap:0;
+  .nav-links{position:fixed;inset:var(--menu-top,70px) 0 auto 0;max-height:calc(100dvh - var(--menu-top,70px));overflow-y:auto;margin:0;padding:10px 22px 26px;flex-direction:column;align-items:stretch;gap:0;
     background:var(--k-060a1c-f7);backdrop-filter:blur(24px);border-bottom:1px solid var(--k-a99cf0-40);transform:translateY(-8px);opacity:0;visibility:hidden;transition:opacity .25s,transform .25s,visibility .25s}
   .nav-links.open{opacity:1;transform:none;visibility:visible}
   .nav-links a:not(.mobile-quote){padding:17px 2px;font-size:21px;border-bottom:1px solid #ffffff14}.nav-links a::after{display:none}

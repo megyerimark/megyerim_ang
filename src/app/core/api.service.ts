@@ -25,6 +25,8 @@ export class ApiService {
         return this.csrf().pipe(switchMap(() => this.http.post<{
             message: string;
             reference: number;
+            promo_percent?: number | null;
+            promo_title?: string | null;
         }>('/api/quote-requests', payload, this.opts)));
     }
     publicTestimonials() { return this.http.get<Envelope<Testimonial[]>>('/api/testimonials', this.opts); }
@@ -47,7 +49,7 @@ export class ApiService {
     downloadClientDocument(token: string, id: number) { return this.http.post('/api/client/project/documents/' + id + '/download', { token }, { ...this.opts, responseType: 'blob' }); }
     adminCollaboration(id: number) { return this.http.get<Envelope<ProjectCollaboration>>(`/api/admin/quote-requests/${id}/collaboration`, this.opts); }
     sendAdminMessage(id: number, body: string) { return this.http.post<Envelope<ProjectMessage>>(`/api/admin/quote-requests/${id}/messages`, { body }, this.opts); }
-    uploadProjectDocument(id: number, file: File, title: string) { const form = new FormData(); form.set('file', file, file.name); form.set('title', title); return this.http.post<Envelope<ProjectDocument>>(`/api/admin/quote-requests/${id}/documents`, form, this.opts); }
+    uploadProjectDocument(id: number, file: File, title: string, deliverable = false) { const form = new FormData(); form.set('file', file, file.name); form.set('title', title); if (deliverable) form.set('deliverable', '1'); return this.http.post<Envelope<ProjectDocument>>(`/api/admin/quote-requests/${id}/documents`, form, this.opts); }
     downloadAdminDocument(id: number, docId: number) { return this.http.get(`/api/admin/quote-requests/${id}/documents/${docId}/download`, { ...this.opts, responseType: 'blob' }); }
     deleteProjectDocument(id: number, docId: number) { return this.http.delete(`/api/admin/quote-requests/${id}/documents/${docId}`, this.opts); }
     // Portal access secrets are sent in POST bodies, never server-logged URL paths.
@@ -59,9 +61,14 @@ export class ApiService {
     }
     // Online fizetés (Stripe Checkout) – a privát kulcs a kérés törzsében utazik.
     depositCheckout(token: string) { return this.csrf().pipe(switchMap(() => this.http.post<{ url: string }>('/api/client/project/deposit/checkout', { token }, this.opts))); }
+    finalCheckout(token: string) { return this.csrf().pipe(switchMap(() => this.http.post<{ url: string }>('/api/client/project/final/checkout', { token }, this.opts))); }
     maintenanceCheckout(token: string) { return this.csrf().pipe(switchMap(() => this.http.post<{ url: string }>('/api/client/project/maintenance/checkout', { token }, this.opts))); }
     billingPortal(token: string) { return this.csrf().pipe(switchMap(() => this.http.post<{ url: string }>('/api/client/project/maintenance/portal', { token }, this.opts))); }
     markDepositPaid(id: number, paid_on?: string) { return this.http.post<{ message: string; data: Quote }>(`/api/admin/quote-requests/${id}/deposit-paid`, paid_on ? { paid_on } : {}, this.opts); }
+    // Projektlezárás: végleges e-mail, fennmaradó összeg jóváírása, kódátadás (szerveroldalon zárolva a kifizetésig)
+    completeProject(id: number) { return this.http.post<{ message: string; data: Quote }>(`/api/admin/quote-requests/${id}/complete`, {}, this.opts); }
+    markFinalPaid(id: number, paid_on?: string) { return this.http.post<{ message: string; data: Quote }>(`/api/admin/quote-requests/${id}/final-paid`, paid_on ? { paid_on } : {}, this.opts); }
+    handoverProject(id: number, note: string) { return this.http.post<{ message: string; data: Quote }>(`/api/admin/quote-requests/${id}/handover`, { note: note || null }, this.opts); }
     cancelSubscription(id: number) { return this.http.post<{ message: string; data: MaintenanceAgreement }>(`/api/admin/maintenance-agreements/${id}/cancel-subscription`, {}, this.opts); }
     systemStatus() { return this.http.get<Envelope<SystemStatus>>('/api/admin/system-status', this.opts); }
     // Kész projektek + zero-knowledge széf
@@ -128,7 +135,7 @@ export class ApiService {
     deleteStudioClientNote(id:number) { return this.http.delete(`/api/admin/workspace/client-notes/${id}`, this.opts); }
     quotes(q = '', status = '', page = 1) { return this.http.get<Paged<Quote>>('/api/admin/quote-requests', { ...this.opts, params: this.params({ q, status, page, per_page: 15 }) }); }
     quote(id: number) { return this.http.get<Envelope<Quote>>('/api/admin/quote-requests/' + id, this.opts); }
-    saveQuote(id: number, data: Partial<Pick<Quote, 'status' | 'admin_notes' | 'quoted_price_huf' | 'deposit_percent' | 'proposal_summary' | 'proposal_schedule' | 'proposal_terms' | 'proposal_valid_until' | 'follow_up_at'>>) { return this.http.patch<Envelope<Quote>>('/api/admin/quote-requests/' + id, data, this.opts); }
+    saveQuote(id: number, data: Partial<Pick<Quote, 'status' | 'admin_notes' | 'quoted_price_huf' | 'list_price_huf' | 'deposit_percent' | 'proposal_summary' | 'proposal_schedule' | 'proposal_terms' | 'proposal_valid_until' | 'follow_up_at'>>) { return this.http.patch<Envelope<Quote>>('/api/admin/quote-requests/' + id, data, this.opts); }
     milestones(id: number) { return this.http.get<Envelope<ProjectMilestone[]>>(`/api/admin/quote-requests/${id}/milestones`, this.opts); }
     addMilestone(id: number, data: {title: string; description?: string; due_date?: string | null; status?: string}) { return this.http.post<Envelope<ProjectMilestone>>(`/api/admin/quote-requests/${id}/milestones`, data, this.opts); }
     updateMilestone(id: number, milestoneId: number, data: {status: ProjectMilestone['status']}) { return this.http.patch<Envelope<ProjectMilestone>>(`/api/admin/quote-requests/${id}/milestones/${milestoneId}`, data, this.opts); }

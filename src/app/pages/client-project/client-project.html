@@ -28,6 +28,7 @@
       @if(p.quoted_at && p.proposal_summary && p.quoted_price_huf!==null){
         <section class="client-panel client-proposal" id="ajanlat">
           <div class="client-section-title"><div><span class="client-eyebrow">SZEMÉLYRE SZABOTT AJÁNLAT</span><h2>Az ajánlat részletei</h2></div><button class="client-print" type="button" (click)="printProposal()">Nyomtatás / PDF ↗︎</button></div>
+          @if(p.promo_percent){<div class="promo-applied" role="note">✦ −{{p.promo_percent}}% akciós kedvezmény@if(p.promo_title){ ({{p.promo_title}})} – az ajánlatkérésed beküldésekor rögzítve. @if(p.list_price_huf){Akció előtti ár: <s>{{money(p.list_price_huf)}}</s>, megtakarítás: <strong>{{money(p.list_price_huf - p.quoted_price_huf)}}</strong>.}</div>}
           <div class="proposal-meta"><div><small>Ajánlati díj</small><strong>{{money(p.quoted_price_huf)}}</strong></div><div><small>Érvényesség</small><strong>{{date(p.proposal_valid_until)}}</strong></div>
             @if(p.deposit_amount_huf){<div class="deposit-highlight"><small>Kötelező előleg ({{p.deposit_percent}}%)</small><strong>{{money(p.deposit_amount_huf)}}</strong></div>}</div>
           @if(p.deposit_amount_huf){<p class="client-note">A munka az előleg beérkezése után indul; az előleget a végszámlából levonom. @if(p.online_payment){Elfogadás után azonnal bankkártyával fizethetsz a Stripe biztonságos oldalán.}@else{Elfogadás után díjbekérőt küldök az átutaláshoz.}</p>}
@@ -57,6 +58,22 @@
               @if(p.online_payment){<button class="btn btn-primary" type="button" [disabled]="paying()" (click)="payDeposit()">{{paying()?'Fizetési oldal megnyitása…':'Fizetés bankkártyával ↗︎'}}</button>}
             </div>
             <p class="client-note">@if(p.online_payment){A fizetés a Stripe biztonságos oldalán történik; a kártyaadataidat én nem látom. }Átutalással is fizethetsz: írj üzenetet, és elküldöm a díjbekérőt.</p>
+          }
+        </section>
+      }
+      @if(p.status==='completed' && p.completed_at){
+        <section class="client-panel client-payment" id="atadas">
+          <div class="client-section-title"><div><span class="client-eyebrow">ÁTADÁS</span><h2>Elkészült a projekted</h2></div></div>
+          @if(p.handed_over_at){
+            <div class="client-success" role="status">✓ A kódot és az átadási csomagot átadtam: {{date(p.handed_over_at)}}. Az átadott fájlokat lent, a dokumentumok között töltheted le.</div>
+            @if(p.handover_note){<p class="proposal-text">{{p.handover_note}}</p>}
+          } @else if(p.final_amount_huf && !p.final_paid_at){
+            <div class="payment-due"><div><small>Fennmaradó összeg</small><strong>{{money(p.final_amount_huf)}}</strong></div>
+              @if(p.online_payment){<button class="btn btn-primary" type="button" [disabled]="paying()" (click)="payFinal()">{{paying()?'Fizetési oldal megnyitása…':'Fizetés bankkártyával ↗︎'}}</button>}
+            </div>
+            <p class="client-note">A forráskódot és az átadási csomagot a fennmaradó összeg beérkezése után adom át. @if(p.online_payment){A fizetés a Stripe biztonságos oldalán történik. }Átutalással is fizethetsz: írj üzenetet, és elküldöm a díjbekérőt.</p>
+          } @else {
+            <div class="client-success" role="status">✓ @if(p.final_paid_at){A fennmaradó összeg beérkezett: {{date(p.final_paid_at)}}. }Köszönöm! Hamarosan átadom a kódot, erről e-mailt is kapsz.</div>
           }
         </section>
       }
@@ -104,8 +121,8 @@
         <div class="client-section-title"><div><span class="client-eyebrow">PRIVÁT FÁJLOK</span><h2>Projekt dokumentumai</h2></div></div>
         <p class="client-note">Itt kizárólag a hozzád rendelt, privát fájlok találhatók. Letöltéshez az egyedi hozzáférési linked szükséges.</p>
         @for(doc of collaboration().documents; track doc.id){
-          <div class="project-document"><span>▧</span><div><strong>{{doc.title}}</strong><small>{{doc.filename}} · {{(doc.size_bytes / 1024 / 1024).toFixed(2)}} MB</small></div>
-          <button type="button" class="client-print" [disabled]="downloadingId()!==null" (click)="downloadDocument(doc)">{{downloadingId()===doc.id?'Letöltés…':'Letöltés ↓'}}</button></div>
+          <div class="project-document" [class.locked]="doc.locked"><span>{{doc.locked ? '🔒' : '▧'}}</span><div><strong>{{doc.title}}</strong><small>{{doc.filename}} · {{(doc.size_bytes / 1024 / 1024).toFixed(2)}} MB @if(doc.locked){ · a kódátadás után tölthető le}</small></div>
+          @if(!doc.locked){<button type="button" class="client-print" [disabled]="downloadingId()!==null" (click)="downloadDocument(doc)">{{downloadingId()===doc.id?'Letöltés…':'Letöltés ↓'}}</button>}</div>
         } @empty {<p class="client-note">Még nincs megosztott dokumentum.</p>}
       </section>
       <p class="client-footer-note">A hozzáférési link személyes. Ne oszd meg másokkal. A felületen csak az ajánlat és a megkeresés főbb állomásai láthatók; ez nem valós idejű fejlesztési munkanapló.</p>

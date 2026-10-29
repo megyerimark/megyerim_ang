@@ -7,6 +7,7 @@
         <span class="quiz-eyebrow">{{ 'MEGÉRKEZETT AZ ELKÉPZELÉSED' | t }}</span>
         <h1>{{ 'Köszönöm a bizalmad!' | t }}</h1>
         <p>{{ 'Az ajánlatkérésedet rögzítettem. A válaszaid alapján személyre szabottan tudunk egyeztetni a projektedről.' | t }}</p>
+        @if(sentPromo()){<p class="quiz-small">✦ −{{sentPromo()}}% {{ 'akciós kedvezmény rögzítve az ajánlatkérésedhez. Az ajánlatban érvényesítem.' | t }}</p>}
         <div class="quiz-reference">{{ 'Ajánlatkérés azonosítója' | t }} <strong>#{{sent()}}</strong></div>
         <p class="quiz-small">{{ 'Visszaigazoló e-mailt is kapsz, ha az e-mail-küldés be van állítva. A visszaigazolás nem végleges árajánlat.' | t }}</p>
         <a class="btn btn-primary" routerLink="/">{{ 'Vissza a főoldalra' | t }} <span aria-hidden="true">↗︎</span></a>
@@ -16,6 +17,7 @@
         <div><span class="quiz-eyebrow">{{ 'AURORA / INTERAKTÍV IGÉNYFELMÉRÉS' | t }}</span><h1>{{ 'Találjuk meg a' | t }} <span>{{ 'hozzád illő weboldalt.' | t }}</span></h1><p>{{ 'Válaszolj néhány rövid kérdésre, és induljunk el egy személyre szabott megoldás felé.' | t }}</p></div>
         <a routerLink="/" class="quiz-exit" [attr.aria-label]="'Vissza a főoldalra' | t">← <span>{{ 'Vissza a főoldalra' | t }}</span></a>
       </header>
+      <app-promo-note></app-promo-note>
       <section class="quiz-panel" aria-labelledby="quiz-question-title">
         <div class="quiz-progress-heading"><span>{{step()===questions.length?('KAPCSOLATFELVÉTEL' | t):('LÉPÉS' | t)+' '+(step()+1)+' / '+(questions.length+1)}}</span><strong>{{((step()+1)/(questions.length+1)*100).toFixed(0)}}%</strong></div>
         <div class="quiz-progress" role="progressbar" [attr.aria-valuenow]="step()+1" aria-valuemin="1" [attr.aria-valuemax]="questions.length+1" [attr.aria-label]="'Kvíz kitöltésének haladása' | t"><span [style.width.%]="(step()+1)/(questions.length+1)*100"></span></div>

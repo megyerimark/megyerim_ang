@@ -111,6 +111,8 @@ export class AdminPage implements OnInit, OnDestroy {
     selectedStatus: QuoteStatus = 'new';
     selectedNotes = '';
     selectedPrice = '';
+    /** Akció előtti ár – csak akció idején beküldött ajánlatkérésnél. */
+    selectedListPrice = '';
     selectedDeposit: number | string | null = '';
     selectedProposal = '';
     selectedSchedule = '';
@@ -125,6 +127,8 @@ export class AdminPage implements OnInit, OnDestroy {
     adminMessage = '';
     documentTitle = '';
     documentFile: File | null = null;
+    documentDeliverable = false;
+    handoverNote = '';
     milestoneTitle = '';
     milestoneDescription = '';
     milestoneDate = '';
@@ -388,7 +392,7 @@ export class AdminPage implements OnInit, OnDestroy {
         });
     }
     loadQuotes(page = 1) { this.busy.set(true); this.api.quotes(this.searchQuote, this.filterStatus, page).subscribe({ next: r => { this.quotes.set(r.data); this.quotePage.set(r.current_page); this.quotePages.set(r.last_page); this.quoteTotal.set(r.total); this.busy.set(false); }, error: e => this.fail(e) }); }
-    showQuote(q: Quote) { this.selectedQuote.set(q); this.selectedStatus = q.status; this.selectedNotes = q.admin_notes || ''; this.selectedPrice = q.quoted_price_huf === null ? '' : String(q.quoted_price_huf); this.selectedDeposit = q.deposit_percent ?? (q.quoted_at ? '' : (this.depositMin() || '')); this.selectedProposal = q.proposal_summary || ''; this.selectedSchedule = q.proposal_schedule || ''; this.selectedTerms = q.proposal_terms || ''; this.selectedValidUntil = q.proposal_valid_until ? q.proposal_valid_until.slice(0, 10) : ''; this.selectedFollowUp = q.follow_up_at ? q.follow_up_at.slice(0, 10) : ''; this.loadMilestones(q.id); this.loadCollaboration(q.id); }
+    showQuote(q: Quote) { this.selectedQuote.set(q); this.selectedStatus = q.status; this.selectedNotes = q.admin_notes || ''; this.selectedPrice = q.quoted_price_huf === null ? '' : String(q.quoted_price_huf); this.selectedListPrice = q.list_price_huf ? String(q.list_price_huf) : ''; this.selectedDeposit = q.deposit_percent ?? (q.quoted_at ? '' : (this.depositMin() || '')); this.selectedProposal = q.proposal_summary || ''; this.selectedSchedule = q.proposal_schedule || ''; this.selectedTerms = q.proposal_terms || ''; this.selectedValidUntil = q.proposal_valid_until ? q.proposal_valid_until.slice(0, 10) : ''; this.selectedFollowUp = q.follow_up_at ? q.follow_up_at.slice(0, 10) : ''; this.loadMilestones(q.id); this.loadCollaboration(q.id); }
     saveQuote() {
         const q = this.selectedQuote();
         if (!q)
@@ -401,9 +405,17 @@ export class AdminPage implements OnInit, OnDestroy {
                 return;
             }
         }
+        const listPrice = this.selectedListPrice.trim() ? Number(this.selectedListPrice.replace(/\s/g, '')) : null;
+        if (listPrice !== null && (!Number.isInteger(listPrice) || listPrice <= 0)) { this.notify('Az akció előtti ár pozitív egész szám legyen.', true); return; }
         this.busy.set(true);
-        this.api.saveQuote(q.id, { status: this.selectedStatus, admin_notes: this.selectedNotes, follow_up_at: this.selectedFollowUp || null, ...(q.quoted_at ? {} : { quoted_price_huf: amount, deposit_percent: this.depositPercent(), proposal_summary: this.selectedProposal, proposal_schedule: this.selectedSchedule || null, proposal_terms: this.selectedTerms || null, proposal_valid_until: this.selectedValidUntil || null }) }).subscribe({ next: r => { this.showQuote(r.data); this.notify('Ajánlatkérés módosítva.'); this.loadQuotes(this.quotePage()); }, error: e => this.fail(e) });
+        this.api.saveQuote(q.id, { status: this.selectedStatus, admin_notes: this.selectedNotes, follow_up_at: this.selectedFollowUp || null, ...(q.quoted_at ? {} : { quoted_price_huf: amount, ...(q.promo_percent ? { list_price_huf: listPrice } : {}), deposit_percent: this.depositPercent(), proposal_summary: this.selectedProposal, proposal_schedule: this.selectedSchedule || null, proposal_terms: this.selectedTerms || null, proposal_valid_until: this.selectedValidUntil || null }) }).subscribe({ next: r => { this.showQuote(r.data); this.notify('Ajánlatkérés módosítva.'); this.loadQuotes(this.quotePage()); }, error: e => this.fail(e) });
     }
+    /** Akciós ár az akció előtti árból: a rögzített kedvezmény levonása, forintra kerekítve. */
+    promoPrice(q: Quote): number | null {
+        const list = Number(this.selectedListPrice.replace(/\s/g, ''));
+        return q.promo_percent && list > 0 ? Math.round(list * (100 - q.promo_percent) / 100) : null;
+    }
+    applyPromoPrice(q: Quote) { const price = this.promoPrice(q); if (price) this.selectedPrice = String(price); }
     /** Az előleg %-a (0–100), üres mező = nincs előleg. type="number" mezőből szám vagy null is jöhet. */
     depositPercent(): number | null {
         const raw = String(this.selectedDeposit ?? '').trim();
@@ -441,7 +453,14 @@ export class AdminPage implements OnInit, OnDestroy {
     }
     pickDocument(event: Event) {
         const file = (event.target as HTMLInputElement).files?.[0] || null;
-        if(file && (!['application/pdf','image/jpeg','image/png','image/webp'].includes(file.type) || file.size > 10 * 1024 * 1024)) {
+        if(file && this.documentDeliverable) {
+            // Átadandó kód / csomag: ZIP vagy PDF, a szerver alapbeállítása szerint legfeljebb 100 MB.
+            const zip = /\.zip$/i.test(file.name) || ['application/zip', 'application/x-zip-compressed'].includes(file.type);
+            if(!(zip || file.type === 'application/pdf') || file.size > 100 * 1024 * 1024) {
+                this.notify('Átadási csomagként ZIP vagy PDF tölthető fel, legfeljebb 100 MB méretben.', true);
+                this.documentFile = null; return;
+            }
+        } else if(file && (!['application/pdf','image/jpeg','image/png','image/webp'].includes(file.type) || file.size > 10 * 1024 * 1024)) {
             this.notify('Csak PDF, JPG, PNG vagy WebP fájl tölthető fel, legfeljebb 10 MB méretben.', true);
             this.documentFile = null; return;
         }
@@ -451,9 +470,38 @@ export class AdminPage implements OnInit, OnDestroy {
         const q = this.selectedQuote(); if(!q || !this.documentFile || !this.documentTitle.trim()) return;
         this.busy.set(true);
         this.loader.start(['Dokumentum feltöltése…', 'Titkosított tárolás…']);
-        this.api.uploadProjectDocument(q.id, this.documentFile, this.documentTitle.trim()).subscribe({
-            next: () => { this.loader.succeed('Dokumentum feltöltve!'); this.documentTitle=''; this.documentFile=null; this.busy.set(false); this.loadCollaboration(q.id); this.notify('A privát dokumentum feltöltve.'); }, error: e => this.failSubmit(e)
+        const deliverable = this.documentDeliverable;
+        this.api.uploadProjectDocument(q.id, this.documentFile, this.documentTitle.trim(), deliverable).subscribe({
+            next: () => { this.loader.succeed('Dokumentum feltöltve!'); this.documentTitle=''; this.documentFile=null; this.documentDeliverable=false; this.busy.set(false); this.loadCollaboration(q.id);
+                this.notify(deliverable ? 'Átadási csomag feltöltve – az ügyfél a kódátadás után töltheti le.' : 'A privát dokumentum feltöltve.'); }, error: e => this.failSubmit(e)
         });
+    }
+    /** A lezáráskor fizetendő összeg: ajánlati ár − befizetett előleg (lezárás után a rögzített érték). */
+    remainingAmount(q: Quote): number {
+        if (q.final_amount_huf !== null && q.final_amount_huf !== undefined) return q.final_amount_huf;
+        const deposit = q.deposit_paid_at && q.deposit_percent && q.quoted_price_huf ? Math.round(q.quoted_price_huf * q.deposit_percent / 100) : 0;
+        return Math.max(0, (q.quoted_price_huf ?? 0) - deposit);
+    }
+    handoverUnlocked(q: Quote): boolean { return q.status === 'completed' && !!q.completed_at && (this.remainingAmount(q) === 0 || !!q.final_paid_at); }
+    hasDeliverable(): boolean { return this.collaboration().documents.some(d => d.is_deliverable); }
+    completeProject() {
+        const q = this.selectedQuote(); if (!q) return;
+        const rest = this.remainingAmount(q);
+        if (!confirm(`Késznek jelölöd a projektet?\n\nAz ügyfél végleges e-mailt kap${rest > 0 ? `, benne a fennmaradó ${this.money(rest)} összeggel és a fizetési lehetőséggel.\nA kódot csak a kifizetés után adhatod át.` : '. Nincs fennmaradó összeg, a kód utána rögtön átadható.'}`)) return;
+        this.busy.set(true);
+        this.api.completeProject(q.id).subscribe({ next: r => { this.busy.set(false); this.showQuote(r.data); this.notify(r.message); this.loadQuotes(this.quotePage()); }, error: e => this.fail(e) });
+    }
+    markFinalPaid() {
+        const q = this.selectedQuote();
+        if (!q || !confirm(`Jóváírod a fennmaradó ${this.money(this.remainingAmount(q))} összeget (átutalás beérkezett)? Bevételként is rögzül, és utána átadható a kód.`)) return;
+        this.busy.set(true);
+        this.api.markFinalPaid(q.id).subscribe({ next: r => { this.busy.set(false); this.showQuote(r.data); this.notify(r.message); }, error: e => this.fail(e) });
+    }
+    handoverProject() {
+        const q = this.selectedQuote(); if (!q || !this.handoverUnlocked(q)) return;
+        if (!confirm('Átadod a kódot? Az ügyfél e-mailt kap, és ettől kezdve letöltheti az átadási csomagot.')) return;
+        this.busy.set(true);
+        this.api.handoverProject(q.id, this.handoverNote.trim()).subscribe({ next: r => { this.busy.set(false); this.handoverNote = ''; this.showQuote(r.data); this.loadCollaboration(q.id); this.notify(r.message); }, error: e => this.fail(e) });
     }
     private saveDownloaded(blob: Blob, filename: string) {
         const url = URL.createObjectURL(blob); const a = document.createElement('a');

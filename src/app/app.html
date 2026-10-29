@@ -1,4 +1,7 @@
 <a class="skip-link" href="#" (click)="skipToMain($event)">{{ 'Ugrás a tartalomra' | t }}</a>
+@if (showNavbar() && showPromoBar()) {
+<app-promo-bar></app-promo-bar>
+}
 @if (showNavbar()) {
 <app-navbar></app-navbar>
 }
