@@ -1,0 +1,79 @@
+@if (season(); as s) {
+  <!-- részecskék (minden nyilvános oldalon) -->
+  @if (s !== 'national') {
+    <div class="field" [attr.data-season]="s" [class.faded]="faded()" aria-hidden="true">
+      @for (p of particles(); track $index) {
+        <i [style.left.%]="p.x" [style.--size]="p.size + 'px'" [style.--dur]="p.dur + 's'" [style.--delay]="p.delay + 's'"
+           [style.--drift]="p.drift + 'px'" [style.--tone]="p.tone" [style.--scale]="p.size / 16"></i>
+      }
+    </div>
+  } @else {
+    <div class="ribbon" aria-hidden="true"></div>
+  }
+
+  <!-- jelenet a főoldal első képernyőjének alján -->
+  @if (onHome()) {
+    @switch (s) {
+      @case ('christmas') {
+        <div class="scene forest" aria-hidden="true">
+          @for (t of trees(); track $index) {
+            <svg class="tree" [class.back]="t.back" viewBox="0 0 100 160" [style.left.%]="t.x" [style.height.px]="t.h">
+              <rect class="trunk" x="45" y="132" width="10" height="22" rx="2"/>
+              <path class="needles" d="M50 4 72 46H62L84 86H70L95 132H5L30 86H16L38 46H28Z"/>
+              <path class="snow" d="M50 4 61 25Q55 22 50 26 45 22 39 25ZM28 46H38L36 50Q32 48 28 50ZM62 46H72L72 50Q67 48 62 50ZM16 86H30L27 90Q21 88 16 90ZM70 86H84L84 90Q77 88 70 90ZM5 132H95L93 136Q50 130 7 136Z"/>
+              @for (l of t.lights; track $index) {<circle class="light" [attr.cx]="l.cx" [attr.cy]="l.cy" r="3.2" [style.fill]="l.c" [style.--d]="l.d + 's'"/>}
+              @if (t.star) {<path class="star" d="M50 -12 54 -2 65 -2 56 4 59 15 50 8 41 15 44 4 35 -2 46 -2Z"/>}
+            </svg>
+          }
+          <svg class="ground" viewBox="0 0 100 10" preserveAspectRatio="none"><path d="M0 5Q12 1 25 4T50 4 75 3 100 5V10H0Z"/></svg>
+        </div>
+      }
+      @case ('easter') {
+        <div class="scene meadow" aria-hidden="true">
+          @for (t of tulips(); track $index) {
+            <svg class="tulip" viewBox="0 0 40 120" [style.left.%]="t.x" [style.height.px]="t.h" [style.--sway]="t.sway + 'deg'" [style.--delay]="t.delay + 's'">
+              <path class="leaf" d="M20 114C6 98 4 82 8 68 14 84 18 98 20 114Z"/>
+              <path class="leaf" d="M20 106C34 92 36 78 32 66 26 80 22 92 20 106Z"/>
+              <path class="stem" d="M20 120C20 92 21 70 20 42"/>
+              <path class="head" [style.fill]="t.color" d="M9 18 14 27 20 13 26 27 31 18C33 34 28 45 20 45 12 45 7 34 9 18Z"/>
+              <path class="shine" d="M14 26C13 33 15 39 19 42 15 37 14 32 14 26Z"/>
+            </svg>
+          }
+          @for (e of eggs; track $index) {
+            <svg class="egg" viewBox="0 0 40 52" [style.left.%]="e.x" [style.width.px]="e.size" [style.rotate.deg]="e.tilt">
+              <defs><clipPath [attr.id]="'egg-clip-' + $index"><path d="M20 1C30 1 38 17 38 30 38 43 30 51 20 51 10 51 2 43 2 30 2 17 10 1 20 1Z"/></clipPath></defs>
+              <g [attr.clip-path]="'url(#egg-clip-' + $index + ')'">
+                <rect width="40" height="52" [style.fill]="e.base"/>
+                <g class="ink" [style.stroke]="e.ink" [style.fill]="e.ink">
+                  @switch (e.pattern) {
+                    @case ('zigzag') {<path class="line" d="M0 14H40M0 38H40"/><path class="line thick" d="M0 26 5 20 10 26 15 20 20 26 25 20 30 26 35 20 40 26"/><circle cx="20" cy="7" r="1.6"/><circle cx="20" cy="45" r="1.6"/>}
+                    @case ('dots') {@for (y of [12, 22, 32, 42]; track y) {@for (x of [6, 14, 22, 30, 38]; track x) {<circle [attr.cx]="x - ((y - 12) % 20 ? 4 : 0)" [attr.cy]="y" r="1.9"/>}}}
+                    @case ('waves') {<path class="line thick" d="M0 20Q5 15 10 20T20 20 30 20 40 20M0 32Q5 27 10 32T20 32 30 32 40 32"/><path class="line" d="M0 26H40"/><circle cx="20" cy="9" r="2"/>}
+                    @case ('stripes') {<path class="line thick" d="M0 16H40M0 36H40"/><path d="M20 21 25 26 20 31 15 26Z"/><path d="M8 22 11 26 8 30 5 26ZM32 22 35 26 32 30 29 26Z"/>}
+                  }
+                </g>
+              </g>
+              <path class="egg-shade" d="M20 1C30 1 38 17 38 30 38 43 30 51 20 51 10 51 2 43 2 30 2 17 10 1 20 1Z"/>
+            </svg>
+          }
+          <svg class="ground" viewBox="0 0 100 10" preserveAspectRatio="none"><path d="M0 4Q10 2 20 4T40 3 60 4 80 3 100 4V10H0Z"/></svg>
+        </div>
+      }
+      @case ('national') {
+        <div class="scene cockade-scene" aria-hidden="true">
+          <svg class="cockade" viewBox="0 0 120 170">
+            <defs><linearGradient id="tricolor" x1="0" x2="1"><stop offset="0" stop-color="#ce2939"/><stop offset=".333" stop-color="#ce2939"/><stop offset=".333" stop-color="#f4f4f4"/><stop offset=".666" stop-color="#f4f4f4"/><stop offset=".666" stop-color="#477050"/><stop offset="1" stop-color="#477050"/></linearGradient></defs>
+            <path class="tail" d="M54 60 30 160 42 150 50 164Z" fill="url(#tricolor)"/>
+            <path class="tail" d="M66 60 90 160 78 150 70 164Z" fill="url(#tricolor)"/>
+            <circle cx="60" cy="58" r="50" fill="#ce2939"/>
+            <circle cx="60" cy="58" r="44" fill="none" stroke="#9d1b28" stroke-width="12" stroke-dasharray="2.2 3.4" opacity=".45"/>
+            <circle cx="60" cy="58" r="33" fill="#f4f4f4"/>
+            <circle cx="60" cy="58" r="28" fill="none" stroke="#d9d9d9" stroke-width="8" stroke-dasharray="2 3" opacity=".6"/>
+            <circle cx="60" cy="58" r="18" fill="#477050"/>
+            <circle cx="60" cy="58" r="14" fill="none" stroke="#35543c" stroke-width="5" stroke-dasharray="1.6 2.6" opacity=".6"/>
+          </svg>
+        </div>
+      }
+    }
+  }
+}
