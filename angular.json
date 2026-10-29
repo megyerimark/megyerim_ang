@@ -35,6 +35,7 @@
               }
             ],
             "styles": [
+              "src/palettes.generated.scss",
               "src/styles.scss"
             ]
           },

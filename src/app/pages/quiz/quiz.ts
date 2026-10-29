@@ -7,6 +7,7 @@ import { QuotePayload } from '../../core/models';
 import { TPipe } from '../../i18n/t.pipe';
 import { I18nService } from '../../i18n/i18n.service';
 import { Turnstile } from '../../components/turnstile/turnstile';
+import { SubmitLoaderService } from '../../core/submit-loader.service';
 import { PromoNote } from '../../components/promo-note/promo-note';
 
 type QuizKey = 'industry' | 'goal' | 'website' | 'solution' | 'timeline';
@@ -19,6 +20,7 @@ export class QuizPage {
     readonly i18n = inject(I18nService);
     private readonly api=inject(ApiService);
     private readonly captcha=viewChild(Turnstile);
+    private readonly loader=inject(SubmitLoaderService);
     captchaToken='';
     readonly questions:QuizQuestion[]=[
         {key:'industry',eyebrow:'A VÁLLALKOZÁSOD',title:'Mivel foglalkozol leginkább?',hint:'Így a neked releváns megoldásokra fókuszálhatunk.',options:[
@@ -67,9 +69,9 @@ export class QuizPage {
         if(!this.contact.privacy_notice_acknowledged){this.error.set('Az adatkezelési tájékoztató elfogadása szükséges.');return;}
         if(this.captcha()&&!this.captcha()!.ready()){this.error.set('Várd meg, amíg a robotszűrő ellenőrzése befejeződik.');return;}
         const payload:QuotePayload={customer_name:this.contact.customer_name.trim(),email:this.contact.email.trim(),phone:this.contact.phone.trim(),company_name:this.contact.company_name.trim(),website_type:this.websiteType(),design_style:'undecided',industry:this.answers().industry||null,layout_style:null,font_style:null,colors:[],features:[],inspiration_urls:[],budget_range:'',desired_deadline:null,project_description:this.description(),wants_maintenance:false,consultation_preference:'email',privacy_notice_acknowledged:true,website:this.contact.website,turnstile_token:this.captchaToken};
-        this.sending.set(true);
-        this.api.sendQuote(payload).subscribe({next:r=>{this.sentPromo.set(r.promo_percent??null);this.sent.set(r.reference);this.sending.set(false);window.scrollTo({top:0,behavior:'smooth'});},error:(e:HttpErrorResponse)=>{
-            this.sending.set(false);this.captcha()?.reset();
+        this.sending.set(true);this.loader.start(['Válaszok feldolgozása…','Ajánlatkérés rögzítése…','Visszaigazolás előkészítése…']);
+        this.api.sendQuote(payload).subscribe({next:r=>{this.sentPromo.set(r.promo_percent??null);this.sent.set(r.reference);this.sending.set(false);this.loader.succeed('Ajánlatkérés elküldve!');window.scrollTo({top:0,behavior:'smooth'});},error:(e:HttpErrorResponse)=>{
+            this.sending.set(false);this.loader.stop();this.captcha()?.reset();
             if(e.error?.error_code==='TURNSTILE_FAILED')this.error.set(e.error.message);
             else if(e.status===422){this.validationErrors.set(e.error?.errors||{});this.error.set('Kérlek, ellenőrizd a megadott adatokat.');}
             else if(e.status===429)this.error.set('Túl sok kérés érkezett. Próbáld újra később.');

@@ -2,20 +2,20 @@
    All values are CSS custom properties, so dark/light modes remain fully functional. */
 :root, [data-theme='dark'] {
   color-scheme: dark;
-  --bg: #070b19;
-  --surface: #0d1428;
-  --surface-alt: #101932;
+  --bg: var(--k-070b19);
+  --surface: var(--k-0d1428);
+  --surface-alt: var(--k-101932);
   --text: #f6f7ff;
-  --muted: #9aa8cc;
-  --border: #26355b;
-  --accent: #a38bff;
-  --accent2: #4f94ff;
+  --muted: var(--k-9aa8cc);
+  --border: var(--k-26355b);
+  --accent: var(--k-a38bff);
+  --accent2: var(--k-4f94ff);
   --cream: #f8f7ff;
   --shadow: rgba(0, 0, 0, .38);
   --premium-panel: rgba(14, 22, 47, .83);
   --premium-rim: rgba(149, 166, 255, .20);
   --premium-halo: rgba(93, 82, 251, .28);
-  --premium-primary: linear-gradient(110deg, #8753f5 0%, #595efc 50%, #2977ff 100%);
+  --premium-primary: linear-gradient(110deg, var(--k-8753f5) 0%, var(--k-595efc) 50%, var(--k-2977ff) 100%);
   --premium-glass: rgba(14, 23, 53, .76);
   --premium-grid: rgba(108, 129, 212, .10);
 }
@@ -23,18 +23,18 @@
   color-scheme: light;
   --bg: #f7f8ff;
   --surface: #ffffff;
-  --surface-alt: #eef2ff;
-  --text: #131a39;
-  --muted: #586481;
-  --border: #d9def3;
-  --accent: #6245d3;
-  --accent2: #255ddb;
+  --surface-alt: var(--k-eef2ff);
+  --text: var(--k-131a39);
+  --muted: var(--k-586481);
+  --border: var(--k-d9def3);
+  --accent: var(--k-6245d3);
+  --accent2: var(--k-255ddb);
   --cream: #fff;
   --shadow: rgba(33, 48, 112, .13);
   --premium-panel: rgba(255, 255, 255, .9);
   --premium-rim: rgba(65, 84, 167, .20);
   --premium-halo: rgba(102, 79, 240, .12);
-  --premium-primary: linear-gradient(110deg, #7043e2 0%, #5153eb 60%, #2868ed 100%);
+  --premium-primary: linear-gradient(110deg, var(--k-7043e2) 0%, var(--k-5153eb) 60%, var(--k-2868ed) 100%);
   --premium-glass: rgba(255, 255, 255, .84);
   --premium-grid: rgba(54, 79, 140, .08);
 }
@@ -51,14 +51,14 @@ button, a { touch-action: manipulation; }
 button:not(:disabled), a { transition: color .2s ease, background-color .25s ease, border-color .25s ease, box-shadow .25s ease, transform .26s cubic-bezier(.2,.8,.2,1); }
 input, textarea, select { transition: background-color .2s ease, box-shadow .2s ease, border-color .2s ease; }
 :focus-visible { outline: 2px solid var(--accent2); outline-offset: 4px; }
-::selection { background: #7264ee; color: #fff; }
+::selection { background: var(--k-7264ee); color: #fff; }
 .container { max-width: 1370px; }
 .section { position: relative; }
 .section-title { font-weight: 700; letter-spacing: -.062em; }
 .subtle-heading { color: var(--accent); }
 .overline { color: var(--accent); letter-spacing: 2.1px; }
 .lead { color: var(--muted); }
-.gradient-text { background-image: linear-gradient(112deg,#c7a9ff 4%,#8474fa 42%,#4e9bff 93%); }
+.gradient-text { background-image: linear-gradient(112deg,var(--k-c7a9ff) 4%,var(--k-8474fa) 42%,var(--k-4e9bff) 93%); }
 .pill { background: var(--premium-glass); border-color: var(--premium-rim); }
 .card { background: var(--premium-panel); border-color: var(--premium-rim); box-shadow: 0 16px 60px var(--shadow); }
 .btn, .nav-cta, .mobile-quote, .studio-submit, .brief-submit {
@@ -79,10 +79,10 @@ input, textarea, select { transition: background-color .2s ease, box-shadow .2s 
   background: var(--premium-primary);
   color: #fff;
   border: 1px solid rgba(170,168,255,.38);
-  box-shadow: 0 8px 22px #404fff55, inset 0 1px 1px #fff4;
+  box-shadow: 0 8px 22px var(--k-404fff-55), inset 0 1px 1px #fff4;
 }
 .btn-primary:hover:not(:disabled),.nav-cta:hover,.studio-submit:hover,.brief-submit:hover {
-  box-shadow: 0 13px 32px #575cfd75,0 0 0 1px #a7aaff75, inset 0 1px 1px #fff6;
+  box-shadow: 0 13px 32px var(--k-575cfd-75),0 0 0 1px var(--k-a7aaff-75), inset 0 1px 1px #fff6;
   transform: translateY(-2px);
 }
 .btn-outline { color: var(--text); border-color: var(--premium-rim); background: var(--premium-glass); backdrop-filter: blur(18px); }

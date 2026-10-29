@@ -1,0 +1,44 @@
+@if (season(); as s) {
+  <!-- részecskék (minden nyilvános oldalon) -->
+  @if (s !== 'national') {
+    <div class="field" [attr.data-season]="s" [class.faded]="faded()" aria-hidden="true">
+      @for (p of particles(); track $index) {
+        <i [style.left.%]="p.x" [style.--size]="p.size + 'px'" [style.--dur]="p.dur + 's'" [style.--delay]="p.delay + 's'"
+           [style.--drift]="p.drift + 'px'" [style.--tone]="p.tone" [style.--scale]="p.size / 16"></i>
+      }
+    </div>
+  } @else {
+    <div class="ribbon" aria-hidden="true"></div>
+  }
+
+  <!-- jelenet a főoldal első képernyőjének alján -->
+  @if (onHome()) {
+    @switch (s) {
+      @case ('christmas') {
+        <div class="scene forest" aria-hidden="true">
+          @for (t of trees(); track $index) {
+            <div class="tree" [class.back]="t.back" [class.low]="t.low" [class.decorated]="t.decorated" [style.left.%]="t.x" [style.--h]="t.h + 'px'">
+              <img [src]="t.src" alt="" [class.flip]="t.flip" decoding="async">
+              @if (t.decorated) {<img class="lights" src="/seasonal/fir-decorated-lights.svg" alt="">}
+            </div>
+          }
+          <div class="ground snowbank"></div>
+        </div>
+      }
+      @case ('easter') {
+        <div class="scene meadow" aria-hidden="true">
+          @for (t of tulips(); track $index) {
+            <img class="tulip" [src]="t.src" alt="" decoding="async" [style.left.%]="t.x" [style.--h]="t.h + 'px'" [style.--sway]="t.sway + 'deg'" [style.--delay]="t.delay + 's'">
+          }
+          <div class="ground grass"></div>
+          @for (e of eggs; track $index) {
+            <img class="egg" [src]="e.src" alt="" decoding="async" [style.left.%]="e.x" [style.--w]="e.size + 'px'" [style.rotate.deg]="e.tilt">
+          }
+        </div>
+      }
+      @case ('national') {
+        <div class="scene cockade-scene" aria-hidden="true"><img class="cockade" src="/seasonal/cockade.svg" alt="" decoding="async"></div>
+      }
+    }
+  }
+}

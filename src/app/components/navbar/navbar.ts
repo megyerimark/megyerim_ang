@@ -3,6 +3,7 @@ import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
 import { TPipe } from '../../i18n/t.pipe';
+import { BrandMark } from '../brand-mark/brand-mark';
 import { I18nService } from '../../i18n/i18n.service';
 
 interface NavItem { label: string; link: string; fragment?: string; spy?: string; mobileOnly?: boolean; }
@@ -10,7 +11,7 @@ interface NavItem { label: string; link: string; fragment?: string; spy?: string
 @Component({
     selector: 'app-navbar',
     standalone: true,
-    imports: [RouterLink, TPipe],
+    imports: [RouterLink, TPipe, BrandMark],
     templateUrl: './navbar.html',
     styleUrl: './navbar.scss',
     host: { '[class.overlay]': 'onHome' }

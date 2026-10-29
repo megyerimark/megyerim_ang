@@ -2,14 +2,14 @@
 :root,
 [data-theme='dark'] {
   color-scheme: dark;
-  --bg: #0d111b;
-  --surface: #151b29;
-  --surface-alt: #111827;
+  --bg: var(--k-0d111b);
+  --surface: var(--k-151b29);
+  --surface-alt: var(--k-111827);
   --text: #f4f5f8;
-  --muted: #a7b0c0;
-  --border: #293343;
-  --accent: #a1aaff;
-  --accent2: #81c6e5;
+  --muted: var(--k-a7b0c0);
+  --border: var(--k-293343);
+  --accent: var(--k-a1aaff);
+  --accent2: var(--k-81c6e5);
   --cream: #f7f6f2;
   --shadow: rgba(0, 0, 0, .24);
 }
@@ -19,11 +19,11 @@
   --bg: #f6f5f1;
   --surface: #ffffff;
   --surface-alt: #efeee9;
-  --text: #191e28;
-  --muted: #606b7a;
+  --text: var(--k-191e28);
+  --muted: var(--k-606b7a);
   --border: #d9dce0;
-  --accent: #4b50ba;
-  --accent2: #087da4;
+  --accent: var(--k-4b50ba);
+  --accent2: var(--k-087da4);
   --cream: #f6f5f1;
   --shadow: rgba(26, 35, 53, .10);
 }
@@ -71,7 +71,7 @@ a {
 }
 
 ::selection {
-  background: #7a83b9;
+  background: var(--k-7a83b9);
   color: #fff;
 }
 
@@ -146,12 +146,12 @@ a {
 
 .btn-primary {
   background: #e8e9ef;
-  color: #181d2b;
+  color: var(--k-181d2b);
   box-shadow: 0 12px 32px rgba(0, 0, 0, .10);
 }
 
 [data-theme='light'] .btn-primary {
-  background: #202538;
+  background: var(--k-202538);
   color: #fff;
 }
 
@@ -315,17 +315,17 @@ hr {
 @import './premium-theme';
 
 /* AURORA V4 / high fidelity dark art direction */
-:root,[data-theme='dark']{--bg:#050916;--surface:#0b1328;--surface-alt:#111d37;--text:#f6f7ff;--muted:#a3afd1;--border:#25325a;--accent:#ad96ff;--accent2:#5793ff;--premium-panel:#0c1530e8;--premium-glass:#0d1834e3;--premium-rim:#7e87ea3d;--premium-halo:#6658ff48;--premium-primary:linear-gradient(105deg,#8e4dfd 0%,#6954f3 48%,#2d71f9 100%);}
-[data-theme='light']{--bg:#f5f6fd;--surface:#fff;--surface-alt:#edf0fb;--text:#131b3e;--muted:#52617c;--border:#d4dcf3;--accent:#7053e4;--accent2:#286ded;--premium-panel:#fffd;--premium-glass:#fffE;--premium-rim:#6a75ce3d;--premium-halo:#7455e022;}
-[data-theme='dark'] body{background-color:#050916;background-image:radial-gradient(ellipse at 52% -12%,#28377890,transparent 56%);}
+:root,[data-theme='dark']{--bg:var(--k-050916);--surface:var(--k-0b1328);--surface-alt:var(--k-111d37);--text:#f6f7ff;--muted:var(--k-a3afd1);--border:var(--k-25325a);--accent:var(--k-ad96ff);--accent2:var(--k-5793ff);--premium-panel:var(--k-0c1530-e8);--premium-glass:var(--k-0d1834-e3);--premium-rim:var(--k-7e87ea-3d);--premium-halo:var(--k-6658ff-48);--premium-primary:linear-gradient(105deg,var(--k-8e4dfd) 0%,var(--k-6954f3) 48%,var(--k-2d71f9) 100%);}
+[data-theme='light']{--bg:#f5f6fd;--surface:#fff;--surface-alt:var(--k-edf0fb);--text:var(--k-131b3e);--muted:var(--k-52617c);--border:var(--k-d4dcf3);--accent:var(--k-7053e4);--accent2:var(--k-286ded);--premium-panel:#fffd;--premium-glass:#fffE;--premium-rim:var(--k-6a75ce-3d);--premium-halo:var(--k-7455e0-22);}
+[data-theme='dark'] body{background-color:var(--k-050916);background-image:radial-gradient(ellipse at 52% -12%,var(--k-283778-90),transparent 56%);}
 [data-theme='dark'] .section{isolation:isolate;}
 [data-theme='dark'] .card,.admin-panel,.promise-card,.service-card,.comparison-stage{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
 :where(.card,.promise-card,.service-card,.feature-card,.admin-panel,.lab-controls,.lab-preview){transition:transform .28s cubic-bezier(.2,.8,.2,1),border-color .25s ease,box-shadow .3s ease;}
-:where(.card,.promise-card,.service-card,.feature-card,.admin-panel):hover{border-color:#a399ff69;box-shadow:0 16px 48px #07071866,0 0 25px #6253f520;}
-.btn-primary,.nav-cta{box-shadow:0 11px 28px #6055fb56,0 0 25px #684fff35,inset 0 1px #fffc;}
-[data-theme='dark'] .section-title{color:#f3f5ff;}
-[data-theme='dark'] .subtle-heading{color:#b39aff;}
-::-webkit-scrollbar{width:11px;height:10px}::-webkit-scrollbar-track{background:#0b1124}::-webkit-scrollbar-thumb{background:#48558a;border:3px solid #0b1124;border-radius:20px}
+:where(.card,.promise-card,.service-card,.feature-card,.admin-panel):hover{border-color:var(--k-a399ff-69);box-shadow:0 16px 48px var(--k-070718-66),0 0 25px var(--k-6253f5-20);}
+.btn-primary,.nav-cta{box-shadow:0 11px 28px var(--k-6055fb-56),0 0 25px var(--k-684fff-35),inset 0 1px #fffc;}
+[data-theme='dark'] .section-title{color:var(--k-f3f5ff);}
+[data-theme='dark'] .subtle-heading{color:var(--k-b39aff);}
+::-webkit-scrollbar{width:11px;height:10px}::-webkit-scrollbar-track{background:var(--k-0b1124)}::-webkit-scrollbar-thumb{background:var(--k-48558a);border:3px solid var(--k-0b1124);border-radius:20px}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 
 /* AURORA V5: shared consistency and overflow safety */
@@ -335,10 +335,10 @@ hr {
 @media print{body:has(.studio-print-brief) app-navbar{display:none!important}}
 
 /* Aurora Cinematic design tokens; the admin API, forms and route layout stay intact. */
-:root,[data-theme='dark']{--bg:#060a16;--surface:#0d142b;--surface-alt:#101c35;--text:#f7f7ff;--muted:#a9b9d7;--border:#303b62;--accent:#b39aff;--accent2:#82d7eb;--premium-primary:linear-gradient(105deg,#a989fb 0%,#999df5 53%,#83d8ed 100%)}
-[data-theme='dark'] body{background-color:#060a16;background-image:radial-gradient(ellipse at 60% -20%,#25295686,transparent 57%)}
+:root,[data-theme='dark']{--bg:var(--k-060a16);--surface:var(--k-0d142b);--surface-alt:var(--k-101c35);--text:#f7f7ff;--muted:var(--k-a9b9d7);--border:var(--k-303b62);--accent:var(--k-b39aff);--accent2:var(--k-82d7eb);--premium-primary:linear-gradient(105deg,var(--k-a989fb) 0%,var(--k-999df5) 53%,var(--k-83d8ed) 100%)}
+[data-theme='dark'] body{background-color:var(--k-060a16);background-image:radial-gradient(ellipse at 60% -20%,var(--k-252956-86),transparent 57%)}
 [data-theme='dark'] .section-title{color:#f7f6ff}
-[data-theme='light']{--accent:#7050bc;--accent2:#13799b}
+[data-theme='light']{--accent:var(--k-7050bc);--accent2:var(--k-13799b)}
 @media(max-width:420px){html,body{max-width:100%;overflow-x:clip}}
 
 /* Aurora Cinematic V11 — consistent editorial direction across public and admin routes. */
@@ -388,7 +388,7 @@ main:focus { outline:none; }
    ez a telefonokon a leglassabb effekt. Érintőképernyőn és keskeny nézetben tömör, enyhén áttetsző háttér helyettesíti. */
 @media (max-width: 760px), (pointer: coarse) {
   *, *::before, *::after { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
-  .nav-wrap.is-compact { background: #050818f5 !important; }
+  .nav-wrap.is-compact { background: var(--k-050818-f5) !important; }
   /* A görgetési megjelenés mobilon elmosás nélkül (csak úszás + áttűnés – ezt a GPU olcsón számolja). */
   .aurora-reveal-item:not(.aurora-visible):not(.aurora-reveal-soft), .aurora-reveal-item { filter: none !important; }
 }

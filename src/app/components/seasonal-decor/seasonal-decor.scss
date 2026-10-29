@@ -1,0 +1,91 @@
+:host { display: contents; }
+
+.field {
+  position: fixed; inset: 0; z-index: 90; overflow: hidden; pointer-events: none;
+  opacity: 1; transition: opacity 1.2s ease;
+}
+.field.faded { opacity: 0; }
+.field i { position: absolute; top: -24px; display: block; width: var(--size); height: var(--size); will-change: transform; }
+
+/* karácsony: puha hópelyhek, enyhe oldalirányú lebegéssel */
+[data-season='christmas'] i {
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0 45%, #ffffff00 72%);
+  opacity: calc(.35 + var(--tone) * .45);
+  animation: fall var(--dur) linear var(--delay) infinite;
+}
+@keyframes fall {
+  to { transform: translate3d(var(--drift), 106vh, 0); }
+}
+
+/* húsvét: pasztell szirmok, forogva szállnak */
+[data-season='easter'] i {
+  border-radius: 80% 0 80% 0;
+  background: hsl(calc(60 + var(--tone) * 90) 70% 82% / .7);
+  animation: petal var(--dur) ease-in-out var(--delay) infinite;
+}
+@keyframes petal {
+  0% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(var(--drift), 52vh, 0) rotate(200deg); }
+  100% { transform: translate3d(calc(var(--drift) * -.4), 106vh, 0) rotate(380deg); }
+}
+
+/* Valentin-nap: néhány apró szív lassan felszáll alulról */
+[data-season='valentine'] i {
+  top: auto; bottom: -24px;
+  background: hsl(calc(340 + var(--tone) * 20) 80% 72% / .55);
+  clip-path: path('M8 14.5 1.6 8.3A3.9 3.9 0 0 1 8 2.7a3.9 3.9 0 0 1 6.4 5.6z');
+  transform-origin: center;
+  animation: rise var(--dur) ease-in-out var(--delay) infinite;
+}
+[data-season='valentine'] i { width: 16px; height: 16px; scale: var(--scale); }
+@keyframes rise {
+  0% { transform: translate3d(0, 0, 0); opacity: 0; }
+  12% { opacity: 1; }
+  100% { transform: translate3d(var(--drift), -108vh, 0); opacity: 0; }
+}
+
+/* nemzeti ünnep: vékony, finom szalag a képernyő tetején */
+.ribbon {
+  position: fixed; left: 0; right: 0; top: 0; z-index: 130; height: 3px; pointer-events: none;
+  background: linear-gradient(90deg, #ce2939 0 33.3%, #f4f4f4 33.3% 66.6%, #477050 66.6%);
+  box-shadow: 0 0 12px #ce293955;
+}
+
+/* ---------- jelenet a főoldal első képernyőjének alján ----------
+   A dokumentum tetejéhez rögzített első képernyő aljára kerül, görgetéskor természetesen kicsúszik.
+   A hero fölött, de a fejléc és a mobilos „Ajánlatot kérek” sáv alatt van; kattintást nem fog meg.
+   A rajzok: public/seasonal (scripts/build-seasonal-art.mjs). */
+.scene { position: absolute; left: 0; right: 0; top: 0; height: 100svh; z-index: 40; overflow: hidden; pointer-events: none; }
+.scene img { display: block; user-select: none; }
+.ground { position: absolute; left: 0; right: 0; bottom: 0; background-repeat: repeat-x; background-position: bottom; }
+.snowbank { height: 34px; background-image: url('/seasonal/snowbank.svg'); background-size: 400px 34px; }
+.grass { height: 40px; background-image: url('/seasonal/grass.svg'); background-size: 360px 40px; }
+
+/* karácsony – havas fenyőerdő */
+.tree { position: absolute; bottom: 16px; height: var(--h); aspect-ratio: 400 / 660; transform: translateX(-50%); }
+.tree img { width: 100%; height: 100%; }
+.tree img.flip { transform: scaleX(-1); }
+.tree.back { bottom: 24px; filter: brightness(.62) saturate(.8) blur(.4px); opacity: .9; }
+.tree:not(.back) { filter: drop-shadow(0 8px 12px #0007); }
+.tree .lights { position: absolute; inset: 0; }
+
+/* húsvét – tulipánok és hímes tojások */
+.tulip { position: absolute; bottom: 12px; height: var(--h); width: auto; transform: translateX(-50%); transform-origin: 50% 100%;
+  filter: drop-shadow(0 6px 8px #0006); animation: sway 4.5s ease-in-out var(--delay) infinite alternate; }
+@keyframes sway { from { rotate: calc(var(--sway) * -1); } to { rotate: var(--sway); } }
+.egg { position: absolute; bottom: 4px; width: var(--w); height: auto; transform: translateX(-50%); filter: drop-shadow(0 4px 5px #0006); }
+
+/* nemzeti ünnep – kokárda */
+.cockade { position: absolute; left: 14px; bottom: 22px; width: 82px; filter: drop-shadow(0 10px 16px #0009); animation: float 5s ease-in-out infinite; }
+@keyframes float { 50% { translate: 0 -6px; rotate: -3deg; } }
+
+@media (min-width: 900px) {
+  .tree { height: calc(var(--h) * 1.2); }
+  .tree.low { height: calc(var(--h) * .78); }
+  .tulip { height: calc(var(--h) * 1.3); }
+  .egg { width: calc(var(--w) * 1.25); }
+  /* asztali nézetben a jobb felső sarokba, a fejléc alá – ott nem takar szöveget vagy gombot */
+  .cockade { width: 92px; left: auto; right: 2.2vw; top: 92px; bottom: auto; }
+}
+@media (prefers-reduced-motion: reduce) { .field { display: none; } .scene * { animation: none !important; } }

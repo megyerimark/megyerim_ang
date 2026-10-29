@@ -1,6 +1,7 @@
 <header class="nav-wrap" [class.is-compact]="compact() || !onHome">
   <div class="navbar">
     <a class="brand" routerLink="/" (click)="close()" [attr.aria-label]="'Megyeri Márk – főoldal' | t">
+      <app-brand-mark class="brand-mark" />
       <strong>{{ 'MEGYERI' | t }} <span>{{ 'MÁRK' | t }}</span> {{ 'MÁTÉ' | t }} </strong>
     </a>
     <nav id="site-navigation" class="nav-links" [class.open]="menuOpen()" [attr.aria-label]="'Fő navigáció' | t">

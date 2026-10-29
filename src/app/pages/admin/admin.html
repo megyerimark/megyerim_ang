@@ -206,14 +206,14 @@
             <div class="aurora-chart" role="img" aria-label="Ajánlatkérések havonként, valós adatokból">
               <svg viewBox="0 0 600 180" aria-hidden="true" preserveAspectRatio="none">
                 <defs>
-                  <linearGradient id="auroraChartFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#726cfb" stop-opacity=".48"/><stop offset="100%" stop-color="#4265db" stop-opacity="0"/></linearGradient>
-                  <linearGradient id="auroraChartLine"><stop stop-color="#916dff"/><stop offset="100%" stop-color="#56a2ff"/></linearGradient>
+                  <linearGradient id="auroraChartFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" style="stop-color: var(--k-726cfb)" stop-opacity=".48"/><stop offset="100%" style="stop-color: var(--k-4265db)" stop-opacity="0"/></linearGradient>
+                  <linearGradient id="auroraChartLine"><stop style="stop-color: var(--k-916dff)"/><stop offset="100%" style="stop-color: var(--k-56a2ff)"/></linearGradient>
                 </defs>
-                <path d="M20 32H580 M20 72H580 M20 112H580 M20 152H580" fill="none" stroke="#7792d1" stroke-opacity=".15" stroke-width="1" stroke-dasharray="3 7"/>
+                <path d="M20 32H580 M20 72H580 M20 112H580 M20 152H580" fill="none" style="stroke: var(--k-7792d1)" stroke-opacity=".15" stroke-width="1" stroke-dasharray="3 7"/>
                 <path [attr.d]="activityChart().area" fill="url(#auroraChartFill)"/>
                 <path [attr.d]="activityChart().line" fill="none" stroke="url(#auroraChartLine)" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
                 @for(point of activityChart().points;track $index){
-                  <circle [attr.cx]="point.x" [attr.cy]="point.y" r="5.5" fill="#a58cff" stroke="#0c1531" stroke-width="3"><title>{{point.label}}: {{point.count}} ajánlatkérés</title></circle>
+                  <circle [attr.cx]="point.x" [attr.cy]="point.y" r="5.5" style="fill: var(--k-a58cff); stroke: var(--k-0c1531)" stroke-width="3"><title>{{point.label}}: {{point.count}} ajánlatkérés</title></circle>
                 }
               </svg>
               <div class="aurora-chart-labels">@for(month of dash.quotes_monthly;track $index){<span [title]="month.count + ' ajánlatkérés'">{{month.label}}</span>}</div>
@@ -245,8 +245,8 @@
           <div class="donut-layout">
             <div class="aurora-donut source-donut" [style.background]="leadDonut()" role="img" [attr.aria-label]="'Kvízből érkező: ' + (dash.lead_sources?.quiz || 0) + ', űrlapból érkező: ' + (dash.lead_sources?.form || 0)"><div><strong>{{dash.lead_sources?.quiz || 0}}</strong><small>kvízlead</small></div></div>
             <div class="donut-legend">
-              <div><i style="background:#8f78ff"></i><span>Interaktív kvíz</span><strong>{{dash.lead_sources?.quiz || 0}}</strong></div>
-              <div><i style="background:#48bed9"></i><span>Ajánlatkérő űrlap</span><strong>{{dash.lead_sources?.form || 0}}</strong></div>
+              <div><i style="background:var(--k-8f78ff)"></i><span>Interaktív kvíz</span><strong>{{dash.lead_sources?.quiz || 0}}</strong></div>
+              <div><i style="background:var(--k-48bed9)"></i><span>Ajánlatkérő űrlap</span><strong>{{dash.lead_sources?.form || 0}}</strong></div>
             </div>
           </div>
           <small class="insight-foot">A már beérkezett megkeresések forrásai, nem látogatottsági mérés.</small>
@@ -1448,6 +1448,48 @@
             <input class="input" type="url" [(ngModel)]="settings.instagram_url">
           </div>
         </div>
+        <fieldset class="theme-admin" aria-labelledby="theme-admin-title">
+          <div class="promo-admin-head">
+            <div>
+              <h3 id="theme-admin-title">Megjelenés</h3>
+              <p class="muted">Az egész weboldal színvilága. Kattintásra itt azonnal látod az előnézetet; a látogatók a mentés után látják.</p>
+            </div>
+            <span class="theme-now" role="status">Most a látogatók ezt látják: <strong>{{ paletteName(palette.season() ?? palette.base()) }}</strong></span>
+          </div>
+          <div class="theme-cards" role="radiogroup" aria-label="Alaptéma">
+            @for (p of basePalettes; track p.id) {
+              <button type="button" class="theme-card" role="radio" [attr.aria-checked]="(settings.site_palette || 'nightblue') === p.id"
+                      [class.selected]="(settings.site_palette || 'nightblue') === p.id" (click)="pickPalette(p.id)">
+                <span class="theme-swatches" aria-hidden="true">@for (c of p.swatches; track c) {<i [style.background]="c"></i>}</span>
+                <strong>{{ p.name }}</strong><small>{{ p.description }}</small>
+              </button>
+            }
+          </div>
+          <div class="theme-seasons">
+            <label class="promo-switch">
+              <input type="checkbox" [ngModel]="isOn(settings.seasonal_enabled)" (ngModelChange)="settings.seasonal_enabled = $event">
+              <span>Automatikus ünnepi témák: {{ isOn(settings.seasonal_enabled) ? 'bekapcsolva' : 'kikapcsolva' }}</span>
+            </label>
+            <ul class="season-list" [class.disabled]="!isOn(settings.seasonal_enabled)">
+              @for (s of seasons; track s.id) {
+                <li>
+                  <label class="season-toggle">
+                    <input type="checkbox" [disabled]="!isOn(settings.seasonal_enabled)" [ngModel]="isOn(seasonFlag(s.id))" (ngModelChange)="setSeasonFlag(s.id, $event)">
+                    <span class="theme-swatches small" aria-hidden="true">@for (c of s.swatches; track c) {<i [style.background]="c"></i>}</span>
+                    <span><strong>{{ s.name }}</strong><small>{{ s.when }}</small></span>
+                  </label>
+                  <span class="season-actions">
+                    <button type="button" class="btn btn-outline btn-sm" (click)="previewPalette(s.id)">Előnézet itt</button>
+                    <a class="btn btn-outline btn-sm" [href]="'/?palette=' + s.id" target="_blank" rel="noopener">Megnézem az oldalon ↗</a>
+                  </span>
+                </li>
+              }
+            </ul>
+            @if (palette.preview()) {
+              <p class="theme-preview-note" role="status">Előnézet: <strong>{{ paletteName(palette.preview()!) }}</strong> – <button type="button" class="link-btn" (click)="previewPalette(null)">vissza a mentett beállításhoz</button></p>
+            }
+          </div>
+        </fieldset>
         <fieldset class="promo-admin" aria-labelledby="promo-admin-title">
           <div class="promo-admin-head">
             <div>

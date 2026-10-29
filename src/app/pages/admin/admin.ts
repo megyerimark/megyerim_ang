@@ -5,6 +5,8 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastService } from '../../core/toast.service';
+import { SubmitLoaderService } from '../../core/submit-loader.service';
+import { BASE_PALETTES, BasePalette, Palette, PaletteService, SEASONS, Season } from '../../core/palette.service';
 import { apiErrorMessage, FRONTEND_VERSION } from '../../core/http-error';
 import { SitesPanel } from './sites-panel';
 import { FinancePanel } from './finance-panel';
@@ -220,7 +222,7 @@ export class AdminPage implements OnInit, OnDestroy {
         // Percenként csendben frissítjük a számlálókat; új ügyfélüzenetnél toast jelez.
         this.poll = setInterval(() => this.refreshCounters(), 60_000);
     }
-    ngOnDestroy() { if (this.poll) clearInterval(this.poll); }
+    ngOnDestroy() { if (this.poll) clearInterval(this.poll); this.palette.setPreview(null); }
     private refreshCounters() {
         if (document.hidden) return;
         const before = this.dashboard()?.messages_unread ?? 0;
@@ -243,12 +245,18 @@ export class AdminPage implements OnInit, OnDestroy {
     @HostListener('document:keydown.escape')
     closeMobileNavigation() { this.menuOpen.set(false); }
     private readonly toast = inject(ToastService);
+    private readonly loader = inject(SubmitLoaderService);
+    readonly palette = inject(PaletteService);
+    readonly basePalettes = BASE_PALETTES;
+    readonly seasons = SEASONS;
     /** Visszajelzés: toastként jelenik meg (mobilon is látszik, görgetéstől függetlenül). */
     notify(message: string, error = false) {
         this.message.set(''); this.isError.set(error);
         if (message) error ? this.toast.error(message) : this.toast.success(message);
     }
     fail(e: unknown) { this.notify(apiErrorMessage(e), true); this.busy.set(false); }
+    /** Ügyfél felé küldő / Stripe-os műveletek hibája: a beküldés-animáció is eltűnik. */
+    private failSubmit(e: unknown) { this.loader.stop(); this.fail(e); }
     use(tab: Tab) {
         this.tab.set(tab);
         this.menuOpen.set(false);
@@ -364,7 +372,8 @@ export class AdminPage implements OnInit, OnDestroy {
     cancelSubscription(row: MaintenanceAgreement) {
         if (!confirm('Lemondod az online előfizetést? A már kifizetett hónap végén szűnik meg.')) return;
         this.busy.set(true);
-        this.api.cancelSubscription(row.id).subscribe({ next: r => { this.busy.set(false); this.notify(r.message); this.loadMaintenance(); }, error: e => this.fail(e) });
+        this.loader.start(['Kapcsolódás a Stripe-hoz…', 'Előfizetés lemondása…']);
+        this.api.cancelSubscription(row.id).subscribe({ next: r => { this.loader.succeed('Előfizetés lemondva'); this.busy.set(false); this.notify(r.message); this.loadMaintenance(); }, error: e => this.failSubmit(e) });
     }
     subscriptionLabel(status?: string | null): string {
         if (!status) return 'Nincs online előfizetés';
@@ -423,7 +432,8 @@ export class AdminPage implements OnInit, OnDestroy {
         const q = this.selectedQuote();
         if (!q || !confirm('Jóváírod az előleget (átutalás beérkezett)? Bevételként is rögzül.')) return;
         this.busy.set(true);
-        this.api.markDepositPaid(q.id).subscribe({ next: r => { this.busy.set(false); this.showQuote(r.data); this.notify(r.message); }, error: e => this.fail(e) });
+        this.loader.start(['Előleg jóváírása…', 'Bevétel rögzítése…', 'Ügyfél értesítése…']);
+        this.api.markDepositPaid(q.id).subscribe({ next: r => { this.loader.succeed('Előleg jóváírva!'); this.busy.set(false); this.showQuote(r.data); this.notify(r.message); }, error: e => this.failSubmit(e) });
     }
     loadCollaboration(id: number) {
         this.api.adminCollaboration(id).subscribe({ next: r => {
@@ -436,8 +446,9 @@ export class AdminPage implements OnInit, OnDestroy {
     sendProjectMessage() {
         const q = this.selectedQuote(); if(!q || this.adminMessage.trim().length < 2) return;
         this.busy.set(true);
+        this.loader.start(['Üzenet küldése…']);
         this.api.sendAdminMessage(q.id, this.adminMessage.trim()).subscribe({
-            next: () => { this.adminMessage=''; this.busy.set(false); this.loadCollaboration(q.id); this.notify('Üzenet rögzítve az ügyfélportálon.'); }, error: e => this.fail(e)
+            next: () => { this.loader.succeed('Üzenet elküldve!'); this.adminMessage=''; this.busy.set(false); this.loadCollaboration(q.id); this.notify('Üzenet rögzítve az ügyfélportálon.'); }, error: e => this.failSubmit(e)
         });
     }
     pickDocument(event: Event) {
@@ -458,10 +469,11 @@ export class AdminPage implements OnInit, OnDestroy {
     uploadDocument() {
         const q = this.selectedQuote(); if(!q || !this.documentFile || !this.documentTitle.trim()) return;
         this.busy.set(true);
+        this.loader.start(['Dokumentum feltöltése…', 'Titkosított tárolás…']);
         const deliverable = this.documentDeliverable;
         this.api.uploadProjectDocument(q.id, this.documentFile, this.documentTitle.trim(), deliverable).subscribe({
-            next: () => { this.documentTitle=''; this.documentFile=null; this.documentDeliverable=false; this.busy.set(false); this.loadCollaboration(q.id);
-                this.notify(deliverable ? 'Átadási csomag feltöltve – az ügyfél a kódátadás után töltheti le.' : 'A privát dokumentum feltöltve.'); }, error: e => this.fail(e)
+            next: () => { this.loader.succeed('Dokumentum feltöltve!'); this.documentTitle=''; this.documentFile=null; this.documentDeliverable=false; this.busy.set(false); this.loadCollaboration(q.id);
+                this.notify(deliverable ? 'Átadási csomag feltöltve – az ügyfél a kódátadás után töltheti le.' : 'A privát dokumentum feltöltve.'); }, error: e => this.failSubmit(e)
         });
     }
     /** A lezáráskor fizetendő összeg: ajánlati ár − befizetett előleg (lezárás után a rögzített érték). */
@@ -539,16 +551,19 @@ export class AdminPage implements OnInit, OnDestroy {
         const amount = Math.round((q.quoted_price_huf * deposit) / 100);
         if (!confirm(`Elküldöd az ajánlatot az ügyfélnek?\n\nÁr: ${this.money(q.quoted_price_huf)}\nKötelező előleg: ${deposit}% = ${this.money(amount)}\n\nElfogadás után az ügyfél azonnal a fizetési oldalra kerül.`)) return;
         this.busy.set(true);
+        this.loader.start(['Ajánlat összeállítása…', 'E-mail küldése az ügyfélnek…', 'Fizetési adatok rögzítése…']);
+        const failed = (e: unknown) => this.failSubmit(e);
         // Az előleg %-át az elküldés előtt mentjük, hogy az e-mail és a szerver ugyanazt lássa.
-        const send = () => this.api.sendProposal(q.id).subscribe({ next: r => { this.showQuote(r.data); this.notify('Az ajánlatot elküldtem e-mailben, az előleggel együtt.'); this.loadQuotes(this.quotePage()); }, error: e => this.fail(e) });
+        const send = () => this.api.sendProposal(q.id).subscribe({ next: r => { this.loader.succeed('Ajánlat elküldve!'); this.showQuote(r.data); this.notify('Az ajánlatot elküldtem e-mailben, az előleggel együtt.'); this.loadQuotes(this.quotePage()); }, error: failed });
         if (q.deposit_percent === deposit) send();
-        else this.api.saveQuote(q.id, { deposit_percent: deposit }).subscribe({ next: () => send(), error: e => this.fail(e) });
+        else this.api.saveQuote(q.id, { deposit_percent: deposit }).subscribe({ next: () => send(), error: failed });
     }
     rotateClientAccess() {
         const q = this.selectedQuote();
         if (!q || !confirm('Biztosan új privát linket küldesz az ügyfélnek? A korábbi projektlink érvénytelenné válik.')) return;
         this.busy.set(true);
-        this.api.rotateClientAccess(q.id).subscribe({next:()=>{this.busy.set(false);this.notify('Új hozzáférési link elküldve. A régi érvénytelen.');},error:e=>this.fail(e)});
+        this.loader.start(['Új privát link készítése…', 'E-mail küldése az ügyfélnek…']);
+        this.api.rotateClientAccess(q.id).subscribe({next:()=>{this.loader.succeed('Új link elküldve!');this.busy.set(false);this.notify('Új hozzáférési link elküldve. A régi érvénytelen.');},error:e=>this.failSubmit(e)});
     }
     deleteQuote() {
         const q = this.selectedQuote();
@@ -635,7 +650,15 @@ export class AdminPage implements OnInit, OnDestroy {
         this.api.deleteProject(id).subscribe({ next: () => { this.notify('Referencia törölve.'); this.loadProjects(); }, error: e => this.fail(e) });
     }
     loadSettings() { this.busy.set(true); this.api.adminSettings().subscribe({ next: r => { this.settings = { ...SITE_DEFAULTS, ...r.data }; this.busy.set(false); }, error: e => this.fail(e) }); }
-    saveSettings() { this.busy.set(true); this.api.saveSettings(this.settings).subscribe({ next: r => { this.settings = { ...SITE_DEFAULTS, ...r.data }; this.busy.set(false); this.notify('A weboldal tartalma frissítve.'); }, error: e => this.fail(e) }); }
+    saveSettings() { this.busy.set(true); this.api.saveSettings(this.settings).subscribe({ next: r => { this.settings = { ...SITE_DEFAULTS, ...r.data }; this.palette.setPreview(null); this.palette.applySettings(this.settings); this.busy.set(false); this.notify('A weboldal tartalma frissítve.'); }, error: e => this.fail(e) }); }
+    /* ---------- Megjelenés (témák) ---------- */
+    isOn(v: string | boolean | undefined): boolean { return v === true || v === '1' || v === undefined; }
+    paletteName(id: string): string { return [...BASE_PALETTES, ...SEASONS].find(p => p.id === id)?.name ?? id; }
+    seasonFlag(id: Season): string | boolean | undefined { return this.settings[`seasonal_${id}` as const]; }
+    setSeasonFlag(id: Season, on: boolean) { this.settings = { ...this.settings, [`seasonal_${id}`]: on }; }
+    /** Alaptéma választása: azonnali előnézet az adminban; a látogatók a mentés után látják. */
+    pickPalette(id: BasePalette) { this.settings = { ...this.settings, site_palette: id }; this.palette.setPreview(id); }
+    previewPalette(id: Palette | null) { this.palette.setPreview(id); }
     loadActivities() { this.busy.set(true); this.api.activities().subscribe({ next: r => { this.activities.set(r.data); this.busy.set(false); }, error: e => this.fail(e) }); }
     changePassword() {
         if (this.newPassword.length < 12 || this.newPassword !== this.confirmPassword) {

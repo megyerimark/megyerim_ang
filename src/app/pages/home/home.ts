@@ -11,6 +11,7 @@ import { ConsentService } from '../../core/consent.service';
 import { ExternalReviews } from '../../components/external-reviews/external-reviews';
 import { Project, Service, SiteSettings, Testimonial, SITE_DEFAULTS } from '../../core/models';
 import { TPipe } from '../../i18n/t.pipe';
+import { BrandMark } from '../../components/brand-mark/brand-mark';
 import { I18nService } from '../../i18n/i18n.service';
 type PreviewPurpose = 'business' | 'booking' | 'system';
 type PreviewStyle = 'graphite' | 'ivory' | 'ocean';
@@ -32,7 +33,7 @@ interface PreviewPalette {
 @Component({
     selector: 'app-home',
     standalone: true,
-    imports: [Hero, CinematicStory, RouterLink, DecimalPipe, PremiumReveal, ExternalReviews, TPipe, PromoSpotlight, NewsletterSignup],
+    imports: [Hero, CinematicStory, RouterLink, DecimalPipe, PremiumReveal, ExternalReviews, TPipe, PromoSpotlight, NewsletterSignup, BrandMark],
     templateUrl: './home.html',
     styleUrl: './home.scss'
 })

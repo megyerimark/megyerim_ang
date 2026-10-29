@@ -27,15 +27,15 @@ import { TPipe } from '../../i18n/t.pipe';
       }
     `,
     styles: [`
-      .cookie{position:fixed;z-index:950;left:16px;right:16px;bottom:16px;max-width:560px;margin-left:auto;padding:18px 20px;border-radius:18px;border:1px solid #ffffff24;background:linear-gradient(150deg,#141c3ef7,#0b1330f7);color:#e9ecff;box-shadow:0 22px 60px #000a;backdrop-filter:blur(18px)}
+      .cookie{position:fixed;z-index:950;left:16px;right:16px;bottom:16px;max-width:560px;margin-left:auto;padding:18px 20px;border-radius:18px;border:1px solid #ffffff24;background:linear-gradient(150deg,var(--k-141c3e-f7),var(--k-0b1330-f7));color:var(--k-e9ecff);box-shadow:0 22px 60px #000a;backdrop-filter:blur(18px)}
       .cookie strong{font-size:15px}
-      .cookie p{margin:8px 0 14px;font-size:12.5px;line-height:1.6;color:#c7cfea}
-      .cookie a{color:#c4b5fd}
+      .cookie p{margin:8px 0 14px;font-size:12.5px;line-height:1.6;color:var(--k-c7cfea)}
+      .cookie a{color:var(--k-c4b5fd)}
       .cookie-actions{display:flex;flex-wrap:wrap;gap:10px}
       .cookie-actions .btn{flex:1 1 180px}
       @media (max-width:600px){.cookie{left:10px;right:10px;bottom:10px;padding:13px 14px;border-radius:14px}.cookie strong{font-size:13.5px}.cookie p{font-size:11.5px;line-height:1.5;margin:5px 0 10px}.cookie-actions{gap:8px;flex-wrap:nowrap}.cookie-actions .btn{flex:1 1 0;min-height:40px;padding:8px 10px;font-size:12px}}
-      :host-context([data-theme='light']) .cookie{background:#fffffff5;color:#191e28;border-color:#1d23401f}
-      :host-context([data-theme='light']) .cookie p{color:#4a5572}
+      :host-context([data-theme='light']) .cookie{background:#fffffff5;color:var(--k-191e28);border-color:var(--k-1d2340-1f)}
+      :host-context([data-theme='light']) .cookie p{color:var(--k-4a5572)}
     `]
 })
 export class CookieBanner {

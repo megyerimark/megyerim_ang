@@ -32,6 +32,13 @@ export interface SiteSettings {
     promo_ends_at?: string;
     /** A szerver számolja (lejárat, bekapcsolás) – csak olvasható. */
     promo?: Promotion;
+    /** Megjelenés: alaptéma és automatikus ünnepi témák (admin → Oldalbeállítások → Megjelenés). */
+    site_palette?: string;
+    seasonal_enabled?: string | boolean;
+    seasonal_christmas?: string | boolean;
+    seasonal_easter?: string | boolean;
+    seasonal_valentine?: string | boolean;
+    seasonal_national?: string | boolean;
     /** Cloudflare Turnstile nyilvános kulcsa; null = a robotszűrő ki van kapcsolva. Csak olvasható. */
     turnstile_site_key?: string | null;
 }

@@ -162,7 +162,9 @@
 
   /* ---------- Időpontfoglalás (demó, nem küld adatot) ---------- */
   const daysEl = $('#days'), slotsEl = $('#slots'), msg = $('#formMsg'), bookForm = $('#bookForm');
-  const dayNames = ['V', 'H', 'K', 'SZE', 'CS', 'P', 'SZO'];
+  // a nyelvet a ../shared/i18n.js állítja be (window.demoLang)
+  const en = window.demoLang === 'en';
+  const dayNames = en ? ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'] : ['V', 'H', 'K', 'SZE', 'CS', 'P', 'SZO'];
   const days = [];
   for (let d = new Date(), guard = 0; days.length < 5 && guard < 14; guard++) {
     d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1);
@@ -190,6 +192,6 @@
     if (!name.value.trim() || contact.value.trim().length < 6) { msg.textContent = 'Kérjük, adja meg nevét és elérhetőségét.'; return; }
     const d = days[Number(f.get('day'))];
     msg.classList.remove('err');
-    msg.textContent = `✓ Demó-foglalás: ${f.get('kind')}, ${d.toLocaleDateString('hu-HU', { month: 'long', day: 'numeric', weekday: 'long' })} ${f.get('slot')}. Éles oldalon itt menne ki a visszaigazolás.`;
+    msg.textContent = `✓ Demó-foglalás: ${f.get('kind')}, ${d.toLocaleDateString(en ? 'en-GB' : 'hu-HU', { month: 'long', day: 'numeric', weekday: 'long' })} ${f.get('slot')}. Éles oldalon itt menne ki a visszaigazolás.`;
   });
 })();
