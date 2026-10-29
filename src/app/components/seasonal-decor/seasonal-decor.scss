@@ -54,46 +54,38 @@
 
 /* ---------- jelenet a főoldal első képernyőjének alján ----------
    A dokumentum tetejéhez rögzített első képernyő aljára kerül, görgetéskor természetesen kicsúszik.
-   A hero fölött, de a fejléc és a mobilos „Ajánlatot kérek” sáv alatt van; kattintást nem fog meg. */
+   A hero fölött, de a fejléc és a mobilos „Ajánlatot kérek” sáv alatt van; kattintást nem fog meg.
+   A rajzok: public/seasonal (scripts/build-seasonal-art.mjs). */
 .scene { position: absolute; left: 0; right: 0; top: 0; height: 100svh; z-index: 40; overflow: hidden; pointer-events: none; }
-.scene > svg { position: absolute; bottom: 0; }
-.ground { left: 0; width: 100%; height: 22px; }
+.scene img { display: block; user-select: none; }
+.ground { position: absolute; left: 0; right: 0; bottom: 0; background-repeat: repeat-x; background-position: bottom; }
+.snowbank { height: 34px; background-image: url('/seasonal/snowbank.svg'); background-size: 400px 34px; }
+.grass { height: 40px; background-image: url('/seasonal/grass.svg'); background-size: 360px 40px; }
 
 /* karácsony – havas fenyőerdő */
-.tree { width: auto; aspect-ratio: 100 / 160; overflow: visible; bottom: 10px !important; transform: translateX(-50%); filter: drop-shadow(0 6px 10px #0006); }
-.tree .needles { fill: #134733; }
-.tree .trunk { fill: #3d2a1d; }
-.tree .snow { fill: #f2f7f9; opacity: .9; }
-.tree.back { bottom: 18px !important; opacity: .55; filter: blur(.4px); }
-.tree.back .needles { fill: #0c3022; }
-.tree .light { animation: twinkle 2.6s ease-in-out var(--d) infinite; filter: drop-shadow(0 0 3px currentColor); }
-.tree .star { fill: #f5d27a; filter: drop-shadow(0 0 6px #f5d27acc); animation: star-glow 3s ease-in-out infinite; transform-origin: 50px 2px; }
-@keyframes twinkle { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
-@keyframes star-glow { 50% { transform: scale(1.12); filter: drop-shadow(0 0 12px #f5d27a); } }
-.forest .ground path { fill: #eef4f7; }
+.tree { position: absolute; bottom: 16px; height: var(--h); aspect-ratio: 400 / 660; transform: translateX(-50%); }
+.tree img { width: 100%; height: 100%; }
+.tree img.flip { transform: scaleX(-1); }
+.tree.back { bottom: 24px; filter: brightness(.62) saturate(.8) blur(.4px); opacity: .9; }
+.tree:not(.back) { filter: drop-shadow(0 8px 12px #0007); }
+.tree .lights { position: absolute; inset: 0; }
 
 /* húsvét – tulipánok és hímes tojások */
-.tulip { width: auto; aspect-ratio: 40 / 120; bottom: 8px !important; transform: translateX(-50%); transform-origin: 50% 100%;
-  animation: sway 4.5s ease-in-out var(--delay) infinite alternate; }
-.tulip .stem { fill: none; stroke: #3f8a3e; stroke-width: 2.6; stroke-linecap: round; }
-.tulip .leaf { fill: #4c9a45; }
-.tulip .shine { fill: #ffffff55; }
+.tulip { position: absolute; bottom: 12px; height: var(--h); width: auto; transform: translateX(-50%); transform-origin: 50% 100%;
+  filter: drop-shadow(0 6px 8px #0006); animation: sway 4.5s ease-in-out var(--delay) infinite alternate; }
 @keyframes sway { from { rotate: calc(var(--sway) * -1); } to { rotate: var(--sway); } }
-.egg { bottom: 6px !important; height: auto; aspect-ratio: 40 / 52; filter: drop-shadow(0 5px 6px #0007); }
-.egg .ink .line { fill: none; stroke-width: 1.6; }
-.egg .ink .thick { stroke-width: 2.6; stroke-linejoin: round; }
-.egg .egg-shade { fill: none; stroke: #00000022; stroke-width: 1; }
-.meadow .ground path { fill: #3f8a3e; }
-.meadow .ground { height: 18px; }
+.egg { position: absolute; bottom: 4px; width: var(--w); height: auto; transform: translateX(-50%); filter: drop-shadow(0 4px 5px #0006); }
 
 /* nemzeti ünnep – kokárda */
-.cockade { left: 18px; bottom: 26px !important; width: 74px; filter: drop-shadow(0 8px 14px #0008); animation: float 5s ease-in-out infinite; }
+.cockade { position: absolute; left: 14px; bottom: 22px; width: 82px; filter: drop-shadow(0 10px 16px #0009); animation: float 5s ease-in-out infinite; }
 @keyframes float { 50% { translate: 0 -6px; rotate: -3deg; } }
 
 @media (min-width: 900px) {
-  .tree:not(.back) { scale: 1.35; transform-origin: 50% 100%; }
-  .tulip { scale: 1.3; }
+  .tree { height: calc(var(--h) * 1.2); }
+  .tree.low { height: calc(var(--h) * .78); }
+  .tulip { height: calc(var(--h) * 1.3); }
+  .egg { width: calc(var(--w) * 1.25); }
   /* asztali nézetben a jobb felső sarokba, a fejléc alá – ott nem takar szöveget vagy gombot */
-  .cockade { width: 78px; left: auto; right: 2.2vw; top: 96px; bottom: auto !important; }
+  .cockade { width: 92px; left: auto; right: 2.2vw; top: 92px; bottom: auto; }
 }
 @media (prefers-reduced-motion: reduce) { .field { display: none; } .scene * { animation: none !important; } }

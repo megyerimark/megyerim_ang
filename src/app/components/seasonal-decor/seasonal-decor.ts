@@ -5,9 +5,9 @@ import { filter, map } from 'rxjs';
 import { PaletteService, Season } from '../../core/palette.service';
 
 interface Particle { x: number; size: number; dur: number; delay: number; drift: number; tone: number; }
-interface Tree { x: number; h: number; back: boolean; star: boolean; lights: { cx: number; cy: number; c: string; d: number }[]; }
-interface Tulip { x: number; h: number; color: string; sway: number; delay: number; }
-interface Egg { x: number; size: number; tilt: number; base: string; ink: string; pattern: 'zigzag' | 'dots' | 'waves' | 'stripes'; }
+interface Tree { x: number; h: number; back: boolean; src: string; flip: boolean; decorated: boolean; low: boolean; }
+interface Tulip { x: number; h: number; src: string; sway: number; delay: number; }
+interface Egg { x: number; size: number; tilt: number; src: string; }
 
 /** Determinisztikus „véletlen” (minden betöltéskor ugyanaz az elrendezés, nincs ugrálás). */
 function rng(seed: number) { return () => (seed = (seed * 16807) % 2147483647) / 2147483647; }
@@ -50,41 +50,37 @@ export class SeasonalDecor {
         }));
     });
 
-    /** Fenyőerdő: hátsó (kisebb, sötétebb) és első sor; a legnagyobb első soros fán csillag. */
+    /** Fenyőerdő (public/seasonal, scripts/build-seasonal-art.mjs): hátsó, halványabb sor és első sor; egy díszfa. */
     readonly trees = computed<Tree[]>(() => {
-        const r = rng(11), out: Tree[] = [];
-        const lightColors = ['#f5d27a', '#ffe9b3', '#e0565b', '#f5d27a'];
+        const r = rng(11), out: Tree[] = [], kinds = ['fir-a', 'fir-b', 'fir-c'];
         for (const back of [true, false]) {
-            const n = back ? 16 : 11;
+            const n = back ? 9 : 6;
             for (let i = 0; i < n; i++) {
-                const h = back ? 52 + r() * 34 : 70 + r() * 60;
-                // égők a fa szintjein (a 100×160-as fa-koordinátákban)
-                const lights = back ? [] : Array.from({ length: 5 }, (_, k) => {
-                    const tier = [40, 62, 84, 104, 120][k], half = [10, 16, 22, 30, 36][k];
-                    return { cx: 50 + (r() * 2 - 1) * half, cy: tier, c: lightColors[Math.floor(r() * lightColors.length)], d: r() * 3 };
-                });
-                out.push({ x: (i + r() * .7) / n * 100 - 3, h, back, star: false, lights });
+                out.push({ x: (i + .2 + r() * .6) / n * 100, h: back ? 88 + r() * 40 : 118 + r() * 50, back,
+                    src: `/seasonal/${kinds[Math.floor(r() * kinds.length)]}.webp`, flip: r() < .5, decorated: false, low: false });
             }
         }
-        const front = out.filter(t => !t.back);
-        front.reduce((a, b) => (b.h > a.h ? b : a)).star = true;
+        // a díszfa jobbra, a szöveg és a gombok alatti területen kívül
+        out.push({ x: 80, h: 168, back: false, src: '/seasonal/fir-decorated.webp', flip: false, decorated: true, low: false });
+        // a bal oldalon (asztali nézetben a szöveg és a gombok alatt) alacsonyabb fák
+        for (const t of out) t.low = t.x < 46;
         return out;
     });
 
     readonly tulips = computed<Tulip[]>(() => {
-        const r = rng(23), colors = ['#e2384d', '#f2b631', '#f07aa1', '#9a6ad8', '#ef5a3c', '#f6d04d'];
-        return Array.from({ length: 17 }, (_, i) => ({
-            x: (i + r() * .8) / 17 * 100 - 2, h: 58 + r() * 46, color: colors[Math.floor(r() * colors.length)],
-            sway: 2 + r() * 3, delay: -r() * 4,
+        const r = rng(23), colors = ['red', 'yellow', 'pink', 'purple', 'orange', 'white'];
+        return Array.from({ length: 15 }, (_, i) => ({
+            x: (i + .15 + r() * .7) / 15 * 100, h: 92 + r() * 44, src: `/seasonal/tulip-${colors[Math.floor(r() * colors.length)]}.svg`,
+            sway: 1.5 + r() * 2.5, delay: -r() * 4,
         }));
     });
 
     /** Hímes tojások népi színekkel és mintákkal. */
     readonly eggs: Egg[] = [
-        { x: 9, size: 34, tilt: -14, base: '#c8102e', ink: '#fff6e6', pattern: 'zigzag' },
-        { x: 31, size: 28, tilt: 10, base: '#2f5bb7', ink: '#ffe08a', pattern: 'dots' },
-        { x: 58, size: 36, tilt: -6, base: '#f3c443', ink: '#c8102e', pattern: 'waves' },
-        { x: 82, size: 30, tilt: 16, base: '#2f8a4e', ink: '#fff6e6', pattern: 'stripes' },
+        { x: 11, size: 40, tilt: -12, src: '/seasonal/egg-red.svg' },
+        { x: 36, size: 34, tilt: 9, src: '/seasonal/egg-blue.svg' },
+        { x: 61, size: 44, tilt: -5, src: '/seasonal/egg-yellow.svg' },
+        { x: 86, size: 37, tilt: 13, src: '/seasonal/egg-green.svg' },
     ];
 
     constructor() {
