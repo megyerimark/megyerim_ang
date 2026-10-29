@@ -1,0 +1,55 @@
+:host { display: contents; }
+
+.field {
+  position: fixed; inset: 0; z-index: 90; overflow: hidden; pointer-events: none;
+  opacity: 1; transition: opacity 1.2s ease;
+}
+.field.faded { opacity: 0; }
+.field i { position: absolute; top: -24px; display: block; width: var(--size); height: var(--size); will-change: transform; }
+
+/* karácsony: puha hópelyhek, enyhe oldalirányú lebegéssel */
+[data-season='christmas'] i {
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0 45%, #ffffff00 72%);
+  opacity: calc(.35 + var(--tone) * .45);
+  animation: fall var(--dur) linear var(--delay) infinite;
+}
+@keyframes fall {
+  to { transform: translate3d(var(--drift), 106vh, 0); }
+}
+
+/* húsvét: pasztell szirmok, forogva szállnak */
+[data-season='easter'] i {
+  border-radius: 80% 0 80% 0;
+  background: hsl(calc(60 + var(--tone) * 90) 70% 82% / .7);
+  animation: petal var(--dur) ease-in-out var(--delay) infinite;
+}
+@keyframes petal {
+  0% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(var(--drift), 52vh, 0) rotate(200deg); }
+  100% { transform: translate3d(calc(var(--drift) * -.4), 106vh, 0) rotate(380deg); }
+}
+
+/* Valentin-nap: néhány apró szív lassan felszáll alulról */
+[data-season='valentine'] i {
+  top: auto; bottom: -24px;
+  background: hsl(calc(340 + var(--tone) * 20) 80% 72% / .55);
+  clip-path: path('M8 14.5 1.6 8.3A3.9 3.9 0 0 1 8 2.7a3.9 3.9 0 0 1 6.4 5.6z');
+  transform-origin: center;
+  animation: rise var(--dur) ease-in-out var(--delay) infinite;
+}
+[data-season='valentine'] i { width: 16px; height: 16px; scale: var(--scale); }
+@keyframes rise {
+  0% { transform: translate3d(0, 0, 0); opacity: 0; }
+  12% { opacity: 1; }
+  100% { transform: translate3d(var(--drift), -108vh, 0); opacity: 0; }
+}
+
+/* nemzeti ünnep: vékony, finom szalag a képernyő tetején */
+.ribbon {
+  position: fixed; left: 0; right: 0; top: 0; z-index: 130; height: 3px; pointer-events: none;
+  background: linear-gradient(90deg, #ce2939 0 33.3%, #f4f4f4 33.3% 66.6%, #477050 66.6%);
+  box-shadow: 0 0 12px #ce293955;
+}
+
+@media (prefers-reduced-motion: reduce) { .field { display: none; } }

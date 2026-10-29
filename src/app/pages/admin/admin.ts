@@ -6,6 +6,7 @@ import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastService } from '../../core/toast.service';
 import { SubmitLoaderService } from '../../core/submit-loader.service';
+import { BASE_PALETTES, BasePalette, Palette, PaletteService, SEASONS, Season } from '../../core/palette.service';
 import { apiErrorMessage, FRONTEND_VERSION } from '../../core/http-error';
 import { SitesPanel } from './sites-panel';
 import { FinancePanel } from './finance-panel';
@@ -217,7 +218,7 @@ export class AdminPage implements OnInit, OnDestroy {
         // Percenként csendben frissítjük a számlálókat; új ügyfélüzenetnél toast jelez.
         this.poll = setInterval(() => this.refreshCounters(), 60_000);
     }
-    ngOnDestroy() { if (this.poll) clearInterval(this.poll); }
+    ngOnDestroy() { if (this.poll) clearInterval(this.poll); this.palette.setPreview(null); }
     private refreshCounters() {
         if (document.hidden) return;
         const before = this.dashboard()?.messages_unread ?? 0;
@@ -241,6 +242,9 @@ export class AdminPage implements OnInit, OnDestroy {
     closeMobileNavigation() { this.menuOpen.set(false); }
     private readonly toast = inject(ToastService);
     private readonly loader = inject(SubmitLoaderService);
+    readonly palette = inject(PaletteService);
+    readonly basePalettes = BASE_PALETTES;
+    readonly seasons = SEASONS;
     /** Visszajelzés: toastként jelenik meg (mobilon is látszik, görgetéstől függetlenül). */
     notify(message: string, error = false) {
         this.message.set(''); this.isError.set(error);
@@ -598,7 +602,15 @@ export class AdminPage implements OnInit, OnDestroy {
         this.api.deleteProject(id).subscribe({ next: () => { this.notify('Referencia törölve.'); this.loadProjects(); }, error: e => this.fail(e) });
     }
     loadSettings() { this.busy.set(true); this.api.adminSettings().subscribe({ next: r => { this.settings = { ...SITE_DEFAULTS, ...r.data }; this.busy.set(false); }, error: e => this.fail(e) }); }
-    saveSettings() { this.busy.set(true); this.api.saveSettings(this.settings).subscribe({ next: r => { this.settings = { ...SITE_DEFAULTS, ...r.data }; this.busy.set(false); this.notify('A weboldal tartalma frissítve.'); }, error: e => this.fail(e) }); }
+    saveSettings() { this.busy.set(true); this.api.saveSettings(this.settings).subscribe({ next: r => { this.settings = { ...SITE_DEFAULTS, ...r.data }; this.palette.setPreview(null); this.palette.applySettings(this.settings); this.busy.set(false); this.notify('A weboldal tartalma frissítve.'); }, error: e => this.fail(e) }); }
+    /* ---------- Megjelenés (témák) ---------- */
+    isOn(v: string | boolean | undefined): boolean { return v === true || v === '1' || v === undefined; }
+    paletteName(id: string): string { return [...BASE_PALETTES, ...SEASONS].find(p => p.id === id)?.name ?? id; }
+    seasonFlag(id: Season): string | boolean | undefined { return this.settings[`seasonal_${id}` as const]; }
+    setSeasonFlag(id: Season, on: boolean) { this.settings = { ...this.settings, [`seasonal_${id}`]: on }; }
+    /** Alaptéma választása: azonnali előnézet az adminban; a látogatók a mentés után látják. */
+    pickPalette(id: BasePalette) { this.settings = { ...this.settings, site_palette: id }; this.palette.setPreview(id); }
+    previewPalette(id: Palette | null) { this.palette.setPreview(id); }
     loadActivities() { this.busy.set(true); this.api.activities().subscribe({ next: r => { this.activities.set(r.data); this.busy.set(false); }, error: e => this.fail(e) }); }
     changePassword() {
         if (this.newPassword.length < 12 || this.newPassword !== this.confirmPassword) {

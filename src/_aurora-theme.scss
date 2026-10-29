@@ -1,12 +1,12 @@
 /* MEGYERI AURORA V5 — component-safe motion, accessibility and responsive layout. */
 :root,[data-theme='dark']{
-  --aurora-focus:#b7a8ff;
+  --aurora-focus:var(--k-b7a8ff);
   --aurora-outline:rgba(142,158,255,.29);
   --aurora-depth:0 22px 72px rgba(0,4,19,.42),inset 0 1px 0 rgba(255,255,255,.06);
-  --aurora-field:#101d3b;
+  --aurora-field:var(--k-101d3b);
 }
 [data-theme='light']{
-  --aurora-focus:#5446d0;
+  --aurora-focus:var(--k-5446d0);
   --aurora-outline:rgba(78,91,181,.21);
   --aurora-depth:0 18px 48px rgba(29,47,114,.13),inset 0 1px 0 rgba(255,255,255,.92);
   --aurora-field:#fff;
@@ -70,8 +70,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 @supports (animation-timeline: scroll()) {
   html:has(app-navbar)::after {
     content:'';position:fixed;z-index:999;inset:0 auto auto 0;width:100%;height:3px;
-    background:linear-gradient(90deg,#9869ff,#467fff 70%,#78e4ff);
-    box-shadow:0 0 13px #6c5fff8c;transform:scaleX(0);transform-origin:left;
+    background:linear-gradient(90deg,var(--k-9869ff),var(--k-467fff) 70%,var(--k-78e4ff));
+    box-shadow:0 0 13px var(--k-6c5fff-8c);transform:scaleX(0);transform-origin:left;
     animation:aurora-reading-progress linear both;animation-timeline:scroll(root);
     pointer-events:none;
   }

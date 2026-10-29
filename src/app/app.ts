@@ -13,10 +13,12 @@ import { ConsentService } from './core/consent.service';
 import { TPipe } from './i18n/t.pipe';
 import { I18nService } from './i18n/i18n.service';
 import { SubmitLoader } from './components/submit-loader/submit-loader';
+import { PaletteService } from './core/palette.service';
+import { SeasonalDecor } from './components/seasonal-decor/seasonal-decor';
 @Component({
     selector: 'app-root',
     standalone: true,
-    imports: [RouterOutlet, RouterLink, Navbar, ToastHost, CookieBanner, TPipe, SubmitLoader],
+    imports: [RouterOutlet, RouterLink, Navbar, ToastHost, CookieBanner, TPipe, SubmitLoader, SeasonalDecor],
     templateUrl: './app.html',
     styleUrl: './app.scss'
 })
@@ -29,6 +31,7 @@ export class App {
     private readonly attribution = inject(AttributionService);
     private readonly consent = inject(ConsentService);
     readonly consentPanelOpen = this.consent.panelOpen;
+    private readonly palette = inject(PaletteService);
     private seoSettings: SiteSettings | null = null;
     readonly showNavbar = signal(!this.router.url.startsWith('/admin'));
     /** Külső (hozzájárulásköteles) tartalom csak a főoldalon van – a süti-sáv is csak ott jelenik meg. */
@@ -96,8 +99,9 @@ export class App {
             if (adminEn) void this.domTranslator.enable(); else this.domTranslator.disable();
         });
         this.api.publicSettings().subscribe({
-            next: response => { this.seoSettings = response.data; this.consent.needed.set(!!response.data.reviews_widget_id); this.phone.set((response.data.contact_phone || '').replace(/[^0-9+]/g, '')); this.updateRouteMeta(this.router.url); },
-            error: () => { /* Static metadata is a safe fallback when the API is unavailable. */ }
+            next: response => { this.palette.applySettings(response.data); this.seoSettings = response.data; this.consent.needed.set(!!response.data.reviews_widget_id); this.phone.set((response.data.contact_phone || '').replace(/[^0-9+]/g, '')); this.updateRouteMeta(this.router.url); },
+            // Static metadata is a safe fallback when the API is unavailable; the seasonal theme still applies.
+            error: () => this.palette.render()
         });
         this.router.events
             .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))

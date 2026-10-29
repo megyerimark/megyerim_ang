@@ -1,9 +1,9 @@
 /* Beküldés-animáció: sötét üvegfátyol, aurora-gyűrűk, siker esetén kirajzolódó pipa. */
-:host { --violet: #b79cff; --blue: #9aa3ff; --cyan: #8bc5ff; --ink: #f3f1ff; --muted: #b8bdd8; }
+:host { --violet: var(--k-b79cff); --blue: var(--k-9aa3ff); --cyan: var(--k-8bc5ff); --ink: var(--k-f3f1ff); --muted: var(--k-b8bdd8); }
 
 .veil {
   position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; overflow: hidden;
-  background: radial-gradient(120% 90% at 50% 45%, #0b1030e8, #03050fef 70%);
+  background: radial-gradient(120% 90% at 50% 45%, var(--k-0b1030-e8), var(--k-03050f-ef) 70%);
   backdrop-filter: blur(16px) saturate(1.25); -webkit-backdrop-filter: blur(16px) saturate(1.25);
   animation: veil-in .45s cubic-bezier(.2, .8, .2, 1) both;
 }
@@ -18,9 +18,9 @@
 .aurora {
   position: absolute; inset: -30%;
   background:
-    radial-gradient(30% 24% at 38% 40%, #7c5cf055, transparent 70%),
-    radial-gradient(28% 22% at 62% 58%, #3d8be04d, transparent 70%),
-    radial-gradient(22% 18% at 50% 70%, #a06bff33, transparent 70%);
+    radial-gradient(30% 24% at 38% 40%, var(--k-7c5cf0-55), transparent 70%),
+    radial-gradient(28% 22% at 62% 58%, var(--k-3d8be0-4d), transparent 70%),
+    radial-gradient(22% 18% at 50% 70%, var(--k-a06bff-33), transparent 70%);
   filter: blur(30px); animation: drift 7s ease-in-out infinite alternate;
 }
 @keyframes drift { to { transform: translate3d(3%, -2%, 0) rotate(8deg) scale(1.08); } }
@@ -36,7 +36,7 @@
   background: conic-gradient(from 0deg, transparent 0 18%, var(--violet) 46%, var(--cyan) 62%, transparent 82%);
   -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
   mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
-  filter: drop-shadow(0 0 8px #9b86ffaa);
+  filter: drop-shadow(0 0 8px var(--k-9b86ff-aa));
   transition: transform .7s cubic-bezier(.6, 0, .2, 1), opacity .5s;
 }
 .r1 { animation: spin 2.6s linear infinite; }
@@ -48,7 +48,7 @@
 .orbit { inset: -10px; animation: spin 5.5s linear infinite; transition: opacity .4s; }
 .orbit i {
   position: absolute; left: 50%; top: 0; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%;
-  background: #fff; box-shadow: 0 0 10px 2px var(--violet), 0 0 22px 6px #8bc5ff66;
+  background: #fff; box-shadow: 0 0 10px 2px var(--violet), 0 0 22px 6px var(--k-8bc5ff-66);
   transform-origin: 3px 98px;
 }
 .orbit i:nth-child(2) { transform: rotate(120deg); width: 4px; height: 4px; margin-left: -2px; transform-origin: 2px 98px; }
@@ -57,12 +57,12 @@
 /* lüktető mag */
 .core {
   width: 46px; height: 46px; border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #fff 0 8%, #c9b8ff 30%, #7f6cf2 62%, #4058d8);
-  box-shadow: 0 0 30px 6px #8e78ff88, 0 0 70px 20px #5b8cff33;
+  background: radial-gradient(circle at 35% 30%, #fff 0 8%, var(--k-c9b8ff) 30%, var(--k-7f6cf2) 62%, var(--k-4058d8));
+  box-shadow: 0 0 30px 6px var(--k-8e78ff-88), 0 0 70px 20px var(--k-5b8cff-33);
   animation: breathe 1.6s ease-in-out infinite;
   transition: width .6s cubic-bezier(.2, .9, .2, 1.3), height .6s cubic-bezier(.2, .9, .2, 1.3), box-shadow .6s;
 }
-@keyframes breathe { 50% { transform: scale(1.14); box-shadow: 0 0 40px 10px #8e78ffaa, 0 0 90px 28px #5b8cff44; } }
+@keyframes breathe { 50% { transform: scale(1.14); box-shadow: 0 0 40px 10px var(--k-8e78ff-aa), 0 0 90px 28px var(--k-5b8cff-44); } }
 
 .burst { width: 76px; height: 76px; border-radius: 50%; border: 2px solid var(--cyan); opacity: 0; }
 .check { width: 40px; height: 40px; opacity: 0; }
@@ -79,7 +79,7 @@
 /* ---------- siker ---------- */
 .is-success .ring { transform: scale(.42); opacity: 0; }
 .is-success .orbit { opacity: 0; }
-.is-success .core { width: 84px; height: 84px; animation: none; box-shadow: 0 0 50px 14px #8e78ffaa, 0 0 120px 40px #5b8cff44; background: linear-gradient(140deg, #a98bff, #9aa3ff 55%, #8bc5ff); }
+.is-success .core { width: 84px; height: 84px; animation: none; box-shadow: 0 0 50px 14px var(--k-8e78ff-aa), 0 0 120px 40px var(--k-5b8cff-44); background: linear-gradient(140deg, var(--k-a98bff), var(--k-9aa3ff) 55%, var(--k-8bc5ff)); }
 .is-success .check { opacity: 1; transition: opacity .2s .35s; }
 .is-success .check path { animation: draw .55s cubic-bezier(.65, 0, .35, 1) .4s forwards; }
 .is-success .burst { animation: burst .9s cubic-bezier(.2, .8, .2, 1) .35s forwards; }
@@ -87,12 +87,12 @@
 @keyframes burst { 0% { opacity: .9; transform: scale(1); } 100% { opacity: 0; transform: scale(2.6); border-width: 1px; } }
 .title {
   font: 600 clamp(24px, 3.4vw, 32px)/1.15 'Cormorant Garamond', Georgia, serif;
-  background: linear-gradient(90deg, #fff, #d9cfff 40%, #a8d8ff); -webkit-background-clip: text; background-clip: text; color: transparent;
+  background: linear-gradient(90deg, #fff, var(--k-d9cfff) 40%, var(--k-a8d8ff)); -webkit-background-clip: text; background-clip: text; color: transparent;
   animation: msg-in .6s cubic-bezier(.2, .8, .2, 1) .45s both;
 }
 
 /* világos téma */
-:host-context([data-theme='light']) .veil { background: radial-gradient(120% 90% at 50% 45%, #f7f6ffee, #e9ebfbf2 70%); }
-:host-context([data-theme='light']) .msg { color: #1d2250; }
-:host-context([data-theme='light']) .title { background: linear-gradient(90deg, #2b2f7a, #5a46c8); -webkit-background-clip: text; background-clip: text; }
-:host-context([data-theme='light']) .bar { background: #2b2f7a1a; }
+:host-context([data-theme='light']) .veil { background: radial-gradient(120% 90% at 50% 45%, #f7f6ffee, var(--k-e9ebfb-f2) 70%); }
+:host-context([data-theme='light']) .msg { color: var(--k-1d2250); }
+:host-context([data-theme='light']) .title { background: linear-gradient(90deg, var(--k-2b2f7a), var(--k-5a46c8)); -webkit-background-clip: text; background-clip: text; }
+:host-context([data-theme='light']) .bar { background: var(--k-2b2f7a-1a); }

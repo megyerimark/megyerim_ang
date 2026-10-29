@@ -1,12 +1,12 @@
 // Az admin közös építőelemei a külön komponensekhez (Kész projektek, Pénzügyek).
 // Az Angular stílus-izolációja miatt az admin.scss szabályai nem érnek el a gyerekkomponensekbe,
 // ezért ezeket itt, komponensszinten is megadjuk – az admin kinézetével egyezően.
-.admin-panel { min-width: 0; padding: 22px; border: 1px solid #5c69a968; border-radius: 19px; background: linear-gradient(140deg, #0d1730f5, #0a122bf2); box-shadow: 0 18px 55px #0004, inset 0 1px #ffffff12; }
+.admin-panel { min-width: 0; padding: 22px; border: 1px solid var(--k-5c69a9-68); border-radius: 19px; background: linear-gradient(140deg, var(--k-0d1730-f5), var(--k-0a122b-f2)); box-shadow: 0 18px 55px #0004, inset 0 1px #ffffff12; }
 .panel-title { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin-bottom: 18px; }
-.panel-title h2 { margin: 0; font-size: 18px; letter-spacing: -.4px; color: #f4f6ff; }
+.panel-title h2 { margin: 0; font-size: 18px; letter-spacing: -.4px; color: var(--k-f4f6ff); }
 .panel-title > button[aria-label] { color: var(--accent); font-size: 20px; border: 0; background: none; cursor: pointer; }
 .panel-eyebrow { display: block; color: var(--accent); font-size: 9px; letter-spacing: 1.5px; font-weight: 800; margin-bottom: 8px; }
-.form-field { display: grid; gap: 7px; min-width: 0; margin: 0 0 12px; color: #d7e1ff; font-size: 12px; font-weight: 700; letter-spacing: .015em; }
+.form-field { display: grid; gap: 7px; min-width: 0; margin: 0 0 12px; color: var(--k-d7e1ff); font-size: 12px; font-weight: 700; letter-spacing: .015em; }
 .form-field small { font-weight: 500; }
 .muted { color: var(--muted); font-size: 12px; }
 .mini-action { border: 0; background: transparent; color: var(--accent); font-size: 11px; font-weight: 700; cursor: pointer; padding: 4px 6px; border-radius: 8px; }
@@ -16,9 +16,9 @@
 .action-link { border: 0; background: none; color: var(--accent); font-size: 11px; font-weight: 700; cursor: pointer; }
 .table-scroll { overflow-x: auto; max-width: 100%; }
 .empty-state { color: var(--muted); font-size: 13px; padding: 18px 4px; }
-h2, h3 { color: #f4f6ff; }
+h2, h3 { color: var(--k-f4f6ff); }
 :host-context([data-theme='light']) {
-  .admin-panel { background: #fff; border-color: #1d23401f; box-shadow: 0 10px 30px #1b20401a; }
-  .panel-title h2, h2, h3 { color: #191e28; }
-  .form-field { color: #39486b; }
+  .admin-panel { background: #fff; border-color: var(--k-1d2340-1f); box-shadow: 0 10px 30px var(--k-1b2040-1a); }
+  .panel-title h2, h2, h3 { color: var(--k-191e28); }
+  .form-field { color: var(--k-39486b); }
 }
