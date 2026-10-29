@@ -779,4 +779,6 @@ export const EN: Record<string, string> = {
   "Dokumentum feltöltve!": "Document uploaded!",
   "Új privát link készítése…": "Creating a new private link…",
   "Új link elküldve!": "New link sent!",
+  "Weboldal referencia": "Website case study",
+  "Megyeri Márk Máté": "Márk Máté Megyeri",
 };

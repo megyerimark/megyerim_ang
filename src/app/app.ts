@@ -16,6 +16,7 @@ import { I18nService } from './i18n/i18n.service';
 import { SubmitLoader } from './components/submit-loader/submit-loader';
 import { PaletteService } from './core/palette.service';
 import { SeasonalDecor } from './components/seasonal-decor/seasonal-decor';
+import { PAGE_SEO, pageUrl } from './core/seo';
 @Component({
     selector: 'app-root',
     standalone: true,
@@ -124,48 +125,36 @@ export class App {
         let leaf = this.router.routerState.snapshot.root;
         while (leaf.firstChild) leaf = leaf.firstChild;
         const notFound = leaf.routeConfig?.path === '**';
-        const isPrivate = notFound || path.startsWith('/admin') || path.startsWith('/ugyfel') || path.startsWith('/hirlevel');
+        const isPrivate = notFound || /^\/(admin|ugyfel|hirlevel|fizetes)/.test(path);
         this.meta.updateTag({ name: 'robots', content: isPrivate ? 'noindex, nofollow, noarchive' : 'index, follow' });
-        const descriptions: Record<string, string> = {
-            '/': 'Ne csak jelen legyél online. Emelkedj ki. Egyedi weboldalak és prémium digitális megoldások vállalkozásoknak Megyeri Márk Mátétól.',
-            '/tervezo': 'Próbáld ki az interaktív weboldaltervezőt, és alakítsd ki a vállalkozásodhoz illő arculatot és funkciókat.',
-            '/ajanlatkeres': 'Állítsd össze weboldalad elképzelését, és kérj személyre szabott ajánlatot Megyeri Márk Mátétól.',
-            '/projekt-kviz': 'Pár kérdéssel megtudhatod, milyen weboldal illik a vállalkozásodhoz – és kérhetsz hozzá ajánlatot.',
-            '/konzultacio': 'Foglalj időpontot online konzultációra a weboldalad megtervezéséhez.'
-        };
-        const en = this.i18n.lang() === 'en';
-        const descriptionsEn: Record<string, string> = {
-            '/': "Don't just be online. Stand out. Custom websites and premium digital solutions for businesses by Márk Máté Megyeri.",
-            '/tervezo': 'Try the interactive website designer and shape a look and features that fit your business.',
-            '/ajanlatkeres': 'Describe your website idea and request a tailored quote from Márk Máté Megyeri.',
-            '/projekt-kviz': 'Answer a few questions to find out which website fits your business – and request a quote.',
-            '/konzultacio': 'Book an online consultation to plan your website.'
-        };
-        // A route-ban megadott cím (app.routes.ts) – eddig a tényleges oldalcímet felülírta egy általános cím.
-        let snapshot = this.router.routerState.snapshot.root;
-        while (snapshot.firstChild) snapshot = snapshot.firstChild;
-        const routeTitle = typeof snapshot.title === 'string' ? snapshot.title : '';
-        const homeTitle = en ? "Márk Máté Megyeri | Premium web development for businesses" : (this.seoSettings?.meta_title || 'Megyeri Márk | Prémium webfejlesztés vállalkozásoknak');
-        const description = en
-            ? (descriptionsEn[path] || 'Márk Máté Megyeri | Web Development')
-            : path === '/' ? (this.seoSettings?.meta_description || descriptions['/']) : (descriptions[path] || 'Megyeri Márk Máté | Webfejlesztés');
-        this.meta.updateTag({ name: 'description', content: description });
-        // hreflang: ugyanaz az oldal magyarul és angolul (?lang=en) – a Google így mindkét nyelvet ismeri.
-        if (!isPrivate) {
-            const base = 'https://megyerimarkmate.hu' + path;
-            for (const [lang, href] of [['hu', base], ['en', base + '?lang=en'], ['x-default', base]] as const) {
-                let link = document.head.querySelector<HTMLLinkElement>(`link[rel="alternate"][hreflang="${lang}"]`);
-                if (!link) { link = document.createElement('link'); link.rel = 'alternate'; link.hreflang = lang; document.head.appendChild(link); }
-                link.href = href;
-            }
+        const lang = this.i18n.lang();
+        // A referenciaoldal (munkak/:slug) a címét és a leírását a betöltött projektből maga állítja be.
+        const caseStudy = path.startsWith('/munkak/');
+        if (!caseStudy) {
+            const seo = PAGE_SEO[lang][path];
+            const custom = lang === 'hu' && path === '/' ? this.seoSettings : null;
+            const routeTitle = typeof leaf.title === 'string' ? this.i18n.t(leaf.title) : '';
+            const title = custom?.meta_title || seo?.title || routeTitle || this.i18n.t('Megyeri Márk Máté | Webfejlesztés');
+            const description = custom?.meta_description || seo?.description || PAGE_SEO[lang]['/'].description;
+            this.title.setTitle(title);
+            this.meta.updateTag({ name: 'description', content: description });
+            this.meta.updateTag({ property: 'og:title', content: title });
+            this.meta.updateTag({ property: 'og:description', content: description });
         }
-        this.title.setTitle(path === '/' ? homeTitle : (routeTitle ? this.i18n.t(routeTitle) : 'Megyeri Márk | Webfejlesztés'));
-        this.meta.updateTag({ property: 'og:title', content: homeTitle });
-        this.meta.updateTag({ property: 'og:description', content: description });
+        this.meta.updateTag({ property: 'og:locale', content: lang === 'en' ? 'en_US' : 'hu_HU' });
         if (this.seoSettings?.og_image_url) this.meta.updateTag({ property: 'og:image', content: this.seoSettings.og_image_url });
+        // Minden oldal saját magára mutat (az angol változat a ?lang=en címre) – így a Google a referenciákat és
+        // az angol oldalakat is külön oldalként indexeli, nem a főoldal másolataként.
+        const self = pageUrl(isPrivate ? '/' : path, lang);
         const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
-        const publicPath = ['/tervezo', '/ajanlatkeres', '/konzultacio', '/projekt-kviz'].includes(path) ? path : '/';
-        if (canonical) canonical.href = 'https://megyerimarkmate.hu' + publicPath;
-        this.meta.updateTag({ property: 'og:url', content: 'https://megyerimarkmate.hu' + publicPath });
+        if (canonical) canonical.href = self;
+        this.meta.updateTag({ property: 'og:url', content: self });
+        // hreflang: ugyanaz az oldal magyarul és angolul – a Google a keresés nyelve szerint a megfelelőt mutatja.
+        for (const hreflang of ['hu', 'en', 'x-default'] as const) {
+            let link = document.head.querySelector<HTMLLinkElement>(`link[rel="alternate"][hreflang="${hreflang}"]`);
+            if (isPrivate) { link?.remove(); continue; }
+            if (!link) { link = document.createElement('link'); link.rel = 'alternate'; link.hreflang = hreflang; document.head.appendChild(link); }
+            link.href = pageUrl(path, hreflang === 'en' ? 'en' : 'hu');
+        }
     }
 }
