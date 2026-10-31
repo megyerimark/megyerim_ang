@@ -2,6 +2,9 @@
   <div class="backend-warning" role="status">{{ 'Egyes élő adatok átmenetileg nem érhetők el. Ajánlatot ettől még kérhetsz.' | t }}</div>
 }
 <app-hero [headline]="heroHeadline()" [description]="heroDescription()"></app-hero>
+<!-- A nyitójelenet alatti tartalom az első megjelenés után, üresjáratban renderelődik (gyorsabb első képernyő, mobil PageSpeed).
+     Ha a cím horgonyt tartalmaz (pl. /#szolgaltatasok), azonnal renderelődik, hogy a görgetés a helyére találjon. -->
+@defer (on idle; when hasAnchor) {
 <section class="value-strip" [attr.aria-label]="'A közös munka alapjai' | t">
   <div class="value-strip-track">
     @for (copy of [0, 1]; track copy) {
@@ -237,143 +240,74 @@
   </div>
 </section>
 
-<section premiumReveal class="section services" id="szolgaltatasok">
-  <div class="mm-art mm-art--ribbon mm-art--services" aria-hidden="true"></div>
+<section class="section services sx" id="szolgaltatasok" aria-labelledby="services-title">
+  <div class="mm-art mm-art--ribbon mm-art--services" mmFx="drift" aria-hidden="true"></div>
   <div class="container">
-    <div class="section-heading-row">
+    <div class="section-heading-row head-stack" mmFx="rise">
       <div>
-        <span class="overline">
-          {{ '04 / A MEGOLDÁSAIM' | t }}
-        </span>
-        <h2 class="section-title">
-          {{ 'Szolgáltatások,' | t }}
-          <span class="subtle-heading">
-            {{ 'amelyek előrevisznek.' | t }}
-          </span>
-        </h2>
+        <span class="overline">{{ '04 / A MEGOLDÁSAIM' | t }}</span>
+        <h2 class="section-title" id="services-title">{{ 'Szolgáltatások,' | t }} <span class="subtle-heading">{{ 'amelyek előrevisznek.' | t }}</span></h2>
       </div>
-      <p class="lead">
-        {{ 'Nem pusztán technológiát kapsz. Olyan felületet tervezek, amely a vállalkozásod céljaihoz és ügyfeleihez igazodik.' | t }}
-      </p>
+      <p class="lead">{{ 'Nem pusztán technológiát kapsz. Olyan felületet tervezek, amely a vállalkozásod céljaihoz és ügyfeleihez igazodik.' | t }}</p>
     </div>
-    <div class="services-layout">
-      @if (services().length) {
-        @for (service of services(); track service.id) {
-      <article class="service-tile">
-        <div class="service-tile-top">
-          <span>
-            {{ ($index + 1).toString().padStart(2, '0') }}
-          </span>
-          <span aria-hidden="true">
-            ↗︎
-          </span>
-        </div>
-        <div class="service-tile-body">
-          <h3>
-            {{ loc(service, 'title') }}
-          </h3>
-          <p>
-            {{ loc(service, 'summary') }}
-          </p>
-        </div>
-        <div class="service-tile-bottom">
-          @if (discounted(service.starting_price_huf); as sale) {
-          <span class="price-sale">
-            <s [attr.aria-label]="'Eredeti ár' | t">{{ money(service.starting_price_huf) }}</s>
-            <strong>{{ sale }}</strong>
-            <em>−{{ promo()!.percent }}%</em>
-          </span>
-          } @else {
-          <span>
-            {{ money(service.starting_price_huf) }}
-          </span>
+    <div class="sx-grid" mmFx="stagger">
+      @for (card of serviceCards(); track card.key; let i = $index) {
+      <article class="sx-card" [class]="'sx-card--' + card.kind" mmFx="parallax">
+        <div class="sx-visual" aria-hidden="true">
+          <span class="sx-glow"></span>
+          @switch (card.kind) {
+          @case ('site') {
+            <div class="sx-browser" data-depth="0.25">
+              <div class="sx-bar"><i></i><i></i><i></i><span>megyerimarkmate.hu/demos/nobile</span></div>
+              <img src="/demos/previews/nobile-800.webp" alt="" width="800" height="500" loading="lazy" decoding="async">
+            </div>
+            <div class="sx-phone" data-depth="1"><img src="/demos/previews/axis-m.webp" alt="" width="420" height="909" loading="lazy" decoding="async"></div>
+            <div class="sx-tools" data-depth="0.6">
+              <svg viewBox="0 0 24 24"><path d="M6 3l12 8-5.5 1.6L10 18z"/></svg>
+              <svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M6 6h12M12 6v13"/></svg>
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+            </div>
+            <div class="sx-chip sx-chip--type" data-depth="1.4"><b>Aa</b><span>Space Grotesk<small>{{ 'Címsor · 64 px' | t }}</small></span></div>
           }
-          <a routerLink="/ajanlatkeres" [attr.aria-label]="'Ajánlatot kérek' | t">
-            {{ 'Érdekel' | t }}
-            <span aria-hidden="true">
-              ↗︎
-            </span>
-          </a>
+          @case ('landing') {
+            <div class="sx-phone sx-phone--hero" data-depth="0.35"><img src="/demos/previews/pulse-m.webp" alt="" width="420" height="909" loading="lazy" decoding="async"></div>
+            <div class="sx-chip sx-chip--ok" data-depth="1.2"><i>✓</i><span>{{ 'Ajánlatkérés elküldve' | t }}<small>{{ 'éppen most' | t }}</small></span></div>
+            <div class="sx-chip sx-chip--cta" data-depth="0.8">{{ 'Kérj ajánlatot' | t }} <span>→</span></div>
+            <div class="sx-swatches" data-depth="1.5"><i></i><i></i><i></i><i></i></div>
+          }
+          @case ('system') {
+            <div class="sx-dash" data-depth="0.3">
+              <div class="sx-dash-side"><b>M<em>.</em></b><i class="on"></i><i></i><i></i><i></i></div>
+              <div class="sx-dash-main">
+                <div class="sx-kpis"><span><small>{{ 'Ajánlatkérések' | t }}</small><b></b></span><span><small>{{ 'Elfogadva' | t }}</small><b></b></span><span><small>{{ 'Folyamatban' | t }}</small><b></b></span></div>
+                <div class="sx-bars">@for (h of chartBars; track $index) {<i [style.--h]="h"></i>}</div>
+                <div class="sx-rows"><i></i><i></i><i></i></div>
+              </div>
+            </div>
+            <div class="sx-chip sx-chip--notify" data-depth="1.2"><i></i><span>{{ 'Új ajánlatkérés' | t }}<small>{{ 'Céges weboldal · most' | t }}</small></span></div>
+          }
+          @default {
+            <div class="sx-palette" data-depth="0.4">
+              <span style="--c:#4263ff"><small>#4263FF</small></span><span style="--c:#00d9ff"><small>#00D9FF</small></span><span style="--c:#0f1627"><small>#0F1627</small></span><span style="--c:#f8f9fc"><small>#F8F9FC</small></span>
+            </div>
+            <div class="sx-type" data-depth="0.9"><b>Aa</b><small>Space Grotesk / Manrope</small></div>
+            <div class="sx-rock" data-depth="1.4"></div>
+          }
+          }
         </div>
-      </article>
-      }
-      } @else {
-      <article class="service-tile">
-        <div class="service-tile-top">
-          <span>
-            01
-          </span>
-          <span aria-hidden="true">
-            ↗︎
-          </span>
-        </div>
-        <div class="service-tile-body">
-          <h3>
-            {{ 'Céges weboldalak' | t }}
-          </h3>
-          <p>
-            {{ 'Karakteres online megjelenés, világos üzenetekkel és könnyű navigációval.' | t }}
-          </p>
-        </div>
-        <div class="service-tile-bottom">
-          <span>
-            {{ 'Személyre szabott' | t }}
-          </span>
-          <a routerLink="/ajanlatkeres">
-            {{ 'Érdekel ↗︎' | t }}
-          </a>
-        </div>
-      </article>
-      <article class="service-tile">
-        <div class="service-tile-top">
-          <span>
-            02
-          </span>
-          <span aria-hidden="true">
-            ↗︎
-          </span>
-        </div>
-        <div class="service-tile-body">
-          <h3>
-            {{ 'Landing oldalak' | t }}
-          </h3>
-          <p>
-            {{ 'Egy jól meghatározott cél köré épített, látványos és fókuszált felületek.' | t }}
-          </p>
-        </div>
-        <div class="service-tile-bottom">
-          <span>
-            {{ 'Személyre szabott' | t }}
-          </span>
-          <a routerLink="/ajanlatkeres">
-            {{ 'Érdekel ↗︎' | t }}
-          </a>
-        </div>
-      </article>
-      <article class="service-tile">
-        <div class="service-tile-top">
-          <span>
-            03
-          </span>
-          <span aria-hidden="true">
-            ↗︎
-          </span>
-        </div>
-        <div class="service-tile-body">
-          <h3>
-            {{ 'Egyedi webes rendszerek' | t }}
-          </h3>
-          <p>
-            {{ 'Adminfelületek és funkciók, amelyek valódi munkafolyamatokat könnyítenek meg.' | t }}
-          </p>
-        </div>
-        <div class="service-tile-bottom">
-          <span>
-            {{ 'Személyre szabott' | t }}
-          </span>
-          <a routerLink="/ajanlatkeres">
-            {{ 'Érdekel ↗︎' | t }}
-          </a>
+        <div class="sx-body">
+          <span class="sx-index">{{ (i + 1).toString().padStart(2, '0') }} <i></i> {{ sxLabel[card.kind] | t }}</span>
+          <h3>{{ card.service ? loc(card.service, 'title') : (card.title | t) }}</h3>
+          <p>{{ card.service ? loc(card.service, 'summary') : (card.summary | t) }}</p>
+          <div class="sx-foot">
+            @if (card.service && discounted(card.service.starting_price_huf); as sale) {
+              <span class="price-sale"><s [attr.aria-label]="'Eredeti ár' | t">{{ money(card.service.starting_price_huf) }}</s><strong>{{ sale }}</strong><em>−{{ promo()!.percent }}%</em></span>
+            } @else {
+              <span class="sx-price">{{ card.service ? money(card.service.starting_price_huf) : ('Személyre szabott' | t) }}</span>
+            }
+            <a class="sx-link" routerLink="/ajanlatkeres" [queryParams]="card.type ? { type: card.type } : null" [attr.aria-label]="('Ajánlatot kérek' | t) + ': ' + (card.service ? loc(card.service, 'title') : (card.title | t))">{{ 'Érdekel' | t }} <span aria-hidden="true">↗︎</span></a>
+          </div>
         </div>
       </article>
       }
@@ -416,6 +350,7 @@
         @for (project of realProjects(); track project.id) {
           <article class="portfolio-card">
             <div class="portfolio-cover">
+              <span class="ref-bar portfolio-bar" aria-hidden="true"><i></i><i></i><i></i><span>{{ project.project_url ? project.project_url.replace('https://', '').replace('http://', '') : 'megyerimarkmate.hu' }}</span></span>
               @if (project.cover_image_url) {
                 <img
                   [src]="project.cover_image_url"
@@ -465,23 +400,37 @@
     </div>
   </section>
 }
-<section premiumReveal class="section work work--concepts" id="koncepciok" aria-labelledby="concepts-title">
-    <div class="mm-art mm-art--rock mm-art--concepts" aria-hidden="true"></div>
+@if (!realProjects().length) {<span id="munkak" class="anchor-alias" aria-hidden="true"></span>}
+<section class="section work work--concepts refs" id="koncepciok" aria-labelledby="concepts-title">
+    <div class="mm-art mm-art--rock mm-art--concepts" mmFx="drift" aria-hidden="true"></div>
     <div class="container">
-      <div class="section-heading-row">
+      <div class="section-heading-row head-stack" mmFx="rise">
         <div>
           <span class="overline">{{ 'MUNKÁIM / KONCEPCIÓK' | t }}</span>
           <h2 class="section-title" id="concepts-title">{{ 'Négy világ.' | t }} <span class="subtle-heading">{{ 'Egy szemlélet.' | t }}</span></h2>
         </div>
         <p class="lead">{{ 'Önálló, interaktív bemutató-weboldalak – saját koncepciók, nem ügyfélmunkák. Kattints, és próbáld ki őket élőben.' | t }}</p>
       </div>
-      <div class="concept-grid">
-        @for (demo of demoSites; track demo.slug) {
-          <a class="concept-card" [class.concept-card--featured]="demo.featured" [href]="'/demos/' + demo.slug + '/index.html'" target="_blank" rel="noopener">
-            <span class="concept-shot"><img [src]="'/demos/previews/' + demo.preview + '.webp'" [alt]="(demo.title | t) + ' – ' + ('koncepció előnézete' | t)" loading="lazy" width="640" height="400"></span>
-            <span class="concept-meta"><small>{{ demo.kind | t }}</small><strong>{{ demo.title | t }}</strong><span>{{ demo.text | t }}</span></span>
-            <span class="concept-arrow" aria-hidden="true">↗︎</span>
+      <div class="ref-list">
+        @for (demo of demoSites; track demo.slug; let i = $index) {
+        <article class="ref" [class.ref--flip]="i % 2 === 1" mmFx="parallax">
+          <a class="ref-stage" mmFx="camera" [attr.data-side]="i % 2 ? 'right' : 'left'" [href]="'/demos/' + demo.slug + '/index.html'" target="_blank" rel="noopener" [attr.aria-label]="(demo.title | t) + ' – ' + ('élő demó megnyitása' | t)">
+            <span class="ref-glow" aria-hidden="true"></span>
+            <span class="ref-screen">
+              <span class="ref-bar" aria-hidden="true"><i></i><i></i><i></i><span>megyerimarkmate.hu/demos/{{ demo.slug }}</span></span>
+              <img [src]="'/demos/previews/' + demo.preview + '-1440.webp'" [attr.srcset]="'/demos/previews/' + demo.preview + '-800.webp 800w, /demos/previews/' + demo.preview + '-1440.webp 1440w'" sizes="(max-width: 760px) 92vw, 60vw" [alt]="(demo.title | t) + ' – ' + ('koncepció előnézete' | t)" width="1440" height="900" loading="lazy" decoding="async">
+            </span>
+            <span class="ref-phone" data-depth="1.1" aria-hidden="true"><img [src]="'/demos/previews/' + demo.preview + '-m.webp'" alt="" width="420" height="909" loading="lazy" decoding="async"></span>
           </a>
+          <div class="ref-meta">
+            <span class="ref-count">{{ (i + 1).toString().padStart(2, '0') }} <i></i> {{ demoSites.length.toString().padStart(2, '0') }}</span>
+            <small>{{ demo.kind | t }}</small>
+            <h3>{{ demo.title | t }}</h3>
+            <p>{{ demo.text | t }}</p>
+            <ul class="ref-tags">@for (tag of demo.tags; track tag) {<li>{{ tag | t }}</li>}</ul>
+            <a class="ref-link" [href]="'/demos/' + demo.slug + '/index.html'" target="_blank" rel="noopener">{{ 'Élő demó megnyitása' | t }} <span aria-hidden="true">↗︎</span></a>
+          </div>
+        </article>
         }
       </div>
       <p class="concept-disclaimer">{{ 'Demó koncepciók: a megjelenés és a működés szemléltetésére készültek.' | t }}</p>
@@ -540,7 +489,7 @@
   </div>
 </section>
 <section premiumReveal class="section about" id="rolam">
-  <div class="mm-art mm-art--ribbon mm-art--about" aria-hidden="true"></div>
+  <div class="mm-art mm-art--ribbon mm-art--about" mmFx="drift" aria-hidden="true"></div>
   <div class="container about-layout">
     <div class="about-art" aria-hidden="true">
       <div class="about-art-grid">
@@ -742,3 +691,6 @@
     </span>
   </div>
 </footer>
+} @placeholder {
+<div class="home-defer-placeholder" aria-hidden="true"></div>
+}

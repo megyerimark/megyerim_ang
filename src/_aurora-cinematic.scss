@@ -37,21 +37,23 @@ body :is(.quote-page,.studio-page,.consultation-page,.case-page,.client-project-
 }
 
 /* Ambient art-direction applied to every public route, without turning content into a flat screenshot. */
-body :is(.quote-page,.studio-page,.consultation-page,.case-page,.client-project-page,.quiz-page,.reset-page,.legal){
+body :is(.quote-page,.studio-page,.consultation-page,.case-page,.client-project-page,.quiz-page,.legal){
   position:relative;isolation:isolate;
   background-color:var(--k-060a18);
+  /* tájkép-fotó helyett tiszta kobalt mélység; a jobb felső sarokban a kristályszikla (a márka 3D identitása) */
   background-image:radial-gradient(ellipse 60% 38% at 86% 9%,var(--k-35387c-76),transparent 76%),
-    linear-gradient(180deg,var(--k-060917-e8) 0%,var(--k-070b1d-f9) 56%,var(--k-060916) 100%),
-    var(--mm-photo-coast);
+    linear-gradient(180deg,var(--k-060917-e8) 0%,var(--k-070b1d-f9) 56%,var(--k-060916) 100%)!important;
   background-repeat:no-repeat;
-  background-size:auto,auto,100% auto;
+  background-size:auto,auto;
   background-position:center top;
-  background-image:radial-gradient(ellipse 60% 38% at 86% 9%,var(--k-35387c-76),transparent 76%),linear-gradient(180deg,var(--k-060917-e8) 0%,var(--k-070b1d-f9) 56%,var(--k-060916) 100%),var(--mm-photo-coast)!important;
 }
-body :is(.quote-page,.studio-page,.consultation-page,.case-page,.client-project-page,.quiz-page,.reset-page)::after{
+body :is(.quote-page,.studio-page,.consultation-page,.case-page,.client-project-page,.quiz-page)::after{
   content:'';position:absolute;inset:0;pointer-events:none;z-index:-1;
-  background:radial-gradient(ellipse 25% 23% at 84% 35%,var(--k-7870db-26),transparent 82%);
+  background:url('/brand/rock-820.webp') no-repeat right -7vw top 40px / min(40vw,560px) auto,
+    radial-gradient(ellipse 30% 26% at 84% 20%,rgba(66,99,255,.2),transparent 80%);
+  opacity:.5;
 }
+@media(max-width:760px){body :is(.quote-page,.studio-page,.consultation-page,.case-page,.client-project-page,.quiz-page)::after{background-size:70vw auto,auto;background-position:right -26vw top 20px,center;opacity:.32}}
 body :is(.quote-page,.studio-page,.consultation-page,.case-page,.client-project-page,.quiz-page) :where(.card,.panel,.quiz-card,.service-card,.form-card,.summary-card){
   border-color:var(--k-a29bf0-52);
   background:linear-gradient(135deg,var(--k-152041-ec),var(--k-0b132a-df));
@@ -161,7 +163,7 @@ body .admin-shell .admin-content :where(.metric,.admin-panel,.card,.aurora-insig
 }
 @media(max-width:600px){
   .section .section-title{font-size:clamp(44px,11vw,62px)}
-  body :is(.quote-page,.studio-page,.consultation-page,.case-page,.client-project-page,.quiz-page,.reset-page){background-size:auto,auto,auto 350px}
+  body :is(.quote-page,.studio-page,.consultation-page,.case-page,.client-project-page,.quiz-page){background-size:auto,auto,auto 350px}
   .admin-cinematic-intro{display:block;min-height:270px}
   .admin-cinematic-copy{padding:29px 24px 34px}
   .admin-cinematic-copy h2{font-size:clamp(42px,10vw,57px)}

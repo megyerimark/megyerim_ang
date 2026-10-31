@@ -14,7 +14,7 @@ interface NavItem { label: string; link: string; fragment?: string; spy?: string
     imports: [RouterLink, TPipe, BrandMark],
     templateUrl: './navbar.html',
     styleUrl: './navbar.scss',
-    host: { '[class.overlay]': 'onHome' }
+    host: { '[class.overlay]': 'onHome', '[class.on-dark]': 'overDark()', '[class.mm-keep-dark]': 'overDark()' }
 })
 export class Navbar implements OnInit, OnDestroy {
     readonly i18n = inject(I18nService);
@@ -27,6 +27,8 @@ export class Navbar implements OnInit, OnDestroy {
     /** A főoldal görgetési folyamata 0–1 között (felső vékony sáv). */
     scrollProgress = signal(0);
     compact = signal(false);
+    /** A menü a sötét nyitójelenet fölött van: világos módban is sötét stílus kell (különben fehér sáv a sötét képen). */
+    overDark = signal(false);
     readonly items: NavItem[] = [
         { label: 'Szolgáltatások', link: '/', fragment: 'szolgaltatasok', spy: 'szolgaltatasok' },
         { label: 'Folyamat', link: '/', fragment: 'folyamat', spy: 'folyamat' },
@@ -45,7 +47,13 @@ export class Navbar implements OnInit, OnDestroy {
                 this.activeSection.set('fooldal');
                 // A főoldal szekciói az útvonalváltás után renderelődnek, ezért késleltetve figyeljük őket.
                 setTimeout(() => this.observeSections(), 350);
+                setTimeout(() => this.updateOverDark(), 0);
             });
+    }
+
+    private updateOverDark(): void {
+        const hero = this.onHome ? document.getElementById('fooldal') : null;
+        this.overDark.set(!!hero && window.scrollY < hero.offsetTop + hero.offsetHeight - this.host.nativeElement.offsetHeight);
     }
 
     @HostListener('document:keydown.escape')
@@ -59,6 +67,7 @@ export class Navbar implements OnInit, OnDestroy {
             const max = document.documentElement.scrollHeight - window.innerHeight;
             this.scrollProgress.set(max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0);
             this.compact.set(window.scrollY > 24);
+            this.updateOverDark();
         });
     }
 
@@ -108,11 +117,13 @@ export class Navbar implements OnInit, OnDestroy {
         document.body.style.removeProperty('overflow');
     }
 
-    private observeSections(): void {
+    private observeSections(attempt = 0): void {
         this.observer?.disconnect();
         if (!this.onHome || !('IntersectionObserver' in window)) return;
         const ids = this.items.map(item => item.spy).filter((id): id is string => !!id);
         const targets = ids.map(id => document.getElementById(id)).filter((el): el is HTMLElement => !!el);
+        // a főoldal nyitójelenet alatti része késleltetve (üresjáratban) renderelődik – addig újrapróbáljuk
+        if (targets.length < ids.length - 1 && attempt < 8) { setTimeout(() => this.observeSections(attempt + 1), 700); }
         if (!targets.length) return;
         this.observer = new IntersectionObserver(entries => {
             const visible = entries.filter(entry => entry.isIntersecting)

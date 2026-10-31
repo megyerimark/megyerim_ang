@@ -1,10 +1,11 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
 import { PromoSpotlight } from '../../components/promo-spotlight/promo-spotlight';
 import { NewsletterSignup } from '../../components/newsletter-signup/newsletter-signup';
 import { Hero } from '../../components/hero/hero';
 import { PremiumReveal } from '../../directives/premium-reveal';
+import { MmFx } from '../../core/scroll-fx';
 import { ApiService } from '../../core/api.service';
 import { ConsentService } from '../../core/consent.service';
 import { ExternalReviews } from '../../components/external-reviews/external-reviews';
@@ -32,7 +33,7 @@ interface PreviewPalette {
 @Component({
     selector: 'app-home',
     standalone: true,
-    imports: [Hero, RouterLink, DecimalPipe, PremiumReveal, ExternalReviews, TPipe, PromoSpotlight, NewsletterSignup, BrandMark],
+    imports: [Hero, RouterLink, DecimalPipe, PremiumReveal, MmFx, ExternalReviews, TPipe, PromoSpotlight, NewsletterSignup, BrandMark],
     templateUrl: './home.html',
     styleUrl: './home.scss'
 })
@@ -88,12 +89,29 @@ export class Home implements OnInit {
     readonly selectedPurpose = signal<PreviewPurpose>('business');
     readonly selectedStyle = signal<PreviewStyle>('graphite');
     readonly selectedDevice = signal<'desktop' | 'mobile'>('desktop');
+    /** A cél-horgony (pl. /#szolgaltatasok – másik oldalról érkezve is): ilyenkor a nyitójelenet alatti tartalom azonnal kell. */
+    private readonly anchor = inject(ActivatedRoute, { optional: true })?.snapshot.fragment ?? null;
+    readonly hasAnchor = !!this.anchor;
     readonly demoSites = [
-        { slug: 'nobile-autoszalon', preview: 'nobile', title: 'NOBILE Autószalon', kind: 'PRÉMIUM AUTÓSZALON / DEMÓ', text: 'Görgetéses 3D kollekció aranyporrá bomló panelekkel, konfigurátor, finanszírozási kalkulátor és tesztvezetés-foglalás.', featured: true },
-        { slug: 'vagat-barber', preview: 'vagat', title: 'VÁGAT Barber Studio', kind: 'BARBER SHOP / DEMÓ', text: 'Fiktív barber shop weboldal prémium megjelenéssel.' },
-        { slug: 'axis-detailing', preview: 'axis', title: 'AXIS Auto Detailing', kind: 'AUTÓKOZMETIKA / DEMÓ', text: 'Prémium autókozmetikai oldal interaktív csomagokkal.' },
-        { slug: 'pulse-fitness', preview: 'pulse', title: 'PULSE Training', kind: 'SZEMÉLYI EDZŐ / DEMÓ', text: 'Modern bemutatóoldal programválasztóval.' }
+        { slug: 'nobile-autoszalon', preview: 'nobile', title: 'NOBILE Autószalon', kind: 'PRÉMIUM AUTÓSZALON / DEMÓ', text: 'Görgetéses 3D kollekció aranyporrá bomló panelekkel, konfigurátor, finanszírozási kalkulátor és tesztvezetés-foglalás.', tags: ['3D kollekció', 'Konfigurátor', 'Tesztvezetés-foglalás'] },
+        { slug: 'vagat-barber', preview: 'vagat', title: 'VÁGAT Barber Studio', kind: 'BARBER SHOP / DEMÓ', text: 'Fiktív barber shop weboldal prémium megjelenéssel.', tags: ['Szolgáltatások', 'Árlista', 'Időpontfoglalás'] },
+        { slug: 'axis-detailing', preview: 'axis', title: 'AXIS Auto Detailing', kind: 'AUTÓKOZMETIKA / DEMÓ', text: 'Prémium autókozmetikai oldal interaktív csomagokkal.', tags: ['Csomagok', 'Átalakulás', 'Ajánlatkérés'] },
+        { slug: 'pulse-fitness', preview: 'pulse', title: 'PULSE Training', kind: 'SZEMÉLYI EDZŐ / DEMÓ', text: 'Modern bemutatóoldal programválasztóval.', tags: ['Programválasztó', 'Módszer', 'GYIK'] }
     ];
+    /** Szolgáltatás-kártyák: az adminban felvett szolgáltatások (vagy alapértelmezettek), mindegyik más vizuális kompozícióval. */
+    readonly serviceCards = computed(() => {
+        const kinds = ['site', 'landing', 'system', 'brand'] as const;
+        const types = ['business', 'landing', 'custom', null] as const;
+        const list = this.services();
+        if (list.length) return list.map((service, i) => ({ key: 'api-' + service.id, kind: kinds[i % 4], type: types[i % 4], service, title: '', summary: '' }));
+        return [
+            { key: 'd1', kind: kinds[0], type: types[0], service: null, title: 'Céges weboldalak', summary: 'Karakteres online megjelenés, világos üzenetekkel és könnyű navigációval.' },
+            { key: 'd2', kind: kinds[1], type: types[1], service: null, title: 'Landing oldalak', summary: 'Egy jól meghatározott cél köré épített, látványos és fókuszált felületek.' },
+            { key: 'd3', kind: kinds[2], type: types[2], service: null, title: 'Egyedi webes rendszerek', summary: 'Adminfelületek és funkciók, amelyek valódi munkafolyamatokat könnyítenek meg.' },
+        ];
+    });
+    readonly sxLabel: Record<string, string> = { site: 'WEBOLDAL', landing: 'KONVERZIÓ', system: 'RENDSZER', brand: 'ARCULAT' };
+    readonly chartBars = [.38, .52, .44, .7, .58, .82, .66, .94];
     readonly realProjects = computed(() => this.projects().filter(project => !project.is_demo));
 
     readonly previewModes: PreviewMode[] = [
@@ -181,7 +199,31 @@ export class Home implements OnInit {
             answer: 'Igen. A kvíz és az ajánlatkérő is segít rendszerezni az elképzeléseidet, a hiányzó részleteket pedig közösen tisztázzuk.'
         }
     ];
+    /** A késleltetett tartalom betöltése után a horgonyhoz görget (a router saját görgetése ekkor még nem találja az elemet). */
+    private scrollToAnchorWhenReady(): void {
+        const id = this.anchor;
+        if (!id || typeof window === 'undefined') return;
+        // A tartalom (képek, API-adatok) betöltés közben még tolhatja a célt: rövid ideig a helyén tartjuk,
+        // amíg a látogató maga nem görget.
+        let tries = 0, settled = 0, userMoved = false;
+        const stop = () => { userMoved = true; };
+        for (const ev of ['wheel', 'touchstart', 'keydown'] as const) window.addEventListener(ev, stop, { once: true, passive: true });
+        const tick = () => {
+            if (userMoved) return;
+            const el = document.getElementById(id);
+            if (el) {
+                const pad = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+                if (Math.abs(el.getBoundingClientRect().top - pad) > 40) el.scrollIntoView();
+                if (settled++ < 14) setTimeout(tick, 150);
+                return;
+            }
+            if (tries++ < 50) setTimeout(tick, 80);
+        };
+        setTimeout(tick, 60);
+    }
+
     ngOnInit(): void {
+        this.scrollToAnchorWhenReady();
         this.api.publicSettings().subscribe({
             next: response => {
                 this.settings.set({ ...SITE_DEFAULTS, ...response.data });

@@ -29,7 +29,7 @@
 .studio-right{display:grid;gap:18px;min-width:0}
 .studio-stage-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:19px}
 .studio-stage-heading>div:first-child{display:flex;align-items:center;gap:7px}.studio-stage-heading strong{font-size:10px;letter-spacing:1.1px}.studio-stage-heading small{color:var(--muted);font-size:10px}
-.studio-live-dot{height:8px;width:8px;display:inline-block;border-radius:50%;background:#50dec0;box-shadow:0 0 16px #50dec0}
+.studio-live-dot{height:8px;width:8px;display:inline-block;border-radius:50%;background:#00d9ff;box-shadow:0 0 16px #00d9ff}
 .studio-device{display:flex;gap:7px}.studio-device button{border:1px solid var(--premium-rim);color:var(--muted);background:var(--premium-glass);border-radius:9px;padding:9px 11px;font-size:11px;cursor:pointer}.studio-device button.selected{color:var(--text);border-color:var(--accent)}
 .studio-preview-frame{border:1px solid var(--k-8384f4-70);border-radius:18px;background:var(--k-0b1023);overflow:hidden;max-width:100%;box-shadow:0 20px 65px #0006,0 0 28px var(--k-6355d7-32);color:#fff}
 .studio-preview-frame.mobile{max-width:370px;margin:auto}

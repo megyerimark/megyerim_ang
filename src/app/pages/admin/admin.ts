@@ -21,7 +21,7 @@ const HEADINGS: Record<Tab, [string, string]> = {
     growth: ['Növekedés', 'Honnan jönnek az ügyfelek, és kire kell ma rászólni.'],
     testimonials: ['Vélemények', 'Ügyfélvélemények a nyilvános oldalra – csak valódiak.'],
     workspace: ['MM Munkatér', 'Ajánlatfolyamat és napi teendők egy helyen.'],
-    maintenance: ['Aurora Care', 'Havi karbantartás, előfizetések és esedékességek.'],
+    maintenance: ['Karbantartás', 'Havi karbantartás, előfizetések és esedékességek.'],
     sites: ['Kész projektek', 'Élesített oldalak, domainek, lejáratok és titkosított hozzáférések.'],
     newsletter: ['Hírlevél', 'Az akciókra feliratkozott, megerősített e-mail-címek és a CSV-export.'],
     finance: ['Pénzügyek', 'Bevételek, kiadások, ÁFA és becsült átalányadó havonta.'],
@@ -161,8 +161,8 @@ export class AdminPage implements OnInit, OnDestroy {
     }[] = [{ value: 'dashboard', title: 'Áttekintés', icon: '◫' }, { value: 'growth', title: 'Növekedés', icon: '↗︎' }, {value:'workspace',title:'MM Munkatér',icon:'▦'}, { value: 'quotes', title: 'Ajánlatkérések', icon: '▤' }, {value:'maintenance',title:'Karbantartás',icon:'✧'}, { value: 'sites', title: 'Kész projektek', icon: '◈' }, { value: 'finance', title: 'Pénzügyek', icon: '¤' }, { value: 'consultations', title: 'Konzultációk', icon: '◷' }, { value: 'clients', title: 'Ügyfelek', icon: '♙' }, { value: 'projects', title: 'Referenciák', icon: '▧' }, { value: 'testimonials', title: 'Vélemények', icon: '❝' }, { value: 'newsletter', title: 'Hírlevél', icon: '✉︎' }, { value: 'services', title: 'Szolgáltatások', icon: '◇' }, { value: 'settings', title: 'Weboldal beállításai', icon: '⚙︎' }, { value: 'activity', title: 'Tevékenységnapló', icon: '◷' }, { value: 'account', title: 'Fiók és jelszó', icon: '⌘' }];
     readonly boardStatuses = STATUS_OPTIONS;
     readonly pipelinePalette: Record<QuoteStatus,string> = {
-        new:'#9681fd', reviewing:'#579bea', quoted:'#36c8c2',
-        accepted:'#54d8a1', rejected:'#f18a95', completed:'#d5b5ff'
+        new:'#4263ff', reviewing:'#00d9ff', quoted:'#f4c95d',
+        accepted:'#54d8a1', rejected:'#f18a95', completed:'#a9b8d8'
     };
     readonly pipelineDonut = computed(() => {
         const entries = this.dashboard()?.quotes_by_status ?? [];
@@ -180,7 +180,7 @@ export class AdminPage implements OnInit, OnDestroy {
         const breakdown = this.dashboard()?.lead_sources;
         if (!breakdown || breakdown.quiz + breakdown.form === 0) return 'conic-gradient(#64688740 0 100%)';
         const percent = (breakdown.quiz / (breakdown.quiz + breakdown.form)) * 100;
-        return `conic-gradient(#8f78ff 0 ${percent}%,#48bed9 ${percent}% 100%)`;
+        return `conic-gradient(#4263ff 0 ${percent}%,#00d9ff ${percent}% 100%)`;
     });
     readonly conversionPercent = computed(() => {
         const d = this.dashboard(); return d?.quotes_total ? Math.round(((d.quotes_accepted + d.quotes_completed) / d.quotes_total) * 100) : 0;
@@ -353,7 +353,7 @@ export class AdminPage implements OnInit, OnDestroy {
         this.editingMaintenanceId.set(null);
         this.maintenanceEditor.set({
             quote_request_id:quoteId ?? this.maintenanceData().candidates[0]?.id ?? 0,
-            plan_name:'Aurora Care – Mini',monthly_fee_huf:2000,status:'draft',
+            plan_name:'Weboldal-karbantartás – Mini',monthly_fee_huf:2000,status:'draft',
             starts_on:'',next_review_on:'',included_services:'Alapvető állapotfigyelés és havi ellenőrzés.',
             internal_notes:'',billing_enabled:false
         });

@@ -44,9 +44,3 @@
 .lang-btn{display:inline-grid;place-items:center;min-width:42px;height:38px;padding:0 10px;border:1px solid #ffffff2e;border-radius:999px;background:#ffffff0d;color:inherit;font:inherit;font-size:12px;font-weight:800;letter-spacing:.08em;cursor:pointer;transition:background .2s ease,border-color .2s ease}
 .lang-btn:hover,.lang-btn:focus-visible{background:#ffffff1f;border-color:var(--k-c4b5fd-99)}
 /* Világos mód: a nem márkaszín (fehér) elemek sötét tintát kapnak. */
-:host-context([data-theme='light']) .nav-wrap{border-bottom-color:rgba(15,22,39,.08)}
-:host-context([data-theme='light']) .nav-wrap.is-compact{background:rgba(248,249,252,.9);border-bottom-color:rgba(15,22,39,.08)}
-:host-context([data-theme='light']) .brand-mark{color:#0f1627;filter:none}
-:host-context([data-theme='light']) .brand strong{color:#0f1627}
-:host-context([data-theme='light']) :is(.theme-btn,.menu-btn,.lang-btn){background:#fff;border-color:rgba(15,22,39,.14);color:#0f1627}
-:host-context([data-theme='light']) .nav-links a.is-active{color:#0f1627}

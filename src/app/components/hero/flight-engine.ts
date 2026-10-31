@@ -21,10 +21,8 @@ export interface FlightRefs {
 
 interface Shard { x: number; y: number; vx: number; vy: number; s: number; rot: number; vr: number; life: number; decay: number; c: string; }
 
-const DARK = { add: true, parts: ['#3a5bff', '#5f7dff', '#00d9ff', '#a9c4ff', '#ffffff'], streak: '170,200,255', glow: '58,91,255',
+const DARK = { parts: ['#3a5bff', '#5f7dff', '#00d9ff', '#a9c4ff', '#ffffff'], streak: '170,200,255',
     shards: ['#ffffff', '#bcd2ff', '#4263ff', '#00d9ff', '#7d93ff'] };
-const LIGHT = { add: false, parts: ['#2442e6', '#4263ff', '#00a8e8', '#6d84ff'], streak: '66,99,255', glow: '66,99,255',
-    shards: ['#4263ff', '#2442e6', '#00a8e8', '#9fb0ff'] };
 
 export class FlightEngine {
     private readonly ctx: CanvasRenderingContext2D;
@@ -32,6 +30,9 @@ export class FlightEngine {
     private cx = 0; private cy = 0; private R = 0; private mobile = false;
     private p = 0; private cam = 0; private lastCam = 0;
     private visible = true; private raf = 0; private readonly t0 = performance.now();
+    private lastFrame = 0; private lastP = -1; private worldHidden = false;
+    /** A legutóbb kiírt CSS-változók – csak változáskor írjuk újra (különben minden képkocka stílus-újraszámolást okoz). */
+    private readonly vars = new Map<string, string>();
     private chapter = -1;
     private scrubber?: ScrollScrubber;
     private io?: IntersectionObserver;
@@ -79,21 +80,31 @@ export class FlightEngine {
 
     private readonly frame = (now: number): void => {
         this.raf = 0;
-        this.render((now - this.t0) / 1000);
+        // nyugalmi állapotban (nincs görgetés, nincs szilánk) mobilon ~30 fps is elég a lassan forgó gyűrűhöz
+        const idle = this.p === this.lastP && !this.shards.length;
+        if (!(idle && this.mobile && now - this.lastFrame < 30)) {
+            this.lastFrame = now; this.lastP = this.p;
+            this.render((now - this.t0) / 1000);
+        }
         if (this.visible) this.raf = requestAnimationFrame(this.frame);
     };
+
+    private setVar(name: string, value: string): void {
+        if (this.vars.get(name) === value) return;
+        this.vars.set(name, value);
+        this.refs.pin.style.setProperty(name, value);
+    }
 
     private resize(): void {
         const r = this.refs.pin.getBoundingClientRect();
         this.W = r.width; this.H = r.height; this.mobile = this.W < 760;
-        this.dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        this.dpr = Math.min(window.devicePixelRatio || 1, this.mobile ? 1.25 : 1.5);
         this.refs.canvas.width = Math.round(this.W * this.dpr); this.refs.canvas.height = Math.round(this.H * this.dpr);
         this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
         if (this.mobile) { this.cx = this.W * .5; this.cy = this.H * .77; this.R = Math.min(this.W * .32, this.H * .16); }
         else { this.cx = this.W * .69; this.cy = this.H * .5; this.R = Math.min(this.W * .2, this.H * .32); }
-        const st = this.refs.pin.style;
-        st.setProperty('--cx', this.cx.toFixed(0) + 'px'); st.setProperty('--cy', this.cy.toFixed(0) + 'px'); st.setProperty('--R', this.R.toFixed(0) + 'px');
-        this.buildRing(this.mobile ? 1300 : 2600);
+        this.setVar('--cx', this.cx.toFixed(0) + 'px'); this.setVar('--cy', this.cy.toFixed(0) + 'px'); this.setVar('--R', this.R.toFixed(0) + 'px');
+        this.buildRing(this.mobile ? 650 : 2000);
     }
 
     private buildRing(n: number): void {
@@ -115,9 +126,7 @@ export class FlightEngine {
     }
 
     private render(t: number): void {
-        const { ctx, W, H, p } = this;
-        const light = document.documentElement.dataset['theme'] === 'light';
-        const pal = light ? LIGHT : DARK;
+        const { W, H, p } = this;
         const n = this.refs.panels.length;
         const burst = range(p, .05, .17);
         const fly = range(p, .09, .2);
@@ -125,12 +134,32 @@ export class FlightEngine {
         this.cam = s * ((n + 1) * this.gap - 180);
         const dCam = this.cam - this.lastCam; this.lastCam = this.cam;
 
-        const st = this.refs.pin.style;
-        st.setProperty('--p', p.toFixed(4)); st.setProperty('--copy', range(p, .02, .11).toFixed(4));
-        st.setProperty('--burst', burst.toFixed(4)); st.setProperty('--fly', fly.toFixed(4));
+        this.setVar('--p', p.toFixed(4)); this.setVar('--copy', range(p, .02, .11).toFixed(4));
+        this.setVar('--burst', burst.toFixed(4)); this.setVar('--fly', fly.toFixed(4));
         this.refs.pin.classList.toggle('copy-gone', range(p, .02, .11) > .98);
 
         // ---------- 3D tér: panelek, záró tábla, fényoszlopok ----------
+        // a repülés előtt (nyitókép) minden 3D elem rejtett: egyszer elrejtjük, utána nem írunk a DOM-ba
+        if (fly < .01) { this.hideWorld(); }
+        else { this.worldHidden = false; this.layoutWorld(t, W, H, fly, n); }
+
+        // ---------- fejezet (HUD) ----------
+        // az aktuális fejezet az a panel, amely a kamera előtt van (amíg el nem halad mellette)
+        const ch = s < .015 ? 0 : Math.min(n + 1, 1 + Math.max(0, Math.floor((this.cam - 120) / this.gap)));
+        if (ch !== this.chapter) { this.chapter = ch; this.refs.onChapter(ch, p); }
+        this.paint(t, W, H, burst, fly, dCam);
+    }
+
+    private hideWorld(): void {
+        if (this.worldHidden) return;
+        this.worldHidden = true;
+        for (const el of [...this.refs.panels, this.refs.finale, ...this.refs.pillars]) { el.style.opacity = '0'; el.style.visibility = 'hidden'; }
+        this.refs.finale.classList.remove('is-live');
+        this.gone.fill(false);
+    }
+
+    private layoutWorld(t: number, W: number, H: number, fly: number, n: number): void {
+        const pal = DARK;
         const spread = this.mobile ? W * .08 : Math.min(W * .21, 360);
         this.refs.panels.forEach((el, i) => {
             const side = i % 2 ? 1 : -1;
@@ -160,23 +189,15 @@ export class FlightEngine {
             el.style.visibility = op < .01 ? 'hidden' : 'visible';
             if (op >= .01) el.style.transform = `translate(-50%,-100%) translate3d(${x}px,${floor}px,${z}px)`;
         });
+    }
 
-        // ---------- fejezet (HUD) ----------
-        // az aktuális fejezet az a panel, amely a kamera előtt van (amíg el nem halad mellette)
-        const ch = s < .015 ? 0 : Math.min(n + 1, 1 + Math.max(0, Math.floor((this.cam - 120) / this.gap)));
-        if (ch !== this.chapter) { this.chapter = ch; this.refs.onChapter(ch, p); }
-
+    private paint(t: number, W: number, H: number, burst: number, fly: number, dCam: number): void {
+        const { ctx } = this;
+        const pal = DARK;
         // ---------- vászon ----------
+        // (az izzó mag CSS-gradiens a .flight-bg-n – nem rajzoljuk minden képkockán a teljes vászonra)
         ctx.clearRect(0, 0, W, H);
-        ctx.globalCompositeOperation = pal.add ? 'lighter' : 'source-over';
-
-        // izzó mag a gyűrű közepén
-        if (burst < 1) {
-            const gr = ctx.createRadialGradient(this.cx, this.cy, 0, this.cx, this.cy, this.R * (1.5 + burst * 2));
-            const a = (light ? .16 : .38) * (1 - burst) + burst * (light ? .1 : .3) * (1 - burst) * 2;
-            gr.addColorStop(0, `rgba(${pal.glow},${a})`); gr.addColorStop(1, `rgba(${pal.glow},0)`);
-            ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H);
-        }
+        ctx.globalCompositeOperation = 'lighter';
 
         // részecskegyűrű (enyhén megdöntött ellipszis), görgetésre kifelé szétrobban
         const ringA = 1 - burst;
@@ -193,7 +214,7 @@ export class FlightEngine {
                     const x = this.cx + dx * ct - dy * sn, y = this.cy + dx * sn + dy * ct;
                     const flick = .55 + .45 * Math.sin(t * 3.1 + this.tw[i] * 31);
                     const sz = this.siz[i] * (1 + burst * 2.6);
-                    ctx.globalAlpha = ringA * flick * (light ? .75 : .9) * (this.rad[i] > 1.03 ? .55 : 1);
+                    ctx.globalAlpha = ringA * flick * .9 * (this.rad[i] > 1.03 ? .55 : 1);
                     ctx.fillRect(x - sz / 2, y - sz / 2, sz, sz);
                 }
             }
@@ -212,7 +233,7 @@ export class FlightEngine {
                 const px = W / 2 + s2.x / pz * k * .5, py = H / 2 + s2.y / pz * k * .5;
                 const a = clamp((1 - s2.z) * 1.1) * fly;
                 ctx.globalAlpha = 1;
-                ctx.strokeStyle = `rgba(${pal.streak},${a * (light ? .45 : .75)})`;
+                ctx.strokeStyle = `rgba(${pal.streak},${a * .75})`;
                 ctx.lineWidth = Math.max(.6, (1 - s2.z) * 2.2);
                 ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(x, y); ctx.stroke();
             }
@@ -233,7 +254,7 @@ export class FlightEngine {
     /** A panel képernyő-téglalapjából fényszilánkok repülnek szét a kamera felé. */
     private shatter(el: HTMLElement, colors: string[]): void {
         const r = el.getBoundingClientRect(), o = this.refs.pin.getBoundingClientRect();
-        const cx = this.W / 2, cy = this.H / 2, count = this.mobile ? 150 : 280;
+        const cx = this.W / 2, cy = this.H / 2, count = this.mobile ? 110 : 260;
         const left = Math.max(-50, r.left - o.left), top = Math.max(-50, r.top - o.top);
         const w = Math.min(this.W + 100, r.width), h = Math.min(this.H + 100, r.height);
         for (let k = 0; k < count && this.shards.length < 1600; k++) {
