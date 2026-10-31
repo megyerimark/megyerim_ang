@@ -1,0 +1,118 @@
+<main class="svc-page" id="tartalom">
+  <div class="svc-container">
+    <nav class="svc-crumbs" [attr.aria-label]="'Morzsamenü' | t">
+      <a [routerLink]="'/' | lp">{{ 'Főoldal' | t }}</a>
+      <span aria-hidden="true">/</span>
+      @if (guide(); as g) {
+        <a routerLink="/utmutatok">Útmutatók</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{{ g.label }}</span>
+      } @else {
+        <span aria-current="page">Útmutatók</span>
+      }
+    </nav>
+
+    @if (guide(); as g) {
+    <article class="guide-article">
+      <header class="svc-hero guide-hero">
+        <span class="svc-eyebrow">Útmutató · {{ g.minutes }} perc olvasás</span>
+        <h1>{{ g.h1 }}</h1>
+        <p class="svc-intro">{{ g.intro }}</p>
+        <p class="guide-meta">Megyeri Márk Máté · frissítve: <time [attr.datetime]="g.updated">{{ date(g.updated) }}</time></p>
+      </header>
+
+      <nav class="guide-toc" aria-label="Tartalomjegyzék">
+        <strong>Tartalom</strong>
+        <ol>
+          @for (s of g.sections; track $index) {<li><a [href]="'#resz-' + ($index + 1)" (click)="$event.preventDefault(); scrollTo('resz-' + ($index + 1))">{{ s.h2 }}</a></li>}
+          <li><a href="#gyik" (click)="$event.preventDefault(); scrollTo('gyik')">Gyakori kérdések</a></li>
+        </ol>
+      </nav>
+
+      @for (s of g.sections; track $index) {
+      <section class="guide-section" [id]="'resz-' + ($index + 1)">
+        <h2>{{ s.h2 }}</h2>
+        @for (p of s.paragraphs; track $index) {<p>{{ p }}</p>}
+        @if (s.list?.length) {<ul class="guide-list">@for (item of s.list; track $index) {<li>{{ item }}</li>}</ul>}
+      </section>
+      }
+
+      @if (related(); as r) {
+      <aside class="guide-related">
+        <span class="svc-eyebrow">Kapcsolódó szolgáltatás</span>
+        <a [routerLink]="r.path">{{ r.label }} <span aria-hidden="true">→</span></a>
+      </aside>
+      }
+
+      <section class="svc-section" id="gyik" aria-labelledby="guide-faq">
+        <h2 id="guide-faq">Gyakori kérdések</h2>
+        <div class="svc-faq">
+          @for (item of g.faq; track $index) {
+          <article>
+            <h3><button type="button" (click)="toggleFaq($index)" [attr.aria-expanded]="openFaq() === $index">{{ item.q }} <span aria-hidden="true">{{ openFaq() === $index ? '−' : '+' }}</span></button></h3>
+            <p [hidden]="openFaq() !== $index">{{ item.a }}</p>
+          </article>
+          }
+        </div>
+      </section>
+
+      <section class="svc-cta" aria-labelledby="guide-cta">
+        <div>
+          <h2 id="guide-cta">{{ g.ctaTitle }}</h2>
+          <p>{{ g.ctaText }}</p>
+        </div>
+        <div class="svc-cta-actions">
+          <a class="btn btn-primary" routerLink="/ajanlatkeres">Ajánlatot kérek <span aria-hidden="true">↗︎</span></a>
+          <a class="svc-secondary" routerLink="/konzultacio">Ingyenes konzultáció</a>
+        </div>
+      </section>
+    </article>
+
+    <nav class="svc-related" aria-label="További útmutatók">
+      <h2>További útmutatók</h2>
+      <ul>
+        @for (o of others(); track o.key) {<li><a [routerLink]="o.path">{{ o.label }} <span aria-hidden="true">→</span></a></li>}
+      </ul>
+    </nav>
+    } @else {
+    <header class="svc-hero">
+      <span class="svc-eyebrow">Útmutatók</span>
+      <h1>Útmutatók weboldal készítéshez</h1>
+      <p class="svc-intro">Gyakorlati, közérthető útmutatók vállalkozásoknak: mennyibe kerül egy weboldal, milyen típus kell, hogyan zajlik a készítés, és mitől lesz gyors és jól kereshető.</p>
+    </header>
+    <section class="svc-section" aria-label="Útmutatók listája">
+      <div class="guide-grid">
+        @for (item of all; track item.key) {
+        <a class="guide-card" [routerLink]="item.path">
+          <span class="svc-eyebrow">{{ item.minutes }} perc olvasás</span>
+          <h2>{{ item.h1 }}</h2>
+          <p>{{ item.seoDescription }}</p>
+          <span class="guide-more">Elolvasom <span aria-hidden="true">→</span></span>
+        </a>
+        }
+      </div>
+    </section>
+    <section class="svc-cta" aria-labelledby="guides-cta">
+      <div>
+        <h2 id="guides-cta">Inkább átbeszélnéd?</h2>
+        <p>Foglalj egy ingyenes konzultációt, vagy töltsd ki a 2 perces igényfelmérőt – személyre szabott javaslatot kapsz.</p>
+      </div>
+      <div class="svc-cta-actions">
+        <a class="btn btn-primary" routerLink="/konzultacio">Konzultációt foglalok <span aria-hidden="true">↗︎</span></a>
+        <a class="svc-secondary" routerLink="/projekt-kviz">2 perces igényfelmérő</a>
+      </div>
+    </section>
+    }
+  </div>
+
+  <footer class="svc-footer">
+    <div class="svc-container svc-footer-inner">
+      <span>© Megyeri Márk Máté</span>
+      <span class="svc-footer-links">
+        <a [routerLink]="'/adatkezeles' | lp">{{ 'Adatkezelési tájékoztató' | t }}</a>
+        <a [routerLink]="'/aszf' | lp">{{ 'ÁSZF' | t }}</a>
+        <a [routerLink]="'/impresszum' | lp">{{ 'Impresszum' | t }}</a>
+      </span>
+    </div>
+  </footer>
+</main>

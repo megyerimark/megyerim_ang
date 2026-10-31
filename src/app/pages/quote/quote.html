@@ -63,6 +63,12 @@
           <span [style.width.%]="step()*25">
           </span>
         </div>
+        @if(draftRestored()){
+        <div class="draft-note" role="status">
+          <span>{{ 'Visszatöltöttem a félbehagyott ajánlatkérésedet – ott folytathatod, ahol abbahagytad.' | t }}</span>
+          <button type="button" (click)="discardDraft()">{{ 'Újrakezdés' | t }}</button>
+        </div>
+        }
         @if(step()===1){
         <div class="step-content">
           <h2>

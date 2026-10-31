@@ -1,7 +1,7 @@
 import { Route, Routes } from '@angular/router';
 import { adminGuard } from './core/admin.guard';
 import { Home } from './pages/home/home';
-import { PUBLIC_PAGES, SERVICE_KEYS } from './core/site-routes';
+import { GUIDE_KEYS, GUIDE_SLUGS, PUBLIC_PAGES, SERVICE_KEYS } from './core/site-routes';
 
 /**
  * A nyilvános oldalak magyarul a gyökérben, angolul az /en/ alatt érhetők el (a címpárok: core/site-routes.ts).
@@ -16,6 +16,13 @@ const loadPrivacy = () => import('./pages/privacy/privacy').then(module => modul
 const loadImprint = () => import('./pages/imprint/imprint').then(module => module.ImprintPage);
 const loadTerms = () => import('./pages/terms/terms').then(module => module.TermsPage);
 const loadService = () => import('./pages/service/service-page').then(module => module.ServicePage);
+const loadGuide = () => import('./pages/guide/guide-page').then(module => module.GuidePage);
+
+/** Útmutatók (csak magyarul): gyűjtőoldal + cikkek. */
+const guideRoutes: Route[] = [
+    { path: 'utmutatok', loadComponent: loadGuide, data: { guide: null } },
+    ...GUIDE_KEYS.map(key => ({ path: 'utmutatok/' + GUIDE_SLUGS[key], loadComponent: loadGuide, data: { guide: key } })),
+];
 
 /** A szolgáltatási céloldalak útvonalai a site-routes.ts címpárjaiból (egy helyen kell őket karbantartani). */
 const serviceRoutes = (lang: 'hu' | 'en'): Route[] => SERVICE_KEYS.map(key => {
@@ -46,6 +53,7 @@ export const routes: Routes = [
     },
     { path: 'en', children: englishRoutes },
     ...serviceRoutes('hu'),
+    ...guideRoutes,
     { path: 'tervezo', loadComponent: loadStudio, title: 'Interaktív weboldaltervező | Megyeri Márk Máté' },
     { path: 'ajanlatkeres', loadComponent: loadQuote, title: 'Ajánlatkérés | Megyeri Márk Máté' },
     { path: 'projekt-kviz', loadComponent: loadQuiz, title: '2 perces weboldal igényfelmérő | Megyeri Márk Máté' },

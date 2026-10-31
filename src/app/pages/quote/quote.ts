@@ -1,4 +1,4 @@
-import { Component, inject, signal, viewChild } from '@angular/core';
+import { Component, HostListener, OnDestroy, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -10,8 +10,13 @@ import { Turnstile } from '../../components/turnstile/turnstile';
 import { SubmitLoaderService } from '../../core/submit-loader.service';
 import { PromoNote } from '../../components/promo-note/promo-note';
 import { LpPipe } from '../../i18n/lp.pipe';
+/** A félbehagyott ajánlatkérés helyi piszkozata (csak ezen az eszközön, 14 napig; elküldéskor törlődik). */
+const DRAFT_KEY = 'mm-quote-draft';
+const DRAFT_MAX_AGE = 14 * 24 * 3600 * 1000;
+interface QuoteDraft { v: 1; savedAt: number; step: number; inspiration: string; data: Partial<QuotePayload>; }
+
 @Component({ selector: 'app-quote', standalone: true, imports: [LpPipe, FormsModule, RouterLink, TPipe, Turnstile, PromoNote], templateUrl: './quote.html', styleUrl: './quote.scss' })
-export class QuotePage {
+export class QuotePage implements OnDestroy {
     readonly i18n = inject(I18nService);
     private api = inject(ApiService);
     private route = inject(ActivatedRoute);
@@ -31,7 +36,11 @@ export class QuotePage {
     private readonly captcha = viewChild(Turnstile);
     private readonly loader = inject(SubmitLoaderService);
     inspiration = '';
+    /** Visszatöltött piszkozat jelzése (a látogató elvetheti). */
+    readonly draftRestored = signal(false);
+    private draftTimer?: ReturnType<typeof setTimeout>;
     constructor() {
+        this.restoreDraft();
         const type = this.route.snapshot.queryParamMap.get('type');
         if (type && ['landing', 'business', 'webshop', 'custom'].includes(type))
             this.data.website_type = type;
@@ -75,6 +84,52 @@ export class QuotePage {
             if (purpose === 'booking') this.data.features.push('Időpontfoglalás');
         }
     }
+    /** Bármely mezőváltozás után (rövid késleltetéssel) elmenti a piszkozatot. */
+    @HostListener('input') @HostListener('change') @HostListener('click')
+    scheduleDraftSave(): void {
+        if (this.sent() !== null) return;
+        clearTimeout(this.draftTimer);
+        this.draftTimer = setTimeout(() => this.saveDraft(), 400);
+    }
+
+    ngOnDestroy(): void { clearTimeout(this.draftTimer); if (this.sent() === null) this.saveDraft(); }
+
+    private saveDraft(): void {
+        const { turnstile_token: _t, website: _w, privacy_notice_acknowledged: _p, ...data } = this.data;
+        const meaningful = !!(data.website_type || data.project_description?.trim() || data.customer_name?.trim() || data.email?.trim());
+        try {
+            if (!meaningful) { localStorage.removeItem(DRAFT_KEY); return; }
+            const draft: QuoteDraft = { v: 1, savedAt: Date.now(), step: this.step(), inspiration: this.inspiration, data };
+            localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+        } catch { /* privát mód / tele tárhely: a piszkozat nem kritikus */ }
+    }
+
+    private restoreDraft(): void {
+        // A tervezőből érkező, előre kitöltött kérést nem írjuk felül egy régi piszkozattal.
+        if (this.route.snapshot.queryParamMap.get('from')) return;
+        try {
+            const raw = localStorage.getItem(DRAFT_KEY);
+            if (!raw) return;
+            const draft = JSON.parse(raw) as QuoteDraft;
+            if (draft?.v !== 1 || Date.now() - draft.savedAt > DRAFT_MAX_AGE || typeof draft.data !== 'object') { localStorage.removeItem(DRAFT_KEY); return; }
+            const allowed = Object.keys(this.data) as (keyof QuotePayload)[];
+            for (const key of allowed) {
+                if (key in draft.data && !['turnstile_token', 'website', 'privacy_notice_acknowledged'].includes(key)) {
+                    (this.data as unknown as Record<string, unknown>)[key] = (draft.data as Record<string, unknown>)[key];
+                }
+            }
+            this.inspiration = typeof draft.inspiration === 'string' ? draft.inspiration : '';
+            this.step.set(Math.min(4, Math.max(1, Number(draft.step) || 1)));
+            this.draftRestored.set(true);
+        } catch { /* sérült piszkozat: egyszerűen üres űrlap */ }
+    }
+
+    /** Piszkozat elvetése: üres űrlap az elejéről. */
+    discardDraft(): void {
+        try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
+        location.reload();
+    }
+
     minDate() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
     toggle(list: 'colors' | 'features', value: string) { const a = this.data[list]; this.data[list] = a.includes(value) ? a.filter(v => v !== value) : [...a, value]; }
     next() {
@@ -115,7 +170,7 @@ export class QuotePage {
         }
         this.sending.set(true);
         this.loader.start(['Adatok ellenőrzése…', 'Ajánlatkérés rögzítése…', 'Visszaigazolás előkészítése…']);
-        this.api.sendQuote({ ...this.data, inspiration_urls: urls, desired_deadline: this.data.desired_deadline || null }).subscribe({ next: r => { this.sentPromo.set(r.promo_percent ?? null); this.sent.set(r.reference); this.sending.set(false); this.loader.succeed('Ajánlatkérés elküldve!'); window.scrollTo({ top: 0, behavior: 'smooth' }); }, error: (e: HttpErrorResponse) => {
+        this.api.sendQuote({ ...this.data, inspiration_urls: urls, desired_deadline: this.data.desired_deadline || null }).subscribe({ next: r => { try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ } clearTimeout(this.draftTimer); this.sentPromo.set(r.promo_percent ?? null); this.sent.set(r.reference); this.sending.set(false); this.loader.succeed('Ajánlatkérés elküldve!'); window.scrollTo({ top: 0, behavior: 'smooth' }); }, error: (e: HttpErrorResponse) => {
                 this.sending.set(false); this.loader.stop();
                 this.captcha()?.reset();
                 if (e.error?.error_code === 'TURNSTILE_FAILED') {

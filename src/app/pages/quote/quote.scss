@@ -472,3 +472,8 @@
 .sent-icon {background:var(--premium-primary);border-radius:50%;box-shadow:0 0 40px var(--k-6664fd-50);color:#fff;}
 .prefill-note {border-color:var(--premium-rim);background:var(--premium-panel);}
 @media(max-width:640px){.quote-heading h1{font-size:clamp(38px,9vw,51px)}.wizard-main,.sent-card{border-radius:17px}}
+
+/* visszatöltött piszkozat jelzése */
+.draft-note{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:16px 0 4px;padding:12px 14px;border-radius:12px;border:1px solid rgba(66,99,255,.35);background:rgba(66,99,255,.08);font-size:13px;line-height:1.5}
+.draft-note button{flex:none;border:1px solid rgba(66,99,255,.45);background:transparent;color:inherit;border-radius:99px;padding:7px 14px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.draft-note button:hover{background:#4263ff;border-color:#4263ff;color:#fff}

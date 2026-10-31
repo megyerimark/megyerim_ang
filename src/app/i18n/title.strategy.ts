@@ -15,7 +15,7 @@ export class I18nTitleStrategy extends TitleStrategy {
     private readonly i18n = inject(I18nService);
     override updateTitle(snapshot: RouterStateSnapshot): void {
         const path = toHuPath(snapshot.url);
-        if (seoFor(path, this.i18n.lang()) || serviceKeyOf(path) || path.startsWith('/munkak/')) return;
+        if (seoFor(path, this.i18n.lang()) || serviceKeyOf(path) || path.startsWith('/munkak/') || path.startsWith('/utmutatok')) return;
         const title = this.buildTitle(snapshot);
         if (title) this.title.setTitle(this.i18n.t(title));
     }
