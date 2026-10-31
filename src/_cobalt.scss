@@ -26,7 +26,8 @@ body { font-family: 'Manrope', Arial, sans-serif; }
 /* A dőlt kiemelés grotesk betűvel könnyű vágás (a Space Groteskhez nincs dőlt változat). */
 :is(h1, h2, h3, .section-title, .hero-line, .story h2) em,
 .subtle-heading { font-style: normal !important; font-weight: 300 !important; }
-.section .section-title { font-weight: 600 !important; letter-spacing: -.045em !important; line-height: 1.02 !important; font-size: clamp(34px, 3.8vw, 58px) !important; }
+/* nagyméretű, fehér, karakteres címek */
+.section .section-title { font-weight: 700 !important; letter-spacing: -.05em !important; line-height: .98 !important; font-size: clamp(38px, 4.6vw, 72px) !important; }
 :root[data-theme='light'] :is(.section-title, h1, h2, h3) { color: var(--ink); }
 :root[data-theme='light'] .mm-keep-dark :is(h1, h2, h3) { color: inherit; }
 :root[data-theme='light'] .section-title .subtle-heading { color: var(--ink-soft) !important; }
@@ -60,7 +61,8 @@ body { font-family: 'Manrope', Arial, sans-serif; }
 .mm-art--services { width: min(58vw, 860px); top: -40px; right: -12vw; rotate: -8deg; opacity: .9; }
 .mm-art--about { width: min(52vw, 760px); bottom: -60px; right: -14vw; rotate: 14deg; opacity: .55; animation-delay: -5s; }
 .mm-art--concepts { width: min(34vw, 480px); top: -30px; right: -9vw; rotate: 8deg; opacity: .4; animation-delay: -3s; }
-@keyframes mm-float { 50% { transform: translate3d(0, -18px, 0) rotate(1.5deg); } }
+/* a lebegés a külön translate tulajdonságon fut, így a GSAP görgetési mozgása (transform) hozzáadódik, nem írja felül */
+@keyframes mm-float { 50% { translate: 0 -18px; } }
 @media (max-width: 760px) {
   .mm-art--services { width: 110vw; top: -20px; right: -50vw; opacity: .45; }
   .mm-art--about, .mm-art--concepts { opacity: .3; width: 90vw; right: -40vw; }

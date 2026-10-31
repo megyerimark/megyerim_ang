@@ -117,11 +117,13 @@ export class Navbar implements OnInit, OnDestroy {
         document.body.style.removeProperty('overflow');
     }
 
-    private observeSections(): void {
+    private observeSections(attempt = 0): void {
         this.observer?.disconnect();
         if (!this.onHome || !('IntersectionObserver' in window)) return;
         const ids = this.items.map(item => item.spy).filter((id): id is string => !!id);
         const targets = ids.map(id => document.getElementById(id)).filter((el): el is HTMLElement => !!el);
+        // a főoldal nyitójelenet alatti része késleltetve (üresjáratban) renderelődik – addig újrapróbáljuk
+        if (targets.length < ids.length - 1 && attempt < 8) { setTimeout(() => this.observeSections(attempt + 1), 700); }
         if (!targets.length) return;
         this.observer = new IntersectionObserver(entries => {
             const visible = entries.filter(entry => entry.isIntersecting)

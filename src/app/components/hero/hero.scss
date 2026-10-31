@@ -3,11 +3,13 @@
 :host{display:block}
 .flight{--bg:#04070e;--ink:#fff;--soft:#aab4ca;--line:rgba(255,255,255,.16);--glass:rgba(10,18,38,.72);--glass-line:rgba(120,150,255,.28);
   --pillar:linear-gradient(180deg,rgba(0,217,255,0) 0%,rgba(66,99,255,.55) 55%,rgba(150,185,255,.95) 100%);--pillar-glow:0 0 26px rgba(66,99,255,.55);
-  --core:url('/brand/rock.webp');--core-w:2.7;
+  --core:image-set(url('/brand/rock-820.webp') 1x,url('/brand/rock.webp') 2x);--core-w:2.7;
   --btn-primary-bg:#fff;--btn-primary-ink:#0f1627;
   position:relative;height:560vh;background:var(--bg);color:var(--ink)}
-.flight-pin{--p:0;--copy:0;--burst:0;--fly:0;--cx:69%;--cy:50%;--R:200px;position:sticky;top:0;height:100svh;min-height:600px;overflow:hidden;isolation:isolate}
+/* a gyűrű helye CSS-ből is ugyanaz, mint amit a motor kiszámol – így a motor késleltetett indulásakor nem ugrik a kép */
+.flight-pin{--p:0;--copy:0;--burst:0;--fly:0;--cx:69%;--cy:50%;--R:min(20vw,max(32svh,192px));position:sticky;top:0;height:100svh;min-height:600px;overflow:hidden;isolation:isolate}
 .flight-bg{position:absolute;inset:0;z-index:0;background:
+  radial-gradient(circle at var(--cx) var(--cy),rgba(58,91,255,calc(.36 * (1 - var(--burst)))) 0,transparent calc(var(--R) * (1.5 + var(--burst) * 2))),
   radial-gradient(ellipse 40% 50% at var(--cx) var(--cy),rgba(46,86,255,calc(.42 - var(--fly) * .2)),transparent 70%),
   radial-gradient(ellipse 90% 55% at 50% 115%,rgba(40,70,200,calc(.12 + var(--fly) * .25)),transparent 70%)}
 
@@ -38,7 +40,9 @@
   background:var(--core) center/contain no-repeat;transform:translate(-50%,-50%) scale(calc(1 + var(--burst) * 1.5)) rotate(calc(var(--burst) * 14deg));
   opacity:calc(1 - var(--burst) * 1.7);filter:drop-shadow(0 30px 60px rgba(0,10,60,.35));animation:core-float 9s ease-in-out infinite}
 @keyframes core-float{50%{margin-top:-14px}}
-.flight-fx{position:absolute;inset:0;z-index:3;width:100%;height:100%;pointer-events:none}
+.flight-fx{position:absolute;inset:0;z-index:3;width:100%;height:100%;pointer-events:none;opacity:0;transition:opacity 1.2s ease}
+/* a részecskegyűrű az oldal betöltése után indul (az első képernyő gyorsabban jelenik meg) */
+:host(.live) .flight-fx{opacity:1}
 
 /* szöveg */
 .hero-grid{position:absolute;inset:0;z-index:5;padding:96px clamp(24px,4.6vw,88px) 112px;display:flex;align-items:center;pointer-events:none}
@@ -78,7 +82,8 @@
 @media(max-width:1200px){.hero-copy{width:52vw}.hero-values{display:none}}
 /* mobil: a jelenet rögzítve marad (ez a fő élmény), a gyűrű a szöveg alatt */
 @media(max-width:760px){
-  .flight{height:520vh}
+  .flight{height:520vh;--core:url('/brand/rock-820.webp')}
+  .flight-pin{--cx:50%;--cy:77%;--R:min(32vw,max(16svh,96px))}
   .hero-grid{align-items:flex-start;padding:92px 20px 0}
   .hero-copy{width:100%}
   .hero-brand{margin-bottom:22px}.hero-brand ul{display:none}

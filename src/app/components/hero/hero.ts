@@ -20,6 +20,7 @@ import { FlightEngine } from './flight-engine';
 export class Hero implements AfterViewInit, OnDestroy {
     readonly i18n = inject(I18nService);
     private readonly zone = inject(NgZone);
+    private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
     @ViewChild('flight', { static: true }) private section!: ElementRef<HTMLElement>;
     @ViewChild('pin', { static: true }) private pin!: ElementRef<HTMLElement>;
     @ViewChild('world', { static: true }) private world!: ElementRef<HTMLElement>;
@@ -63,24 +64,42 @@ export class Hero implements AfterViewInit, OnDestroy {
 
     ngAfterViewInit(): void {
         if (typeof window === 'undefined' || this.reduced) return;
-        const world = this.world.nativeElement;
-        const total = this.chapters.length;
+        // A motor (vászon-animáció) csak a betöltés után, üresjáratban indul – így nem lassítja az első megjelenést
+        // (mobil PageSpeed). Ha a látogató közben már görget vagy megérinti a képernyőt, azonnal elindul.
         this.zone.runOutsideAngular(() => {
-            this.engine = new FlightEngine({
-                section: this.section.nativeElement,
-                pin: this.pin.nativeElement,
-                canvas: this.canvas.nativeElement,
-                panels: Array.from(world.querySelectorAll<HTMLElement>('.fpanel')),
-                finale: world.querySelector<HTMLElement>('.ffinale')!,
-                pillars: Array.from(world.querySelectorAll<HTMLElement>('.pillar')),
-                onChapter: index => {
-                    this.chapterEl.nativeElement.textContent = this.i18n.t(this.chapters[index]);
-                    this.counterEl.nativeElement.textContent = `0${index + 1} / 0${total}`;
-                },
-            });
-            this.engine.start();
+            const kick = () => this.startEngine();
+            const idle = () => { if (typeof window.requestIdleCallback === 'function') window.requestIdleCallback(kick, { timeout: 2500 }); else setTimeout(kick, 1200); };
+            if (document.readyState === 'complete') idle(); else window.addEventListener('load', idle, { once: true });
+            for (const ev of ['scroll', 'pointerdown', 'keydown'] as const) window.addEventListener(ev, kick, { once: true, passive: true });
+            this.unbindKick = () => { for (const ev of ['scroll', 'pointerdown', 'keydown']) window.removeEventListener(ev, kick); window.removeEventListener('load', idle); };
         });
     }
 
-    ngOnDestroy(): void { this.engine?.destroy(); }
+    private unbindKick?: () => void;
+
+    private startEngine(): void {
+        if (this.engine || this.destroyed) return;
+        this.unbindKick?.();
+        const world = this.world.nativeElement;
+        const total = this.chapters.length;
+        // a panelek képei is csak most töltődnek le (a nyitóképen még nem látszanak)
+        world.querySelectorAll<HTMLElement>('.fpanel-img[data-img]').forEach(el => el.style.backgroundImage = `url(${el.dataset['img']})`);
+        this.engine = new FlightEngine({
+            section: this.section.nativeElement,
+            pin: this.pin.nativeElement,
+            canvas: this.canvas.nativeElement,
+            panels: Array.from(world.querySelectorAll<HTMLElement>('.fpanel')),
+            finale: world.querySelector<HTMLElement>('.ffinale')!,
+            pillars: Array.from(world.querySelectorAll<HTMLElement>('.pillar')),
+            onChapter: index => {
+                this.chapterEl.nativeElement.textContent = this.i18n.t(this.chapters[index]);
+                this.counterEl.nativeElement.textContent = `0${index + 1} / 0${total}`;
+            },
+        });
+        this.engine.start();
+        this.host.nativeElement.classList.add('live');
+    }
+
+    private destroyed = false;
+    ngOnDestroy(): void { this.destroyed = true; this.unbindKick?.(); this.engine?.destroy(); }
 }

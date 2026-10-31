@@ -1,9 +1,11 @@
 import { Routes } from '@angular/router';
 import { adminGuard } from './core/admin.guard';
+import { Home } from './pages/home/home';
 export const routes: Routes = [
     {
         path: '',
-        loadComponent: () => import('./pages/home/home').then(module => module.Home),
+        // a főoldal a fő csomagban van: egy hálózati körrel hamarabb jelenik meg az első képernyő (LCP)
+        component: Home,
         title: 'Ne csak jelen legyél online. Emelkedj ki. | Megyeri Márk Máté'
     },
     {

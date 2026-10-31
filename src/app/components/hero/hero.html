@@ -8,7 +8,7 @@
         @for (pl of pillars; track $index) {<i class="pillar" aria-hidden="true" [style.height.px]="pl.h"></i>}
         @for (st of steps; track st.n) {
           <article class="fpanel">
-            <div class="fpanel-img" [style.background-image]="'url(' + st.img + ')'"></div>
+            <div class="fpanel-img" [attr.data-img]="st.img" [style.background-image]="reduced ? 'url(' + st.img + ')' : null"></div>
             <div class="fpanel-meta">
               <small>{{ st.n }} / {{ st.k | t }}</small>
               <h3>{{ st.title | t }}</h3>
