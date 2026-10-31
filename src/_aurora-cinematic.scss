@@ -49,9 +49,9 @@ body :is(.quote-page,.studio-page,.consultation-page,.case-page,.client-project-
 }
 body :is(.quote-page,.studio-page,.consultation-page,.case-page,.client-project-page,.quiz-page)::after{
   content:'';position:absolute;inset:0;pointer-events:none;z-index:-1;
-  background:url('/brand/rock-820.webp') no-repeat right -7vw top 40px / min(40vw,560px) auto,
-    radial-gradient(ellipse 30% 26% at 84% 20%,rgba(66,99,255,.2),transparent 80%);
-  opacity:.5;
+  background:url('/brand/rock-820.webp') no-repeat right -9vw top 150px / min(36vw,500px) auto,
+    radial-gradient(ellipse 30% 26% at 84% 26%,rgba(66,99,255,.2),transparent 80%);
+  opacity:.42; /* a vissza-link fölött nem takar: a szikla a fejléc alá kerül */
 }
 @media(max-width:760px){body :is(.quote-page,.studio-page,.consultation-page,.case-page,.client-project-page,.quiz-page)::after{background-size:70vw auto,auto;background-position:right -26vw top 20px,center;opacity:.32}}
 body :is(.quote-page,.studio-page,.consultation-page,.case-page,.client-project-page,.quiz-page) :where(.card,.panel,.quiz-card,.service-card,.form-card,.summary-card){
