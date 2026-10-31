@@ -17,6 +17,7 @@
  */
 import { build } from 'esbuild';
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -106,7 +107,7 @@ function renderPage({ lang, path, alternates, title, description, body, jsonLd =
         .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${esc(description)}$2`)
         .replace('<meta charset="utf-8">', `<meta charset="utf-8">\n    ${head}`)
         .replace(/<app-root><\/app-root>/, `<app-root><div class="prerender-content">${body}</div></app-root>`);
-    if (image) html = html.replace(/(<meta property="og:image" content=")[^"]*(")/, `$1${esc(image)}$2`).replace(/(<meta name="twitter:image" content=")[^"]*(")/, `$1${esc(image)}$2`);
+    if (image) html = html.replace(/(<meta property="og:image:alt" content=")[^"]*(")/, `$1${esc(title)}$2`).replace(/(<meta property="og:image" content=")[^"]*(")/, `$1${esc(image)}$2`).replace(/(<meta name="twitter:image" content=")[^"]*(")/, `$1${esc(image)}$2`);
     return html;
 }
 
@@ -114,6 +115,9 @@ const nav = (lang) => `<nav><a href="${link(lang, 'home')}">${esc(tr(lang, 'Főo
     .map((key) => `<a href="${link(lang, key)}">${esc(SERVICES[key.slice(8)].copy[lang].label)}</a>`).join(' · ')} · <a href="${link(lang, 'quote')}">${esc(tr(lang, 'Ajánlatkérés'))}</a> · <a href="${link(lang, 'consultation')}">${esc(tr(lang, 'Kapcsolat'))}</a></nav>`;
 const footer = (lang) => `<footer><a href="${link(lang, 'privacy')}">${esc(tr(lang, 'Adatkezelési tájékoztató'))}</a> · <a href="${link(lang, 'terms')}">${esc(tr(lang, 'ÁSZF'))}</a> · <a href="${link(lang, 'imprint')}">${esc(tr(lang, 'Impresszum'))}</a></footer>`;
 const wrap = (lang, main) => `${nav(lang)}<main>${main}</main>${footer(lang)}`;
+
+/** Oldalanként saját megosztási kép (public/og/<kulcs>-<nyelv>.jpg), ha létezik; különben az alapértelmezett. */
+const ogImage = (key, lang) => (existsSync(join(dist, 'og', `${key}-${lang}.jpg`)) ? `${SITE_URL}/og/${key}-${lang}.jpg` : undefined);
 
 const pages = [];
 const add = (file, html) => pages.push({ file, html });
@@ -141,7 +145,7 @@ for (const lang of ['hu', 'en']) {
     add(fileFor(lang === 'en' ? page.en : page.hu), renderPage({
         lang, path: lang === 'en' ? page.en : page.hu, alternates: { hu: page.hu, en: page.en },
         title: custom?.meta_title || seo.title, description: custom?.meta_description || seo.description, body,
-        image: settings?.og_image_url || undefined,
+        image: settings?.og_image_url || ogImage('home', lang),
         jsonLd: [{
             '@context': 'https://schema.org', '@type': 'FAQPage', inLanguage: lang,
             mainEntity: faq.map((item) => ({ '@type': 'Question', name: item.q, acceptedAnswer: { '@type': 'Answer', text: item.a } })),
@@ -169,6 +173,7 @@ for (const [key, def] of Object.entries(SERVICES)) {
         ].join(''));
         add(fileFor(path), renderPage({
             lang, path, alternates: { hu: page.hu, en: page.en }, title: c.seoTitle, description: c.seoDescription, body,
+            image: ogImage('service-' + key, lang),
             jsonLd: [
                 {
                     '@context': 'https://schema.org', '@type': 'Service', name: c.label, description: c.seoDescription,
@@ -203,6 +208,7 @@ for (const [key, h1] of Object.entries(H1)) {
         add(fileFor(path), renderPage({
             lang, path, alternates: { hu: page.hu, en: page.en }, title: seo.title, description: seo.description,
             body: wrap(lang, `<h1>${esc(heading)}</h1><p>${esc(seo.description)}</p>`),
+            image: ogImage(key, lang) ?? ogImage('home', lang),
             jsonLd: [crumbs(lang, [{ name: tr(lang, 'Főoldal'), path: link(lang, 'home') }, { name: heading, path }])],
         }));
     }
