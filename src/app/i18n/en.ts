@@ -844,4 +844,5 @@ export const EN: Record<string, string> = {
   "Webshop készítés": "Webshop development",
   "Egyedi webfejlesztés": "Custom web development",
   "Weboldal karbantartás": "Website maintenance",
+  "Az időpontot rögzítettem. A visszaigazolást e-mailben is elküldöm, naptárfájllal együtt – ha nem találod, nézd meg a Spam / Promóciók mappát is.": "Your booking is recorded. I'll also send a confirmation email with a calendar file \u2013 if you can't find it, check your Spam / Promotions folder.",
 };
