@@ -21,8 +21,8 @@
           #{{sent()}}
         </strong>
       </div>
-      <a routerLink="/" class="btn btn-primary">{{ 'Vissza a főoldalra ↗︎' | t }}</a>
-      <a routerLink="/konzultacio" class="btn btn-outline">{{ 'Konzultációs időpontot foglalok ↗︎' | t }}</a>
+      <a [routerLink]="'/' | lp" class="btn btn-primary">{{ 'Vissza a főoldalra ↗︎' | t }}</a>
+      <a [routerLink]="'/konzultacio' | lp" class="btn btn-outline">{{ 'Konzultációs időpontot foglalok ↗︎' | t }}</a>
     </section>
     }
  @else{
@@ -41,7 +41,7 @@
           {{ 'Néhány rövid lépésben összeállíthatod, milyen weboldalt szeretnél. Ez még nem jár megrendelési kötelezettséggel.' | t }}
         </p>
       </div>
-      <a routerLink="/" class="exit-link">
+      <a [routerLink]="'/' | lp" class="exit-link">
         {{ '← Vissza a főoldalra' | t }}
       </a>
     </div>
@@ -270,7 +270,7 @@
             <input type="checkbox" [(ngModel)]="data.privacy_notice_acknowledged">
             <span>
               {{ 'Elolvastam és tudomásul vettem az' | t }}
-              <a routerLink="/adatkezeles" target="_blank" rel="noopener noreferrer">
+              <a [routerLink]="'/adatkezeles' | lp" target="_blank" rel="noopener noreferrer">
                 {{ 'adatkezelési tájékoztatót' | t }}
               </a>
               . *

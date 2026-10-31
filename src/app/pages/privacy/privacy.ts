@@ -2,11 +2,12 @@ import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { I18nService } from '../../i18n/i18n.service';
 import { LEGAL_INFO, missingLegalFields } from '../../core/legal-info';
+import { LpPipe } from '../../i18n/lp.pipe';
 
 @Component({
     selector: 'app-privacy',
     standalone: true,
-    imports: [RouterLink],
+    imports: [LpPipe, RouterLink],
     templateUrl: './privacy.html',
     styleUrl: './privacy.scss'
 })

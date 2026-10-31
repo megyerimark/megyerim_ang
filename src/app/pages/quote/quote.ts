@@ -9,7 +9,8 @@ import { I18nService } from '../../i18n/i18n.service';
 import { Turnstile } from '../../components/turnstile/turnstile';
 import { SubmitLoaderService } from '../../core/submit-loader.service';
 import { PromoNote } from '../../components/promo-note/promo-note';
-@Component({ selector: 'app-quote', standalone: true, imports: [FormsModule, RouterLink, TPipe, Turnstile, PromoNote], templateUrl: './quote.html', styleUrl: './quote.scss' })
+import { LpPipe } from '../../i18n/lp.pipe';
+@Component({ selector: 'app-quote', standalone: true, imports: [LpPipe, FormsModule, RouterLink, TPipe, Turnstile, PromoNote], templateUrl: './quote.html', styleUrl: './quote.scss' })
 export class QuotePage {
     readonly i18n = inject(I18nService);
     private api = inject(ApiService);

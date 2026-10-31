@@ -2,7 +2,7 @@
   <div class="client-container">
     <header class="client-heading">
       <div><span class="client-eyebrow">MEGYERI MÁRK MÁTÉ / PRIVÁT FELÜLET</span><h1>Ajánlatod és projekted állapota.</h1><p>Átlátható következő lépések, egyetlen helyen.</p></div>
-      <a routerLink="/" class="client-back">← Vissza a főoldalra</a>
+      <a [routerLink]="'/' | lp" class="client-back">← Vissza a főoldalra</a>
     </header>
     @if(loading()) {<section class="client-panel" role="status">Projektadatok betöltése…</section>}
     @if(error()) {<div class="client-alert" role="alert">{{error()}}</div>}
@@ -40,7 +40,7 @@
           @if(p.status==='accepted') {<div class="client-success" role="status">{{p.proposal_accepted_at?'Az ajánlat elfogadását rögzítettük: '+date(p.proposal_accepted_at):'Az ajánlat elfogadott állapotban van.'}}</div>}
           @else if(canAccept(p)){
             <div class="accept-area">
-              <label><input type="checkbox" [checked]="consent()" (change)="consent.set(!consent())"><span>Elolvastam a teljes ajánlatot és az <a routerLink="/aszf" target="_blank" rel="noopener">Általános Szerződési Feltételeket</a>, és elfogadom a megadott tartalmat és összeget. Tudomásul veszem, hogy az elfogadással a szerződés létrejön.</span></label>
+              <label><input type="checkbox" [checked]="consent()" (change)="consent.set(!consent())"><span>Elolvastam a teljes ajánlatot és az <a [routerLink]="'/aszf' | lp" target="_blank" rel="noopener">Általános Szerződési Feltételeket</a>, és elfogadom a megadott tartalmat és összeget. Tudomásul veszem, hogy az elfogadással a szerződés létrejön.</span></label>
               <label class="accept-optional"><input type="checkbox" [checked]="earlyStart()" (change)="earlyStart.set(!earlyStart())"><span>Magánszemélyként (fogyasztóként) kifejezetten kérem, hogy a munka a 14 napos elállási határidő lejárta előtt elkezdődjön. Tudomásul veszem, hogy elállás esetén az addig elvégzett munka arányos díját meg kell fizetnem. <small>(Cégeknek nem szükséges.)</small></span></label>
               <button class="btn btn-primary" type="button" [disabled]="!consent()||accepting()" (click)="accept()">{{accepting()?'Elfogadás folyamatban…':(p.deposit_amount_huf && p.online_payment ? 'Elfogadom, és tovább az előleg fizetéséhez ↗︎' : 'Ajánlat elfogadása ↗︎')}}</button>
             </div>

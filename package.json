@@ -4,14 +4,15 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build && node scripts/prerender.mjs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "start:plain": "ng serve",
     "check:api": "node scripts/check-connection.mjs",
     "palettes": "node scripts/build-palettes.mjs",
     "palettes:photos": "node scripts/build-palette-photos.mjs && node scripts/build-palettes.mjs",
-    "seasonal-art": "node scripts/build-seasonal-art.mjs"
+    "seasonal-art": "node scripts/build-seasonal-art.mjs",
+    "prerender": "node scripts/prerender.mjs"
   },
   "prettier": {
     "printWidth": 100,

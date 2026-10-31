@@ -3,6 +3,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
 import { PaletteService, Season } from '../../core/palette.service';
+import { toHuPath } from '../../core/site-routes';
 
 interface Particle { x: number; size: number; dur: number; delay: number; drift: number; tone: number; }
 interface Tree { x: number; h: number; back: boolean; src: string; flip: boolean; decorated: boolean; low: boolean; }
@@ -89,5 +90,5 @@ export class SeasonalDecor {
         inject(DestroyRef).onDestroy(() => removeEventListener('scroll', onScroll));
     }
 
-    private isHome(): boolean { return this.router.url.split(/[?#]/)[0] === '/'; }
+    private isHome(): boolean { return toHuPath(this.router.url) === '/'; }
 }

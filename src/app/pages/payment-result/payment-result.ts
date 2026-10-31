@@ -1,12 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TPipe } from '../../i18n/t.pipe';
+import { LpPipe } from '../../i18n/lp.pipe';
 
 /** A Stripe fizetési oldaláról visszatérve. A tényleges jóváírás a webhookból történik, nem innen. */
 @Component({
     selector: 'app-payment-result',
     standalone: true,
-    imports: [RouterLink, TPipe],
+    imports: [LpPipe, RouterLink, TPipe],
     template: `
       <main class="container legal payment-result">
         <span class="overline">{{ 'FIZETÉS' | t }}</span>
@@ -18,7 +19,7 @@ import { TPipe } from '../../i18n/t.pipe';
           <p>{{ 'Nem történt terhelés. A projektoldaladon bármikor újrakezdheted, vagy válaszd az átutalást – írj, és elküldöm a díjbekérőt.' | t }}</p>
         }
         <p>{{ 'A projektoldaladat az e-mailben kapott személyes linkkel nyithatod meg újra.' | t }}</p>
-        <a class="btn btn-outline" routerLink="/">{{ 'Vissza a főoldalra' | t }}</a>
+        <a class="btn btn-outline" [routerLink]="'/' | lp">{{ 'Vissza a főoldalra' | t }}</a>
       </main>
     `,
     styleUrl: '../privacy/privacy.scss'

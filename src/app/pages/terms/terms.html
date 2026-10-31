@@ -1,6 +1,6 @@
 <main class="container legal">
 @if (i18n.lang() === 'en') {
-  <a routerLink="/" class="back">← Back to home</a>
+  <a [routerLink]="'/' | lp" class="back">← Back to home</a>
   <span class="overline">LEGAL INFORMATION</span>
   <h1>General Terms and Conditions</h1>
   <p class="legal-meta">Version: {{ version }}@if (legal.effectiveDate) { · Effective from: {{ legal.effectiveDate }} }</p>
@@ -104,9 +104,9 @@
       governed by Hungarian law, in particular the Civil Code and Act CVIII of 2001 on electronic commerce.
     </p>
   </section>
-  <p class="legal-meta">Related: <a routerLink="/adatkezeles">Privacy notice</a> · <a routerLink="/impresszum">Legal notice</a></p>
+  <p class="legal-meta">Related: <a [routerLink]="'/adatkezeles' | lp">Privacy notice</a> · <a [routerLink]="'/impresszum' | lp">Legal notice</a></p>
 } @else {
-  <a routerLink="/" class="back">← Vissza a főoldalra</a>
+  <a [routerLink]="'/' | lp" class="back">← Vissza a főoldalra</a>
   <span class="overline">JOGI INFORMÁCIÓK</span>
   <h1>Általános Szerződési Feltételek</h1>
   <p class="legal-meta">Verzió: {{ version }}@if (legal.effectiveDate) { · Hatályos: {{ legal.effectiveDate }} }</p>
@@ -220,7 +220,7 @@
   </section>
 
   <p class="legal-meta">
-    Kapcsolódó: <a routerLink="/adatkezeles">Adatkezelési tájékoztató</a> · <a routerLink="/impresszum">Impresszum</a>
+    Kapcsolódó: <a [routerLink]="'/adatkezeles' | lp">Adatkezelési tájékoztató</a> · <a [routerLink]="'/impresszum' | lp">Impresszum</a>
   </p>
 }
 </main>

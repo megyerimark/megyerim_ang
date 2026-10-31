@@ -13,6 +13,8 @@ import { Project, Service, SiteSettings, Testimonial, SITE_DEFAULTS } from '../.
 import { TPipe } from '../../i18n/t.pipe';
 import { BrandMark } from '../../components/brand-mark/brand-mark';
 import { I18nService } from '../../i18n/i18n.service';
+import { LpPipe } from '../../i18n/lp.pipe';
+import { DEFAULT_HERO_DESCRIPTION, DEFAULT_HERO_HEADLINE, FAQS, PROCESS_STEPS } from './home-content';
 type PreviewPurpose = 'business' | 'booking' | 'system';
 type PreviewStyle = 'graphite' | 'ivory' | 'ocean';
 
@@ -33,7 +35,7 @@ interface PreviewPalette {
 @Component({
     selector: 'app-home',
     standalone: true,
-    imports: [Hero, RouterLink, DecimalPipe, PremiumReveal, MmFx, ExternalReviews, TPipe, PromoSpotlight, NewsletterSignup, BrandMark],
+    imports: [LpPipe, Hero, RouterLink, DecimalPipe, PremiumReveal, MmFx, ExternalReviews, TPipe, PromoSpotlight, NewsletterSignup, BrandMark],
     templateUrl: './home.html',
     styleUrl: './home.scss'
 })
@@ -63,12 +65,12 @@ export class Home implements OnInit {
     readonly heroHeadline = computed(() => {
         const value = this.settings().hero_headline?.trim();
         return !value || value === 'Prémium weboldalak, amelyek nemcsak szépek.'
-            ? 'Ne csak jelen legyél online. Emelkedj ki.' : value;
+            ? DEFAULT_HERO_HEADLINE : value;
     });
     readonly heroDescription = computed(() => {
         const value = this.settings().hero_description?.trim();
         return !value || ['Egyedi, modern weboldalak vállalkozásoknak.', 'Egyedi, modern weboldalakat készítek vállalkozásoknak – átgondolt dizájnnal és üzleti szemlélettel.'].includes(value)
-            ? 'Prémium weboldalakat és egyedi webes rendszereket készítek vállalkozásoknak. Átgondolt megjelenés, könnyű kapcsolatfelvétel, személyes együttműködés.' : value;
+            ? DEFAULT_HERO_DESCRIPTION : value;
     });
     readonly comparisonView = signal<'before' | 'after'>('after');
     readonly comparisonPosition = signal(42);
@@ -110,6 +112,14 @@ export class Home implements OnInit {
             { key: 'd3', kind: kinds[2], type: types[2], service: null, title: 'Egyedi webes rendszerek', summary: 'Adminfelületek és funkciók, amelyek valódi munkafolyamatokat könnyítenek meg.' },
         ];
     });
+    /** A szolgáltatási céloldalak (belső linkelés a főoldalról; a cím magyarul, az lp pipe fordítja). */
+    readonly servicePages = [
+        { path: '/weboldal-keszites', label: 'Weboldal készítés' },
+        { path: '/landing-oldal-keszites', label: 'Landing oldal készítés' },
+        { path: '/webshop-keszites', label: 'Webshop készítés' },
+        { path: '/egyedi-webfejlesztes', label: 'Egyedi webfejlesztés' },
+        { path: '/weboldal-karbantartas', label: 'Weboldal karbantartás' },
+    ];
     readonly sxLabel: Record<string, string> = { site: 'WEBOLDAL', landing: 'KONVERZIÓ', system: 'RENDSZER', brand: 'ARCULAT' };
     readonly chartBars = [.38, .52, .44, .7, .58, .82, .66, .94];
     readonly realProjects = computed(() => this.projects().filter(project => !project.is_demo));
@@ -151,54 +161,8 @@ export class Home implements OnInit {
         this.previewModes.find(mode => mode.value === this.selectedPurpose()) ?? this.previewModes[0]
     );
 
-    readonly processSteps = [
-        {
-            number: '01',
-            title: 'Megismerem a céljaidat',
-            description: 'Rövid egyeztetés: kinek szól az oldal, milyen problémát oldjon meg, és mi számít sikernek.'
-        },
-        {
-            number: '02',
-            title: 'Kialakítjuk a koncepciót',
-            description: 'Vizuális irány, oldaltérkép, felhasználói út és az elvárt funkciók pontosítása.'
-        },
-        {
-            number: '03',
-            title: 'Megépítem és finomítjuk',
-            description: 'Fejlesztés, reszponzív kialakítás, közös visszajelzések és tesztelés.'
-        },
-        {
-            number: '04',
-            title: 'Élesítünk és támogatlak',
-            description: 'Átadás, beállítások, betanítás és igény esetén későbbi karbantartás.'
-        }
-    ];
-    readonly faqs = [
-        {
-            question: 'Mennyibe kerül egy egyedi weboldal?',
-            answer: 'Az ár a funkcióktól, a tartalom mennyiségétől és a tervezési igénytől függ. Az ajánlatkérőben megadhatod a költségkeretedet, és ahhoz igazítva egyeztetünk.'
-        },
-        {
-            question: 'Mennyi idő alatt készül el?',
-            answer: 'Az ütemezést az igények, a jóváhagyások és a szükséges tartalmak alapján határozzuk meg. A részleteket még a fejlesztés előtt tisztázzuk.'
-        },
-        {
-            question: 'Később is módosítható a weboldal?',
-            answer: 'Igen. A későbbi módosítások és az igény szerinti rendszeres karbantartás is egyeztethető.'
-        },
-        {
-            question: 'Csak egyszerű bemutatkozó oldalt készítesz?',
-            answer: 'Nem. Egyedi funkciók, adminfelületek és adatbázishoz kapcsolódó webes rendszerek tervezésére is kérhetsz ajánlatot.'
-        },
-        {
-            question: 'Mi történik, miután elküldtem az ajánlatkérést?',
-            answer: 'Átnézem, amit leírtál, és e-mailben vagy a megadott módon felveszem veled a kapcsolatot. Ha kell, rövid egyeztetéssel pontosítjuk az igényeket, majd írásos ajánlatot kapsz – ez nem kötelez semmire.'
-        },
-        {
-            question: 'Nem tudom pontosan, mire van szükségem. Kérhetek így ajánlatot?',
-            answer: 'Igen. A kvíz és az ajánlatkérő is segít rendszerezni az elképzeléseidet, a hiányzó részleteket pedig közösen tisztázzuk.'
-        }
-    ];
+    readonly processSteps = PROCESS_STEPS;
+    readonly faqs = FAQS;
     /** A késleltetett tartalom betöltése után a horgonyhoz görget (a router saját görgetése ekkor még nem találja az elemet). */
     private scrollToAnchorWhenReady(): void {
         const id = this.anchor;

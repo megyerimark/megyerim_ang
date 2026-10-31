@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="hu">
   <head>
+    <!-- Ez az alap (shell) HTML. A nyilvános oldalak saját, előre renderelt HTML-t kapnak (scripts/prerender.mjs → _p/):
+         saját címmel, leírással, canonicallal, hreflanggal és tartalommal. Ezt csak a privát és az ismeretlen címek kapják. -->
     <meta charset="utf-8">
     <title>Weboldal készítés és egyedi webfejlesztés | Megyeri Márk Máté</title>
     <base href="/">
@@ -12,17 +14,12 @@
     <meta name="theme-color" content="#0d111b">
     <meta name="robots" content="index, follow">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <link rel="canonical" href="https://megyerimarkmate.hu/">
-    <link rel="alternate" hreflang="hu" href="https://megyerimarkmate.hu/">
-    <link rel="alternate" hreflang="en" href="https://megyerimarkmate.hu/?lang=en">
-    <link rel="alternate" hreflang="x-default" href="https://megyerimarkmate.hu/">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="hu_HU">
     <meta property="og:locale:alternate" content="en_US">
     <meta property="og:site_name" content="Megyeri Márk Máté | Webfejlesztés">
     <meta property="og:title" content="Ne csak jelen legyél online. Emelkedj ki. | Megyeri Márk Máté">
     <meta property="og:description" content="Prémium weboldalak és webes rendszerek, amelyek a márkádat építik és támogatják az ügyfélszerzést.">
-    <meta property="og:url" content="https://megyerimarkmate.hu/">
     <meta property="og:image" content="https://megyerimarkmate.hu/og-image.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -41,9 +38,8 @@
     <!-- A nyitókép kristálysziklája az első képernyő legnagyobb eleme (LCP): korán letöltjük (mobilon a kisebb változat). -->
     <link rel="preload" as="image" href="/brand/rock-820.webp" type="image/webp" fetchpriority="high" media="(max-width: 760px)">
     <link rel="preload" as="image" imagesrcset="/brand/rock-820.webp 1x, /brand/rock.webp 2x" type="image/webp" fetchpriority="high" media="(min-width: 761px)">
-    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "ProfessionalService", "name": "Megyeri Márk Máté | Webfejlesztés", "alternateName": "Márk Máté Megyeri | Web Development", "url": "https://megyerimarkmate.hu/", "logo": "https://megyerimarkmate.hu/apple-touch-icon.png", "image": "https://megyerimarkmate.hu/og-image.jpg", "description": "Egyedi weboldal, webshop és webes rendszer készítése vállalkozásoknak – online, itthon és külföldön.", "areaServed": [{"@type": "Country", "name": "Hungary"}, {"@type": "Place", "name": "Worldwide"}], "availableLanguage": ["hu", "en"], "knowsAbout": ["Weboldal készítés", "Webfejlesztés", "Webshop készítés", "Web design", "Website development", "Web application development", "Angular", "Laravel"], "hasOfferCatalog": {"@type": "OfferCatalog", "name": "Szolgáltatások / Services", "itemListElement": [{"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Egyedi weboldal készítés / Custom website design"}}, {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Webshop készítés / Web shop development"}}, {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Webes rendszerek és adminfelületek / Web applications"}}, {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Weboldal karbantartás / Website maintenance"}}]}, "founder": {"@type": "Person", "name": "Megyeri Márk Máté", "jobTitle": "Webfejlesztő / Web developer"}}</script>
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "ProfessionalService", "@id": "https://megyerimarkmate.hu/#business", "name": "Megyeri Márk Máté | Webfejlesztés", "alternateName": "Márk Máté Megyeri | Web Development", "url": "https://megyerimarkmate.hu/", "logo": "https://megyerimarkmate.hu/apple-touch-icon.png", "image": "https://megyerimarkmate.hu/og-image.jpg", "description": "Egyedi weboldal, webshop és webes rendszer készítése vállalkozásoknak – online, itthon és külföldön.", "areaServed": [{"@type": "Country", "name": "Hungary"}, {"@type": "Place", "name": "Worldwide"}], "availableLanguage": ["hu", "en"], "knowsAbout": ["Weboldal készítés", "Webfejlesztés", "Webshop készítés", "Web design", "Website development", "Web application development", "Angular", "Laravel"], "hasOfferCatalog": {"@type": "OfferCatalog", "name": "Szolgáltatások / Services", "itemListElement": [{"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Egyedi weboldal készítés / Custom website design"}}, {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Webshop készítés / Web shop development"}}, {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Webes rendszerek és adminfelületek / Web applications"}}, {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Weboldal karbantartás / Website maintenance"}}]}, "founder": {"@type": "Person", "name": "Megyeri Márk Máté", "jobTitle": "Webfejlesztő / Web developer"}}</script>
     <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "Megyeri Márk Máté | Webfejlesztés", "url": "https://megyerimarkmate.hu/", "inLanguage": ["hu", "en"]}</script>
-    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Mennyibe kerül egy egyedi weboldal?", "acceptedAnswer": {"@type": "Answer", "text": "Az ár a funkcióktól, a tartalom mennyiségétől és a tervezési igénytől függ. Az ajánlatkérőben megadhatod a költségkeretedet, és ahhoz igazítva egyeztetünk."}}, {"@type": "Question", "name": "Mennyi idő alatt készül el?", "acceptedAnswer": {"@type": "Answer", "text": "Az ütemezést az igények, a jóváhagyások és a szükséges tartalmak alapján határozzuk meg. A részleteket még a fejlesztés előtt tisztázzuk."}}, {"@type": "Question", "name": "Később is módosítható a weboldal?", "acceptedAnswer": {"@type": "Answer", "text": "Igen. A későbbi módosítások és az igény szerinti rendszeres karbantartás is egyeztethető."}}, {"@type": "Question", "name": "Csak egyszerű bemutatkozó oldalt készítesz?", "acceptedAnswer": {"@type": "Answer", "text": "Nem. Egyedi funkciók, adminfelületek és adatbázishoz kapcsolódó webes rendszerek tervezésére is kérhetsz ajánlatot."}}, {"@type": "Question", "name": "Mi történik, miután elküldtem az ajánlatkérést?", "acceptedAnswer": {"@type": "Answer", "text": "Átnézem, amit leírtál, és e-mailben vagy a megadott módon felveszem veled a kapcsolatot. Ha kell, rövid egyeztetéssel pontosítjuk az igényeket, majd írásos ajánlatot kapsz – ez nem kötelez semmire."}}, {"@type": "Question", "name": "Nem tudom pontosan, mire van szükségem. Kérhetek így ajánlatot?", "acceptedAnswer": {"@type": "Answer", "text": "Igen. A kvíz és az ajánlatkérő is segít rendszerezni az elképzeléseidet, a hiányzó részleteket pedig közösen tisztázzuk."}}]}</script>
   </head>
   <body>
     <app-root></app-root>

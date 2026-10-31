@@ -24,7 +24,7 @@
         <label class="newsletter-consent">
           <input type="checkbox" name="consent" [(ngModel)]="consent">
           <span>{{ 'Hozzájárulok, hogy akciókról, kedvezményekről és újdonságokról e-mailt kapjak. Bármikor leiratkozhatok.' | t }}
-            <a routerLink="/adatkezeles">{{ 'Adatkezelési tájékoztató' | t }}</a></span>
+            <a [routerLink]="'/adatkezeles' | lp">{{ 'Adatkezelési tájékoztató' | t }}</a></span>
         </label>
         <app-turnstile [(token)]="captchaToken" action="newsletter" />
         <p class="newsletter-error" id="newsletter-error" role="alert">@if (error()) {<span aria-hidden="true">⚠︎</span> {{ error() }}}</p>

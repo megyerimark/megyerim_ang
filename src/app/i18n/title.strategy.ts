@@ -2,7 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { RouterStateSnapshot, TitleStrategy } from '@angular/router';
 import { I18nService } from './i18n.service';
-import { PAGE_SEO } from '../core/seo';
+import { seoFor, serviceKeyOf } from '../core/seo';
+import { toHuPath } from '../core/site-routes';
 
 /**
  * Az app.routes.ts magyar oldalcímeit az aktuális nyelvre fordítja. A nyilvános oldalak keresőbarát címét
@@ -13,8 +14,8 @@ export class I18nTitleStrategy extends TitleStrategy {
     private readonly title = inject(Title);
     private readonly i18n = inject(I18nService);
     override updateTitle(snapshot: RouterStateSnapshot): void {
-        const path = snapshot.url.split(/[?#]/)[0];
-        if (path in PAGE_SEO[this.i18n.lang()] || path.startsWith('/munkak/')) return;
+        const path = toHuPath(snapshot.url);
+        if (seoFor(path, this.i18n.lang()) || serviceKeyOf(path) || path.startsWith('/munkak/')) return;
         const title = this.buildTitle(snapshot);
         if (title) this.title.setTitle(this.i18n.t(title));
     }

@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, computed, inje
 import { RouterLink } from '@angular/router';
 import { TPipe } from '../../i18n/t.pipe';
 import { I18nService } from '../../i18n/i18n.service';
+import { LpPipe } from '../../i18n/lp.pipe';
 
 /**
  * Főoldali akció-szekció. Görgetésre „összeáll”: a nagy százalék beúszik és felpörög 0-tól a kedvezményig,
@@ -11,7 +12,7 @@ import { I18nService } from '../../i18n/i18n.service';
 @Component({
     selector: 'app-promo-spotlight',
     standalone: true,
-    imports: [RouterLink, TPipe],
+    imports: [LpPipe, RouterLink, TPipe],
     templateUrl: './promo-spotlight.html',
     styleUrl: './promo-spotlight.scss'
 })

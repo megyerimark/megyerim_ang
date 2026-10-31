@@ -1,6 +1,42 @@
-import { Routes } from '@angular/router';
+import { Route, Routes } from '@angular/router';
 import { adminGuard } from './core/admin.guard';
 import { Home } from './pages/home/home';
+import { PUBLIC_PAGES, SERVICE_KEYS } from './core/site-routes';
+
+/**
+ * A nyilvános oldalak magyarul a gyökérben, angolul az /en/ alatt érhetők el (a címpárok: core/site-routes.ts).
+ * Új nyilvános oldalnál a site-routes.ts-t, a .htaccess útvonallistáját és a backend oldaltérképét is bővítsd.
+ */
+const loadStudio = () => import('./pages/studio/studio').then(module => module.StudioPage);
+const loadQuote = () => import('./pages/quote/quote').then(module => module.QuotePage);
+const loadQuiz = () => import('./pages/quiz/quiz').then(module => module.QuizPage);
+const loadCaseStudy = () => import('./pages/case-study/case-study').then(module => module.CaseStudyPage);
+const loadConsultation = () => import('./pages/consultation/consultation').then(module => module.ConsultationPage);
+const loadPrivacy = () => import('./pages/privacy/privacy').then(module => module.PrivacyPage);
+const loadImprint = () => import('./pages/imprint/imprint').then(module => module.ImprintPage);
+const loadTerms = () => import('./pages/terms/terms').then(module => module.TermsPage);
+const loadService = () => import('./pages/service/service-page').then(module => module.ServicePage);
+
+/** A szolgáltatási céloldalak útvonalai a site-routes.ts címpárjaiból (egy helyen kell őket karbantartani). */
+const serviceRoutes = (lang: 'hu' | 'en'): Route[] => SERVICE_KEYS.map(key => {
+    const page = PUBLIC_PAGES.find(p => p.key === 'service:' + key)!;
+    return { path: (lang === 'hu' ? page.hu : page.en!).replace(/^\/(en\/)?/, ''), loadComponent: loadService, data: { service: key } };
+});
+
+/** Az angol nyilvános oldalak (az /en előtag alatt). */
+const englishRoutes: Routes = [
+    { path: '', component: Home, title: 'Ne csak jelen legyél online. Emelkedj ki. | Megyeri Márk Máté' },
+    ...serviceRoutes('en'),
+    { path: 'website-planner', loadComponent: loadStudio, title: 'Interaktív weboldaltervező | Megyeri Márk Máté' },
+    { path: 'request-a-quote', loadComponent: loadQuote, title: 'Ajánlatkérés | Megyeri Márk Máté' },
+    { path: 'project-quiz', loadComponent: loadQuiz, title: '2 perces weboldal igényfelmérő | Megyeri Márk Máté' },
+    { path: 'work/:slug', loadComponent: loadCaseStudy, title: 'Referenciák | Megyeri Márk Máté' },
+    { path: 'consultation', loadComponent: loadConsultation, title: 'Konzultációfoglalás | Megyeri Márk Máté' },
+    { path: 'privacy-policy', loadComponent: loadPrivacy, title: 'Adatkezelés | Megyeri Márk Máté' },
+    { path: 'legal-notice', loadComponent: loadImprint, title: 'Impresszum | Megyeri Márk Máté' },
+    { path: 'terms', loadComponent: loadTerms, title: 'Általános Szerződési Feltételek | Megyeri Márk Máté' },
+];
+
 export const routes: Routes = [
     {
         path: '',
@@ -8,50 +44,32 @@ export const routes: Routes = [
         component: Home,
         title: 'Ne csak jelen legyél online. Emelkedj ki. | Megyeri Márk Máté'
     },
+    { path: 'en', children: englishRoutes },
+    ...serviceRoutes('hu'),
+    { path: 'tervezo', loadComponent: loadStudio, title: 'Interaktív weboldaltervező | Megyeri Márk Máté' },
+    { path: 'ajanlatkeres', loadComponent: loadQuote, title: 'Ajánlatkérés | Megyeri Márk Máté' },
+    { path: 'projekt-kviz', loadComponent: loadQuiz, title: '2 perces weboldal igényfelmérő | Megyeri Márk Máté' },
+    { path: 'munkak/:slug', loadComponent: loadCaseStudy, title: 'Referenciák | Megyeri Márk Máté' },
+    { path: 'konzultacio', loadComponent: loadConsultation, title: 'Konzultációfoglalás | Megyeri Márk Máté' },
     {
-        path: 'tervezo',
-        loadComponent: () => import('./pages/studio/studio').then(module => module.StudioPage),
-        title: 'Interaktív weboldaltervező | Megyeri Márk Máté'
+        path: 'adatkezeles',
+        loadComponent: loadPrivacy,
+        title: 'Adatkezelés | Megyeri Márk Máté'
     },
     {
-        path: 'ajanlatkeres',
-        loadComponent: () => import('./pages/quote/quote').then(module => module.QuotePage),
-        title: 'Ajánlatkérés | Megyeri Márk Máté'
+        path: 'impresszum',
+        loadComponent: loadImprint,
+        title: 'Impresszum | Megyeri Márk Máté'
     },
     {
-        path: 'projekt-kviz',
-        loadComponent: () => import('./pages/quiz/quiz').then(module => module.QuizPage),
-        title: '2 perces weboldal igényfelmérő | Megyeri Márk Máté'
-    },
-    {
-        path: 'munkak/:slug',
-        loadComponent: () => import('./pages/case-study/case-study').then(module => module.CaseStudyPage),
-        title: 'Referenciák | Megyeri Márk Máté'
-    },
-    {
-        path: 'konzultacio',
-        loadComponent: () => import('./pages/consultation/consultation').then(module => module.ConsultationPage),
-        title: 'Konzultációfoglalás | Megyeri Márk Máté'
+        path: 'aszf',
+        loadComponent: loadTerms,
+        title: 'Általános Szerződési Feltételek | Megyeri Márk Máté'
     },
     {
         path: 'ugyfel/projekt',
         loadComponent: () => import('./pages/client-project/client-project').then(module => module.ClientProjectPage),
         title: 'Privát ajánlatkövetés | Megyeri Márk Máté'
-    },
-    {
-        path: 'adatkezeles',
-        loadComponent: () => import('./pages/privacy/privacy').then(module => module.PrivacyPage),
-        title: 'Adatkezelés | Megyeri Márk Máté'
-    },
-    {
-        path: 'impresszum',
-        loadComponent: () => import('./pages/imprint/imprint').then(module => module.ImprintPage),
-        title: 'Impresszum | Megyeri Márk Máté'
-    },
-    {
-        path: 'aszf',
-        loadComponent: () => import('./pages/terms/terms').then(module => module.TermsPage),
-        title: 'Általános Szerződési Feltételek | Megyeri Márk Máté'
     },
     {
         path: 'fizetes/sikeres',

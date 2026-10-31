@@ -9,13 +9,14 @@ import { I18nService } from '../../i18n/i18n.service';
 import { Turnstile } from '../../components/turnstile/turnstile';
 import { SubmitLoaderService } from '../../core/submit-loader.service';
 import { PromoNote } from '../../components/promo-note/promo-note';
+import { LpPipe } from '../../i18n/lp.pipe';
 
 type QuizKey = 'industry' | 'goal' | 'website' | 'solution' | 'timeline';
 interface QuizOption { value:string; label:string; detail:string; icon:string; }
 interface QuizQuestion { key:QuizKey; eyebrow:string; title:string; hint:string; options:QuizOption[]; }
 const option=(value:string,label:string,detail:string,icon='✦'):QuizOption=>({value,label,detail,icon});
 
-@Component({selector:'app-quiz',standalone:true,imports:[FormsModule,RouterLink, TPipe, Turnstile, PromoNote],templateUrl:'./quiz.html',styleUrl:'./quiz.scss'})
+@Component({selector:'app-quiz',standalone:true,imports:[LpPipe, FormsModule,RouterLink, TPipe, Turnstile, PromoNote],templateUrl:'./quiz.html',styleUrl:'./quiz.scss'})
 export class QuizPage {
     readonly i18n = inject(I18nService);
     private readonly api=inject(ApiService);

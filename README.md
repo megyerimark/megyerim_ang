@@ -55,13 +55,13 @@ Adminban felvett szolgáltatás csak `is_active=true`, referencia csak `is_publi
   A HSTS-t csak akkor hagyd bent, ha a HTTPS minden aldomainen működik.
 - A kritikus CSS inline-olása ki van kapcsolva (`angular.json`), mert az `onload` attribútumot a szigorú CSP blokkolná.
 - **Közösségi megosztás:** `public/og-image.jpg` (1200×630) – Facebook/LinkedIn/Messenger előnézet.
-- **Oldaltérkép:** statikus `public/sitemap.xml` + a backend dinamikus `/api/sitemap.xml`-je (referenciák), mindkettő a `robots.txt`-ben.
+- **Oldaltérkép:** egyetlen forrás, a backend állítja elő: `/sitemap.xml` (a `.htaccess` a Laravelhez irányítja). Új nyilvános oldalnál a backend `config/portfolio.php` → `seo_pages` listáját is bővítsd.
 - **CI:** `.github/workflows/ci.yml` – minden push után `npm audit` és éles build.
 - **Bot-védelem (Cloudflare Turnstile):** `components/turnstile` – az ajánlatkérő űrlapon és kvízen, az időpontfoglaláson, a hírlevélen, az admin belépésen és az elfelejtett jelszó oldalon. A nyilvános kulcsot a backend adja (`/api/site-settings` → `turnstile_site_key`); ha nincs beállítva, a widget nem jelenik meg, és a szkript sem töltődik be. A CSP-ben a `challenges.cloudflare.com` engedélyezve van (`script-src`, `frame-src`).
 
 ## V17 újdonságok
 
-- **Nyelvválasztó (HU/EN):** `src/app/i18n/`. A kulcs maga a magyar szöveg (`{{ 'Szöveg' | t }}`), a fordítás az `en.ts`-ben van; hiányzó fordításnál a magyar szöveg jelenik meg. Az angol szótár csak angol nézetben töltődik le. Link angolul: `?lang=en`. Új szöveg felvételekor tedd a `| t` pipe mögé, és vedd fel az angol megfelelőjét az `en.ts`-be. A szolgáltatások és referenciák angol szövegét az adminban, a szerkesztő „Angol változat” részében adhatod meg. A jogi oldalak csak magyarul érhetők el (angolul jelzés látszik).
+- **Nyelvválasztó (HU/EN):** `src/app/i18n/`. A kulcs maga a magyar szöveg (`{{ 'Szöveg' | t }}`), a fordítás az `en.ts`-ben van; hiányzó fordításnál a magyar szöveg jelenik meg. Az angol szótár csak angol nézetben töltődik le. Az angol oldalak az `/en/` alatt vannak, angol slugokkal (pl. `/en/request-a-quote`); a címpárok egy helyen: `src/app/core/site-routes.ts`. Sablonban a belső linket magyar útvonallal és az `lp` pipe-pal írd: `[routerLink]="'/ajanlatkeres' | lp"`. A régi `?lang=en` linkeket a `.htaccess` 301-gyel átirányítja. Új szöveg felvételekor tedd a `| t` pipe mögé, és vedd fel az angol megfelelőjét az `en.ts`-be. A szolgáltatások és referenciák angol szövegét az adminban, a szerkesztő „Angol változat” részében adhatod meg. 
 - **Toast-értesítések:** `ToastService` (`success` / `error` / `info`) – bárhonnan hívható.
 - **Admin:** kötelező 2FA kijelzése, munkamenetek; olvasatlan ügyfélüzenet-jelző (✉), percenkénti háttérfrissítés; **Kész projektek** (domainek, lejáratok, böngészőben titkosított hozzáférés-széf); **Pénzügyek** (bevétel, kiadás, ÁFA, becsült átalányadó); előleg és Stripe-előfizetés kezelése.
 - **Ügyfélportál:** előleg és havi karbantartás fizetése bankkártyával (Stripe), ÁSZF-elfogadás, fogyasztói hozzájárulás a korai teljesítéshez.
@@ -79,3 +79,16 @@ Futtasd: `npm run check:api`. A részletes hibaelhárítás: `LARAVEL_KAPCSOLAT_
 - **Hitelesítő alkalmazásos belépés (TOTP)**: Admin → Fiók és biztonság → *Hitelesítő alkalmazás*. A belépési oldal a 6 jegyű app-kódot és a helyreállítási kódot is elfogadja.
 - **Kisebb build**: a `public/demos` alól törölve a ~12 MB-nyi, sehol nem hivatkozott eredeti JPG/PNG (az eredetik a `design-sources` mappában megvannak). A buildbe csak a használt WebP képek kerülnek.
 - A backend v20 kell hozzá (migráció: `bash deploy.sh`).
+
+## SEO: többnyelvű címek és statikus prerender (2026-10)
+
+**Címek.** Magyar oldalak a gyökérben, angolok az `/en/` alatt (`/weboldal-keszites` ↔ `/en/website-development`). A címpárok egyetlen forrása a `src/app/core/site-routes.ts`. A nyelvet a nyilvános oldalakon az URL határozza meg; a nyelvváltó gomb az oldal másik nyelvű párjára navigál. Nincs automatikus böngészőnyelv szerinti átirányítás.
+
+**Szolgáltatási céloldalak.** `/weboldal-keszites`, `/landing-oldal-keszites`, `/webshop-keszites`, `/egyedi-webfejlesztes`, `/weboldal-karbantartas` (és angol párjaik). A szövegük nyelvenként a `src/app/pages/service/service-content.ts` fájlban van. Csak valós, vállalható állítást írj bele.
+
+**Prerender.** Az `npm run build` az Angular build után lefuttatja a `scripts/prerender.mjs` szkriptet. Ez minden nyilvános oldalhoz és nyelvhez külön HTML-t készít a `dist/…/browser/_p/` mappába, saját címmel, leírással, canonicallal, hreflanggal, strukturált adattal és az oldal fő szövegével. Így a keresők és a JavaScriptet nem futtató robotok is a helyes tartalmat kapják. A `.htaccess` a `/ajanlatkeres` kérést a `_p/ajanlatkeres.html` fájlból szolgálja ki. Node.js a tárhelyen nem kell.
+- A referenciákat (`/munkak/…`) a szkript az éles API-ból kéri le (`PRERENDER_API_URL`, alapértelmezés: `https://megyerimarkmate.hu/api`). Ha az API nem érhető el, a referenciák kimaradnak a prerenderből, de az oldalon továbbra is működnek. **Új referencia publikálása után érdemes újra buildelni és feltölteni**, hogy annak is legyen saját statikus HTML-je.
+- **Feltöltéskor a `_p` mappát is másold fel** (a `dist/megyeri-webfejlesztes/browser` teljes tartalmát), és a régi `sitemap.xml` fájlt töröld a tárhelyről, ha ott maradt (a `/sitemap.xml`-t a backend adja).
+- Ellenőrzés élesítés után: `curl -s https://megyerimarkmate.hu/en/website-development | grep -i "<title>\|canonical\|hreflang"`
+
+**Élesítés utáni teendők (Search Console).** Domain-tulajdon igazolása (DNS TXT) a Google Search Console-ban és a Bing Webmaster Toolsban, majd a `https://megyerimarkmate.hu/sitemap.xml` beküldése. Az URL-ellenőrzővel nézz meg néhány új oldalt (pl. `/en`, `/weboldal-keszites`), és kérj indexelést.

@@ -11,7 +11,7 @@
 }
 @if (showMobileCta() && showNavbar()) {
 <div class="mobile-cta" role="region" [attr.aria-label]="'Gyors kapcsolatfelvétel' | t">
-  <a class="mobile-cta__main" routerLink="/ajanlatkeres">{{ 'Ajánlatot kérek' | t }} <span aria-hidden="true">→</span></a>
+  <a class="mobile-cta__main" [routerLink]="'/ajanlatkeres' | lp">{{ 'Ajánlatot kérek' | t }} <span aria-hidden="true">→</span></a>
   @if (phone()) {
   <a class="mobile-cta__call" [href]="'tel:' + phone()" [attr.aria-label]="'Hívás' | t">{{ 'Hívás' | t }}</a>
   }

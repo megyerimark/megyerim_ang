@@ -2,22 +2,23 @@ import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ConsentService } from '../../core/consent.service';
 import { TPipe } from '../../i18n/t.pipe';
+import { LpPipe } from '../../i18n/lp.pipe';
 
 /** Első látogatáskor megjelenik (és a láblécből bármikor újranyitható). A két gomb egyenrangú (GDPR). */
 @Component({
     selector: 'app-cookie-banner',
     standalone: true,
-    imports: [RouterLink, TPipe],
+    imports: [LpPipe, RouterLink, TPipe],
     template: `
       @if (visible()) {
         <section class="cookie" role="dialog" aria-labelledby="cookie-title" aria-describedby="cookie-text">
           <strong id="cookie-title">{{ 'Sütik és külső tartalom' | t }}</strong>
           @if (consent.needed()) {
           <p id="cookie-text">{{ 'Az oldal csak a működéshez szükséges sütiket használja. A Google-vélemények megjelenítéséhez egy külső szolgáltató (Trustindex) tartalmát töltenénk be, amely sütit helyezhet el és látja az IP-címedet. Ezt csak a hozzájárulásoddal tesszük.' | t }}
-            <a routerLink="/adatkezeles">{{ 'Részletek' | t }}</a></p>
+            <a [routerLink]="'/adatkezeles' | lp">{{ 'Részletek' | t }}</a></p>
           } @else {
           <p id="cookie-text">{{ 'Az oldal csak a működéshez szükséges sütiket és helyi tárolást használja (nyelv, beállítások, belépés). Követő vagy hirdetési süti nincs.' | t }}
-            <a routerLink="/adatkezeles">{{ 'Részletek' | t }}</a></p>
+            <a [routerLink]="'/adatkezeles' | lp">{{ 'Részletek' | t }}</a></p>
           }
           <div class="cookie-actions">
             <button type="button" class="btn btn-outline" (click)="consent.set('denied')">{{ 'Csak a szükségesek' | t }}</button>

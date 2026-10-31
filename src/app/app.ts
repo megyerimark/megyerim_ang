@@ -1,5 +1,5 @@
 import { Component, HostListener, computed, effect, inject, signal } from '@angular/core';
-import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterOutlet, RoutesRecognized } from '@angular/router';
 import { filter } from 'rxjs';
 import { Meta, Title } from '@angular/platform-browser';
 import { ApiService } from './core/api.service';
@@ -16,11 +16,13 @@ import { I18nService } from './i18n/i18n.service';
 import { SubmitLoader } from './components/submit-loader/submit-loader';
 import { PaletteService } from './core/palette.service';
 import { SeasonalDecor } from './components/seasonal-decor/seasonal-decor';
-import { PAGE_SEO, pageUrl } from './core/seo';
+import { PAGE_SEO, pageUrl, seoFor, serviceKeyOf } from './core/seo';
+import { hasEnglish, langOfPath, localizePath, toHuPath } from './core/site-routes';
+import { LpPipe } from './i18n/lp.pipe';
 @Component({
     selector: 'app-root',
     standalone: true,
-    imports: [RouterOutlet, RouterLink, Navbar, PromoBar, ToastHost, CookieBanner, TPipe, SubmitLoader, SeasonalDecor],
+    imports: [LpPipe, RouterOutlet, RouterLink, Navbar, PromoBar, ToastHost, CookieBanner, TPipe, SubmitLoader, SeasonalDecor],
     templateUrl: './app.html',
     styleUrl: './app.scss'
 })
@@ -37,9 +39,10 @@ export class App {
     private seoSettings: SiteSettings | null = null;
     readonly showNavbar = signal(!this.router.url.startsWith('/admin'));
     /** Külső (hozzájárulásköteles) tartalom csak a főoldalon van – a süti-sáv is csak ott jelenik meg. */
-    readonly onHome = signal(this.router.url.split(/[?#]/)[0] === '/');
+    readonly onHome = signal(toHuPath(this.router.url) === '/');
     private readonly domTranslator = inject(DomTranslator);
-    readonly currentPath = signal(typeof location !== 'undefined' ? location.pathname : '/');
+    /** Az aktuális oldal magyar útvonala (az angol /en/… címek is a magyar megfelelőjükre képezve). */
+    readonly currentPath = signal(typeof location !== 'undefined' ? toHuPath(location.pathname) : '/');
     readonly showTop = signal(false);
     /** Akciós sáv: a nyilvános oldalakon igen; az ajánlatkérő/kvíz saját akciós dobozt mutat, a privát oldalakon nem releváns. */
     readonly showPromoBar = computed(() => !/^\/(ajanlatkeres|projekt-kviz|ugyfel|fizetes|hirlevel|admin)/.test(this.currentPath()));
@@ -57,17 +60,19 @@ export class App {
     onDocumentClick(event: MouseEvent): void {
         const link = (event.target as Element | null)?.closest?.('a[href]');
         if (!link) return;
-        const href = link.getAttribute('href') ?? '';
+        const href = toHuPath(link.getAttribute('href') ?? '');
         if (href.startsWith('/ajanlatkeres') || href.startsWith('/projekt-kviz') || href.startsWith('/konzultacio')) this.api.trackEvent('cta_click', this.router.url);
     }
     private track(url: string): void {
         const path = url.split(/[?#]/)[0];
         if (path === this.lastTracked || path.startsWith('/admin') || path.startsWith('/ugyfel')) return;
         this.lastTracked = path;
+        // A tényleges (nyelvet is mutató) útvonalat rögzítjük; az eseménytípust a magyar megfelelő alapján döntjük el.
+        const hu = toHuPath(path);
         this.api.trackEvent('page_view', path);
-        if (path === '/ajanlatkeres') this.api.trackEvent('quote_start', path);
-        if (path === '/projekt-kviz') this.api.trackEvent('quiz_start', path);
-        if (path === '/konzultacio') this.api.trackEvent('consultation_start', path);
+        if (hu === '/ajanlatkeres') this.api.trackEvent('quote_start', path);
+        if (hu === '/projekt-kviz') this.api.trackEvent('quiz_start', path);
+        if (hu === '/konzultacio') this.api.trackEvent('consultation_start', path);
     }
     scrollTop(): void { window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); }
     /** Billentyűzetes / felolvasós látogatóknak: a menü átugrása a fő tartalomra. */
@@ -94,6 +99,19 @@ export class App {
         const theme = storedTheme === 'light' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', theme);
         this.attribution.capture();
+        // Régi, ?lang=en paraméteres linkek: az angol oldal saját címére visszük (élesben a .htaccess 301-gyel teszi).
+        try {
+            const params = new URLSearchParams(location.search);
+            const legacy = params.get('lang');
+            if ((legacy === 'en' || legacy === 'hu') && langOfPath(location.pathname)) {
+                params.delete('lang');
+                const query = params.toString();
+                void this.router.navigateByUrl(localizePath(location.pathname, legacy) + (query ? '?' + query : '') + location.hash, { replaceUrl: true });
+            }
+        } catch { /* nem böngészőben */ }
+        // A nyelv még az oldal komponensének betöltése előtt igazodjon az új címhez (/en/… ↔ magyar).
+        this.router.events.pipe(filter((event): event is RoutesRecognized => event instanceof RoutesRecognized))
+            .subscribe(event => this.i18n.syncWithUrl(event.urlAfterRedirects));
         this.updateRouteMeta(this.router.url);
         // Nyelvváltáskor a címet és a leírást is frissítjük.
         effect(() => { this.i18n.lang(); this.updateRouteMeta(this.router.url); });
@@ -115,9 +133,9 @@ export class App {
             let theme: string | null = null;
             try { theme = localStorage.getItem('mm-theme'); } catch { /* privát mód */ }
             document.documentElement.setAttribute('data-theme', event.urlAfterRedirects.startsWith('/admin') || theme !== 'light' ? 'dark' : 'light');
-            this.onHome.set(event.urlAfterRedirects.split(/[?#]/)[0] === '/');
-            this.currentPath.set(event.urlAfterRedirects.split(/[?#]/)[0]);
-            const p = event.urlAfterRedirects.split(/[?#]/)[0];
+            const p = toHuPath(event.urlAfterRedirects);
+            this.onHome.set(p === '/');
+            this.currentPath.set(p);
             this.ctaRoute = p === '/' || p.startsWith('/munkak/') || p === '/tervezo';
             this.showMobileCta.set(this.ctaRoute && window.scrollY > 700);
             this.track(event.urlAfterRedirects);
@@ -125,17 +143,17 @@ export class App {
         });
     }
     private updateRouteMeta(url: string): void {
-        const path = url.split(/[?#]/)[0];
+        const path = toHuPath(url);
         let leaf = this.router.routerState.snapshot.root;
         while (leaf.firstChild) leaf = leaf.firstChild;
         const notFound = leaf.routeConfig?.path === '**';
         const isPrivate = notFound || /^\/(admin|ugyfel|hirlevel|fizetes)/.test(path);
         this.meta.updateTag({ name: 'robots', content: isPrivate ? 'noindex, nofollow, noarchive' : 'index, follow' });
         const lang = this.i18n.lang();
-        // A referenciaoldal (munkak/:slug) a címét és a leírását a betöltött projektből maga állítja be.
-        const caseStudy = path.startsWith('/munkak/');
-        if (!caseStudy) {
-            const seo = PAGE_SEO[lang][path];
+        // A referenciaoldal (munkak/:slug) és a szolgáltatási céloldal a címét és a leírását maga állítja be.
+        const ownMeta = path.startsWith('/munkak/') || !!serviceKeyOf(path);
+        if (!ownMeta) {
+            const seo = seoFor(path, lang);
             const custom = lang === 'hu' && path === '/' ? this.seoSettings : null;
             const routeTitle = typeof leaf.title === 'string' ? this.i18n.t(leaf.title) : '';
             const title = custom?.meta_title || seo?.title || routeTitle || this.i18n.t('Megyeri Márk Máté | Webfejlesztés');
@@ -147,16 +165,17 @@ export class App {
         }
         this.meta.updateTag({ property: 'og:locale', content: lang === 'en' ? 'en_US' : 'hu_HU' });
         if (this.seoSettings?.og_image_url) this.meta.updateTag({ property: 'og:image', content: this.seoSettings.og_image_url });
-        // Minden oldal saját magára mutat (az angol változat a ?lang=en címre) – így a Google a referenciákat és
-        // az angol oldalakat is külön oldalként indexeli, nem a főoldal másolataként.
+        // Minden oldal saját magára mutat (az angol változat az /en/… címre) – így a Google a referenciákat és
+        // az angol oldalakat is külön oldalként indexeli. A csak magyarul létező oldalak canonicalja a magyar cím.
         const self = pageUrl(isPrivate ? '/' : path, lang);
-        const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
-        if (canonical) canonical.href = self;
+        let canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+        if (!canonical) { canonical = document.createElement('link'); canonical.rel = 'canonical'; document.head.appendChild(canonical); }
+        canonical.href = self;
         this.meta.updateTag({ property: 'og:url', content: self });
         // hreflang: ugyanaz az oldal magyarul és angolul – a Google a keresés nyelve szerint a megfelelőt mutatja.
         for (const hreflang of ['hu', 'en', 'x-default'] as const) {
             let link = document.head.querySelector<HTMLLinkElement>(`link[rel="alternate"][hreflang="${hreflang}"]`);
-            if (isPrivate) { link?.remove(); continue; }
+            if (isPrivate || !hasEnglish(path)) { link?.remove(); continue; }
             if (!link) { link = document.createElement('link'); link.rel = 'alternate'; link.hreflang = hreflang; document.head.appendChild(link); }
             link.href = pageUrl(path, hreflang === 'en' ? 'en' : 'hu');
         }

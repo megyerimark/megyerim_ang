@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { TPipe } from '../../i18n/t.pipe';
 import { I18nService } from '../../i18n/i18n.service';
 import { FlightEngine } from './flight-engine';
+import { LpPipe } from '../../i18n/lp.pipe';
 
 /**
  * Főoldali filmszerű nyitójelenet (a védjegy). Izzó részecskegyűrű a kristályszikla körül; görgetésre a gyűrű
@@ -12,7 +13,7 @@ import { FlightEngine } from './flight-engine';
 @Component({
     selector: 'app-hero',
     standalone: true,
-    imports: [RouterLink, TPipe],
+    imports: [LpPipe, RouterLink, TPipe],
     templateUrl: './hero.html',
     styleUrl: './hero.scss',
     host: { '[class.flat]': 'reduced' }

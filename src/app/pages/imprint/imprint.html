@@ -1,6 +1,6 @@
 <main class="container legal">
 @if (i18n.lang() === 'en') {
-  <a routerLink="/" class="back">← Back to home</a>
+  <a [routerLink]="'/' | lp" class="back">← Back to home</a>
   <span class="overline">LEGAL INFORMATION</span>
   <h1>Legal notice</h1>
   <p class="notice">Information under Section 4 of Hungarian Act CVIII of 2001 on electronic commerce. English translation for convenience; the Hungarian version prevails.</p>
@@ -32,9 +32,9 @@
       allowed. The demo pages show fictitious brands and are not real client work. The fonts are licensed under the SIL Open Font License.
     </p>
   </section>
-  <p class="legal-meta">Related: <a routerLink="/adatkezeles">Privacy notice</a> · <a routerLink="/aszf">Terms and Conditions</a></p>
+  <p class="legal-meta">Related: <a [routerLink]="'/adatkezeles' | lp">Privacy notice</a> · <a [routerLink]="'/aszf' | lp">Terms and Conditions</a></p>
 } @else {
-  <a routerLink="/" class="back">← Vissza a főoldalra</a>
+  <a [routerLink]="'/' | lp" class="back">← Vissza a főoldalra</a>
   <span class="overline">JOGI INFORMÁCIÓK</span>
   <h1>Impresszum</h1>
 
@@ -74,6 +74,6 @@
     </p>
   </section>
 
-  <p class="legal-meta">Kapcsolódó: <a routerLink="/adatkezeles">Adatkezelési tájékoztató</a></p>
+  <p class="legal-meta">Kapcsolódó: <a [routerLink]="'/adatkezeles' | lp">Adatkezelési tájékoztató</a></p>
 }
 </main>

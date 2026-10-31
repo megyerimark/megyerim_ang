@@ -7,12 +7,13 @@ import { SubmitLoaderService } from '../../core/submit-loader.service';
 import { I18nService } from '../../i18n/i18n.service';
 import { TPipe } from '../../i18n/t.pipe';
 import { Turnstile } from '../turnstile/turnstile';
+import { LpPipe } from '../../i18n/lp.pipe';
 
 /** Hírlevél-feliratkozás: e-mail + kifejezett hozzájárulás; a szerver megerősítő e-mailt küld (double opt-in). */
 @Component({
     selector: 'app-newsletter-signup',
     standalone: true,
-    imports: [FormsModule, RouterLink, TPipe, Turnstile],
+    imports: [LpPipe, FormsModule, RouterLink, TPipe, Turnstile],
     templateUrl: './newsletter-signup.html',
     styleUrl: './newsletter-signup.scss'
 })

@@ -1,0 +1,48 @@
+:host{display:block;min-height:100vh;color:var(--text);background:radial-gradient(ellipse at 76% 0%,color-mix(in srgb,var(--accent) 14%,transparent),transparent 50%),var(--bg)}
+.svc-page{padding:110px 0 0}
+.svc-container{max-width:1170px;padding:0 24px;margin:auto}
+.svc-crumbs{display:flex;flex-wrap:wrap;gap:8px;font-size:13px;color:var(--muted)}
+.svc-crumbs a{color:var(--muted);text-decoration:none}
+.svc-crumbs a:hover{color:var(--text)}
+.svc-eyebrow{font-size:11px;letter-spacing:1.4px;font-weight:800;color:var(--accent);text-transform:uppercase}
+.svc-hero{padding:70px 0 40px;max-width:900px}
+.svc-hero h1{font-size:clamp(40px,6.5vw,88px);line-height:1.04;letter-spacing:-3px;margin:22px 0}
+.svc-intro{color:var(--muted);line-height:1.7;font-size:clamp(17px,2vw,22px);max-width:760px}
+.svc-actions,.svc-cta-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:30px}
+.svc-secondary{display:inline-block;padding:14px 20px;border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none;font-weight:700;font-size:14px}
+.svc-secondary:hover{border-color:var(--accent)}
+.svc-section{padding:60px 0;border-top:1px solid var(--border)}
+.svc-section h2,.svc-cta h2,.svc-related h2{font-size:clamp(26px,3.6vw,42px);letter-spacing:-1px;margin:0 0 28px;line-height:1.15}
+.svc-problems{list-style:none;padding:0;margin:0;display:grid;gap:12px;max-width:820px}
+.svc-problems li{position:relative;padding:16px 18px 16px 46px;border:1px solid var(--border);border-radius:14px;background:var(--surface);line-height:1.6;color:var(--muted)}
+.svc-problems li::before{content:'✦';position:absolute;left:18px;top:16px;color:var(--accent)}
+.svc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.svc-card{padding:24px;border:1px solid var(--border);border-radius:18px;background:var(--surface)}
+.svc-card h3,.svc-steps h3{font-size:18px;margin:0 0 10px}
+.svc-card p,.svc-steps p,.svc-faq p,.svc-cta p{color:var(--muted);line-height:1.7;margin:0}
+.svc-steps{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+.svc-steps li{display:flex;gap:16px;padding:22px;border:1px solid var(--border);border-radius:18px}
+.svc-step-no{font-weight:800;color:var(--accent);font-size:14px;padding-top:3px}
+.svc-work{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.svc-work-card{display:grid;gap:10px;padding:24px;border:1px solid var(--border);border-radius:18px;background:var(--surface);color:var(--text);text-decoration:none}
+.svc-work-card:hover{border-color:var(--accent)}
+.svc-work-card strong{font-size:20px}
+.svc-work-card span:last-child{color:var(--muted);line-height:1.6;font-size:14px}
+.svc-faq{display:grid;gap:10px;max-width:860px}
+.svc-faq article{border:1px solid var(--border);border-radius:14px;background:var(--surface)}
+.svc-faq h3{margin:0}
+.svc-faq button{display:flex;justify-content:space-between;gap:20px;width:100%;padding:18px 20px;border:0;background:none;color:var(--text);font:inherit;font-size:16px;font-weight:700;text-align:left;cursor:pointer}
+.svc-faq p{padding:0 20px 18px}
+.svc-cta{display:flex;justify-content:space-between;align-items:center;gap:30px;margin:60px 0;padding:50px;border:1px solid var(--border);border-radius:24px;background:var(--surface)}
+.svc-cta p{max-width:560px}
+.svc-related{padding:20px 0 80px}
+.svc-related h2{font-size:clamp(22px,2.6vw,30px)}
+.svc-related ul{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:10px}
+.svc-related a{display:inline-block;padding:12px 18px;border:1px solid var(--border);border-radius:100px;color:var(--text);text-decoration:none;font-size:14px}
+.svc-related a:hover{border-color:var(--accent)}
+.svc-footer{border-top:1px solid var(--border);padding:28px 0;font-size:13px;color:var(--muted)}
+.svc-footer-inner{display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px}
+.svc-footer-links{display:flex;flex-wrap:wrap;gap:18px}
+.svc-footer a{color:var(--muted);text-decoration:none}
+.svc-footer a:hover{color:var(--text)}
+@media(max-width:680px){.svc-page{padding-top:80px}.svc-hero{padding:40px 0 20px}.svc-hero h1{letter-spacing:-1.5px}.svc-section{padding:45px 0}.svc-cta{display:block;padding:28px}}

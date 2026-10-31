@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { PromoService } from '../../core/promo.service';
 import { TPipe } from '../../i18n/t.pipe';
+import { LpPipe } from '../../i18n/lp.pipe';
 
 const DISMISS_KEY = 'mm-promo-bar-dismissed';
 
@@ -12,11 +13,11 @@ const DISMISS_KEY = 'mm-promo-bar-dismissed';
 @Component({
     selector: 'app-promo-bar',
     standalone: true,
-    imports: [RouterLink, TPipe],
+    imports: [LpPipe, RouterLink, TPipe],
     template: `
     @if (visible(); as p) {
       <div class="promo-bar" role="region" [attr.aria-label]="'Időszakos akció' | t">
-        <a class="promo-bar-link" routerLink="/ajanlatkeres">
+        <a class="promo-bar-link" [routerLink]="'/ajanlatkeres' | lp">
           <span class="promo-bar-pct">−{{ p.percent }}%</span>
           <span class="promo-bar-text">{{ promo.title() || ('Időszakos akció az új weboldalakra' | t) }}</span>
           @if (promo.remaining(); as r) {<span class="promo-bar-time">{{ 'még' | t }} {{ r.days }} {{ 'nap' | t }} {{ r.hours }} {{ 'óra' | t }}</span>}

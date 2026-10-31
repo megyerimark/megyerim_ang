@@ -20,7 +20,7 @@
           <span class="ffinale-kicker">{{ '02 / TERVEZÉSTŐL AZ ÉLMÉNYIG' | t }}</span>
           <h2>{{ 'Így kel életre' | t }} <span>{{ 'egy weboldal.' | t }}</span></h2>
           <p>{{ 'Stratégia, dizájn, fejlesztés és átadás – egy kézből, átlátható lépésekben.' | t }}</p>
-          <a class="hero-btn hero-btn--fill" routerLink="/ajanlatkeres">{{ 'Kérj ajánlatot' | t }} <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a>
+          <a class="hero-btn hero-btn--fill" [routerLink]="'/ajanlatkeres' | lp">{{ 'Kérj ajánlatot' | t }} <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a>
         </div>
       </div>
     </div>
@@ -41,8 +41,8 @@
         </h1>
         <p class="hero-sub">{{ description | t }}</p>
         <div class="hero-actions">
-          <a class="hero-btn hero-btn--fill" routerLink="/ajanlatkeres">{{ 'Kérj ajánlatot' | t }} <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a>
-          <a class="hero-btn hero-btn--ghost" routerLink="/" fragment="munkak">{{ 'Munkáim megtekintése' | t }}</a>
+          <a class="hero-btn hero-btn--fill" [routerLink]="'/ajanlatkeres' | lp">{{ 'Kérj ajánlatot' | t }} <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a>
+          <a class="hero-btn hero-btn--ghost" [routerLink]="'/' | lp" fragment="munkak">{{ 'Munkáim megtekintése' | t }}</a>
         </div>
       </div>
       <ul class="hero-values" aria-hidden="true"><li>{{ 'TECHNOLÓGIA' | t }}</li><li>{{ 'KREATIVITÁS' | t }}</li><li>{{ 'EREDMÉNY' | t }}</li></ul>

@@ -21,3 +21,5 @@ jobs:
         run: npm audit --omit=dev --audit-level=high
       - name: Éles build (szigorú sablon-típusellenőrzéssel)
         run: npx ng build --configuration production
+      - name: Statikus prerender (nyilvános oldalak HTML-je a keresőknek)
+        run: node scripts/prerender.mjs

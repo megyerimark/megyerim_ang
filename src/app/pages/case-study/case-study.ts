@@ -5,8 +5,14 @@ import { ApiService } from '../../core/api.service';
 import { Project } from '../../core/models';
 import { TPipe } from '../../i18n/t.pipe';
 import { I18nService } from '../../i18n/i18n.service';
+import { CASE_PREFIX } from '../../core/site-routes';
+import { SITE_URL } from '../../core/seo';
 
-@Component({selector:'app-case-study',standalone:true,imports:[RouterLink, TPipe],templateUrl:'./case-study.html',styleUrl:'./case-study.scss'})
+/** Van-e a projektnek kitöltött angol címe és összefoglalója (csak ekkor van önálló angol oldala). */
+export const hasEnglishContent = (p: Project) => !!(p.title_en?.trim() && p.summary_en?.trim());
+import { LpPipe } from '../../i18n/lp.pipe';
+
+@Component({selector:'app-case-study',standalone:true,imports:[LpPipe, RouterLink, TPipe],templateUrl:'./case-study.html',styleUrl:'./case-study.scss'})
 export class CaseStudyPage implements OnInit {
     readonly i18n = inject(I18nService);
     loc(obj: object | null | undefined, field: string): string { return this.i18n.loc(obj, field); }
@@ -44,6 +50,13 @@ export class CaseStudyPage implements OnInit {
             this.meta.updateTag({name:'description',content:description});
             this.meta.updateTag({property:'og:title',content:title});
             this.meta.updateTag({property:'og:description',content:description});
+            // Angol szöveg nélküli projekt: nincs önálló angol változata (különben a magyar szöveg duplikátuma lenne),
+            // ezért a hreflang-párok helyett a magyar oldal a kanonikus.
+            if (!hasEnglishContent(p)) {
+                document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach(link => link.remove());
+                const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+                if (canonical) canonical.href = SITE_URL + CASE_PREFIX.hu + '/' + p.slug;
+            }
         });
     }
 }

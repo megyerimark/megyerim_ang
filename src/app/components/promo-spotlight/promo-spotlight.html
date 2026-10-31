@@ -21,7 +21,7 @@
         </div>
       }
       <div class="promo-actions">
-        <a routerLink="/ajanlatkeres" class="btn btn-primary">{{ 'Ajánlatot kérek akcióval' | t }} <span aria-hidden="true">↗︎</span></a>
+        <a [routerLink]="'/ajanlatkeres' | lp" class="btn btn-primary">{{ 'Ajánlatot kérek akcióval' | t }} <span aria-hidden="true">↗︎</span></a>
         <a href="#hirlevel" class="btn btn-outline">{{ 'Értesítést kérek a következőről' | t }}</a>
       </div>
       <p class="promo-fine">{{ 'A kedvezmény az akció ideje alatt beküldött ajánlatkérésekre vonatkozik, a végső árat a személyre szabott ajánlat tartalmazza.' | t }}</p>

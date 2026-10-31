@@ -1,6 +1,6 @@
 <main class="container legal">
 @if (i18n.lang() === 'en') {
-  <a routerLink="/" class="back">← Back to home</a>
+  <a [routerLink]="'/' | lp" class="back">← Back to home</a>
   <span class="overline">PRIVACY</span>
   <h1>Privacy Notice</h1>
   <p class="notice">This is an English translation for convenience. In case of any discrepancy, the Hungarian version prevails.</p>
@@ -153,10 +153,10 @@
       or go to court (including the regional court of your place of residence).
     </p>
   </section>
-  <p class="legal-meta">Related: <a routerLink="/impresszum">Legal notice</a> · <a routerLink="/aszf">Terms and Conditions</a></p>
-  <a class="btn btn-outline" routerLink="/ajanlatkeres">Back to the quote request</a>
+  <p class="legal-meta">Related: <a [routerLink]="'/impresszum' | lp">Legal notice</a> · <a [routerLink]="'/aszf' | lp">Terms and Conditions</a></p>
+  <a class="btn btn-outline" [routerLink]="'/ajanlatkeres' | lp">Back to the quote request</a>
 } @else {
-  <a routerLink="/" class="back">← Vissza a főoldalra</a>
+  <a [routerLink]="'/' | lp" class="back">← Vissza a főoldalra</a>
   <span class="overline">ADATVÉDELEM</span>
   <h1>Adatkezelési tájékoztató</h1>
 
@@ -328,8 +328,8 @@
   </section>
 
   <p class="legal-meta">
-    Kapcsolódó: <a routerLink="/impresszum">Impresszum</a>
+    Kapcsolódó: <a [routerLink]="'/impresszum' | lp">Impresszum</a>
   </p>
-  <a class="btn btn-outline" routerLink="/ajanlatkeres">Vissza az ajánlatkéréshez</a>
+  <a class="btn btn-outline" [routerLink]="'/ajanlatkeres' | lp">Vissza az ajánlatkéréshez</a>
 }
 </main>

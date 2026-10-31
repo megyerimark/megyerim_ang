@@ -8,8 +8,9 @@ import { TPipe } from '../../i18n/t.pipe';
 import { I18nService } from '../../i18n/i18n.service';
 import { Turnstile } from '../../components/turnstile/turnstile';
 import { SubmitLoaderService } from '../../core/submit-loader.service';
+import { LpPipe } from '../../i18n/lp.pipe';
 
-@Component({ selector: 'app-consultation', standalone: true, imports: [FormsModule, RouterLink, TPipe, Turnstile], templateUrl: './consultation.html', styleUrl: './consultation.scss' })
+@Component({ selector: 'app-consultation', standalone: true, imports: [LpPipe, FormsModule, RouterLink, TPipe, Turnstile], templateUrl: './consultation.html', styleUrl: './consultation.scss' })
 export class ConsultationPage implements OnInit {
     readonly i18n = inject(I18nService);
     private readonly api = inject(ApiService);

@@ -5,12 +5,13 @@ import { ApiService } from '../../core/api.service';
 import { apiErrorMessage } from '../../core/http-error';
 import { I18nService } from '../../i18n/i18n.service';
 import { TPipe } from '../../i18n/t.pipe';
+import { LpPipe } from '../../i18n/lp.pipe';
 
 /** /hirlevel/megerosites#kulcs és /hirlevel/leiratkozas#kulcs – a kulcs a # után van, így nem kerül szervernaplóba. */
 @Component({
     selector: 'app-newsletter-page',
     standalone: true,
-    imports: [RouterLink, TPipe],
+    imports: [LpPipe, RouterLink, TPipe],
     template: `
 <main class="container legal newsletter-page">
   <span class="overline">{{ 'HÍRLEVÉL' | t }}</span>
@@ -25,7 +26,7 @@ import { TPipe } from '../../i18n/t.pipe';
     }
     @case ('error') { <h1>{{ 'Ez a link nem használható' | t }}</h1><p>{{ message() }}</p> }
   }
-  <p><a routerLink="/" class="button">{{ 'Vissza a főoldalra' | t }}</a></p>
+  <p><a [routerLink]="'/' | lp" class="button">{{ 'Vissza a főoldalra' | t }}</a></p>
 </main>`,
     styleUrl: '../privacy/privacy.scss'
 })

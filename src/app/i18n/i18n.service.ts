@@ -1,6 +1,8 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, Injector, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
+import { Lang, langOfPath, localizePath } from '../core/site-routes';
 
-export type Lang = 'hu' | 'en';
+export type { Lang } from '../core/site-routes';
 const KEY = 'mm-lang';
 
 /** Normalizált kulcs: a sablon tördelése (sortörések, szóközök) ne számítson. */
@@ -9,11 +11,13 @@ export const normalizeKey = (text: string) => text.replace(/\s+/g, ' ').trim();
 /**
  * Futásidejű kétnyelvűség (HU/EN). A kulcs maga a magyar szöveg – így a sablonok olvashatók maradnak,
  * hiányzó fordításnál pedig a magyar szöveg jelenik meg (sosem üres hely vagy kulcsnév).
- * Nyelvválasztás: navigációs kapcsoló, vagy ?lang=en / ?lang=hu a linkben. Alapértelmezés: magyar
- * (a Google is magyarul indexeli az oldalt).
+ * A nyilvános oldalak nyelvét az URL határozza meg: magyar a gyökérben, angol az /en/ alatt (core/site-routes.ts).
+ * A jogi és a privát oldalak (admin, ügyfélportál) a látogató utoljára választott nyelvét használják.
+ * Nincs automatikus, böngészőnyelv szerinti átirányítás: a Google és a látogató is közvetlenül eléri mindkét nyelvet.
  */
 @Injectable({ providedIn: 'root' })
 export class I18nService {
+    private readonly injector = inject(Injector);
     readonly lang = signal<Lang>(this.initial());
     /** Az angol szótár csak angol nézetben töltődik le (külön, ~15 KB-os tömörített csomag). */
     private readonly dict = signal<Record<string, string> | null>(null);
@@ -27,6 +31,8 @@ export class I18nService {
 
     private initial(): Lang {
         try {
+            const fromUrl = langOfPath(location.pathname);
+            if (fromUrl) return fromUrl;
             const param = new URLSearchParams(location.search).get('lang');
             if (param === 'en' || param === 'hu') return param;
             const stored = localStorage.getItem(KEY);
@@ -40,7 +46,20 @@ export class I18nService {
         this.apply(lang);
         try { localStorage.setItem(KEY, lang); } catch { /* privát mód */ }
     }
-    toggle(): void { this.set(this.lang() === 'hu' ? 'en' : 'hu'); }
+    /** Nyelvváltás: nyilvános oldalon az oldal másik nyelvű címére navigál (pl. /ajanlatkeres ↔ /en/request-a-quote). */
+    toggle(): void {
+        const next: Lang = this.lang() === 'hu' ? 'en' : 'hu';
+        this.set(next);
+        // A Routert itt, használatkor kérjük el (a konstruktorban körkörös függőség lenne a TitleStrategy miatt).
+        const router = this.injector.get(Router);
+        if (langOfPath(router.url)) void router.navigateByUrl(localizePath(router.url, next));
+    }
+
+    /** Navigációkor: ha az új cím nyelve egyértelmű (/en/… vagy magyar nyilvános oldal), ahhoz igazodunk. */
+    syncWithUrl(url: string): void {
+        const fromUrl = langOfPath(url);
+        if (fromUrl && fromUrl !== this.lang()) this.set(fromUrl);
+    }
 
     private apply(lang: Lang): void {
         if (typeof document !== 'undefined') document.documentElement.lang = lang;

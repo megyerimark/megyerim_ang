@@ -2,12 +2,13 @@ import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { I18nService } from '../../i18n/i18n.service';
 import { LEGAL_INFO, missingLegalFields } from '../../core/legal-info';
+import { LpPipe } from '../../i18n/lp.pipe';
 
 /** Impresszum – az elektronikus kereskedelemről szóló 2001. évi CVIII. törvény (Ekertv.) 4. §-a szerinti adatok. */
 @Component({
     selector: 'app-imprint',
     standalone: true,
-    imports: [RouterLink],
+    imports: [LpPipe, RouterLink],
     templateUrl: './imprint.html',
     styleUrl: '../privacy/privacy.scss'
 })

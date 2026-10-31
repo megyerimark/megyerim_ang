@@ -2,6 +2,7 @@ import { Component, computed, signal, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TPipe } from '../../i18n/t.pipe';
 import { I18nService } from '../../i18n/i18n.service';
+import { LpPipe } from '../../i18n/lp.pipe';
 
 type SiteGoal = 'business' | 'booking' | 'shop' | 'system';
 type Tone = 'midnight' | 'linen' | 'electric' | 'forest';
@@ -9,7 +10,7 @@ type Layout = 'editorial' | 'split' | 'centered';
 type Font = 'elegant' | 'modern';
 type Device = 'desktop' | 'mobile';
 
-@Component({ selector: 'app-studio', standalone: true, imports: [RouterLink, TPipe], templateUrl: './studio.html', styleUrl: './studio.scss' })
+@Component({ selector: 'app-studio', standalone: true, imports: [LpPipe, RouterLink, TPipe], templateUrl: './studio.html', styleUrl: './studio.scss' })
 export class StudioPage {
     readonly i18n = inject(I18nService);
     readonly goals: {value: SiteGoal; title: string; description: string}[] = [

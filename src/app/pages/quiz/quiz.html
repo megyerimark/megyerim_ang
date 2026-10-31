@@ -10,12 +10,12 @@
         @if(sentPromo()){<p class="quiz-small">✦ −{{sentPromo()}}% {{ 'akciós kedvezmény rögzítve az ajánlatkérésedhez. Az ajánlatban érvényesítem.' | t }}</p>}
         <div class="quiz-reference">{{ 'Ajánlatkérés azonosítója' | t }} <strong>#{{sent()}}</strong></div>
         <p class="quiz-small">{{ 'Visszaigazoló e-mailt is kapsz, ha az e-mail-küldés be van állítva. A visszaigazolás nem végleges árajánlat.' | t }}</p>
-        <a class="btn btn-primary" routerLink="/">{{ 'Vissza a főoldalra' | t }} <span aria-hidden="true">↗︎</span></a>
+        <a class="btn btn-primary" [routerLink]="'/' | lp">{{ 'Vissza a főoldalra' | t }} <span aria-hidden="true">↗︎</span></a>
       </section>
     } @else {
       <header class="quiz-header">
         <div><span class="quiz-eyebrow">{{ 'INTERAKTÍV IGÉNYFELMÉRÉS' | t }}</span><h1>{{ 'Találjuk meg a' | t }} <span>{{ 'hozzád illő weboldalt.' | t }}</span></h1><p>{{ 'Válaszolj néhány rövid kérdésre, és induljunk el egy személyre szabott megoldás felé.' | t }}</p></div>
-        <a routerLink="/" class="quiz-exit" [attr.aria-label]="'Vissza a főoldalra' | t">← <span>{{ 'Vissza a főoldalra' | t }}</span></a>
+        <a [routerLink]="'/' | lp" class="quiz-exit" [attr.aria-label]="'Vissza a főoldalra' | t">← <span>{{ 'Vissza a főoldalra' | t }}</span></a>
       </header>
       <app-promo-note></app-promo-note>
       <section class="quiz-panel" aria-labelledby="quiz-question-title">
@@ -58,7 +58,7 @@
                 <div class="quiz-field quiz-field-wide"><label for="quiz-note">{{ 'Van még valami, amit tudnom kell?' | t }} <small>{{ '(nem kötelező)' | t }}</small></label><textarea id="quiz-note" name="note" rows="3" maxlength="1500" [(ngModel)]="contact.note" [placeholder]="'Például különleges funkció, elképzelés vagy kérdés' | t"></textarea></div>
               </div>
               <div class="quiz-honeypot" aria-hidden="true"><label for="quiz-website">{{ 'Weboldal' | t }}</label><input id="quiz-website" name="website" tabindex="-1" autocomplete="off" [(ngModel)]="contact.website" /></div>
-              <label class="quiz-consent"><input name="privacy" type="checkbox" required [(ngModel)]="contact.privacy_notice_acknowledged" /><span>{{ 'Megismertem és elfogadom az' | t }} <a routerLink="/adatkezeles" target="_blank" rel="noopener noreferrer">{{ 'adatkezelési tájékoztatót' | t }}</a>{{ ', és kérem a megkeresésem feldolgozását.' | t }}</span></label>
+              <label class="quiz-consent"><input name="privacy" type="checkbox" required [(ngModel)]="contact.privacy_notice_acknowledged" /><span>{{ 'Megismertem és elfogadom az' | t }} <a [routerLink]="'/adatkezeles' | lp" target="_blank" rel="noopener noreferrer">{{ 'adatkezelési tájékoztatót' | t }}</a>{{ ', és kérem a megkeresésem feldolgozását.' | t }}</span></label>
               <app-turnstile [(token)]="captchaToken" action="quiz" />
               <div class="quiz-footer-actions"><button type="button" class="quiz-back" (click)="back()">{{ '← Vissza' | t }}</button><button type="submit" class="btn btn-primary quiz-next" [disabled]="sending()||!contact.privacy_notice_acknowledged">{{ (sending()?'Küldés folyamatban…':'Személyre szabott ajánlatot kérek') | t }} <span aria-hidden="true">↗︎</span></button></div>
             </form>

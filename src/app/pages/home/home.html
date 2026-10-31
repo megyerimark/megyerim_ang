@@ -34,22 +34,22 @@
         <div class="audience-card-top"><span>{{ '01 / MEGJELENÉS' | t }}</span><span aria-hidden="true">↗︎</span></div>
         <h3>{{ 'Erősebb első benyomást szeretnél?' | t }}</h3>
         <p>{{ 'Egyedi céges weboldal, amely világosan bemutatja a vállalkozásodat és megkönnyíti a kapcsolatfelvételt.' | t }}</p>
-        <a routerLink="/ajanlatkeres" [queryParams]="{type:'business'}">{{ 'Céges weboldalt szeretnék' | t }} <span aria-hidden="true">↗︎</span></a>
+        <a [routerLink]="'/ajanlatkeres' | lp" [queryParams]="{type:'business'}">{{ 'Céges weboldalt szeretnék' | t }} <span aria-hidden="true">↗︎</span></a>
       </article>
       <article class="audience-card audience-card--featured">
         <div class="audience-card-top"><span>{{ '02 / ÜGYFÉLSZERZÉS' | t }}</span><span aria-hidden="true">✦</span></div>
         <h3>{{ 'Több releváns érdeklődőt szeretnél?' | t }}</h3>
         <p>{{ 'Célzott landing oldal, jól felépített üzenettel és egyértelmű ajánlatkérési útvonallal.' | t }}</p>
-        <a routerLink="/ajanlatkeres" [queryParams]="{type:'landing'}">{{ 'Landing oldalt szeretnék' | t }} <span aria-hidden="true">↗︎</span></a>
+        <a [routerLink]="'/ajanlatkeres' | lp" [queryParams]="{type:'landing'}">{{ 'Landing oldalt szeretnék' | t }} <span aria-hidden="true">↗︎</span></a>
       </article>
       <article class="audience-card">
         <div class="audience-card-top"><span>{{ '03 / HATÉKONYSÁG' | t }}</span><span aria-hidden="true">↗︎</span></div>
         <h3>{{ 'Egyszerűsítenéd a munkafolyamataidat?' | t }}</h3>
         <p>{{ 'Rád szabott webes rendszer, adminfelület vagy automatizált folyamat a mindennapi feladataidhoz.' | t }}</p>
-        <a routerLink="/ajanlatkeres" [queryParams]="{type:'custom'}">{{ 'Egyedi rendszert szeretnék' | t }} <span aria-hidden="true">↗︎</span></a>
+        <a [routerLink]="'/ajanlatkeres' | lp" [queryParams]="{type:'custom'}">{{ 'Egyedi rendszert szeretnék' | t }} <span aria-hidden="true">↗︎</span></a>
       </article>
     </div>
-    <p class="audience-note">{{ 'Még nem tudod, pontosan mire van szükséged?' | t }} <a routerLink="/projekt-kviz">{{ 'Töltsd ki a 2 perces igényfelmérőt' | t }} <span aria-hidden="true">↗︎</span></a></p>
+    <p class="audience-note">{{ 'Még nem tudod, pontosan mire van szükséged?' | t }} <a [routerLink]="'/projekt-kviz' | lp">{{ 'Töltsd ki a 2 perces igényfelmérőt' | t }} <span aria-hidden="true">↗︎</span></a></p>
   </div>
 </section>
 <section premiumReveal class="section transformation" id="miert-fontos" aria-labelledby="transformation-title">
@@ -94,7 +94,7 @@
             <span><i aria-hidden="true">{{ comparisonView() === 'before' ? '−' : '+' }}</i> {{ point | t }}</span>
           }
         </div>
-        <a routerLink="/tervezo" class="comparison-action">{{ 'Tervezd meg a sajátodat' | t }} <span aria-hidden="true">↗︎</span></a>
+        <a [routerLink]="'/tervezo' | lp" class="comparison-action">{{ 'Tervezd meg a sajátodat' | t }} <span aria-hidden="true">↗︎</span></a>
       </div>
     </div>
     <p class="concept-disclaimer">{{ 'A két nézet szemléltető dizájnkoncepció, nem valódi ügyfélmunka vagy garantált eredmény.' | t }}</p>
@@ -182,7 +182,7 @@
           <p>
             {{ 'Tetszik az irány? Mondd el, mire van szükséged, és kialakítjuk a saját vállalkozásodhoz illő megoldást.' | t }}
           </p>
-          <a class="btn btn-primary" routerLink="/tervezo">
+          <a class="btn btn-primary" [routerLink]="'/tervezo' | lp">
             {{ 'Részletes tervező megnyitása' | t }}
             <span aria-hidden="true">↗︎</span>
           </a>
@@ -306,12 +306,16 @@
             } @else {
               <span class="sx-price">{{ card.service ? money(card.service.starting_price_huf) : ('Személyre szabott' | t) }}</span>
             }
-            <a class="sx-link" routerLink="/ajanlatkeres" [queryParams]="card.type ? { type: card.type } : null" [attr.aria-label]="('Ajánlatot kérek' | t) + ': ' + (card.service ? loc(card.service, 'title') : (card.title | t))">{{ 'Érdekel' | t }} <span aria-hidden="true">↗︎</span></a>
+            <a class="sx-link" [routerLink]="'/ajanlatkeres' | lp" [queryParams]="card.type ? { type: card.type } : null" [attr.aria-label]="('Ajánlatot kérek' | t) + ': ' + (card.service ? loc(card.service, 'title') : (card.title | t))">{{ 'Érdekel' | t }} <span aria-hidden="true">↗︎</span></a>
           </div>
         </div>
       </article>
       }
     </div>
+    <nav class="sx-pages" [attr.aria-label]="'Szolgáltatások részletesen' | t">
+      <span>{{ 'Szolgáltatások részletesen' | t }}</span>
+      @for (page of servicePages; track page.path) {<a [routerLink]="page.path | lp">{{ page.label | t }} <span aria-hidden="true">→</span></a>}
+    </nav>
   </div>
 </section>
 <section premiumReveal class="section estimation" id="kalkulator" aria-labelledby="estimation-title">
@@ -329,7 +333,7 @@
       <label for="inquiry-minutes">{{ 'Átlagos kézi ügyintézés' | t }} <strong>{{ inquiryMinutes() }} {{ 'perc / alkalom' | t }}</strong></label>
       <input type="range" id="inquiry-minutes" min="5" max="30" step="5" [value]="inquiryMinutes()" (input)="setInquiryMinutes($event)" />
       <div class="estimate-total"><span>{{ 'Lehetséges havi időmegtakarítás' | t }}</span><strong>{{ savedHours() | number:'1.1-1' }} <small>{{ 'óra' | t }}</small></strong><p>{{ '40%-os adminisztrációs időcsökkenést feltételező becslés' | t }}</p></div>
-      <a routerLink="/konzultacio" class="estimate-link">{{ 'Beszéljük át, mi automatizálható nálad' | t }} <span aria-hidden="true">↗︎</span></a>
+      <a [routerLink]="'/konzultacio' | lp" class="estimate-link">{{ 'Beszéljük át, mi automatizálható nálad' | t }} <span aria-hidden="true">↗︎</span></a>
     </div>
   </div>
 </section>
@@ -364,7 +368,7 @@
                 </div>
               }
               <span class="portfolio-badge">{{ 'REFERENCIA' | t }}</span>
-              <a [routerLink]="['/munkak',project.slug]" class="portfolio-case-link">{{ 'Projektbemutató megnyitása ↗︎' | t }}</a>
+              <a [routerLink]="['/munkak' | lp, project.slug]" class="portfolio-case-link">{{ 'Projektbemutató megnyitása ↗︎' | t }}</a>
             </div>
             <div class="portfolio-meta">
               <div>
@@ -459,7 +463,7 @@
         <span class="process-holo-chip process-holo-chip--left">✦ &nbsp; {{ 'KONCEPCIÓ' | t }}</span>
         <span class="process-holo-chip process-holo-chip--right">◈ &nbsp; {{ 'MEGVALÓSÍTÁS' | t }}</span>
       </div>
-      <a class="text-link" routerLink="/konzultacio">
+      <a class="text-link" [routerLink]="'/konzultacio' | lp">
         {{ 'Foglalj egy konzultációt' | t }}
         <span aria-hidden="true">
           ↗︎
@@ -535,7 +539,7 @@
           {{ '✳︎ Gondosan megtervezett részletek' | t }}
         </span>
       </div>
-      <a class="btn btn-outline" routerLink="/ajanlatkeres">
+      <a class="btn btn-outline" [routerLink]="'/ajanlatkeres' | lp">
         {{ 'Dolgozzunk együtt' | t }}
         <span aria-hidden="true">
           ↗︎
@@ -557,7 +561,7 @@
         <figcaption>
           <strong>{{ t.author_name }}</strong>
 @if (t.author_role || t.company) {<span>{{ t.author_role && t.company ? t.author_role + ', ' + t.company : (t.author_role || t.company) }}</span>}
-          @if (t.project) {<a [routerLink]="['/munkak', t.project.slug]">{{ t.project.title }} ↗︎</a>}
+          @if (t.project) {<a [routerLink]="['/munkak' | lp, t.project.slug]">{{ t.project.title }} ↗︎</a>}
         </figcaption>
       </figure>
       }
@@ -615,13 +619,13 @@
     <span class="overline">{{ 'A TE PROJEKTED KÖVETKEZIK' | t }}</span>
     <h2 id="cta-title">{{ 'Ne csak jelen legyél online.' | t }} <em>{{ 'Emelkedj ki.' | t }}</em></h2>
     <p>{{ 'Legyen olyan weboldalad, amely hitelesen képvisel, és megkönnyíti az ügyfeleid első lépését. Mesélj az elképzelésedről!' | t }}</p>
-    <div class="cta-buttons"><a class="btn btn-primary" routerLink="/ajanlatkeres">{{ 'Ajánlatot kérek' | t }} <span aria-hidden="true">↗︎</span></a><a class="btn cta-outline" routerLink="/konzultacio">{{ 'Konzultációt foglalok' | t }} <span aria-hidden="true">↗︎</span></a></div>
+    <div class="cta-buttons"><a class="btn btn-primary" [routerLink]="'/ajanlatkeres' | lp">{{ 'Ajánlatot kérek' | t }} <span aria-hidden="true">↗︎</span></a><a class="btn cta-outline" [routerLink]="'/konzultacio' | lp">{{ 'Konzultációt foglalok' | t }} <span aria-hidden="true">↗︎</span></a></div>
   </div></div>
 </section>
 <footer class="footer">
   <div class="container footer-main">
     <div class="footer-intro">
-      <a class="footer-brand" routerLink="/" [attr.aria-label]="'Megyeri Márk – főoldal' | t">
+      <a class="footer-brand" [routerLink]="'/' | lp" [attr.aria-label]="'Megyeri Márk – főoldal' | t">
         <app-brand-mark />
       </a>
       <p>
@@ -635,18 +639,24 @@
       <h3>
         {{ 'Felfedezés' | t }}
       </h3>
-      <a routerLink="/" fragment="szolgaltatasok">
+      <a [routerLink]="'/' | lp" fragment="szolgaltatasok">
         {{ 'Szolgáltatások' | t }}
       </a>
-      <a routerLink="/" fragment="megoldas">
+      <a [routerLink]="'/' | lp" fragment="megoldas">
         {{ 'Tervezőasztal' | t }}
       </a>
-      <a routerLink="/" fragment="folyamat">
+      <a [routerLink]="'/' | lp" fragment="folyamat">
         {{ 'Munkafolyamat' | t }}
       </a>
-      <a routerLink="/ajanlatkeres">
+      <a [routerLink]="'/ajanlatkeres' | lp">
         {{ 'Ajánlatkérés' | t }}
       </a>
+    </div>
+    <div class="footer-links">
+      <h3>
+        {{ 'Szolgáltatások' | t }}
+      </h3>
+      @for (page of servicePages; track page.path) {<a [routerLink]="page.path | lp">{{ page.label | t }}</a>}
     </div>
     <div class="footer-links">
       <h3>
@@ -684,9 +694,9 @@
       ©︎ {{ year }} Megyeri Márk Máté. {{ 'Minden jog fenntartva.' | t }}
     </span>
     <span class="footer-legal">
-      <a routerLink="/adatkezeles">{{ 'Adatkezelési tájékoztató' | t }}</a>
-      <a routerLink="/aszf">{{ 'ÁSZF' | t }}</a>
-      <a routerLink="/impresszum">{{ 'Impresszum' | t }}</a>
+      <a [routerLink]="'/adatkezeles' | lp">{{ 'Adatkezelési tájékoztató' | t }}</a>
+      <a [routerLink]="'/aszf' | lp">{{ 'ÁSZF' | t }}</a>
+      <a [routerLink]="'/impresszum' | lp">{{ 'Impresszum' | t }}</a>
       <button type="button" class="footer-cookie" (click)="consent.openSettings()">{{ 'Süti-beállítások' | t }}</button>
     </span>
   </div>

@@ -7,8 +7,9 @@ import { ApiService } from '../../core/api.service';
 import { ToastService } from '../../core/toast.service';
 import { SubmitLoaderService } from '../../core/submit-loader.service';
 import { ClientProject, ProjectCollaboration, ProjectDocument, QuoteStatus } from '../../core/models';
+import { LpPipe } from '../../i18n/lp.pipe';
 
-@Component({ selector: 'app-client-project', standalone: true, imports: [RouterLink, FormsModule], templateUrl: './client-project.html', styleUrl: './client-project.scss' })
+@Component({ selector: 'app-client-project', standalone: true, imports: [LpPipe, RouterLink, FormsModule], templateUrl: './client-project.html', styleUrl: './client-project.scss' })
 export class ClientProjectPage implements OnInit, OnDestroy {
     private readonly api = inject(ApiService);
     private readonly route = inject(ActivatedRoute);

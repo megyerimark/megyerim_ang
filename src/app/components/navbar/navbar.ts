@@ -5,13 +5,15 @@ import { filter } from 'rxjs';
 import { TPipe } from '../../i18n/t.pipe';
 import { BrandMark } from '../brand-mark/brand-mark';
 import { I18nService } from '../../i18n/i18n.service';
+import { toHuPath } from '../../core/site-routes';
+import { LpPipe } from '../../i18n/lp.pipe';
 
 interface NavItem { label: string; link: string; fragment?: string; spy?: string; mobileOnly?: boolean; }
 
 @Component({
     selector: 'app-navbar',
     standalone: true,
-    imports: [RouterLink, TPipe, BrandMark],
+    imports: [LpPipe, RouterLink, TPipe, BrandMark],
     templateUrl: './navbar.html',
     styleUrl: './navbar.scss',
     host: { '[class.overlay]': 'onHome', '[class.on-dark]': 'overDark()', '[class.mm-keep-dark]': 'overDark()' }
@@ -76,7 +78,7 @@ export class Navbar implements OnInit, OnDestroy {
     }
 
     get onHome(): boolean {
-        return this.router.url.split(/[?#]/)[0] === '/';
+        return toHuPath(this.router.url) === '/';
     }
 
     ngOnInit(): void {
@@ -94,7 +96,7 @@ export class Navbar implements OnInit, OnDestroy {
     }
 
     isActive(item: NavItem): boolean {
-        if (!item.spy) return this.router.url.split(/[?#]/)[0] === item.link;
+        if (!item.spy) return toHuPath(this.router.url) === item.link;
         return this.onHome && this.activeSection() === item.spy;
     }
 

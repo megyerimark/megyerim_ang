@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { I18nService } from '../../i18n/i18n.service';
 import { LEGAL_INFO, missingLegalFields } from '../../core/legal-info';
+import { LpPipe } from '../../i18n/lp.pipe';
 
 /**
  * Általános Szerződési Feltételek (webfejlesztési vállalkozási szerződés).
@@ -10,7 +11,7 @@ import { LEGAL_INFO, missingLegalFields } from '../../core/legal-info';
 @Component({
     selector: 'app-terms',
     standalone: true,
-    imports: [RouterLink],
+    imports: [LpPipe, RouterLink],
     templateUrl: './terms.html',
     styleUrl: '../privacy/privacy.scss'
 })

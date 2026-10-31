@@ -1,0 +1,103 @@
+@let c = copy();
+<main class="svc-page" id="tartalom">
+  <div class="svc-container">
+    <nav class="svc-crumbs" [attr.aria-label]="'Morzsamenü' | t">
+      <a [routerLink]="'/' | lp">{{ 'Főoldal' | t }}</a>
+      <span aria-hidden="true">/</span>
+      <a [routerLink]="'/' | lp" fragment="szolgaltatasok">{{ 'Szolgáltatások' | t }}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{{ c.label }}</span>
+    </nav>
+
+    <header class="svc-hero">
+      <span class="svc-eyebrow">{{ c.label }}</span>
+      <h1>{{ c.h1 }}</h1>
+      <p class="svc-intro">{{ c.intro }}</p>
+      <div class="svc-actions">
+        <a class="btn btn-primary" [routerLink]="'/ajanlatkeres' | lp" [queryParams]="quoteParams()">{{ 'Ajánlatot kérek' | t }} <span aria-hidden="true">↗︎</span></a>
+        <a class="svc-secondary" [routerLink]="'/konzultacio' | lp">{{ 'Konzultációt foglalok' | t }}</a>
+      </div>
+    </header>
+
+    <section class="svc-section" aria-labelledby="svc-problems">
+      <h2 id="svc-problems">{{ c.problemsTitle }}</h2>
+      <ul class="svc-problems">
+        @for (item of c.problems; track $index) {<li>{{ item }}</li>}
+      </ul>
+    </section>
+
+    <section class="svc-section" aria-labelledby="svc-included">
+      <h2 id="svc-included">{{ c.includedTitle }}</h2>
+      <div class="svc-grid">
+        @for (item of c.included; track $index) {
+        <article class="svc-card"><h3>{{ item.title }}</h3><p>{{ item.text }}</p></article>
+        }
+      </div>
+    </section>
+
+    <section class="svc-section" aria-labelledby="svc-process">
+      <h2 id="svc-process">{{ c.processTitle }}</h2>
+      <ol class="svc-steps">
+        @for (step of c.process; track $index) {
+        <li><span class="svc-step-no" aria-hidden="true">{{ ($index + 1).toString().padStart(2, '0') }}</span><div><h3>{{ step.title }}</h3><p>{{ step.text }}</p></div></li>
+        }
+      </ol>
+    </section>
+
+    @if (projects().length) {
+    <section class="svc-section" aria-labelledby="svc-work">
+      <h2 id="svc-work">{{ 'Megvalósult munkák' | t }}</h2>
+      <div class="svc-work">
+        @for (p of projects(); track p.id) {
+        <a class="svc-work-card" [routerLink]="['/munkak' | lp, p.slug]">
+          <span class="svc-eyebrow">{{ loc(p, 'category') || ('WEBFEJLESZTÉS' | t) }}</span>
+          <strong>{{ loc(p, 'title') }}</strong>
+          <span>{{ loc(p, 'summary') }}</span>
+        </a>
+        }
+      </div>
+    </section>
+    }
+
+    <section class="svc-section" aria-labelledby="svc-faq">
+      <h2 id="svc-faq">{{ c.faqTitle }}</h2>
+      <div class="svc-faq">
+        @for (item of c.faq; track $index) {
+        <article>
+          <h3><button type="button" (click)="toggleFaq($index)" [attr.aria-expanded]="openFaq() === $index">{{ item.q }} <span aria-hidden="true">{{ openFaq() === $index ? '−' : '+' }}</span></button></h3>
+          <p [hidden]="openFaq() !== $index">{{ item.a }}</p>
+        </article>
+        }
+      </div>
+    </section>
+
+    <section class="svc-cta" aria-labelledby="svc-cta">
+      <div>
+        <h2 id="svc-cta">{{ c.ctaTitle }}</h2>
+        <p>{{ c.ctaText }}</p>
+      </div>
+      <div class="svc-cta-actions">
+        <a class="btn btn-primary" [routerLink]="'/ajanlatkeres' | lp" [queryParams]="quoteParams()">{{ 'Ajánlatot kérek' | t }} <span aria-hidden="true">↗︎</span></a>
+        <a class="svc-secondary" [routerLink]="'/projekt-kviz' | lp">{{ '2 perces igényfelmérő' | t }}</a>
+      </div>
+    </section>
+
+    <nav class="svc-related" [attr.aria-label]="'További szolgáltatások' | t">
+      <h2>{{ 'További szolgáltatások' | t }}</h2>
+      <ul>
+        @for (o of others(); track o.key) {<li><a [routerLink]="o.path | lp">{{ o.label }} <span aria-hidden="true">→</span></a></li>}
+      </ul>
+    </nav>
+  </div>
+
+  <footer class="svc-footer">
+    <div class="svc-container svc-footer-inner">
+      <span>© Megyeri Márk Máté</span>
+      <span class="svc-footer-links">
+        <a [routerLink]="'/adatkezeles' | lp">{{ 'Adatkezelési tájékoztató' | t }}</a>
+        <a [routerLink]="'/aszf' | lp">{{ 'ÁSZF' | t }}</a>
+        <a [routerLink]="'/impresszum' | lp">{{ 'Impresszum' | t }}</a>
+      </span>
+    </div>
+  </footer>
+</main>

@@ -9,6 +9,32 @@
     RewriteCond %{HTTP_HOST} !^localhost [NC]
     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
+    # Régi, ?lang=en / ?lang=hu paraméteres címek → az oldal saját nyelvi címe (301, a Google átviszi a jelzéseket).
+    RewriteCond %{QUERY_STRING} (^|&)lang=en(&|$)
+    RewriteRule ^$ /en? [L,R=301]
+    RewriteCond %{QUERY_STRING} (^|&)lang=en(&|$)
+    RewriteRule ^tervezo/?$ /en/website-planner? [L,R=301]
+    RewriteCond %{QUERY_STRING} (^|&)lang=en(&|$)
+    RewriteRule ^ajanlatkeres/?$ /en/request-a-quote? [L,R=301]
+    RewriteCond %{QUERY_STRING} (^|&)lang=en(&|$)
+    RewriteRule ^projekt-kviz/?$ /en/project-quiz? [L,R=301]
+    RewriteCond %{QUERY_STRING} (^|&)lang=en(&|$)
+    RewriteRule ^konzultacio/?$ /en/consultation? [L,R=301]
+    RewriteCond %{QUERY_STRING} (^|&)lang=en(&|$)
+    RewriteRule ^munkak/([A-Za-z0-9_-]+)/?$ /en/work/$1? [L,R=301]
+    RewriteCond %{QUERY_STRING} (^|&)lang=en(&|$)
+    RewriteRule ^adatkezeles/?$ /en/privacy-policy? [L,R=301]
+    RewriteCond %{QUERY_STRING} (^|&)lang=en(&|$)
+    RewriteRule ^impresszum/?$ /en/legal-notice? [L,R=301]
+    RewriteCond %{QUERY_STRING} (^|&)lang=en(&|$)
+    RewriteRule ^aszf/?$ /en/terms? [L,R=301]
+    # ?lang=hu: a magyar alapcím.
+    RewriteCond %{QUERY_STRING} (^|&)lang=hu(&|$)
+    RewriteRule ^(adatkezeles|impresszum|aszf|tervezo|ajanlatkeres|projekt-kviz|konzultacio|munkak/[A-Za-z0-9_-]+)?/?$ /$1? [L,R=301]
+
+    # Oldaltérkép: egyetlen forrás, a Laravel állítja elő (oldalak, szolgáltatások, referenciák, hreflang-párok).
+    RewriteRule ^sitemap\.xml$ aurora-api.php [L,QSA]
+
     # A Laravel backend útvonalai nem az Angularhoz mennek.
     # Rackhost: a Laravel a /private/laravel_mmm mappában van, ezt az aurora-api.php tölti be
     # (az aurora-api.php a szerveren marad, nem része a buildnek – rsyncnél ne töröld!).
@@ -16,11 +42,28 @@
     RewriteRule ^admin/(login|logout|forgot-password|reset-password|verify-login|resend-login-code)$ aurora-api.php [L,QSA]
     RewriteRule ^up$ aurora-api.php [L,QSA]
 
+    # Záró perjel nélküli címek az egyetlen változat (a /weboldal-keszites/ → /weboldal-keszites).
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.+)/$ /$1 [L,R=301]
+
+    # Az előre renderelt oldalak (_p/ mappa) közvetlenül nem érhetők el – csak a saját címükön (duplikáció ellen).
+    RewriteCond %{ENV:REDIRECT_STATUS} ^$
+    RewriteRule ^_p(/|$) - [R=404,L]
+
+    # Előre renderelt nyilvános oldalak (scripts/prerender.mjs): saját HTML címmel, leírással, canonicallal és tartalommal.
+    RewriteCond %{DOCUMENT_ROOT}/_p/index.html -f
+    RewriteRule ^$ _p/index.html [L]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{DOCUMENT_ROOT}/_p/$1.html -f
+    RewriteRule ^(.+)$ _p/$1.html [L]
+
     # Csak a létező Angular-útvonalak kapnak 200-at; minden más valódi 404-et (lent: ErrorDocument),
     # az Angular ilyenkor is betölt, és a „nem található” oldalt mutatja. Új útvonalnál bővítsd a listát!
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(tervezo|ajanlatkeres|projekt-kviz|konzultacio|adatkezeles|impresszum|aszf|ugyfel/projekt|fizetes/(sikeres|megszakitva)|admin|admin/(bejelentkezes|elfelejtett-jelszo|jelszo-visszaallitas)|hirlevel/(megerosites|leiratkozas)|munkak/[A-Za-z0-9_-]+)/?$ index.html [L]
+    # (A nyilvános oldalak itt csak tartalékként szerepelnek, ha a _p/ mappa hiányzik, illetve a build után felvett referenciákhoz.)
+    RewriteRule ^(tervezo|ajanlatkeres|projekt-kviz|konzultacio|adatkezeles|impresszum|aszf|weboldal-keszites|landing-oldal-keszites|webshop-keszites|egyedi-webfejlesztes|weboldal-karbantartas|ugyfel/projekt|fizetes/(sikeres|megszakitva)|admin|admin/(bejelentkezes|elfelejtett-jelszo|jelszo-visszaallitas)|hirlevel/(megerosites|leiratkozas)|munkak/[A-Za-z0-9_-]+|en|en/(website-planner|request-a-quote|project-quiz|consultation|privacy-policy|legal-notice|terms|website-development|landing-page-design|webshop-development|custom-web-development|website-maintenance|work/[A-Za-z0-9_-]+))/?$ index.html [L]
 </IfModule>
 
 # Ismeretlen cím: 404-es HTTP-státusz, de a tartalom az Angular alkalmazás (NotFoundPage).
@@ -48,7 +91,7 @@ ErrorDocument 404 /index.html
     <FilesMatch "\.(woff2|webp|avif|jpg|png|svg|ico)$">
         Header set Cache-Control "public, max-age=2592000"
     </FilesMatch>
-    <FilesMatch "^index\.html$">
+    <FilesMatch "\.html$">
         Header set Cache-Control "no-cache"
     </FilesMatch>
 </IfModule>

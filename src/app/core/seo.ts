@@ -1,8 +1,8 @@
-import type { Lang } from '../i18n/i18n.service';
+import { Lang, PUBLIC_PAGES, ServiceKey, localizePath } from './site-routes';
 
 export const SITE_URL = 'https://megyerimarkmate.hu';
 
-interface PageSeo { title: string; description: string; }
+export interface PageSeo { title: string; description: string; }
 
 /**
  * A nyilvános oldalak címe és leírása a Google-találatokban, nyelvenként. Azok a kifejezések legyenek benne,
@@ -63,5 +63,22 @@ export const PAGE_SEO: Record<Lang, Record<string, PageSeo>> = {
     },
 };
 
-/** Az oldal saját, nyelvhez tartozó címe (canonical, og:url): az angol változat a ?lang=en paraméteres cím. */
-export const pageUrl = (path: string, lang: Lang) => SITE_URL + path + (lang === 'en' ? '?lang=en' : '');
+/** Az oldal saját, nyelvhez tartozó teljes címe (canonical, og:url, hreflang). Az angol változat az /en/ alatt van. */
+export const pageUrl = (path: string, lang: Lang) => {
+    const localized = localizePath(path, lang);
+    return SITE_URL + (localized === '/' ? '/' : localized);
+};
+
+/** A szolgáltatási céloldal kulcsa a (magyar) útvonalból, vagy null. */
+export function serviceKeyOf(huPath: string): ServiceKey | null {
+    const page = PUBLIC_PAGES.find(p => p.hu === huPath && p.key.startsWith('service:'));
+    return page ? page.key.slice('service:'.length) as ServiceKey : null;
+}
+
+/**
+ * Egy nyilvános oldal címe és leírása az adott nyelven. A szolgáltatási céloldalakét és a referenciákét
+ * maga az oldal állítja be (service-content.ts, illetve a betöltött projekt) – ezekre null.
+ */
+export function seoFor(huPath: string, lang: Lang): PageSeo | null {
+    return PAGE_SEO[lang][huPath] ?? null;
+}
