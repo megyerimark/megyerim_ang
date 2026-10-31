@@ -1,6 +1,13 @@
 /* eslint-disable */
 // Angol fordítások. Kulcs = a magyar szöveg (szóközök normalizálva). Hiányzó kulcsnál a magyar szöveg jelenik meg.
 export const EN: Record<string, string> = {
+  "Webfejlesztés": "Web development",
+  "EGYEDI WEBOLDALAK": "CUSTOM WEBSITES",
+  "DIGITÁLIS RENDSZEREK": "DIGITAL SYSTEMS",
+  "HOSSZÚ TÁVÚ PARTNERSÉG": "LONG-TERM PARTNERSHIP",
+  "TECHNOLÓGIA": "TECHNOLOGY",
+  "KREATIVITÁS": "CREATIVITY",
+  "EREDMÉNY": "RESULTS",
   "Időszakos akció": "Limited-time offer",
   "A kedvezmény automatikusan rögzül az ajánlatkérésedhez, az ajánlatban az eredeti és az akciós árat is látni fogod.": "The discount is recorded with your request automatically; your proposal will show both the regular and the discounted price.",
   "Még": "Ends in",

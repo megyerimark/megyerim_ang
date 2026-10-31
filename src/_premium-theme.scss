@@ -19,25 +19,6 @@
   --premium-glass: rgba(14, 23, 53, .76);
   --premium-grid: rgba(108, 129, 212, .10);
 }
-[data-theme='light'] {
-  color-scheme: light;
-  --bg: #f7f8ff;
-  --surface: #ffffff;
-  --surface-alt: var(--k-eef2ff);
-  --text: var(--k-131a39);
-  --muted: var(--k-586481);
-  --border: var(--k-d9def3);
-  --accent: var(--k-6245d3);
-  --accent2: var(--k-255ddb);
-  --cream: #fff;
-  --shadow: rgba(33, 48, 112, .13);
-  --premium-panel: rgba(255, 255, 255, .9);
-  --premium-rim: rgba(65, 84, 167, .20);
-  --premium-halo: rgba(102, 79, 240, .12);
-  --premium-primary: linear-gradient(110deg, var(--k-7043e2) 0%, var(--k-5153eb) 60%, var(--k-2868ed) 100%);
-  --premium-glass: rgba(255, 255, 255, .84);
-  --premium-grid: rgba(54, 79, 140, .08);
-}
 html { scroll-padding-top: 88px; }
 body {
   background: var(--bg);

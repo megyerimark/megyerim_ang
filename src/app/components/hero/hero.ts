@@ -5,8 +5,8 @@ import { TPipe } from '../../i18n/t.pipe';
 import { I18nService } from '../../i18n/i18n.service';
 
 /**
- * Főoldali nyitójelenet. Görgetésre a kamera „beúszik” a monitorba (rögzített, görgetésvezérelt
- * jelenet, mint a referencia-videóban), a szöveg elhalványul, a képernyő tartalma váltódik.
+ * Főoldali nyitójelenet. Görgetésre (rögzített, görgetésvezérelt jelenet) a szöveg elhalványul, a kamera a
+ * kristályszikla fénylő magjába úszik, a gyűrűk felpörögnek, és egy fényvillanásból indul a következő jelenet.
  */
 @Component({
     selector: 'app-hero',
@@ -24,6 +24,10 @@ export class Hero implements AfterViewInit, OnDestroy {
     description = 'Prémium weboldalak, amelyek nemcsak szépek, hanem ügyfeleket is hoznak.';
     /** A főoldal 8 fejezete – a hero alsó sávja ezt jelzi (2. kép). */
     readonly segments = Array.from({ length: 8 });
+    /** Lebegő fényszikrák a szikla körül (rögzített minta, hogy minden betöltésnél ugyanúgy nézzen ki). */
+    readonly sparks = [[18, 30, 7, 3], [26, 72, 9, 2], [38, 14, 8, 2], [52, 86, 11, 3], [64, 22, 6, 2], [74, 64, 10, 4],
+        [82, 36, 8, 2], [88, 78, 12, 3], [12, 56, 10, 2], [46, 48, 9, 2], [58, 8, 7, 3], [30, 92, 13, 2], [92, 18, 9, 2], [8, 84, 11, 3]]
+        .map(([x, y, d, s]) => ({ x: x + '%', y: y + '%', d: d + 's', s: s + 'px' }));
     private readonly chapterIds = ['cinematic-story'];
     private scrubber?: ScrollScrubber;
 
@@ -52,7 +56,10 @@ export class Hero implements AfterViewInit, OnDestroy {
             set('--h-copy', range(p, .04, .38));
             set('--h-push', range(p, .08, .86));
             set('--h-swap', range(p, .34, .58));
-            set('--h-out', range(p, .82, 1));
+            // fényvillanás: a beúszás végén felizzik, majd átadja a helyét a következő jelenetnek
+            const flash = range(p, .7, .9) - range(p, .9, 1);
+            set('--h-flash', flash);
+            set('--h-out', range(p, .9, 1));
         }, { reducedProgress: 0, pinBreakpoint: 980 });
         this.scrubber.start();
     }

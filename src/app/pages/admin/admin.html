@@ -1458,8 +1458,8 @@
           </div>
           <div class="theme-cards" role="radiogroup" aria-label="Alaptéma">
             @for (p of basePalettes; track p.id) {
-              <button type="button" class="theme-card" role="radio" [attr.aria-checked]="(settings.site_palette || 'nightblue') === p.id"
-                      [class.selected]="(settings.site_palette || 'nightblue') === p.id" (click)="pickPalette(p.id)">
+              <button type="button" class="theme-card" role="radio" [attr.aria-checked]="(settings.site_palette || 'cobalt') === p.id"
+                      [class.selected]="(settings.site_palette || 'cobalt') === p.id" (click)="pickPalette(p.id)">
                 <span class="theme-swatches" aria-hidden="true">@for (c of p.swatches; track c) {<i [style.background]="c"></i>}</span>
                 <strong>{{ p.name }}</strong><small>{{ p.description }}</small>
               </button>

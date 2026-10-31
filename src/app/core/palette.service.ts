@@ -1,11 +1,12 @@
 import { Injectable, computed, signal } from '@angular/core';
 
 /** Alaptémák (az adminban választható) és ünnepi témák (automatikusan kapcsolnak). */
-export type BasePalette = 'nightblue' | 'graphite' | 'aurora';
+export type BasePalette = 'cobalt' | 'nightblue' | 'graphite' | 'aurora';
 export type Season = 'christmas' | 'easter' | 'valentine' | 'national';
 export type Palette = BasePalette | Season;
 
 export const BASE_PALETTES: { id: BasePalette; name: string; description: string; swatches: string[] }[] = [
+    { id: 'cobalt', name: 'Kobalt', description: 'Mély éjkék alap, kobaltkék és cián – modern, technológiai.', swatches: ['#080d19', '#0f1627', '#4263ff', '#00d9ff'] },
     { id: 'nightblue', name: 'Éjkék', description: 'Professzionális, technológiai, megbízható.', swatches: ['#060b1c', '#1d2f57', '#8ab4f0', '#f3f6fc'] },
     { id: 'graphite', name: 'Grafit + pezsgőarany', description: 'Elegáns, visszafogott, prémium.', swatches: ['#0d0c0b', '#2a2724', '#cdb78d', '#f6f3ec'] },
     { id: 'aurora', name: 'Aurora (lila)', description: 'Az eredeti, lila–kék színvilág.', swatches: ['#050818', '#2b2566', '#b79cff', '#f4f6ff'] },
@@ -16,9 +17,9 @@ export const SEASONS: { id: Season; name: string; when: string; swatches: string
     { id: 'valentine', name: 'Valentin-nap', when: 'február 7–14.', swatches: ['#14040b', '#4a1428', '#f19ab0', '#fff1f3'] },
     { id: 'national', name: 'Nemzeti ünnepek', when: 'márc. 15., aug. 20., okt. 23. (és az előtte lévő 2 nap)', swatches: ['#070a17', '#ce2939', '#ffffff', '#477050'] },
 ];
-const ALL: Palette[] = ['nightblue', 'graphite', 'aurora', 'christmas', 'easter', 'valentine', 'national'];
+const ALL: Palette[] = ['cobalt', 'nightblue', 'graphite', 'aurora', 'christmas', 'easter', 'valentine', 'national'];
 /** Ez a téma van a fő stíluslapban (src/palettes.generated.scss); a többi a /palettes/<név>.css-ből töltődik. */
-const DEFAULT: BasePalette = 'nightblue';
+const DEFAULT: BasePalette = 'cobalt';
 const LAST_KEY = 'mm-palette-last';
 const BASE_KEY = 'mm-palette-base';
 const PREVIEW_KEY = 'mm-palette-preview';
