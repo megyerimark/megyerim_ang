@@ -1,35 +1,49 @@
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ScrollScrubber, range } from '../../core/scroll-scrubber';
 import { TPipe } from '../../i18n/t.pipe';
 import { I18nService } from '../../i18n/i18n.service';
+import { FlightEngine } from './flight-engine';
 
 /**
- * Főoldali nyitójelenet. Görgetésre (rögzített, görgetésvezérelt jelenet) a szöveg elhalványul, a kamera a
- * kristályszikla fénylő magjába úszik, a gyűrűk felpörögnek, és egy fényvillanásból indul a következő jelenet.
+ * Főoldali filmszerű nyitójelenet (a védjegy). Izzó részecskegyűrű a kristályszikla körül; görgetésre a gyűrű
+ * szétrobban, a kamera a fényoszlopok között előrerepül a folyamat paneljein át, amelyek kék fényporrá esnek szét,
+ * végül megérkezik a záró táblához. Csökkentett mozgásnál egyszerű, egymás alatti elrendezés.
  */
 @Component({
     selector: 'app-hero',
     standalone: true,
     imports: [RouterLink, TPipe],
     templateUrl: './hero.html',
-    styleUrl: './hero.scss'
+    styleUrl: './hero.scss',
+    host: { '[class.flat]': 'reduced' }
 })
 export class Hero implements AfterViewInit, OnDestroy {
     readonly i18n = inject(I18nService);
-    @ViewChild('heroSection', { static: true }) private section!: ElementRef<HTMLElement>;
+    private readonly zone = inject(NgZone);
+    @ViewChild('flight', { static: true }) private section!: ElementRef<HTMLElement>;
+    @ViewChild('pin', { static: true }) private pin!: ElementRef<HTMLElement>;
+    @ViewChild('world', { static: true }) private world!: ElementRef<HTMLElement>;
+    @ViewChild('fx', { static: true }) private canvas!: ElementRef<HTMLCanvasElement>;
+    @ViewChild('chapter', { static: true }) private chapterEl!: ElementRef<HTMLElement>;
+    @ViewChild('counter', { static: true }) private counterEl!: ElementRef<HTMLElement>;
     @Input()
     headline = 'Ne csak jelen legyél online. Emelkedj ki.';
     @Input()
     description = 'Prémium weboldalak, amelyek nemcsak szépek, hanem ügyfeleket is hoznak.';
-    /** A főoldal 8 fejezete – a hero alsó sávja ezt jelzi (2. kép). */
-    readonly segments = Array.from({ length: 8 });
-    /** Lebegő fényszikrák a szikla körül (rögzített minta, hogy minden betöltésnél ugyanúgy nézzen ki). */
-    readonly sparks = [[18, 30, 7, 3], [26, 72, 9, 2], [38, 14, 8, 2], [52, 86, 11, 3], [64, 22, 6, 2], [74, 64, 10, 4],
-        [82, 36, 8, 2], [88, 78, 12, 3], [12, 56, 10, 2], [46, 48, 9, 2], [58, 8, 7, 3], [30, 92, 13, 2], [92, 18, 9, 2], [8, 84, 11, 3]]
-        .map(([x, y, d, s]) => ({ x: x + '%', y: y + '%', d: d + 's', s: s + 'px' }));
-    private readonly chapterIds = ['cinematic-story'];
-    private scrubber?: ScrollScrubber;
+
+    readonly reduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    /** A folyamat lépései – a kamera ezek mellett repül el. */
+    readonly steps = [
+        { n: '01', k: 'STRATÉGIA', title: 'Megismerem a céljaidat.', text: 'Átbeszéljük a vállalkozásodat, az ügyfeleidet és azt, mit kell elérnie az oldalnak.', img: '/brand/ribbon-860.webp' },
+        { n: '02', k: 'DIZÁJN', title: 'Egyedi arculat, sablon nélkül.', text: 'Olyan felület, ami a márkádat tükrözi, és egyértelműen vezet az ajánlatkérésig.', img: '/demos/previews/nobile.webp' },
+        { n: '03', k: 'FEJLESZTÉS', title: 'Gyors, minden kijelzőn.', text: 'Reszponzív, kereshető és biztonságos weboldal, mobilra optimalizálva.', img: '/brand/showcase-900.webp' },
+        { n: '04', k: 'ÁTADÁS', title: 'Utána sem hagylak magadra.', text: 'Élesítés, mérés és karbantartás – a weboldalad tovább fejlődik veled.', img: '/brand/rock-820.webp' },
+    ];
+    /** Fényoszlopok a repülés két oldalán (magasság px-ben, rögzített minta). */
+    readonly pillars = Array.from({ length: 20 }, (_, i) => ({ h: 260 + ((i * 137) % 560) }));
+    /** HUD-feliratok: nyitókép, a négy lépés, záró tábla. */
+    readonly chapters = ['01 / AZ ELSŐ BENYOMÁS', '02 / STRATÉGIA', '03 / DIZÁJN', '04 / FEJLESZTÉS', '05 / ÁTADÁS', '06 / ÍGY KEL ÉLETRE'];
+    private engine?: FlightEngine;
 
     /** A teljes főcím az aktuális nyelven (fordítás után bontjuk sorokra). */
     private get text(): string { return this.i18n.t(this.headline); }
@@ -48,26 +62,25 @@ export class Hero implements AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
-        if (typeof window === 'undefined') return;
-        const el = this.section.nativeElement;
-        this.scrubber = new ScrollScrubber(el, p => {
-            const set = (name: string, value: number) => el.style.setProperty(name, value.toFixed(4));
-            set('--hp', p);
-            set('--h-copy', range(p, .04, .38));
-            set('--h-push', range(p, .08, .86));
-            set('--h-swap', range(p, .34, .58));
-            // fényvillanás: a beúszás végén felizzik, majd átadja a helyét a következő jelenetnek
-            const flash = range(p, .7, .9) - range(p, .9, 1);
-            set('--h-flash', flash);
-            set('--h-out', range(p, .9, 1));
-        }, { reducedProgress: 0, pinBreakpoint: 980 });
-        this.scrubber.start();
+        if (typeof window === 'undefined' || this.reduced) return;
+        const world = this.world.nativeElement;
+        const total = this.chapters.length;
+        this.zone.runOutsideAngular(() => {
+            this.engine = new FlightEngine({
+                section: this.section.nativeElement,
+                pin: this.pin.nativeElement,
+                canvas: this.canvas.nativeElement,
+                panels: Array.from(world.querySelectorAll<HTMLElement>('.fpanel')),
+                finale: world.querySelector<HTMLElement>('.ffinale')!,
+                pillars: Array.from(world.querySelectorAll<HTMLElement>('.pillar')),
+                onChapter: index => {
+                    this.chapterEl.nativeElement.textContent = this.i18n.t(this.chapters[index]);
+                    this.counterEl.nativeElement.textContent = `0${index + 1} / 0${total}`;
+                },
+            });
+            this.engine.start();
+        });
     }
 
-    ngOnDestroy(): void { this.scrubber?.destroy(); }
-
-    next(): void {
-        const target = document.getElementById(this.chapterIds[0]);
-        if (target) target.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
-    }
+    ngOnDestroy(): void { this.engine?.destroy(); }
 }

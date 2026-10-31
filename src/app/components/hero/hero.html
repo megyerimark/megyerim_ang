@@ -1,9 +1,33 @@
-<section #heroSection class="hero" id="fooldal" aria-labelledby="hero-title">
-  <div class="hero-pin">
-    <div class="hero-bg" aria-hidden="true">
-      <div class="hero-glow"></div>
-      <div class="hero-grain"></div>
+<section #flight class="flight" id="fooldal" aria-labelledby="hero-title">
+  <div #pin class="flight-pin">
+    <div class="flight-bg" aria-hidden="true"></div>
+
+    <!-- 3D tér: fényoszlopok és a folyamat paneljei. A kamera görgetésre előrerepül közöttük. -->
+    <div class="flight-space">
+      <div #world class="flight-world">
+        @for (pl of pillars; track $index) {<i class="pillar" aria-hidden="true" [style.height.px]="pl.h"></i>}
+        @for (st of steps; track st.n) {
+          <article class="fpanel">
+            <div class="fpanel-img" [style.background-image]="'url(' + st.img + ')'"></div>
+            <div class="fpanel-meta">
+              <small>{{ st.n }} / {{ st.k | t }}</small>
+              <h3>{{ st.title | t }}</h3>
+              <p>{{ st.text | t }}</p>
+            </div>
+          </article>
+        }
+        <div class="ffinale">
+          <span class="ffinale-kicker">{{ '02 / TERVEZÉSTŐL AZ ÉLMÉNYIG' | t }}</span>
+          <h2>{{ 'Így kel életre' | t }} <span>{{ 'egy weboldal.' | t }}</span></h2>
+          <p>{{ 'Stratégia, dizájn, fejlesztés és átadás – egy kézből, átlátható lépésekben.' | t }}</p>
+          <a class="hero-btn hero-btn--fill" routerLink="/ajanlatkeres">{{ 'Kérj ajánlatot' | t }} <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a>
+        </div>
+      </div>
     </div>
+
+    <!-- a gyűrű közepén a kristályszikla (sötét mód) / üvegszalag (világos mód) -->
+    <div class="flight-core" aria-hidden="true"></div>
+    <canvas #fx class="flight-fx" aria-hidden="true"></canvas>
 
     <div class="hero-grid">
       <div class="hero-copy">
@@ -21,35 +45,14 @@
           <a class="hero-btn hero-btn--ghost" routerLink="/" fragment="munkak">{{ 'Munkáim megtekintése' | t }}</a>
         </div>
       </div>
-
-      <!-- A jelenet: kristályszikla (sötét mód) / üvegszalag (világos mód), keringő fénygyűrűkkel.
-           Görgetésre a kamera beúszik a fénylő magba – ebből a fényből indul a „Így kel életre” jelenet. -->
-      <div class="hero-visual" aria-hidden="true">
-        <div class="art">
-          <div class="art-halo"></div>
-          <div class="orbits">
-            <i class="orbit orbit--a"></i><i class="orbit orbit--b"></i><i class="orbit orbit--c"></i>
-          </div>
-          <div class="art-image"></div>
-          <div class="sparks">
-            @for (s of sparks; track $index) {<i [style.--x]="s.x" [style.--y]="s.y" [style.--d]="s.d" [style.--s]="s.s"></i>}
-          </div>
-        </div>
-      </div>
-
       <ul class="hero-values" aria-hidden="true"><li>{{ 'TECHNOLÓGIA' | t }}</li><li>{{ 'KREATIVITÁS' | t }}</li><li>{{ 'EREDMÉNY' | t }}</li></ul>
     </div>
-    <div class="hero-flash" aria-hidden="true"></div>
 
-    <div class="hero-foot">
-      <span class="hero-chapter">{{ '01 / AZ ELSŐ BENYOMÁS' | t }}</span>
-      <div class="hero-bar" aria-hidden="true">
-        @for (seg of segments; track $index) {<i [class.is-first]="$index === 0"></i>}
-      </div>
-      <div class="hero-arrows">
-        <button type="button" class="hero-arrow" disabled [attr.aria-label]="'Előző fejezet' | t"><svg viewBox="0 0 24 24"><path d="M20 12H5M11 6l-6 6 6 6"/></svg></button>
-        <button type="button" class="hero-arrow is-next" (click)="next()" [attr.aria-label]="'Következő fejezet' | t"><svg viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button>
-      </div>
+    <div class="flight-hud" aria-hidden="true">
+      <span #chapter class="hud-chapter">{{ chapters[0] | t }}</span>
+      <i class="hud-bar"><b></b></i>
+      <span #counter class="hud-count">01 / 0{{ chapters.length }}</span>
     </div>
+    <div class="flight-hint" aria-hidden="true"><span></span>{{ 'GÖRGESS' | t }}</div>
   </div>
 </section>

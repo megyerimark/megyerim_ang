@@ -4,7 +4,6 @@ import { DecimalPipe } from '@angular/common';
 import { PromoSpotlight } from '../../components/promo-spotlight/promo-spotlight';
 import { NewsletterSignup } from '../../components/newsletter-signup/newsletter-signup';
 import { Hero } from '../../components/hero/hero';
-import { CinematicStory } from '../../components/cinematic-story/cinematic-story';
 import { PremiumReveal } from '../../directives/premium-reveal';
 import { ApiService } from '../../core/api.service';
 import { ConsentService } from '../../core/consent.service';
@@ -33,7 +32,7 @@ interface PreviewPalette {
 @Component({
     selector: 'app-home',
     standalone: true,
-    imports: [Hero, CinematicStory, RouterLink, DecimalPipe, PremiumReveal, ExternalReviews, TPipe, PromoSpotlight, NewsletterSignup, BrandMark],
+    imports: [Hero, RouterLink, DecimalPipe, PremiumReveal, ExternalReviews, TPipe, PromoSpotlight, NewsletterSignup, BrandMark],
     templateUrl: './home.html',
     styleUrl: './home.scss'
 })
