@@ -847,4 +847,6 @@ export const EN: Record<string, string> = {
   "Az időpontot rögzítettem. A visszaigazolást e-mailben is elküldöm, naptárfájllal együtt – ha nem találod, nézd meg a Spam / Promóciók mappát is.": "Your booking is recorded. I'll also send a confirmation email with a calendar file \u2013 if you can't find it, check your Spam / Promotions folder.",
   "Visszatöltöttem a félbehagyott ajánlatkérésedet – ott folytathatod, ahol abbahagytad.": "I restored your unfinished request – you can continue where you left off.",
   "Újrakezdés": "Start over",
+  "Útmutatók": "Guides",
+  "Útmutatók weboldal készítéshez": "Website guides (Hungarian)",
 };

@@ -63,7 +63,7 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     # (A nyilvános oldalak itt csak tartalékként szerepelnek, ha a _p/ mappa hiányzik, illetve a build után felvett referenciákhoz.)
-    RewriteRule ^(tervezo|ajanlatkeres|projekt-kviz|konzultacio|adatkezeles|impresszum|aszf|weboldal-keszites|landing-oldal-keszites|webshop-keszites|egyedi-webfejlesztes|weboldal-karbantartas|ugyfel/projekt|fizetes/(sikeres|megszakitva)|admin|admin/(bejelentkezes|elfelejtett-jelszo|jelszo-visszaallitas)|hirlevel/(megerosites|leiratkozas)|munkak/[A-Za-z0-9_-]+|en|en/(website-planner|request-a-quote|project-quiz|consultation|privacy-policy|legal-notice|terms|website-development|landing-page-design|webshop-development|custom-web-development|website-maintenance|work/[A-Za-z0-9_-]+))/?$ index.html [L]
+    RewriteRule ^(utmutatok|utmutatok/(mennyibe-kerul-egy-weboldal|landing-oldal-vagy-ceges-weboldal|weboldal-keszites-lepesei|gyors-es-keresobarat-weboldal)|tervezo|ajanlatkeres|projekt-kviz|konzultacio|adatkezeles|impresszum|aszf|weboldal-keszites|landing-oldal-keszites|webshop-keszites|egyedi-webfejlesztes|weboldal-karbantartas|ugyfel/projekt|fizetes/(sikeres|megszakitva)|admin|admin/(bejelentkezes|elfelejtett-jelszo|jelszo-visszaallitas)|hirlevel/(megerosites|leiratkozas)|munkak/[A-Za-z0-9_-]+|en|en/(website-planner|request-a-quote|project-quiz|consultation|privacy-policy|legal-notice|terms|website-development|landing-page-design|webshop-development|custom-web-development|website-maintenance|work/[A-Za-z0-9_-]+))/?$ index.html [L]
 </IfModule>
 
 # Ismeretlen cím: 404-es HTTP-státusz, de a tartalom az Angular alkalmazás (NotFoundPage).

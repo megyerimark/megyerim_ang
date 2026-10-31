@@ -21,6 +21,16 @@ export interface PageRoute {
 export const SERVICE_KEYS = ['web', 'landing', 'shop', 'app', 'care'] as const;
 export type ServiceKey = (typeof SERVICE_KEYS)[number];
 
+/** Útmutató cikkek (csak magyarul). Az URL-jük: /utmutatok/<slug>. */
+export const GUIDE_KEYS = ['price', 'landing-vs-business', 'steps', 'speed-seo'] as const;
+export type GuideKey = (typeof GUIDE_KEYS)[number];
+export const GUIDE_SLUGS: Record<GuideKey, string> = {
+    price: 'mennyibe-kerul-egy-weboldal',
+    'landing-vs-business': 'landing-oldal-vagy-ceges-weboldal',
+    steps: 'weboldal-keszites-lepesei',
+    'speed-seo': 'gyors-es-keresobarat-weboldal',
+};
+
 export const PUBLIC_PAGES: PageRoute[] = [
     { key: 'home', hu: '/', en: '/en' },
     { key: 'service:web', hu: '/weboldal-keszites', en: '/en/website-development' },
@@ -35,6 +45,8 @@ export const PUBLIC_PAGES: PageRoute[] = [
     { key: 'privacy', hu: '/adatkezeles', en: '/en/privacy-policy' },
     { key: 'imprint', hu: '/impresszum', en: '/en/legal-notice' },
     { key: 'terms', hu: '/aszf', en: '/en/terms' },
+    { key: 'guides', hu: '/utmutatok', en: null },
+    ...GUIDE_KEYS.map(key => ({ key: 'guide:' + key, hu: '/utmutatok/' + GUIDE_SLUGS[key], en: null })),
 ];
 
 /** Referenciaoldalak előtagja nyelvenként: /munkak/:slug ↔ /en/work/:slug */

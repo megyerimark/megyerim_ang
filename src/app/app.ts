@@ -150,8 +150,8 @@ export class App {
         const isPrivate = notFound || /^\/(admin|ugyfel|hirlevel|fizetes)/.test(path);
         this.meta.updateTag({ name: 'robots', content: isPrivate ? 'noindex, nofollow, noarchive' : 'index, follow' });
         const lang = this.i18n.lang();
-        // A referenciaoldal (munkak/:slug) és a szolgáltatási céloldal a címét és a leírását maga állítja be.
-        const ownMeta = path.startsWith('/munkak/') || !!serviceKeyOf(path);
+        // A referenciaoldal (munkak/:slug), a szolgáltatási céloldal és az útmutatók a címüket és a leírásukat maguk állítják be.
+        const ownMeta = path.startsWith('/munkak/') || path.startsWith('/utmutatok') || !!serviceKeyOf(path);
         if (!ownMeta) {
             const seo = seoFor(path, lang);
             const custom = lang === 'hu' && path === '/' ? this.seoSettings : null;

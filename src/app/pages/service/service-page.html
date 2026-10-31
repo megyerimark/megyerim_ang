@@ -86,6 +86,7 @@
       <h2>{{ 'További szolgáltatások' | t }}</h2>
       <ul>
         @for (o of others(); track o.key) {<li><a [routerLink]="o.path | lp">{{ o.label }} <span aria-hidden="true">→</span></a></li>}
+        <li><a routerLink="/utmutatok">{{ 'Útmutatók weboldal készítéshez' | t }} <span aria-hidden="true">→</span></a></li>
       </ul>
     </nav>
   </div>
