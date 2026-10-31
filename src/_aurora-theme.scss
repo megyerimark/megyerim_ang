@@ -5,12 +5,6 @@
   --aurora-depth:0 22px 72px rgba(0,4,19,.42),inset 0 1px 0 rgba(255,255,255,.06);
   --aurora-field:var(--k-101d3b);
 }
-[data-theme='light']{
-  --aurora-focus:var(--k-5446d0);
-  --aurora-outline:rgba(78,91,181,.21);
-  --aurora-depth:0 18px 48px rgba(29,47,114,.13),inset 0 1px 0 rgba(255,255,255,.92);
-  --aurora-field:#fff;
-}
 html { scroll-padding-top:90px; max-width:100%; }
 body { width:100%; max-width:100%; min-width:0; overflow-x:clip; }
 app-root,app-home,app-admin,app-studio-page,app-quote-page,app-consultation-page { display:block; min-width:0; max-width:100%; }

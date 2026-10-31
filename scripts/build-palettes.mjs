@@ -22,7 +22,7 @@ const SRC = join(ROOT, 'src');
 const OUT = join(SRC, 'palettes.generated.scss');
 const PUBLIC_DIR = join(ROOT, 'public', 'palettes');
 /** Ez a téma kerül a fő stíluslapba (az oldal alapértelmezése, a backend site_palette alapértéke is). */
-export const DEFAULT_PALETTE = 'nightblue';
+export const DEFAULT_PALETTE = 'cobalt';
 
 /* ---------- témák ----------
  * family: { h: cél-árnyalat (OKLCH fok), c: telítettség-szorzó, spread: a családon belüli eltérések megtartása (0–1),
@@ -31,6 +31,12 @@ export const DEFAULT_PALETTE = 'nightblue';
  *        (scripts/build-palette-photos.mjs → public/palettes/photos/<fotó>-<téma>.webp). */
 export const PALETTES = {
     aurora: null, // az eredeti színek
+    // Kobalt: mély éjfekete-kék alap, kobaltkék (#4263FF) elsődleges és cián (#00D9FF) kiemelés – lila nélkül.
+    cobalt: {
+        photo: 'grayscale(1) sepia(1) hue-rotate(185deg) saturate(3.2) brightness(.85) contrast(1.15)',
+        dark: { h: 266, c: .9, spread: .2 }, light: { h: 264, c: .4, spread: 0 },
+        violet: { h: 268, c: 1.45, spread: .15, l: -.08 }, blue: { h: 266, c: 1.05, spread: .3 }, sky: { h: 220, c: 1.3, spread: .3 },
+    },
     nightblue: {
         photo: 'hue-rotate(-32deg) saturate(.85)',
         dark: { h: 258, c: 1, spread: .3 }, light: { h: 250, c: .9, spread: .3 },
@@ -110,6 +116,19 @@ export function transform(hex, theme) {
     return fromOklch(Math.min(1, Math.max(0, o.L + (t.l ?? 0))), o.C * t.c, h);
 }
 
+/**
+ * Világos mód (html[data-theme='light']): ugyanazok a márkaszín-változók világos felületre átszámolva.
+ * Sötét háttér → világos felület, világos szöveg → sötét tinta, semleges középtónus (halvány szöveg, keret) → tükrözve,
+ * telített kiemelés → legfeljebb közepes világosság (fehéren is olvasható). Az áttetszőség marad.
+ */
+export function toLight(hex) {
+    const o = toOklch(hex), clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+    if (o.L < 0.3) return fromOklch(clamp(0.97 + (o.L - 0.14) * 0.4, 0.95, 1), Math.min(o.C, 0.012), o.h);
+    if (o.L > 0.88) return fromOklch(0.2 + (1 - o.L) * 0.8, Math.max(0.03, o.C * 0.8), o.C < 0.02 ? 266 : o.h);
+    if (o.C < 0.07) return fromOklch(clamp(1.06 - 0.7 * o.L, 0.42, 0.74), o.C, o.h);
+    return fromOklch(Math.min(o.L, 0.6), o.C, o.h);
+}
+
 /* ---------- forrás bejárása, generálás ---------- */
 function collectTokens() {
     const tokens = new Set();
@@ -134,10 +153,20 @@ function main() {
     const photos = name => PHOTOS.map(ph => `  --mm-photo-${ph}: url('${name === 'aurora' ? `/aurora-cinematic-${ph}.webp` : `/palettes/photos/${ph}-${name}.webp`}');`).join('\n');
     const block = (selector, theme, name) => `${selector} {\n${photos(name)}\n`
         + tokens.map(t => `  ${t}: ${value(t, theme)};`).join('\n') + '\n}\n';
-    writeFileSync(OUT, head + `/* Alaptéma: ${DEFAULT_PALETTE}. ${tokens.length} márkaszín-változó. */\n` + block(':root', PALETTES[DEFAULT_PALETTE], DEFAULT_PALETTE));
+    // világos módban is sötéten maradó előnézetek (pl. egy sötét weboldal bemutatója): az eredeti sötét értékek
+    const darkBlock = (selector, theme) => `${selector} {\n` + tokens.map(t => `  ${t}: ${value(t, theme)};`).join('\n') + '\n}\n';
+    // a világos mód változatai: a téma színeiből számolva, az áttetszőség megtartásával
+    const lightBlock = (selector, theme) => `${selector} {\n` + tokens.map(t => {
+        const v = value(t, theme); return `  ${t}: #${toLight(v.slice(1, 7))}${v.slice(7)};`;
+    }).join('\n') + '\n}\n';
+    writeFileSync(OUT, head + `/* Alaptéma: ${DEFAULT_PALETTE}. ${tokens.length} márkaszín-változó. */\n` + block(':root', PALETTES[DEFAULT_PALETTE], DEFAULT_PALETTE)
+        + lightBlock(":root[data-theme='light']", PALETTES[DEFAULT_PALETTE])
+        + darkBlock(":root[data-theme='light'] .mm-keep-dark", PALETTES[DEFAULT_PALETTE]));
     mkdirSync(PUBLIC_DIR, { recursive: true });
     for (const [name, theme] of Object.entries(PALETTES)) {
-        if (name !== DEFAULT_PALETTE) writeFileSync(join(PUBLIC_DIR, `${name}.css`), head + block(`:root[data-palette='${name}']`, theme, name));
+        if (name !== DEFAULT_PALETTE) writeFileSync(join(PUBLIC_DIR, `${name}.css`), head + block(`:root[data-palette='${name}']`, theme, name)
+            + lightBlock(`:root[data-palette='${name}'][data-theme='light']`, theme)
+            + darkBlock(`:root[data-palette='${name}'][data-theme='light'] .mm-keep-dark`, theme));
     }
     console.log(`${tokens.length} változó; alaptéma: ${DEFAULT_PALETTE}; külön fájl: ${Object.keys(PALETTES).filter(n => n !== DEFAULT_PALETTE).join(', ')}`);
 }

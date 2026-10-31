@@ -1,0 +1,85 @@
+/* Kobalt arculat: letisztult grotesk tipográfia (Space Grotesk + Manrope), kobaltkék + cián, sötét és világos mód.
+   A márkaszíneket a témagenerátor mindkét módra kiszámolja (src/palettes.generated.scss); itt csak a nem márkaszín
+   (fehér/fekete) értékek és a komponensek finomhangolása van. */
+:root {
+  --ink: #0f1627; --ink-soft: #4b5672; --paper: #f8f9fc; --paper-card: #ffffff; --paper-line: #e3e7f0;
+  --cobalt: #4263ff; --cobalt-hover: #3352f0; --cyan: #00d9ff;
+  --btn-primary-bg: #ffffff; --btn-primary-ink: #0f1627;
+}
+:root[data-theme='light'] {
+  color-scheme: light;
+  --text: #0f1627; --cream: #f8f9fc; --shadow: rgba(15, 22, 39, .1);
+  --cyan: #00a8e8;
+  --aurora-outline: rgba(66, 99, 255, .22);
+  --aurora-depth: 0 18px 48px rgba(15, 22, 39, .08), inset 0 1px 0 rgba(255, 255, 255, .9);
+  --aurora-field: #fff;
+  --btn-primary-bg: var(--cobalt); --btn-primary-ink: #fff;
+  --ink-on: #0f1627;
+}
+/* A sötéten maradó előnézetekben a fehér szöveg fehér marad. */
+:root[data-theme='light'] .mm-keep-dark { --ink-on: #fff; color-scheme: dark; }
+
+body { font-family: 'Manrope', Arial, sans-serif; }
+:root[data-theme='light'] body { background: var(--paper); background-image: none; color: var(--ink); }
+
+/* ---------- Tipográfia ---------- */
+/* A dőlt kiemelés grotesk betűvel könnyű vágás (a Space Groteskhez nincs dőlt változat). */
+:is(h1, h2, h3, .section-title, .hero-line, .story h2) em,
+.subtle-heading { font-style: normal !important; font-weight: 300 !important; }
+.section .section-title { font-weight: 600 !important; letter-spacing: -.045em !important; line-height: 1.02 !important; font-size: clamp(34px, 3.8vw, 58px) !important; }
+:root[data-theme='light'] :is(.section-title, h1, h2, h3) { color: var(--ink); }
+:root[data-theme='light'] .mm-keep-dark :is(h1, h2, h3) { color: inherit; }
+:root[data-theme='light'] .section-title .subtle-heading { color: var(--ink-soft) !important; }
+
+/* ---------- Gombok ---------- */
+.btn-primary, .button-primary {
+  background: var(--cobalt) !important; color: #fff !important; border-color: transparent !important;
+  box-shadow: 0 12px 30px rgba(66, 99, 255, .32) !important;
+}
+.btn-primary:hover, .button-primary:hover { background: var(--cobalt-hover) !important; }
+
+/* ---------- Téma-váltó ---------- */
+.theme-btn { display: inline-grid; place-items: center; padding: 0; }
+.theme-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
+.theme-btn svg path:only-child { fill: currentColor; stroke: none; }
+
+/* ---------- Menü: elsődleges gomb tömör kobalt ---------- */
+.nav-cta, .mobile-quote { background: var(--cobalt) !important; color: #fff !important; box-shadow: 0 10px 28px rgba(66, 99, 255, .35) !important; }
+
+/* ---------- Világos mód: fix fehér (nem márkaszín) szövegek sötét tintára ---------- */
+:root[data-theme='light'] {
+  .process-hologram-core strong, .footer-intro p { color: var(--ink) !important; }
+  .cta-outline { color: var(--ink) !important; border-color: rgba(15, 22, 39, .2) !important; }
+}
+
+/* ---------- Díszítések: üvegszalag és kristályszikla a szekciókban, laptopos kép a záró felhívásban ---------- */
+:is(.services, .about, .work--concepts) { position: relative; isolation: isolate; overflow: clip; }
+.mm-art { position: absolute; z-index: -1; pointer-events: none; background: center / contain no-repeat; animation: mm-float 12s ease-in-out infinite; }
+.mm-art--ribbon { background-image: url('/brand/ribbon-860.webp'); aspect-ratio: 1672 / 941; }
+.mm-art--rock { background-image: url('/brand/rock-820.webp'); aspect-ratio: 1536 / 1024; }
+.mm-art--services { width: min(58vw, 860px); top: -40px; right: -12vw; rotate: -8deg; opacity: .9; }
+.mm-art--about { width: min(52vw, 760px); bottom: -60px; right: -14vw; rotate: 14deg; opacity: .55; animation-delay: -5s; }
+.mm-art--concepts { width: min(34vw, 480px); top: -30px; right: -9vw; rotate: 8deg; opacity: .4; animation-delay: -3s; }
+@keyframes mm-float { 50% { transform: translate3d(0, -18px, 0) rotate(1.5deg); } }
+@media (max-width: 760px) {
+  .mm-art--services { width: 110vw; top: -20px; right: -50vw; opacity: .45; }
+  .mm-art--about, .mm-art--concepts { opacity: .3; width: 90vw; right: -40vw; }
+}
+@media (prefers-reduced-motion: reduce) { .mm-art { animation: none; } }
+
+.cta-panel { position: relative; overflow: hidden; }
+.cta-showcase { position: absolute; inset: 0; z-index: 0; background: url('/brand/showcase-900.webp') 78% 50% / cover no-repeat; pointer-events: none; }
+.cta-showcase::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(5, 8, 15, .97) 0%, rgba(5, 8, 15, .86) 42%, rgba(5, 8, 15, .25) 100%); }
+@media (min-width: 1100px) { .cta-showcase { background-image: url('/brand/showcase.webp'); } }
+.cta-panel > :not(.cta-showcase) { position: relative; z-index: 1; }
+/* A laptopos kép sötét fotó: a felhívás világos módban is sötét kártya marad. */
+:root[data-theme='light'] .cta-panel { --ink-on: #fff; color: #fff; }
+:root[data-theme='light'] .cta-panel :is(h2, .section-title, p, .cta-outline) { color: #fff !important; }
+:root[data-theme='light'] .cta-panel .cta-outline { border-color: rgba(255, 255, 255, .35) !important; }
+
+:root[data-theme='light'] {
+  app-brand-mark { color: var(--ink); }
+  .concept-card--featured { color: #f3f0e8; }
+  .concept-card--featured .concept-meta strong { color: #f3f0e8; }
+  .concept-card--featured .concept-meta span { color: #c9c2b4; }
+}

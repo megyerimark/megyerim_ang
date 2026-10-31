@@ -68,7 +68,7 @@
       <div class="comparison-visual" [style.--comparison-split]="comparisonPosition() + '%'" [attr.aria-label]="'Szemléltető weboldal-előnézet; nem ügyfélmunka' | t">
         <div class="comparison-browser-bar"><span class="browser-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>{{ 'VIZUÁLIS ÖSSZEHASONLÍTÁS · KONCEPCIÓ' | t }}</span><span aria-hidden="true">↗︎</span></div>
         <div class="comparison-layers" aria-hidden="true">
-          <div class="comparison-new">
+          <div class="comparison-new mm-keep-dark">
             <div class="comparison-new-nav"><strong>{{ 'STÚDIÓ' | t }}<span>.</span></strong><span>{{ 'SZOLGÁLTATÁSOK' | t }} &nbsp; {{ 'RÓLUNK' | t }}</span><b>{{ 'Kapcsolat ↗︎' | t }}</b></div>
             <div class="comparison-new-main"><span class="comparison-new-eyebrow">{{ 'TUDATOS MEGJELENÉS / EGYEDI KONCEPCIÓ' | t }}</span><strong>{{ 'A márkád következő fejezete' | t }}<span>.</span></strong><p>{{ 'Határozott üzenet, letisztult élmény és világos út az érdeklődéstől a kapcsolatfelvételig.' | t }}</p><span class="comparison-new-link">{{ 'Beszéljünk az ötletedről ↗︎' | t }}</span></div>
             <div class="comparison-new-orb"></div><div class="comparison-new-caption">{{ 'PURPOSEFUL DESIGN — BUILT TO CONNECT' | t }}</div>
@@ -195,7 +195,7 @@
             <button type="button" [class.active]="selectedDevice() === 'mobile'" [attr.aria-pressed]="selectedDevice() === 'mobile'" (click)="selectedDevice.set('mobile')">{{ 'Mobil' | t }}</button>
           </div>
         </div>
-        <div class="lab-browser" [attr.data-style]="selectedStyle()">
+        <div class="lab-browser mm-keep-dark" [attr.data-style]="selectedStyle()">
           <div class="lab-browser-chrome">
             <span class="lab-window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
             <span>{{ 'SAJÁT MÁRKÁD / KONCEPCIÓ' | t }}</span>
@@ -239,6 +239,7 @@
 </section>
 
 <section premiumReveal class="section services" id="szolgaltatasok">
+  <div class="mm-art mm-art--ribbon mm-art--services" aria-hidden="true"></div>
   <div class="container">
     <div class="section-heading-row">
       <div>
@@ -466,6 +467,7 @@
   </section>
 }
 <section premiumReveal class="section work work--concepts" id="koncepciok" aria-labelledby="concepts-title">
+    <div class="mm-art mm-art--rock mm-art--concepts" aria-hidden="true"></div>
     <div class="container">
       <div class="section-heading-row">
         <div>
@@ -539,6 +541,7 @@
   </div>
 </section>
 <section premiumReveal class="section about" id="rolam">
+  <div class="mm-art mm-art--ribbon mm-art--about" aria-hidden="true"></div>
   <div class="container about-layout">
     <div class="about-art" aria-hidden="true">
       <div class="about-art-grid">
@@ -660,7 +663,7 @@
 
 <app-newsletter-signup source="home" [highlight]="promo()?.percent ?? 0"></app-newsletter-signup>
 <section class="bottom-cta" aria-labelledby="cta-title">
-  <div class="container"><div class="cta-panel"><div class="cta-panel-grid" aria-hidden="true"></div><div class="cta-glow" aria-hidden="true"></div>
+  <div class="container"><div class="cta-panel"><div class="cta-showcase" aria-hidden="true"></div><div class="cta-panel-grid" aria-hidden="true"></div><div class="cta-glow" aria-hidden="true"></div>
     <span class="overline">{{ 'A TE PROJEKTED KÖVETKEZIK' | t }}</span>
     <h2 id="cta-title">{{ 'Ne csak jelen legyél online.' | t }} <em>{{ 'Emelkedj ki.' | t }}</em></h2>
     <p>{{ 'Legyen olyan weboldalad, amely hitelesen képvisel, és megkönnyíti az ügyfeleid első lépését. Mesélj az elképzelésedről!' | t }}</p>

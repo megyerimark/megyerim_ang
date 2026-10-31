@@ -111,6 +111,10 @@ export class App {
             .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
             .subscribe(event => {
             this.showNavbar.set(!event.urlAfterRedirects.startsWith('/admin'));
+            // Az admin felület mindig sötét; a nyilvános oldalak a látogató választását követik.
+            let theme: string | null = null;
+            try { theme = localStorage.getItem('mm-theme'); } catch { /* privát mód */ }
+            document.documentElement.setAttribute('data-theme', event.urlAfterRedirects.startsWith('/admin') || theme !== 'light' ? 'dark' : 'light');
             this.onHome.set(event.urlAfterRedirects.split(/[?#]/)[0] === '/');
             this.currentPath.set(event.urlAfterRedirects.split(/[?#]/)[0]);
             const p = event.urlAfterRedirects.split(/[?#]/)[0];

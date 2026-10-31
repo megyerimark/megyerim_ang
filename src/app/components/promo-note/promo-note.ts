@@ -26,9 +26,6 @@ import { TPipe } from '../../i18n/t.pipe';
       .promo-note div{display:grid;gap:3px;font-size:13.5px;line-height:1.55;color:var(--k-c9d1ec)}
       .promo-note b{color:#fff;font-size:14.5px}
       .promo-note.compact{margin:14px 0 0;padding:11px 14px}
-      :host-context([data-theme='light']) .promo-note{background:var(--k-f3efff);border-color:var(--k-c8b8ff)}
-      :host-context([data-theme='light']) .promo-note div{color:var(--k-47506f)}
-      :host-context([data-theme='light']) .promo-note b{color:var(--k-1d1b3a)}
     `]
 })
 export class PromoNote {

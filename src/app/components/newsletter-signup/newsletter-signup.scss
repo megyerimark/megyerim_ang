@@ -3,7 +3,7 @@
 .newsletter-inner { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(26px, 5vw, 70px); align-items: center;
   padding: clamp(26px, 4vw, 52px); border-radius: 28px; border: 1px solid var(--border);
   background: radial-gradient(70% 90% at 0% 0%, var(--k-7c5cff-22), transparent 60%), radial-gradient(60% 80% at 100% 100%, var(--k-2fb6ff-1a), transparent 60%), var(--surface); }
-h2 { margin: 12px 0 14px; font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: clamp(32px, 4vw, 52px); line-height: 1.05; }
+h2 { margin: 12px 0 14px; font-family: 'Space Grotesk',sans-serif; font-weight: 600; font-size: clamp(32px, 4vw, 52px); line-height: 1.05; }
 h2 span { color: var(--accent); font-style: italic; }
 .newsletter-copy p { margin: 0; color: var(--muted); line-height: 1.75; font-size: 15px; }
 .newsletter-copy .newsletter-hot { margin-top: 16px; display: inline-flex; gap: 8px; align-items: center; padding: 8px 14px; border-radius: 999px; background: var(--k-7c5cff-26); border: 1px solid var(--k-a48bff-55); color: var(--text, #fff); }

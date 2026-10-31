@@ -26,7 +26,6 @@ import { ToastService } from '../../core/toast.service';
       .toast__text{padding-top:4px;overflow-wrap:anywhere}
       .toast__close{width:26px;height:26px;border:0;border-radius:8px;background:transparent;color:var(--k-aeb6d6);font-size:19px;line-height:1;cursor:pointer}
       .toast__close:hover,.toast__close:focus-visible{background:#ffffff14;color:#fff}
-      :host-context([data-theme='light']) .toast{background:#ffffffef;color:var(--k-191e28);border-color:var(--k-1d2340-1f);box-shadow:0 14px 40px var(--k-1b2040-2b)}
       @media (max-width:600px){.toast-stack{left:12px;right:12px;top:calc(env(safe-area-inset-top) + 10px);bottom:auto;width:auto}}
       @keyframes toast-in{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
       @media (prefers-reduced-motion:reduce){.toast{animation:none}}
