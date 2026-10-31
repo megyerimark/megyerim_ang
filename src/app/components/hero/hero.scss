@@ -1,20 +1,15 @@
-/* Főoldali filmszerű repülés – kobalt arculat. A motor (flight-engine.ts) CSS-változókat ír a .flight-pin-re:
+/* Főoldali filmszerű repülés – kobalt arculat. A jelenet világos módban is sötét (a védjegy mindig ugyanúgy néz ki). A motor (flight-engine.ts) CSS-változókat ír a .flight-pin-re:
    --p (teljes haladás), --copy (szöveg kiúszik), --burst (gyűrű szétrobban), --fly (repülés), --cx/--cy/--R (a gyűrű helye). */
 :host{display:block}
 .flight{--bg:#04070e;--ink:#fff;--soft:#aab4ca;--line:rgba(255,255,255,.16);--glass:rgba(10,18,38,.72);--glass-line:rgba(120,150,255,.28);
   --pillar:linear-gradient(180deg,rgba(0,217,255,0) 0%,rgba(66,99,255,.55) 55%,rgba(150,185,255,.95) 100%);--pillar-glow:0 0 26px rgba(66,99,255,.55);
   --core:url('/brand/rock.webp');--core-w:2.7;
+  --btn-primary-bg:#fff;--btn-primary-ink:#0f1627;
   position:relative;height:560vh;background:var(--bg);color:var(--ink)}
-:host-context([data-theme='light']) .flight{--bg:#f6f8fc;--ink:#0f1627;--soft:#4b5672;--line:rgba(15,22,39,.12);--glass:rgba(255,255,255,.9);--glass-line:#e1e6f2;
-  --pillar:linear-gradient(180deg,rgba(66,99,255,0) 0%,rgba(66,99,255,.22) 60%,rgba(66,99,255,.5) 100%);--pillar-glow:0 0 18px rgba(66,99,255,.2);
-  --core:url('/brand/ribbon.webp');--core-w:3.3}
 .flight-pin{--p:0;--copy:0;--burst:0;--fly:0;--cx:69%;--cy:50%;--R:200px;position:sticky;top:0;height:100svh;min-height:600px;overflow:hidden;isolation:isolate}
 .flight-bg{position:absolute;inset:0;z-index:0;background:
   radial-gradient(ellipse 40% 50% at var(--cx) var(--cy),rgba(46,86,255,calc(.42 - var(--fly) * .2)),transparent 70%),
   radial-gradient(ellipse 90% 55% at 50% 115%,rgba(40,70,200,calc(.12 + var(--fly) * .25)),transparent 70%)}
-:host-context([data-theme='light']) .flight-bg{background:
-  radial-gradient(ellipse 40% 50% at var(--cx) var(--cy),rgba(66,99,255,.14),transparent 70%),
-  radial-gradient(ellipse 90% 55% at 50% 115%,rgba(66,99,255,calc(.05 + var(--fly) * .1)),transparent 70%)}
 
 /* 3D tér */
 .flight-space{position:absolute;inset:0;z-index:1;perspective:900px;perspective-origin:50% 48%;overflow:hidden;pointer-events:none}
@@ -23,20 +18,19 @@
 .pillar::after{content:'';position:absolute;left:50%;top:0;width:2px;height:100%;margin-left:-1px;background:linear-gradient(180deg,transparent,rgba(210,230,255,.9));opacity:.8}
 .fpanel,.ffinale{position:absolute;left:0;top:0;visibility:hidden;opacity:0;will-change:transform,opacity;backface-visibility:hidden}
 .fpanel{width:min(520px,38vw);border-radius:22px;padding:14px;background:var(--glass);border:1px solid var(--glass-line);box-shadow:0 40px 100px rgba(0,0,0,.45),inset 0 1px rgba(255,255,255,.08)}
-:host-context([data-theme='light']) .fpanel{box-shadow:0 40px 90px rgba(15,22,39,.14)}
 .fpanel-img{aspect-ratio:16/10;border-radius:14px;background:#0b1224 center/cover no-repeat}
 .fpanel-meta{padding:18px 10px 8px}
 .fpanel-meta small{font:700 11px/1 'Manrope',sans-serif;letter-spacing:.24em;color:#4263ff}
-:host-context([data-theme='dark']) .fpanel-meta small{color:#8fb0ff}
+.fpanel-meta small{color:#8fb0ff}
 .fpanel-meta h3{margin:10px 0 8px;font:600 clamp(24px,2vw,32px)/1.05 'Space Grotesk',sans-serif;letter-spacing:-.03em;color:var(--ink)}
 .fpanel-meta p{margin:0;font:400 15px/1.6 'Manrope',sans-serif;color:var(--soft)}
 .ffinale{width:min(860px,88vw);text-align:center;display:grid;justify-items:center;gap:20px;padding:40px 24px}
 .ffinale.is-live{pointer-events:auto}
 .ffinale-kicker{font:700 11px/1 'Manrope',sans-serif;letter-spacing:.3em;color:#4263ff}
-:host-context([data-theme='dark']) .ffinale-kicker{color:#8fb0ff}
+.ffinale-kicker{color:#8fb0ff}
 .ffinale h2{margin:0;font:700 clamp(46px,6.4vw,104px)/.95 'Space Grotesk',sans-serif;letter-spacing:-.05em;color:var(--ink)}
 .ffinale h2 span{display:block;font-weight:300;background:linear-gradient(100deg,#4263ff,#00a8e8);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-:host-context([data-theme='dark']) .ffinale h2 span{background:linear-gradient(100deg,#fff,#c9d6ff 50%,#8fb0ff);-webkit-background-clip:text;background-clip:text}
+.ffinale h2 span{background:linear-gradient(100deg,#fff,#c9d6ff 50%,#8fb0ff);-webkit-background-clip:text;background-clip:text}
 .ffinale p{margin:0;max-width:34em;font:400 clamp(15px,1.2vw,18px)/1.7 'Manrope',sans-serif;color:var(--soft)}
 
 /* a gyűrű közepén lévő kép: görgetésre a kamera felé repül és elhalványul */
@@ -58,7 +52,6 @@
 .hero-line{display:block}
 .hero-line--accent{font-style:normal;font-weight:300!important;letter-spacing:-.04em;margin-top:.06em;padding-bottom:.08em;
   background:linear-gradient(100deg,#fff 0%,#c9d6ff 55%,#8fb0ff 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-:host-context([data-theme='light']) .hero-line--accent{background:linear-gradient(100deg,#4263ff 0%,#3a5bff 60%,#00a8e8 100%);-webkit-background-clip:text;background-clip:text}
 .hero-sub{margin:clamp(20px,3.4vh,34px) 0 0;max-width:30em;font:400 clamp(15.5px,1.2vw,18px)/1.7 'Manrope',sans-serif;color:var(--soft)}
 .hero-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:clamp(28px,4.6vh,48px)}
 .hero-btn{display:inline-flex;align-items:center;gap:14px;height:56px;padding:0 28px;border-radius:999px;text-decoration:none;font:600 15px/1 'Manrope',sans-serif;white-space:nowrap;transition:transform .25s,box-shadow .25s,background .25s,border-color .25s}
@@ -96,7 +89,7 @@
   .fpanel{width:80vw;padding:10px;border-radius:18px}
   .fpanel-meta{padding:14px 6px 4px}.fpanel-meta p{font-size:14px}
   .flight-hint{display:none}
-  .flight-hud{bottom:96px;right:20px;left:20px}.hud-chapter{max-width:58vw;overflow:hidden;text-overflow:ellipsis}
+  .flight-hud{bottom:96px;right:84px;left:20px}.hud-chapter{max-width:58vw;overflow:hidden;text-overflow:ellipsis}
 }
 @media(max-width:380px){.hero-btn--ghost{display:none}}
 

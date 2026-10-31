@@ -123,18 +123,16 @@
         <button type="button" class="mini-action" (click)="use('sites')">Kész projektek →</button>
       </div>
       }
-      <section class="admin-cinematic-intro" aria-label="Aurora Studio admin áttekintés">
+      <section class="admin-cinematic-intro" aria-label="Admin áttekintés">
         <div class="admin-cinematic-copy">
-          <span>MEGYERI MÁRK / AURORA STUDIO</span>
+          <span>MEGYERI MÁRK / STUDIO</span>
           <h2>Az ötletekből <em>valós projektek.</em></h2>
           <p>Az érdeklődésektől a megvalósításig: minden fontos folyamat egy helyen.</p>
           <button type="button" (click)="use('quotes')">Beérkező megkeresések <span aria-hidden="true">↗︎</span></button>
         </div>
         <div class="admin-cinematic-visual" aria-hidden="true">
-          <div class="admin-cinematic-orbit"></div>
-          <div class="admin-cinematic-window admin-cinematic-window--rear"></div>
-          <div class="admin-cinematic-window admin-cinematic-window--main"><span>STUDIO / ANALYTICS</span><i></i><i></i><i></i><b>AURORA</b></div>
-          <div class="admin-cinematic-phone"><span>MM.</span><i></i><i></i><i></i></div>
+          <i class="admin-orbit admin-orbit--a"></i><i class="admin-orbit admin-orbit--b"></i>
+          <div class="admin-rock"></div>
         </div>
       </section>
       @if(dashboard();as dash){
@@ -245,8 +243,8 @@
           <div class="donut-layout">
             <div class="aurora-donut source-donut" [style.background]="leadDonut()" role="img" [attr.aria-label]="'Kvízből érkező: ' + (dash.lead_sources?.quiz || 0) + ', űrlapból érkező: ' + (dash.lead_sources?.form || 0)"><div><strong>{{dash.lead_sources?.quiz || 0}}</strong><small>kvízlead</small></div></div>
             <div class="donut-legend">
-              <div><i style="background:var(--k-8f78ff)"></i><span>Interaktív kvíz</span><strong>{{dash.lead_sources?.quiz || 0}}</strong></div>
-              <div><i style="background:var(--k-48bed9)"></i><span>Ajánlatkérő űrlap</span><strong>{{dash.lead_sources?.form || 0}}</strong></div>
+              <div><i style="background:#4263ff"></i><span>Interaktív kvíz</span><strong>{{dash.lead_sources?.quiz || 0}}</strong></div>
+              <div><i style="background:#00d9ff"></i><span>Ajánlatkérő űrlap</span><strong>{{dash.lead_sources?.form || 0}}</strong></div>
             </div>
           </div>
           <small class="insight-foot">A már beérkezett megkeresések forrásai, nem látogatottsági mérés.</small>
@@ -274,7 +272,7 @@
         <div><span>Aktív megállapodások</span><strong>{{dash.maintenance_active || 0}}</strong></div>
         <div><span>Havi szerződéses érték</span><strong>{{money(dash.maintenance_contract_value_huf)}}</strong></div>
         <div><span>Esedékes ellenőrzés</span><strong>{{dash.maintenance_reviews_due || 0}}</strong></div>
-        <button type="button" (click)="use('maintenance')">Aurora Care megnyitása ↗︎</button>
+        <button type="button" (click)="use('maintenance')">Karbantartás megnyitása ↗︎</button>
       </div>
       <div class="admin-grid">
         <section class="admin-panel card">
@@ -518,7 +516,7 @@
 @if(tab()==='newsletter'){<app-newsletter-panel></app-newsletter-panel>}
 @if(tab()==='maintenance'){
   <div class="care-banner">
-    <span class="panel-eyebrow">AURORA CARE / KARBANTARTÁS</span>
+    <span class="panel-eyebrow">KARBANTARTÁS</span>
     <h2>Az ügyfélkapcsolat az átadás után is folytatódik.</h2>
     <p>Havi megállapodások, ellenőrzési időpontok és kártyás előfizetések (Stripe). Ha egy megállapodásnál engedélyezed az online fizetést, az ügyfél a projektoldalán indíthatja el; a befizetések automatikusan bekerülnek a Pénzügyekbe.</p>
     <button type="button" class="btn btn-primary" (click)="newMaintenance()">+ Új megállapodás</button>
@@ -793,7 +791,7 @@
           </div>
           @if(isQuizQuote(q.project_description)){
             <div class="detail-block admin-quiz-summary">
-              <span class="admin-quiz-eyebrow">✦ AURORA / INTERAKTÍV IGÉNYFELMÉRŐ</span>
+              <span class="admin-quiz-eyebrow">✦ INTERAKTÍV IGÉNYFELMÉRŐ</span>
               <h3>A látogató kvízválaszai</h3>
               @for(answer of quizSummary(q.project_description);track answer.label){
                 <div class="admin-quiz-answer"><span>{{answer.label}}</span><strong>{{answer.value}}</strong></div>
@@ -804,7 +802,7 @@
           }
           @if(q.wants_maintenance){
             <div class="detail-block care-detail-cta">
-              <small>✧ Aurora Care lehetőség</small>
+              <small>✧ Karbantartási lehetőség</small>
               <p>Ez az érdeklődő karbantartást is szeretne. Az elfogadott ajánlat után külön havi megállapodást rögzíthetsz.</p>
               <button type="button" class="btn btn-outline" (click)="use('maintenance')">Karbantartási nyilvántartás ↗︎</button>
             </div>
@@ -1379,7 +1377,7 @@
       <div class="settings-workspace">
       <section class="admin-panel card settings-editor">
         <div class="settings-introduction">
-          <span class="settings-kicker"><span class="settings-live-dot"></span> AURORA / ÉLŐ SZERKESZTÉS</span>
+          <span class="settings-kicker"><span class="settings-live-dot"></span> ÉLŐ SZERKESZTÉS</span>
           <p>A módosításokat mentés után látják a látogatók. A jobb oldali panel itt, azonnal mutatja a szövegek előnézetét.</p>
         </div>
         <div class="panel-title">

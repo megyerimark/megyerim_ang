@@ -21,10 +21,8 @@ export interface FlightRefs {
 
 interface Shard { x: number; y: number; vx: number; vy: number; s: number; rot: number; vr: number; life: number; decay: number; c: string; }
 
-const DARK = { add: true, parts: ['#3a5bff', '#5f7dff', '#00d9ff', '#a9c4ff', '#ffffff'], streak: '170,200,255', glow: '58,91,255',
+const DARK = { parts: ['#3a5bff', '#5f7dff', '#00d9ff', '#a9c4ff', '#ffffff'], streak: '170,200,255', glow: '58,91,255',
     shards: ['#ffffff', '#bcd2ff', '#4263ff', '#00d9ff', '#7d93ff'] };
-const LIGHT = { add: false, parts: ['#2442e6', '#4263ff', '#00a8e8', '#6d84ff'], streak: '66,99,255', glow: '66,99,255',
-    shards: ['#4263ff', '#2442e6', '#00a8e8', '#9fb0ff'] };
 
 export class FlightEngine {
     private readonly ctx: CanvasRenderingContext2D;
@@ -116,8 +114,8 @@ export class FlightEngine {
 
     private render(t: number): void {
         const { ctx, W, H, p } = this;
-        const light = document.documentElement.dataset['theme'] === 'light';
-        const pal = light ? LIGHT : DARK;
+        // a jelenet világos módban is sötét, ezért mindig a sötét paletta
+        const pal = DARK;
         const n = this.refs.panels.length;
         const burst = range(p, .05, .17);
         const fly = range(p, .09, .2);
@@ -168,12 +166,12 @@ export class FlightEngine {
 
         // ---------- vászon ----------
         ctx.clearRect(0, 0, W, H);
-        ctx.globalCompositeOperation = pal.add ? 'lighter' : 'source-over';
+        ctx.globalCompositeOperation = 'lighter';
 
         // izzó mag a gyűrű közepén
         if (burst < 1) {
             const gr = ctx.createRadialGradient(this.cx, this.cy, 0, this.cx, this.cy, this.R * (1.5 + burst * 2));
-            const a = (light ? .16 : .38) * (1 - burst) + burst * (light ? .1 : .3) * (1 - burst) * 2;
+            const a = .38 * (1 - burst) + burst * .3 * (1 - burst) * 2;
             gr.addColorStop(0, `rgba(${pal.glow},${a})`); gr.addColorStop(1, `rgba(${pal.glow},0)`);
             ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H);
         }
@@ -193,7 +191,7 @@ export class FlightEngine {
                     const x = this.cx + dx * ct - dy * sn, y = this.cy + dx * sn + dy * ct;
                     const flick = .55 + .45 * Math.sin(t * 3.1 + this.tw[i] * 31);
                     const sz = this.siz[i] * (1 + burst * 2.6);
-                    ctx.globalAlpha = ringA * flick * (light ? .75 : .9) * (this.rad[i] > 1.03 ? .55 : 1);
+                    ctx.globalAlpha = ringA * flick * .9 * (this.rad[i] > 1.03 ? .55 : 1);
                     ctx.fillRect(x - sz / 2, y - sz / 2, sz, sz);
                 }
             }
@@ -212,7 +210,7 @@ export class FlightEngine {
                 const px = W / 2 + s2.x / pz * k * .5, py = H / 2 + s2.y / pz * k * .5;
                 const a = clamp((1 - s2.z) * 1.1) * fly;
                 ctx.globalAlpha = 1;
-                ctx.strokeStyle = `rgba(${pal.streak},${a * (light ? .45 : .75)})`;
+                ctx.strokeStyle = `rgba(${pal.streak},${a * .75})`;
                 ctx.lineWidth = Math.max(.6, (1 - s2.z) * 2.2);
                 ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(x, y); ctx.stroke();
             }
