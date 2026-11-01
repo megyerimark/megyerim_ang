@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { TPipe } from '../../i18n/t.pipe';
 import { I18nService } from '../../i18n/i18n.service';
 import { FlightEngine } from './flight-engine';
+import { PromoService } from '../../core/promo.service';
 import { LpPipe } from '../../i18n/lp.pipe';
 
 /**
@@ -20,6 +21,8 @@ import { LpPipe } from '../../i18n/lp.pipe';
 })
 export class Hero implements AfterViewInit, OnDestroy {
     readonly i18n = inject(I18nService);
+    /** Az adminban beállított akció a nyitóképen is látszik (a felső sáv bezárható, a jelenet hosszú). */
+    readonly promo = inject(PromoService);
     private readonly zone = inject(NgZone);
     private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
     @ViewChild('flight', { static: true }) private section!: ElementRef<HTMLElement>;
@@ -62,6 +65,8 @@ export class Hero implements AfterViewInit, OnDestroy {
         }
         return [words.slice(0, best).join(' '), words.slice(best).join(' ')];
     }
+
+    constructor() { this.promo.load(); }
 
     ngAfterViewInit(): void {
         if (typeof window === 'undefined' || this.reduced) return;

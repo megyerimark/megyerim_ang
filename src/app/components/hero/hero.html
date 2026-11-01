@@ -44,6 +44,14 @@
           <a class="hero-btn hero-btn--fill" [routerLink]="'/ajanlatkeres' | lp">{{ 'Kérj ajánlatot' | t }} <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a>
           <a class="hero-btn hero-btn--ghost" [routerLink]="'/' | lp" fragment="munkak">{{ 'Munkáim megtekintése' | t }}</a>
         </div>
+        @if (promo.promo(); as p) {
+          <a class="hero-promo" [routerLink]="'/ajanlatkeres' | lp">
+            <b>−{{ p.percent }}%</b>
+            <span>{{ promo.title() || ('Időszakos akció az új weboldalakra' | t) }}</span>
+            @if (promo.remaining(); as r) {<small>{{ 'még' | t }} {{ r.days }} {{ 'nap' | t }}</small>}
+            <i aria-hidden="true">→</i>
+          </a>
+        }
       </div>
       <ul class="hero-values" aria-hidden="true"><li>{{ 'TECHNOLÓGIA' | t }}</li><li>{{ 'KREATIVITÁS' | t }}</li><li>{{ 'EREDMÉNY' | t }}</li></ul>
     </div>
