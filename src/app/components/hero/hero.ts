@@ -34,12 +34,12 @@ export class Hero implements AfterViewInit, OnDestroy {
     description = 'Prémium weboldalak, amelyek nemcsak szépek, hanem ügyfeleket is hoznak.';
 
     readonly reduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    /** A folyamat lépései – a kamera ezek mellett repül el. */
+    /** A folyamat lépései – a kamera ezek mellett repül el. Valós munkahelyzet-fotók (Unsplash licenc), kék tónussal. */
     readonly steps = [
-        { n: '01', k: 'STRATÉGIA', title: 'Megismerem a céljaidat.', text: 'Átbeszéljük a vállalkozásodat, az ügyfeleidet és azt, mit kell elérnie az oldalnak.', img: '/brand/ribbon-860.webp' },
-        { n: '02', k: 'DIZÁJN', title: 'Egyedi arculat, sablon nélkül.', text: 'Olyan felület, ami a márkádat tükrözi, és egyértelműen vezet az ajánlatkérésig.', img: '/demos/previews/nobile.webp' },
-        { n: '03', k: 'FEJLESZTÉS', title: 'Gyors, minden kijelzőn.', text: 'Reszponzív, kereshető és biztonságos weboldal, mobilra optimalizálva.', img: '/brand/showcase-900.webp' },
-        { n: '04', k: 'ÁTADÁS', title: 'Utána sem hagylak magadra.', text: 'Élesítés, mérés és karbantartás – a weboldalad tovább fejlődik veled.', img: '/brand/rock-820.webp' },
+        { n: '01', k: 'STRATÉGIA', title: 'Megismerem a céljaidat.', text: 'Átbeszéljük a vállalkozásodat, az ügyfeleidet és azt, mit kell elérnie az oldalnak.', img: '/brand/process/strategy.webp' },
+        { n: '02', k: 'DIZÁJN', title: 'Egyedi arculat, sablon nélkül.', text: 'Olyan felület, ami a márkádat tükrözi, és egyértelműen vezet az ajánlatkérésig.', img: '/brand/process/design.webp' },
+        { n: '03', k: 'FEJLESZTÉS', title: 'Gyors, minden kijelzőn.', text: 'Reszponzív, kereshető és biztonságos weboldal, mobilra optimalizálva.', img: '/brand/process/development.webp' },
+        { n: '04', k: 'ÁTADÁS', title: 'Utána sem hagylak magadra.', text: 'Élesítés, mérés és karbantartás – a weboldalad tovább fejlődik veled.', img: '/brand/process/handover.webp' },
     ];
     /** Fényoszlopok a repülés két oldalán (magasság px-ben, rögzített minta). */
     readonly pillars = Array.from({ length: 20 }, (_, i) => ({ h: 260 + ((i * 137) % 560) }));
