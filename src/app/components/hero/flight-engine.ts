@@ -31,6 +31,9 @@ export class FlightEngine {
     private p = 0; private cam = 0; private lastCam = 0;
     private visible = true; private raf = 0; private readonly t0 = performance.now();
     private lastFrame = 0; private lastP = -1; private worldHidden = false;
+    /** Adaptív minőség: ha a rajzolás lassú (gyengébb GPU, Windows-os nagy DPI), kevesebb részecske és kisebb felbontás. */
+    private costAvg = 0; private samples = 0;
+    private lite = typeof document !== 'undefined' && document.documentElement.classList.contains('perf-lite');
     /** A legutóbb kiírt CSS-változók – csak változáskor írjuk újra (különben minden képkocka stílus-újraszámolást okoz). */
     private readonly vars = new Map<string, string>();
     private chapter = -1;
@@ -81,13 +84,31 @@ export class FlightEngine {
     private readonly frame = (now: number): void => {
         this.raf = 0;
         // nyugalmi állapotban (nincs görgetés, nincs szilánk) mobilon ~30 fps is elég a lassan forgó gyűrűhöz
+        // Nyugalmi állapotban (nincs görgetés, nincs szilánk) ~30 fps is elég a lassan forgó gyűrűhöz;
+        // mozgás közben legfeljebb ~60 fps – a 120/144 Hz-es (pl. sok Windows-os laptop) kijelzőn sem rajzolunk duplán.
         const idle = this.p === this.lastP && !this.shards.length;
-        if (!(idle && this.mobile && now - this.lastFrame < 30)) {
+        const minGap = idle ? 30 : 15;
+        if (now - this.lastFrame >= minGap) {
             this.lastFrame = now; this.lastP = this.p;
+            const t = performance.now();
             this.render((now - this.t0) / 1000);
+            this.measure(performance.now() - t);
         }
         if (this.visible) this.raf = requestAnimationFrame(this.frame);
     };
+
+    /** A rajzolás átlagos ideje; tartósan 6 ms felett egyszer, véglegesen könnyített módra váltunk. */
+    private measure(cost: number): void {
+        if (this.lite) return;
+        this.samples++;
+        this.costAvg = this.samples === 1 ? cost : this.costAvg * .9 + cost * .1;
+        if (this.samples > 40 && this.costAvg > 6) {
+            this.lite = true;
+            document.documentElement.classList.add('perf-lite');
+            try { sessionStorage.setItem('mm-perf-lite', '1'); } catch { /* privát mód */ }
+            this.resize();
+        }
+    }
 
     private setVar(name: string, value: string): void {
         if (this.vars.get(name) === value) return;
@@ -98,13 +119,13 @@ export class FlightEngine {
     private resize(): void {
         const r = this.refs.pin.getBoundingClientRect();
         this.W = r.width; this.H = r.height; this.mobile = this.W < 760;
-        this.dpr = Math.min(window.devicePixelRatio || 1, this.mobile ? 1.25 : 1.5);
+        this.dpr = this.lite ? 1 : Math.min(window.devicePixelRatio || 1, this.mobile ? 1.25 : 1.5);
         this.refs.canvas.width = Math.round(this.W * this.dpr); this.refs.canvas.height = Math.round(this.H * this.dpr);
         this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
         if (this.mobile) { this.cx = this.W * .5; this.cy = this.H * .77; this.R = Math.min(this.W * .32, this.H * .16); }
         else { this.cx = this.W * .69; this.cy = this.H * .5; this.R = Math.min(this.W * .2, this.H * .32); }
         this.setVar('--cx', this.cx.toFixed(0) + 'px'); this.setVar('--cy', this.cy.toFixed(0) + 'px'); this.setVar('--R', this.R.toFixed(0) + 'px');
-        this.buildRing(this.mobile ? 650 : 2000);
+        this.buildRing(this.mobile ? 650 : this.lite ? 900 : 2000);
     }
 
     private buildRing(n: number): void {

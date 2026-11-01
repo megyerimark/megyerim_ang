@@ -373,6 +373,12 @@ main:focus { outline:none; }
   .aurora-reveal-item:not(.aurora-visible):not(.aurora-reveal-soft), .aurora-reveal-item { filter: none !important; }
 }
 
+/* Könnyített mód (html.perf-lite): ha a gép lassan rajzol (a hero méri, illetve gyenge eszköznél induláskor),
+   a drága háttér-elmosást és a szűrős megjelenést kikapcsoljuk – a megjelenés szinte ugyanaz, a görgetés folyamatos. */
+.perf-lite *, .perf-lite *::before, .perf-lite *::after { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+.perf-lite .nav-wrap.is-compact { background: var(--k-050818-f5) !important; }
+.perf-lite .aurora-reveal-item { filter: none !important; }
+
 /* Build utáni prerender (scripts/prerender.mjs): a statikus tartalom a JavaScriptet nem futtató robotoknak szól.
    Vizuálisan rejtett, hogy az Angular indulásakor ne villanjon és ne ugorjon az elrendezés (az Angular lecseréli). */
 .prerender-content { position: absolute !important; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
