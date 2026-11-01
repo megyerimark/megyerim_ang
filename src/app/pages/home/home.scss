@@ -608,7 +608,9 @@
 .footer-bottom {
   display: flex;
   flex-wrap: wrap;
-  gap: 22px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 22px;
   padding-top: 23px;
   padding-bottom: 25px;
   border-top: 1px solid #ffffff1e;
@@ -620,7 +622,8 @@
   .footer-legal {
     display: inline-flex;
     flex-wrap: wrap;
-    gap: 18px;
+    align-items: center;
+    gap: 0 18px;
   }
 }
 @media (max-width: 990px) {
@@ -1602,7 +1605,7 @@
 .testimonial-card figcaption a{color:inherit;opacity:.85}
 
 .review-cta{margin:24px 0 0;text-align:center}
-.footer-cookie{border:0;background:none;color:inherit;font:inherit;padding:0;cursor:pointer}
+.footer-cookie{border:0;background:none;color:inherit;font:inherit;line-height:inherit;letter-spacing:inherit;padding:0;margin:0;cursor:pointer;-webkit-appearance:none;appearance:none}
 .footer-cookie:hover{color:var(--text)}
 
 /* Akciós ár a szolgáltatáskártyán */

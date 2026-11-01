@@ -10,6 +10,8 @@
   .mobile-cta{display:flex;gap:.5rem;position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:95;animation:to-top-in .3s ease both}
   .mobile-cta a{display:flex;align-items:center;justify-content:center;gap:.5rem;min-height:52px;border-radius:16px;font-weight:700;text-decoration:none;color:#fff;box-shadow:0 14px 40px #000a}
   .mobile-cta__main{flex:1;background:linear-gradient(135deg,var(--k-8f78ff),var(--k-6a4fe0))}
-  .mobile-cta__call{padding:0 1.2rem;background:var(--k-171a2b);border:1px solid var(--k-8f78ff-80)}
+  /* Fix sötét háttér: világos módban a palettaváltozó fehér lenne, és a fehér felirat eltűnne. */
+  .mobile-cta__call{padding:0 1.2rem;background:#151b2a;color:#fff;border:1px solid var(--k-8f78ff-80)}
+  :host-context([data-theme='light']) .mobile-cta__call{background:#fff;color:#2d4bff;border-color:#2d4bff66;box-shadow:0 14px 40px #0b163a2e}
   .to-top{bottom:84px}
 }
