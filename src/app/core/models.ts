@@ -485,3 +485,14 @@ export interface AdminSecurityStatus {
     recovery_codes_remaining?: number;
     session_driver: string;
 }
+
+/** A személyes kezelőlinkkel lekért konzultációs foglalás (önkiszolgálás). */
+export interface ManagedConsultation {
+    reference: number;
+    customer_name: string;
+    starts_at: string;
+    duration_minutes: number;
+    /** false: a kezdés előtti 2 órában már nem módosítható online. */
+    changeable: boolean;
+    available: ConsultationSlot[];
+}

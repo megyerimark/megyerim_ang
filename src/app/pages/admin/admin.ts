@@ -135,6 +135,7 @@ export class AdminPage implements OnInit, OnDestroy {
     consultations = signal<ConsultationSlot[]>([]);
     slotStart = '';
     slotDuration = 30;
+    meetingUrl = '';
     clients = signal<Client[]>([]);
     clientsPage = signal(1);
     clientsPages = signal(1);
@@ -291,7 +292,17 @@ export class AdminPage implements OnInit, OnDestroy {
         }
     }
     consultationDate(value: string): string { return new Date(value).toLocaleString('hu-HU', {dateStyle:'medium', timeStyle:'short', timeZone:'Europe/Budapest'}); }
-    loadConsultations() { this.busy.set(true); this.api.adminConsultations().subscribe({next:r=>{this.consultations.set(r.data); this.busy.set(false);}, error:e=>this.fail(e)}); }
+    loadConsultations() {
+        this.busy.set(true);
+        this.api.adminConsultations().subscribe({next:r=>{this.consultations.set(r.data); this.busy.set(false);}, error:e=>this.fail(e)});
+        this.api.consultationSettings().subscribe({next:r=>this.meetingUrl=r.data.meeting_url ?? '', error:()=>{}});
+    }
+    saveMeetingUrl() {
+        const url = this.meetingUrl.trim();
+        if (url && !/^https:\/\//i.test(url)) { this.notify('A linknek https://-sel kell kezdődnie.', true); return; }
+        this.busy.set(true);
+        this.api.saveConsultationSettings(url || null).subscribe({next:r=>{this.meetingUrl=r.data.meeting_url ?? ''; this.busy.set(false); this.notify(url ? 'Videóhívás-link mentve.' : 'Videóhívás-link törölve.');}, error:e=>this.fail(e)});
+    }
     createSlot() {
         if (!this.slotStart) {this.notify('Válassz kezdési időpontot.', true); return;}
         const date = new Date(this.slotStart);

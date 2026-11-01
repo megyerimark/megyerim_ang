@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, switchMap } from 'rxjs';
+import { ManagedConsultation } from './models';
 import { AdminSecurityStatus, SystemStatus, ClientSite, ClientSiteInput, FinanceEntry, FinanceEntryInput, FinanceSettings, FinanceSummary, AdminUser, Activity, Client, ClientProject, ConsultationConfirmation, ConsultationSlot, Dashboard, Envelope, Paged, Project, ProjectMilestone, ProjectMessage, ProjectDocument, ProjectCollaboration, Quote, QuotePayload, QuoteBoard, Service, SiteSettings, StudioTask, StudioClientNote, WorkspaceProject, CommunicationCenter, MaintenanceData, MaintenanceAgreement, MaintenanceEditor, Testimonial, TestimonialInput, GrowthData, NewsletterSubscriber, NewsletterCounts } from './models';
 import { AttributionService } from './attribution.service';
 @Injectable({ providedIn: 'root' })
@@ -43,6 +44,12 @@ export class ApiService {
     adminConsultations() { return this.http.get<Envelope<ConsultationSlot[]>>('/api/admin/consultations', this.opts); }
     createConsultation(data: {starts_at: string; duration_minutes: number}) { return this.http.post<Envelope<ConsultationSlot>>('/api/admin/consultations', data, this.opts); }
     deleteConsultation(id: number) { return this.http.delete(`/api/admin/consultations/${id}`, this.opts); }
+    consultationSettings() { return this.http.get<Envelope<{ meeting_url: string | null }>>('/api/admin/consultation-settings', this.opts); }
+    saveConsultationSettings(meeting_url: string | null) { return this.http.put<Envelope<{ meeting_url: string | null }>>('/api/admin/consultation-settings', { meeting_url }, this.opts); }
+    /** Önkiszolgálás a levélben kapott személyes linkkel. */
+    manageConsultation(token: string) { return this.csrf().pipe(switchMap(() => this.http.post<Envelope<ManagedConsultation>>('/api/consultations/manage', { token }, this.opts))); }
+    cancelConsultation(token: string) { return this.csrf().pipe(switchMap(() => this.http.post<{ message: string }>('/api/consultations/manage/cancel', { token }, this.opts))); }
+    rescheduleConsultation(token: string, consultation_slot_id: number) { return this.csrf().pipe(switchMap(() => this.http.post<{ message: string; data: { starts_at: string; duration_minutes: number } }>('/api/consultations/manage/reschedule', { token, consultation_slot_id }, this.opts))); }
     publicProject(slug: string) { return this.http.get<Envelope<Project>>('/api/projects/' + encodeURIComponent(slug), this.opts); }
     clientCollaboration(token: string) { return this.http.post<Envelope<ProjectCollaboration>>('/api/client/project/collaboration', { token }, this.opts); }
     sendClientMessage(token: string, body: string) { return this.http.post<Envelope<ProjectMessage>>('/api/client/project/messages', { token, body }, this.opts); }

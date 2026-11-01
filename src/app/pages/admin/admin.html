@@ -580,6 +580,16 @@
         </label>
         <button type="button" class="btn btn-primary" [disabled]="busy()" (click)="createSlot()">Szabad időpont felvétele +</button>
       </div>
+      <div class="consultation-meeting">
+        <h3>Videóhívás-link</h3>
+        <p class="proposal-hint">Állandó Google Meet / Jitsi / Zoom link. Csak a foglalóknak küldött visszaigazolásban, emlékeztetőben és naptárfájlban jelenik meg – nyilvánosan nem látható.</p>
+        <div class="consultation-create">
+          <label>Link (https://…)
+            <input type="url" class="input" placeholder="https://meet.google.com/…" [(ngModel)]="meetingUrl">
+          </label>
+          <button type="button" class="btn btn-outline" [disabled]="busy()" (click)="saveMeetingUrl()">Mentés</button>
+        </div>
+      </div>
       <h3>Közzétett és lefoglalt időpontok</h3>
       @if(!consultations().length){<p class="proposal-hint">Még nincs konzultációs időpont.</p>}
       @for(slot of consultations();track slot.id){

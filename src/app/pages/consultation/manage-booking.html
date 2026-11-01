@@ -1,0 +1,66 @@
+<main class="consultation-page">
+  <div class="container">
+    <div class="consultation-header"><div><span class="overline">{{ 'KONZULTÁCIÓ / FOGLALÁSOM' | t }}</span><h1>{{ 'A foglalásod' | t }}</h1><p>{{ 'Itt megnézheted, átfoglalhatod vagy lemondhatod a konzultációs időpontodat – legkésőbb 2 órával a kezdés előtt.' | t }}</p></div><a [routerLink]="'/' | lp" class="back-link">{{ '← Vissza a főoldalra' | t }}</a></div>
+
+    @if (loading()) {
+      <section class="consultation-card" role="status"><p>{{ 'Foglalás betöltése…' | t }}</p></section>
+    } @else if (state() === 'invalid') {
+      <section class="consultation-card" role="alert">
+        <h2>{{ 'A link nem érvényes' | t }}</h2>
+        <p class="time-note">{{ 'Lehet, hogy a foglalást már lemondták, vagy a link hiányos. Új időpontot a konzultációs oldalon foglalhatsz, kérdés esetén pedig válaszolj a visszaigazoló levélre.' | t }}</p>
+        <a class="btn btn-primary" [routerLink]="'/konzultacio' | lp">{{ 'Időpontot foglalok' | t }}</a>
+      </section>
+    } @else if (state() === 'cancelled') {
+      <section class="consultation-card booking-success" role="status">
+        <span class="overline">{{ 'LEMONDVA' | t }}</span><h2>{{ 'A foglalást lemondtad.' | t }}</h2>
+        <p>{{ 'Az időpont felszabadult; a visszaigazolást e-mailben is elküldtem.' | t }}</p>
+        <a class="btn btn-primary" [routerLink]="'/konzultacio' | lp">{{ 'Új időpont foglalása' | t }}</a>
+      </section>
+    } @else if (booking(); as b) {
+      @if (state() === 'rescheduled') {
+        <section class="consultation-card booking-success" role="status">
+          <span class="overline">{{ 'ÁTFOGLALVA' | t }}</span><h2>{{ 'Az új időpontod rögzítve.' | t }}</h2>
+          <p><strong>{{ date(b.starts_at) }}</strong> · {{ b.duration_minutes }} {{ 'perc' | t }}</p>
+          <p>{{ 'A visszaigazolást az új időponttal e-mailben is elküldtem.' | t }}</p>
+        </section>
+      } @else {
+      <div class="consultation-layout">
+        <section class="consultation-card">
+          <span class="overline">{{ 'JELENLEGI IDŐPONT' | t }}</span>
+          <h2>{{ date(b.starts_at) }}</h2>
+          <p class="time-note">{{ b.duration_minutes }} {{ 'perces konzultáció' | t }} · {{ 'Foglalási azonosító' | t }}: #{{ b.reference }}</p>
+          @if (!b.changeable) {
+            <p class="booking-error">{{ 'A kezdés előtti 2 órában már nem módosítható online. Ha közbejött valami, válaszolj a visszaigazoló levélre.' | t }}</p>
+          } @else {
+            @if (!confirmCancel()) {
+              <button type="button" class="btn btn-outline" (click)="confirmCancel.set(true)">{{ 'Lemondom az időpontot' | t }}</button>
+            } @else {
+              <p>{{ 'Biztosan lemondod? Az időpont felszabadul, és más foglalhatja le.' | t }}</p>
+              <button type="button" class="btn btn-primary" [disabled]="busy()" (click)="cancel()">{{ (busy() ? 'Folyamatban…' : 'Igen, lemondom') | t }}</button>
+              <button type="button" class="btn btn-outline" (click)="confirmCancel.set(false)">{{ 'Mégsem' | t }}</button>
+            }
+          }
+        </section>
+        @if (b.changeable) {
+        <section class="consultation-card">
+          <span class="overline">{{ 'ÁTFOGLALÁS' | t }}</span>
+          <h2>{{ 'Válassz másik időpontot' | t }}</h2>
+          @if (!b.available.length) {
+            <p class="time-note">{{ 'Jelenleg nincs másik szabad időpont. Nézz vissza később, vagy válaszolj a visszaigazoló levélre.' | t }}</p>
+          }
+          <div class="slot-grid">
+            @for (slot of b.available; track slot.id) {
+              <button type="button" class="slot" [class.active]="selected() === slot.id" [attr.aria-pressed]="selected() === slot.id" (click)="selected.set(slot.id)"><strong>{{ date(slot.starts_at) }}</strong><small>{{ slot.duration_minutes }} {{ 'perces konzultáció' | t }}</small></button>
+            }
+          </div>
+          @if (error()) { <p class="booking-error" role="alert">{{ error() | t }}</p> }
+          <button type="button" class="btn btn-primary book-btn" [disabled]="busy() || !selected()" (click)="reschedule()">{{ (busy() ? 'Folyamatban…' : 'Átfoglalom erre az időpontra ↗︎') | t }}</button>
+          <p class="time-note">{{ 'Az időpontok magyarországi idő szerint szerepelnek (Europe/Budapest).' | t }}</p>
+        </section>
+        }
+      </div>
+      @if (error() && !b.changeable) { <p class="booking-error" role="alert">{{ error() | t }}</p> }
+      }
+    }
+  </div>
+</main>
