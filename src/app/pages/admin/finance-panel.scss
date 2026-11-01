@@ -61,3 +61,11 @@
 .nl-title{margin:4px 0 0;font-size:22px}.nl-hint{color:var(--k-c9d3f1);border-color:var(--k-8b6cff-66);background:var(--k-7c5cff-14)}
 .nl-list{display:grid;gap:8px}.nl-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--border);border-radius:12px;min-width:0}
 .nl-row>div{min-width:0}.nl-row strong{display:block;overflow-wrap:anywhere}.nl-row small{display:block;margin-top:3px;font-size:12px;color:var(--muted)}
+
+/* hírlevél-szerkesztő */
+.nl-compose{margin:18px 0;padding:22px;display:grid;gap:12px}
+.nl-compose h3{margin:4px 0 0;font-size:20px}.nl-compose h4{margin:14px 0 4px;font-size:15px}
+.nl-compose .form-field{display:grid;gap:6px;font-size:12px}
+.nl-compose-row{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:12px}
+.nl-compose-actions{display:flex;flex-wrap:wrap;gap:10px}
+@media(max-width:800px){.nl-compose-row{grid-template-columns:1fr}}

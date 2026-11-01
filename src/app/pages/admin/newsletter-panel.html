@@ -10,7 +10,35 @@
   <div class="fin-kpi"><span>Megerősítésre vár</span><strong>{{ counts().pending }}</strong><small>30 nap után automatikusan törlődik</small></div>
   <div class="fin-kpi"><span>Leiratkozott</span><strong>{{ counts().unsubscribed }}</strong><small>Nekik nem küldhetsz</small></div>
 </div>
-<p class="fin-warning nl-hint">Leveleket külső hírlevélküldővel (pl. MailerLite, Brevo) érdemes küldeni: töltsd le a CSV-t, és importáld. Minden levélben legyen leiratkozási lehetőség.</p>
+<section class="nl-compose card">
+  <span class="panel-eyebrow">HÍRLEVÉL / ÚJ LEVÉL</span>
+  <h3>Levél küldése a feliratkozóknak</h3>
+  <p class="muted">Csak a megerősített feliratkozók kapják meg; mindenki saját leiratkozó linket kap. Előbb küldj tesztlevelet magadnak.</p>
+  <label class="form-field"><span>Tárgy</span><input class="input" maxlength="150" [(ngModel)]="draft.subject" placeholder="pl. Új útmutató: mennyibe kerül egy weboldal?"></label>
+  <label class="form-field"><span>Szöveg</span><textarea class="input" rows="8" maxlength="10000" [(ngModel)]="draft.body" placeholder="Üres sor = új bekezdés. A „- ” kezdetű sorokból felsorolás lesz."></textarea></label>
+  <div class="nl-compose-row">
+    <label class="form-field"><span>Gomb felirata (nem kötelező)</span><input class="input" maxlength="60" [(ngModel)]="draft.button_text" placeholder="pl. Elolvasom"></label>
+    <label class="form-field"><span>Gomb linkje (https://…)</span><input class="input" type="url" maxlength="500" [(ngModel)]="draft.button_url" placeholder="https://megyerimarkmate.hu/utmutatok"></label>
+    <label class="form-field"><span>Címzettek</span>
+      <select class="input" [(ngModel)]="draft.audience">
+        <option value="all">Mindenki ({{ audience().all }})</option><option value="hu">Magyar nyelvűek ({{ audience().hu }})</option><option value="en">Angol nyelvűek ({{ audience().en }})</option>
+      </select>
+    </label>
+  </div>
+  <div class="nl-compose-actions">
+    <button type="button" class="btn btn-outline btn-sm" [disabled]="sending()" (click)="sendTest()">Tesztlevél magamnak</button>
+    <button type="button" class="btn btn-primary btn-sm" [disabled]="sending() || !audience()[draft.audience]" (click)="sendCampaign()">Kiküldés ({{ audience()[draft.audience] }} címzett) ↗︎</button>
+  </div>
+  @if (campaigns().length) {
+  <h4>Korábbi kiküldések</h4>
+  <div class="nl-list">
+    @for (c of campaigns(); track c.id) {
+      <div class="nl-row"><div><strong>{{ c.subject }}</strong><small>{{ date(c.sent_at) }} · {{ c.sent_count }} / {{ c.recipients }} elküldve @if (c.failed_count) { · {{ c.failed_count }} sikertelen }</small></div></div>
+    }
+  </div>
+  }
+</section>
+<p class="fin-warning nl-hint">Nagyobb listához (több száz cím felett) külső hírlevélküldő (pl. MailerLite, Brevo) is használható: töltsd le a CSV-t, és importáld.</p>
 <div class="fin-toolbar">
   <input class="input" type="search" placeholder="Keresés e-mail-címre…" aria-label="Keresés e-mail-címre" [(ngModel)]="q" (keyup.enter)="load()">
   <select class="input" aria-label="Állapot szűrése" [(ngModel)]="status" (ngModelChange)="load()">

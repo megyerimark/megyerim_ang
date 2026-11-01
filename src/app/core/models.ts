@@ -496,3 +496,6 @@ export interface ManagedConsultation {
     changeable: boolean;
     available: ConsultationSlot[];
 }
+
+export interface NewsletterDraft { subject: string; body: string; audience: 'all' | 'hu' | 'en'; button_text: string | null; button_url: string | null; }
+export interface NewsletterCampaign { id: number; subject: string; audience: string; recipients: number; sent_count: number; failed_count: number; sent_at: string | null; }

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, switchMap } from 'rxjs';
-import { ManagedConsultation } from './models';
+import { ManagedConsultation, NewsletterCampaign, NewsletterDraft } from './models';
 import { AdminSecurityStatus, SystemStatus, ClientSite, ClientSiteInput, FinanceEntry, FinanceEntryInput, FinanceSettings, FinanceSummary, AdminUser, Activity, Client, ClientProject, ConsultationConfirmation, ConsultationSlot, Dashboard, Envelope, Paged, Project, ProjectMilestone, ProjectMessage, ProjectDocument, ProjectCollaboration, Quote, QuotePayload, QuoteBoard, Service, SiteSettings, StudioTask, StudioClientNote, WorkspaceProject, CommunicationCenter, MaintenanceData, MaintenanceAgreement, MaintenanceEditor, Testimonial, TestimonialInput, GrowthData, NewsletterSubscriber, NewsletterCounts } from './models';
 import { AttributionService } from './attribution.service';
 @Injectable({ providedIn: 'root' })
@@ -181,5 +181,8 @@ export class ApiService {
     adminNewsletter(q = '', status = '') { return this.http.get<{ data: NewsletterSubscriber[]; counts: NewsletterCounts }>('/api/admin/newsletter', { ...this.opts, params: this.params({ q, status }) }); }
     deleteNewsletterSubscriber(id: number) { return this.http.delete<{ message: string }>('/api/admin/newsletter/' + id, this.opts); }
     exportNewsletter() { return this.http.get('/api/admin/exports/newsletter', { ...this.opts, responseType: 'blob' }); }
+    newsletterCampaigns() { return this.http.get<{ data: NewsletterCampaign[]; audience: { all: number; hu: number; en: number } }>('/api/admin/newsletter/campaigns', this.opts); }
+    newsletterTest(data: NewsletterDraft) { return this.http.post<{ message: string }>('/api/admin/newsletter/campaigns/test', data, this.opts); }
+    newsletterSend(data: NewsletterDraft & { confirm: boolean }) { return this.http.post<{ message: string }>('/api/admin/newsletter/campaigns', data, this.opts); }
     exportQuotes(status?: string) { return this.http.get('/api/admin/exports/quote-requests', { ...this.opts, params: this.params({ status }), responseType: 'blob' }); }
 }
