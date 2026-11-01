@@ -147,7 +147,7 @@ export class App {
         let leaf = this.router.routerState.snapshot.root;
         while (leaf.firstChild) leaf = leaf.firstChild;
         const notFound = leaf.routeConfig?.path === '**';
-        const isPrivate = notFound || /^\/(admin|ugyfel|hirlevel|fizetes)/.test(path);
+        const isPrivate = notFound || /^\/(admin|ugyfel|hirlevel|fizetes|konzultacio\/foglalasom)/.test(path);
         this.meta.updateTag({ name: 'robots', content: isPrivate ? 'noindex, nofollow, noarchive' : 'index, follow' });
         const lang = this.i18n.lang();
         // A referenciaoldal (munkak/:slug), a szolgáltatási céloldal és az útmutatók a címüket és a leírásukat maguk állítják be.

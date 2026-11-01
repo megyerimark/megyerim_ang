@@ -59,6 +59,7 @@ export const routes: Routes = [
     { path: 'projekt-kviz', loadComponent: loadQuiz, title: '2 perces weboldal igényfelmérő | Megyeri Márk Máté' },
     { path: 'munkak/:slug', loadComponent: loadCaseStudy, title: 'Referenciák | Megyeri Márk Máté' },
     { path: 'konzultacio', loadComponent: loadConsultation, title: 'Konzultációfoglalás | Megyeri Márk Máté' },
+    { path: 'konzultacio/foglalasom', loadComponent: () => import('./pages/consultation/manage-booking').then(m => m.ManageBookingPage), title: 'A foglalásom | Megyeri Márk Máté' },
     {
         path: 'adatkezeles',
         loadComponent: loadPrivacy,
