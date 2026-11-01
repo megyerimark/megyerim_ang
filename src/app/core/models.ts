@@ -143,6 +143,8 @@ export interface Quote {
 }
 export interface QuotePayload {
     customer_name: string;
+    /** Az ügyfél nyelve (hu | en) – ezen a nyelven kapja az e-maileket. */
+    lang?: 'hu' | 'en';
     email: string;
     phone: string;
     company_name: string;

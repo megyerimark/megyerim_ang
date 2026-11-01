@@ -35,7 +35,8 @@ const bundle = await build({
             export { SERVICES } from './src/app/pages/service/service-content';
             export * from './src/app/pages/home/home-content';
             export { GUIDES } from './src/app/pages/guide/guide-content';
-            export { GUIDES_INDEX_SEO } from './src/app/pages/guide/guide-seo';
+            export { GUIDES_EN } from './src/app/pages/guide/guide-content-en';
+            export { GUIDES_INDEX_SEO, GUIDES_INDEX_SEO_EN } from './src/app/pages/guide/guide-seo';
             export { EN } from './src/app/i18n/en';
         `,
         resolveDir: root,
@@ -44,7 +45,7 @@ const bundle = await build({
     bundle: true, format: 'esm', platform: 'node', write: false, logLevel: 'silent',
 });
 const data = await import('data:text/javascript;base64,' + Buffer.from(bundle.outputFiles[0].text).toString('base64'));
-const { PUBLIC_PAGES, CASE_PREFIX, PAGE_SEO, SITE_URL, SERVICES, EN, DEFAULT_HERO_HEADLINE, DEFAULT_HERO_DESCRIPTION, PROCESS_STEPS, FAQS, GUIDES, GUIDE_KEYS, GUIDE_SLUGS, GUIDES_INDEX_SEO } = data;
+const { PUBLIC_PAGES, CASE_PREFIX, PAGE_SEO, SITE_URL, SERVICES, EN, DEFAULT_HERO_HEADLINE, DEFAULT_HERO_DESCRIPTION, PROCESS_STEPS, FAQS, GUIDES, GUIDES_EN, GUIDE_KEYS, GUIDES_INDEX_SEO, GUIDES_INDEX_SEO_EN } = data;
 
 const norm = (text) => text.replace(/\s+/g, ' ').trim();
 const tr = (lang, text) => (lang === 'en' ? EN[norm(text)] ?? text : text);
@@ -216,42 +217,47 @@ for (const [key, h1] of Object.entries(H1)) {
     }
 }
 
-// ---- Útmutatók (csak magyarul) ----
-{
-    const lang = 'hu';
-    const guidePath = (key) => '/utmutatok/' + GUIDE_SLUGS[key];
-    add(fileFor('/utmutatok'), renderPage({
-        lang, path: '/utmutatok', alternates: { hu: '/utmutatok', en: null }, title: GUIDES_INDEX_SEO.title, description: GUIDES_INDEX_SEO.description,
+// ---- Útmutatók (magyarul és angolul) ----
+for (const lang of ['hu', 'en']) {
+    const content = lang === 'en' ? GUIDES_EN : GUIDES;
+    const indexSeo = lang === 'en' ? GUIDES_INDEX_SEO_EN : GUIDES_INDEX_SEO;
+    const index = pathOf('guides');
+    const indexPath = lang === 'en' ? index.en : index.hu;
+    const guidesName = tr(lang, 'Útmutatók');
+    const home = { name: tr(lang, 'Főoldal'), path: link(lang, 'home') };
+    add(fileFor(indexPath), renderPage({
+        lang, path: indexPath, alternates: { hu: index.hu, en: index.en }, title: indexSeo.title, description: indexSeo.description,
         image: ogImage('guides', lang),
-        body: wrap(lang, `<h1>Útmutatók weboldal készítéshez</h1><ul>${GUIDE_KEYS.map((key) => `<li><a href="${guidePath(key)}">${esc(GUIDES[key].h1)}</a> – ${esc(GUIDES[key].seoDescription)}</li>`).join('')}</ul>`),
-        jsonLd: [crumbs(lang, [{ name: 'Főoldal', path: '/' }, { name: 'Útmutatók', path: '/utmutatok' }])],
+        body: wrap(lang, `<h1>${esc(tr(lang, 'Útmutatók weboldal készítéshez'))}</h1><ul>${GUIDE_KEYS.map((key) => `<li><a href="${link(lang, 'guide:' + key)}">${esc(content[key].h1)}</a> – ${esc(content[key].seoDescription)}</li>`).join('')}</ul>`),
+        jsonLd: [crumbs(lang, [home, { name: guidesName, path: indexPath }])],
     }));
     for (const key of GUIDE_KEYS) {
-        const g = GUIDES[key];
-        const path = guidePath(key);
+        const g = content[key];
+        const page = pathOf('guide:' + key);
+        const path = lang === 'en' ? page.en : page.hu;
         const body = wrap(lang, [
-            `<p>Főoldal / Útmutatók / ${esc(g.label)}</p>`,
+            `<p>${esc(home.name)} / ${esc(guidesName)} / ${esc(g.label)}</p>`,
             `<article><h1>${esc(g.h1)}</h1><p>${esc(g.intro)}</p>`,
             ...g.sections.map((s) => `<section><h2>${esc(s.h2)}</h2>${s.paragraphs.map((p) => `<p>${esc(p)}</p>`).join('')}${s.list?.length ? `<ul>${s.list.map((i) => `<li>${esc(i)}</li>`).join('')}</ul>` : ''}</section>`),
-            `<section><h2>Gyakori kérdések</h2>${g.faq.map((f) => `<h3>${esc(f.q)}</h3><p>${esc(f.a)}</p>`).join('')}</section>`,
-            `<p><a href="${link(lang, 'service:' + g.related)}">${esc(SERVICES[g.related].copy.hu.label)}</a> · <a href="${link(lang, 'quote')}">Ajánlatot kérek</a></p></article>`,
+            `<section><h2>${esc(tr(lang, 'Gyakori kérdések'))}</h2>${g.faq.map((f) => `<h3>${esc(f.q)}</h3><p>${esc(f.a)}</p>`).join('')}</section>`,
+            `<p><a href="${link(lang, 'service:' + g.related)}">${esc(SERVICES[g.related].copy[lang].label)}</a> · <a href="${link(lang, 'quote')}">${esc(tr(lang, 'Ajánlatot kérek'))}</a></p></article>`,
         ].join(''));
         add(fileFor(path), renderPage({
-            lang, path, alternates: { hu: path, en: null }, title: g.seoTitle, description: g.seoDescription, body, ogType: 'article',
+            lang, path, alternates: { hu: page.hu, en: page.en }, title: g.seoTitle, description: g.seoDescription, body, ogType: 'article',
             image: ogImage('guide-' + key, lang),
             jsonLd: [
                 {
-                    '@context': 'https://schema.org', '@type': 'Article', headline: g.h1, description: g.seoDescription, inLanguage: 'hu',
+                    '@context': 'https://schema.org', '@type': 'Article', headline: g.h1, description: g.seoDescription, inLanguage: lang,
                     datePublished: g.updated, dateModified: g.updated, mainEntityOfPage: abs(path),
                     image: ogImage('guide-' + key, lang) ?? SITE_URL + '/og-image.jpg',
-                    author: { '@type': 'Person', name: 'Megyeri Márk Máté', url: SITE_URL + '/' },
+                    author: { '@type': 'Person', name: tr(lang, 'Megyeri Márk Máté'), url: SITE_URL + '/' },
                     publisher: { '@type': 'Organization', '@id': ORG_ID, name: 'Megyeri Márk Máté | Webfejlesztés', logo: { '@type': 'ImageObject', url: SITE_URL + '/apple-touch-icon.png' } },
                 },
                 {
-                    '@context': 'https://schema.org', '@type': 'FAQPage', inLanguage: 'hu',
+                    '@context': 'https://schema.org', '@type': 'FAQPage', inLanguage: lang,
                     mainEntity: g.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
                 },
-                crumbs(lang, [{ name: 'Főoldal', path: '/' }, { name: 'Útmutatók', path: '/utmutatok' }, { name: g.label, path }]),
+                crumbs(lang, [home, { name: guidesName, path: indexPath }, { name: g.label, path }]),
             ],
         }));
     }

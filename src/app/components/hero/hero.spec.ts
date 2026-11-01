@@ -1,10 +1,12 @@
 import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { Hero } from './hero';
 
 describe('Hero', () => {
   it('renders the portfolio headline and quote action', async () => {
-    await TestBed.configureTestingModule({ imports: [Hero], providers: [provideRouter([])] }).compileComponents();
+    await TestBed.configureTestingModule({ imports: [Hero], providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()] }).compileComponents();
     const fixture = TestBed.createComponent(Hero);
     fixture.detectChanges();
     const html = fixture.nativeElement as HTMLElement;

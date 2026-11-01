@@ -4,10 +4,13 @@ import { Observable, switchMap } from 'rxjs';
 import { ManagedConsultation, NewsletterCampaign, NewsletterDraft, ProposalTemplate } from './models';
 import { AdminSecurityStatus, SystemStatus, ClientSite, ClientSiteInput, FinanceEntry, FinanceEntryInput, FinanceSettings, FinanceSummary, AdminUser, Activity, Client, ClientProject, ConsultationConfirmation, ConsultationSlot, Dashboard, Envelope, Paged, Project, ProjectMilestone, ProjectMessage, ProjectDocument, ProjectCollaboration, Quote, QuotePayload, QuoteBoard, Service, SiteSettings, StudioTask, StudioClientNote, WorkspaceProject, CommunicationCenter, MaintenanceData, MaintenanceAgreement, MaintenanceEditor, Testimonial, TestimonialInput, GrowthData, NewsletterSubscriber, NewsletterCounts } from './models';
 import { AttributionService } from './attribution.service';
+import { I18nService } from '../i18n/i18n.service';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
     private http = inject(HttpClient);
     private attribution = inject(AttributionService);
+    /** Az ügyfél nyelve: ezen a nyelven kapja a visszaigazoló és a későbbi e-maileket. */
+    private i18n = inject(I18nService);
     private opts = { withCredentials: true };
     private params(data: Record<string, string | number | undefined>): HttpParams {
         let p = new HttpParams();
@@ -22,7 +25,7 @@ export class ApiService {
     publicServices() { return this.http.get<Envelope<Service[]>>('/api/services', this.opts); }
     publicProjects() { return this.http.get<Envelope<Project[]>>('/api/projects', this.opts); }
     sendQuote(data: QuotePayload) {
-        const payload: QuotePayload = { ...this.attribution.get(), ...data };
+        const payload: QuotePayload = { ...this.attribution.get(), lang: this.i18n.lang(), ...data };
         return this.csrf().pipe(switchMap(() => this.http.post<{
             message: string;
             reference: number;
@@ -39,7 +42,7 @@ export class ApiService {
     }
     availableConsultations() { return this.http.get<Envelope<ConsultationSlot[]>>('/api/consultations/available', this.opts); }
     bookConsultation(data: {consultation_slot_id: number; customer_name: string; email: string; phone: string; notes: string; privacy_notice_acknowledged: boolean; website: string; turnstile_token: string}) {
-        return this.csrf().pipe(switchMap(() => this.http.post<ConsultationConfirmation>('/api/consultations/book', data, this.opts)));
+        return this.csrf().pipe(switchMap(() => this.http.post<ConsultationConfirmation>('/api/consultations/book', { lang: this.i18n.lang(), ...data }, this.opts)));
     }
     adminConsultations() { return this.http.get<Envelope<ConsultationSlot[]>>('/api/admin/consultations', this.opts); }
     createConsultation(data: {starts_at: string; duration_minutes: number}) { return this.http.post<Envelope<ConsultationSlot>>('/api/admin/consultations', data, this.opts); }
