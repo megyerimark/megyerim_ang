@@ -4,28 +4,28 @@
       <a [routerLink]="'/' | lp">{{ 'Főoldal' | t }}</a>
       <span aria-hidden="true">/</span>
       @if (guide(); as g) {
-        <a routerLink="/utmutatok">Útmutatók</a>
+        <a [routerLink]="'/utmutatok' | lp">{{ 'Útmutatók' | t }}</a>
         <span aria-hidden="true">/</span>
         <span aria-current="page">{{ g.label }}</span>
       } @else {
-        <span aria-current="page">Útmutatók</span>
+        <span aria-current="page">{{ 'Útmutatók' | t }}</span>
       }
     </nav>
 
     @if (guide(); as g) {
-    <article class="guide-article">
+    <article class="guide-article" [attr.lang]="lang()">
       <header class="svc-hero guide-hero">
-        <span class="svc-eyebrow">Útmutató · {{ g.minutes }} perc olvasás</span>
+        <span class="svc-eyebrow">{{ 'Útmutató' | t }} · {{ g.minutes }} {{ 'perc olvasás' | t }}</span>
         <h1>{{ g.h1 }}</h1>
         <p class="svc-intro">{{ g.intro }}</p>
-        <p class="guide-meta">Megyeri Márk Máté · frissítve: <time [attr.datetime]="g.updated">{{ date(g.updated) }}</time></p>
+        <p class="guide-meta">{{ 'Megyeri Márk Máté' | t }} · {{ 'frissítve:' | t }} <time [attr.datetime]="g.updated">{{ date(g.updated) }}</time></p>
       </header>
 
-      <nav class="guide-toc" aria-label="Tartalomjegyzék">
-        <strong>Tartalom</strong>
+      <nav class="guide-toc" [attr.aria-label]="'Tartalomjegyzék' | t">
+        <strong>{{ lang() === 'en' ? 'Contents' : 'Tartalom' }}</strong>
         <ol>
           @for (s of g.sections; track $index) {<li><a [href]="'#resz-' + ($index + 1)" (click)="$event.preventDefault(); scrollTo('resz-' + ($index + 1))">{{ s.h2 }}</a></li>}
-          <li><a href="#gyik" (click)="$event.preventDefault(); scrollTo('gyik')">Gyakori kérdések</a></li>
+          <li><a href="#gyik" (click)="$event.preventDefault(); scrollTo('gyik')">{{ 'Gyakori kérdések' | t }}</a></li>
         </ol>
       </nav>
 
@@ -39,13 +39,13 @@
 
       @if (related(); as r) {
       <aside class="guide-related">
-        <span class="svc-eyebrow">Kapcsolódó szolgáltatás</span>
-        <a [routerLink]="r.path">{{ r.label }} <span aria-hidden="true">→</span></a>
+        <span class="svc-eyebrow">{{ 'Kapcsolódó szolgáltatás' | t }}</span>
+        <a [routerLink]="r.path | lp">{{ r.label }} <span aria-hidden="true">→</span></a>
       </aside>
       }
 
       <section class="svc-section" id="gyik" aria-labelledby="guide-faq">
-        <h2 id="guide-faq">Gyakori kérdések</h2>
+        <h2 id="guide-faq">{{ 'Gyakori kérdések' | t }}</h2>
         <div class="svc-faq">
           @for (item of g.faq; track $index) {
           <article>
@@ -62,44 +62,44 @@
           <p>{{ g.ctaText }}</p>
         </div>
         <div class="svc-cta-actions">
-          <a class="btn btn-primary" routerLink="/ajanlatkeres">Ajánlatot kérek <span aria-hidden="true">↗︎</span></a>
-          <a class="svc-secondary" routerLink="/konzultacio">Ingyenes konzultáció</a>
+          <a class="btn btn-primary" [routerLink]="'/ajanlatkeres' | lp">{{ 'Ajánlatot kérek' | t }} <span aria-hidden="true">↗︎</span></a>
+          <a class="svc-secondary" [routerLink]="'/konzultacio' | lp">{{ 'Ingyenes konzultáció' | t }}</a>
         </div>
       </section>
     </article>
 
-    <nav class="svc-related" aria-label="További útmutatók">
-      <h2>További útmutatók</h2>
+    <nav class="svc-related" [attr.aria-label]="'További útmutatók' | t">
+      <h2>{{ 'További útmutatók' | t }}</h2>
       <ul>
-        @for (o of others(); track o.key) {<li><a [routerLink]="o.path">{{ o.label }} <span aria-hidden="true">→</span></a></li>}
+        @for (o of others(); track o.key) {<li><a [routerLink]="o.path | lp">{{ o.label }} <span aria-hidden="true">→</span></a></li>}
       </ul>
     </nav>
     } @else {
     <header class="svc-hero">
-      <span class="svc-eyebrow">Útmutatók</span>
-      <h1>Útmutatók weboldal készítéshez</h1>
-      <p class="svc-intro">Gyakorlati, közérthető útmutatók vállalkozásoknak: mennyibe kerül egy weboldal, milyen típus kell, hogyan zajlik a készítés, és mitől lesz gyors és jól kereshető.</p>
+      <span class="svc-eyebrow">{{ 'Útmutatók' | t }}</span>
+      <h1>{{ 'Útmutatók weboldal készítéshez' | t }}</h1>
+      <p class="svc-intro">{{ 'Gyakorlati, közérthető útmutatók vállalkozásoknak: mennyibe kerül egy weboldal, milyen típus kell, hogyan zajlik a készítés, és mitől lesz gyors és jól kereshető.' | t }}</p>
     </header>
-    <section class="svc-section" aria-label="Útmutatók listája">
+    <section class="svc-section" [attr.aria-label]="'Útmutatók listája' | t">
       <div class="guide-grid">
-        @for (item of all; track item.key) {
-        <a class="guide-card" [routerLink]="item.path">
-          <span class="svc-eyebrow">{{ item.minutes }} perc olvasás</span>
+        @for (item of all(); track item.key) {
+        <a class="guide-card" [routerLink]="item.path | lp">
+          <span class="svc-eyebrow">{{ item.minutes }} {{ 'perc olvasás' | t }}</span>
           <h2>{{ item.h1 }}</h2>
           <p>{{ item.seoDescription }}</p>
-          <span class="guide-more">Elolvasom <span aria-hidden="true">→</span></span>
+          <span class="guide-more">{{ 'Elolvasom' | t }} <span aria-hidden="true">→</span></span>
         </a>
         }
       </div>
     </section>
     <section class="svc-cta" aria-labelledby="guides-cta">
       <div>
-        <h2 id="guides-cta">Inkább átbeszélnéd?</h2>
-        <p>Foglalj egy ingyenes konzultációt, vagy töltsd ki a 2 perces igényfelmérőt – személyre szabott javaslatot kapsz.</p>
+        <h2 id="guides-cta">{{ 'Inkább átbeszélnéd?' | t }}</h2>
+        <p>{{ 'Foglalj egy ingyenes konzultációt, vagy töltsd ki a 2 perces igényfelmérőt – személyre szabott javaslatot kapsz.' | t }}</p>
       </div>
       <div class="svc-cta-actions">
-        <a class="btn btn-primary" routerLink="/konzultacio">Konzultációt foglalok <span aria-hidden="true">↗︎</span></a>
-        <a class="svc-secondary" routerLink="/projekt-kviz">2 perces igényfelmérő</a>
+        <a class="btn btn-primary" [routerLink]="'/konzultacio' | lp">{{ 'Konzultációt foglalok' | t }} <span aria-hidden="true">↗︎</span></a>
+        <a class="svc-secondary" [routerLink]="'/projekt-kviz' | lp">{{ '2 perces igényfelmérő' | t }}</a>
       </div>
     </section>
     }
@@ -107,7 +107,7 @@
 
   <footer class="svc-footer">
     <div class="svc-container svc-footer-inner">
-      <span>© Megyeri Márk Máté</span>
+      <span>© {{ 'Megyeri Márk Máté' | t }}</span>
       <span class="svc-footer-links">
         <a [routerLink]="'/adatkezeles' | lp">{{ 'Adatkezelési tájékoztató' | t }}</a>
         <a [routerLink]="'/aszf' | lp">{{ 'ÁSZF' | t }}</a>

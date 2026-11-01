@@ -21,7 +21,7 @@ export interface PageRoute {
 export const SERVICE_KEYS = ['web', 'landing', 'shop', 'app', 'care'] as const;
 export type ServiceKey = (typeof SERVICE_KEYS)[number];
 
-/** Útmutató cikkek (csak magyarul). Az URL-jük: /utmutatok/<slug>. */
+/** Útmutató cikkek. Az URL-jük: /utmutatok/<slug> és /en/guides/<angol slug>. */
 export const GUIDE_KEYS = ['price', 'landing-vs-business', 'steps', 'speed-seo'] as const;
 export type GuideKey = (typeof GUIDE_KEYS)[number];
 export const GUIDE_SLUGS: Record<GuideKey, string> = {
@@ -29,6 +29,12 @@ export const GUIDE_SLUGS: Record<GuideKey, string> = {
     'landing-vs-business': 'landing-oldal-vagy-ceges-weboldal',
     steps: 'weboldal-keszites-lepesei',
     'speed-seo': 'gyors-es-keresobarat-weboldal',
+};
+export const GUIDE_SLUGS_EN: Record<GuideKey, string> = {
+    price: 'how-much-does-a-website-cost',
+    'landing-vs-business': 'landing-page-vs-business-website',
+    steps: 'website-development-steps',
+    'speed-seo': 'fast-seo-friendly-website',
 };
 
 export const PUBLIC_PAGES: PageRoute[] = [
@@ -45,8 +51,8 @@ export const PUBLIC_PAGES: PageRoute[] = [
     { key: 'privacy', hu: '/adatkezeles', en: '/en/privacy-policy' },
     { key: 'imprint', hu: '/impresszum', en: '/en/legal-notice' },
     { key: 'terms', hu: '/aszf', en: '/en/terms' },
-    { key: 'guides', hu: '/utmutatok', en: null },
-    ...GUIDE_KEYS.map(key => ({ key: 'guide:' + key, hu: '/utmutatok/' + GUIDE_SLUGS[key], en: null })),
+    { key: 'guides', hu: '/utmutatok', en: '/en/guides' },
+    ...GUIDE_KEYS.map(key => ({ key: 'guide:' + key, hu: '/utmutatok/' + GUIDE_SLUGS[key], en: '/en/guides/' + GUIDE_SLUGS_EN[key] })),
 ];
 
 /** Referenciaoldalak előtagja nyelvenként: /munkak/:slug ↔ /en/work/:slug */

@@ -1,7 +1,7 @@
 import { Route, Routes } from '@angular/router';
 import { adminGuard } from './core/admin.guard';
 import { Home } from './pages/home/home';
-import { GUIDE_KEYS, GUIDE_SLUGS, PUBLIC_PAGES, SERVICE_KEYS } from './core/site-routes';
+import { GUIDE_KEYS, GUIDE_SLUGS, GUIDE_SLUGS_EN, PUBLIC_PAGES, SERVICE_KEYS } from './core/site-routes';
 
 /**
  * A nyilvános oldalak magyarul a gyökérben, angolul az /en/ alatt érhetők el (a címpárok: core/site-routes.ts).
@@ -18,11 +18,15 @@ const loadTerms = () => import('./pages/terms/terms').then(module => module.Term
 const loadService = () => import('./pages/service/service-page').then(module => module.ServicePage);
 const loadGuide = () => import('./pages/guide/guide-page').then(module => module.GuidePage);
 
-/** Útmutatók (csak magyarul): gyűjtőoldal + cikkek. */
-const guideRoutes: Route[] = [
-    { path: 'utmutatok', loadComponent: loadGuide, data: { guide: null } },
-    ...GUIDE_KEYS.map(key => ({ path: 'utmutatok/' + GUIDE_SLUGS[key], loadComponent: loadGuide, data: { guide: key } })),
-];
+/** Útmutatók: gyűjtőoldal + cikkek, magyarul (/utmutatok/…) és angolul (/en/guides/…). */
+const guideRoutes = (lang: 'hu' | 'en'): Route[] => {
+    const base = lang === 'hu' ? 'utmutatok' : 'guides';
+    const slugs = lang === 'hu' ? GUIDE_SLUGS : GUIDE_SLUGS_EN;
+    return [
+        { path: base, loadComponent: loadGuide, data: { guide: null } },
+        ...GUIDE_KEYS.map(key => ({ path: base + '/' + slugs[key], loadComponent: loadGuide, data: { guide: key } })),
+    ];
+};
 
 /** A szolgáltatási céloldalak útvonalai a site-routes.ts címpárjaiból (egy helyen kell őket karbantartani). */
 const serviceRoutes = (lang: 'hu' | 'en'): Route[] => SERVICE_KEYS.map(key => {
@@ -34,6 +38,7 @@ const serviceRoutes = (lang: 'hu' | 'en'): Route[] => SERVICE_KEYS.map(key => {
 const englishRoutes: Routes = [
     { path: '', component: Home, title: 'Ne csak jelen legyél online. Emelkedj ki. | Megyeri Márk Máté' },
     ...serviceRoutes('en'),
+    ...guideRoutes('en'),
     { path: 'website-planner', loadComponent: loadStudio, title: 'Interaktív weboldaltervező | Megyeri Márk Máté' },
     { path: 'request-a-quote', loadComponent: loadQuote, title: 'Ajánlatkérés | Megyeri Márk Máté' },
     { path: 'project-quiz', loadComponent: loadQuiz, title: '2 perces weboldal igényfelmérő | Megyeri Márk Máté' },
@@ -53,7 +58,7 @@ export const routes: Routes = [
     },
     { path: 'en', children: englishRoutes },
     ...serviceRoutes('hu'),
-    ...guideRoutes,
+    ...guideRoutes('hu'),
     { path: 'tervezo', loadComponent: loadStudio, title: 'Interaktív weboldaltervező | Megyeri Márk Máté' },
     { path: 'ajanlatkeres', loadComponent: loadQuote, title: 'Ajánlatkérés | Megyeri Márk Máté' },
     { path: 'projekt-kviz', loadComponent: loadQuiz, title: '2 perces weboldal igényfelmérő | Megyeri Márk Máté' },
