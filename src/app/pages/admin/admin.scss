@@ -1181,3 +1181,10 @@ td small {
 .season-actions{display:flex;gap:8px;flex-wrap:wrap}.btn-sm{padding:6px 12px;font-size:12px}
 .theme-preview-note{margin:4px 0 0;font-size:13px;color:var(--muted)}
 .link-btn{background:none;border:0;padding:0;color:var(--accent);font:inherit;text-decoration:underline;cursor:pointer}
+
+/* ajánlatsablonok */
+.proposal-templates{display:grid;gap:8px;margin:0 0 18px;padding:14px 16px;border:1px dashed rgba(66,99,255,.45);border-radius:14px;background:rgba(66,99,255,.06)}
+.proposal-templates label{font-size:12px;font-weight:700}
+.proposal-templates-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.proposal-templates-row select{flex:1;min-width:200px}
+.proposal-templates .muted{margin:0;font-size:11px}

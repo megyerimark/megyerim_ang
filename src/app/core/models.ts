@@ -499,3 +499,5 @@ export interface ManagedConsultation {
 
 export interface NewsletterDraft { subject: string; body: string; audience: 'all' | 'hu' | 'en'; button_text: string | null; button_url: string | null; }
 export interface NewsletterCampaign { id: number; subject: string; audience: string; recipients: number; sent_count: number; failed_count: number; sent_at: string | null; }
+
+export interface ProposalTemplate { id: number; name: string; website_type: string | null; price_huf: number | null; deposit_percent: number | null; summary: string; schedule: string | null; terms: string | null; valid_days: number; }

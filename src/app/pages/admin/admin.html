@@ -830,6 +830,21 @@
               }
             </select>
           </div>
+          @if(!q.quoted_at){
+          <div class="proposal-templates" role="group" aria-label="Ajánlatsablonok">
+            <label for="admin-template">Ajánlatsablon</label>
+            <div class="proposal-templates-row">
+              <select id="admin-template" class="input" [(ngModel)]="templateId">
+                <option [ngValue]="null">{{ proposalTemplates().length ? 'Válassz sablont…' : 'Még nincs sablon' }}</option>
+                @for(t of proposalTemplates(); track t.id){<option [ngValue]="t.id">{{t.name}}@if(t.price_huf!==null){ · {{money(t.price_huf)}}}</option>}
+              </select>
+              <button type="button" class="btn btn-outline btn-sm" [disabled]="!templateId" (click)="applyTemplate(q)">Betöltés</button>
+              <button type="button" class="btn btn-outline btn-sm" [disabled]="busy() || selectedProposal.trim().length < 10" (click)="saveAsTemplate(q)">Mentés sablonként</button>
+              @if(templateId){<button type="button" class="danger-text" (click)="deleteTemplate()">Sablon törlése</button>}
+            </div>
+            <p class="muted">A betöltés kitölti az árat, az előleget, a tartalmat, az ütemezést, a feltételeket és az érvényességet. A szövegben a {{'{'}}név{{'}'}} és {{'{'}}cég{{'}'}} helyére az ügyfél adatai kerülnek.</p>
+          </div>
+          }
           <div class="form-field">
             <label for="admin-price">
               Ajánlati összeg (Ft)

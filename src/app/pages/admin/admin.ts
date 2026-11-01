@@ -1,3 +1,4 @@
+import { ProposalTemplate } from '../../core/models';
 import { Component, HostListener, inject, OnDestroy, OnInit, signal, computed } from '@angular/core';
 import { I18nService } from '../../i18n/i18n.service';
 import { FormsModule } from '@angular/forms';
@@ -135,6 +136,8 @@ export class AdminPage implements OnInit, OnDestroy {
     consultations = signal<ConsultationSlot[]>([]);
     slotStart = '';
     slotDuration = 30;
+    readonly proposalTemplates = signal<ProposalTemplate[]>([]);
+    templateId: number | null = null;
     meetingUrl = '';
     clients = signal<Client[]>([]);
     clientsPage = signal(1);
@@ -403,7 +406,44 @@ export class AdminPage implements OnInit, OnDestroy {
         });
     }
     loadQuotes(page = 1) { this.busy.set(true); this.api.quotes(this.searchQuote, this.filterStatus, page).subscribe({ next: r => { this.quotes.set(r.data); this.quotePage.set(r.current_page); this.quotePages.set(r.last_page); this.quoteTotal.set(r.total); this.busy.set(false); }, error: e => this.fail(e) }); }
-    showQuote(q: Quote) { this.selectedQuote.set(q); this.selectedStatus = q.status; this.selectedNotes = q.admin_notes || ''; this.selectedPrice = q.quoted_price_huf === null ? '' : String(q.quoted_price_huf); this.selectedListPrice = q.list_price_huf ? String(q.list_price_huf) : ''; this.selectedDeposit = q.deposit_percent ?? (q.quoted_at ? '' : (this.depositMin() || '')); this.selectedProposal = q.proposal_summary || ''; this.selectedSchedule = q.proposal_schedule || ''; this.selectedTerms = q.proposal_terms || ''; this.selectedValidUntil = q.proposal_valid_until ? q.proposal_valid_until.slice(0, 10) : ''; this.selectedFollowUp = q.follow_up_at ? q.follow_up_at.slice(0, 10) : ''; this.loadMilestones(q.id); this.loadCollaboration(q.id); }
+    showQuote(q: Quote) { this.selectedQuote.set(q); this.selectedStatus = q.status; this.selectedNotes = q.admin_notes || ''; this.selectedPrice = q.quoted_price_huf === null ? '' : String(q.quoted_price_huf); this.selectedListPrice = q.list_price_huf ? String(q.list_price_huf) : ''; this.selectedDeposit = q.deposit_percent ?? (q.quoted_at ? '' : (this.depositMin() || '')); this.selectedProposal = q.proposal_summary || ''; this.selectedSchedule = q.proposal_schedule || ''; this.selectedTerms = q.proposal_terms || ''; this.selectedValidUntil = q.proposal_valid_until ? q.proposal_valid_until.slice(0, 10) : ''; this.selectedFollowUp = q.follow_up_at ? q.follow_up_at.slice(0, 10) : ''; this.loadMilestones(q.id); this.loadCollaboration(q.id); if (!this.proposalTemplates().length) this.loadTemplates(); }
+    loadTemplates() { this.api.proposalTemplates().subscribe({ next: r => this.proposalTemplates.set(r.data), error: () => {} }); }
+    /** Sablon betöltése az ajánlatszerkesztőbe ({név}, {cég} helyettesítéssel). */
+    applyTemplate(q: Quote) {
+        const t = this.proposalTemplates().find(x => x.id === this.templateId);
+        if (!t) return;
+        const fill = (text: string | null) => (text ?? '').replace(/\{név\}/g, q.customer_name).replace(/\{cég\}/g, q.company_name || q.customer_name);
+        if (t.price_huf !== null) {
+            if (q.promo_percent) { this.selectedListPrice = String(t.price_huf); const pp = this.promoPrice(q); if (pp !== null) this.selectedPrice = String(pp); }
+            else this.selectedPrice = String(t.price_huf);
+        }
+        if (t.deposit_percent !== null) this.selectedDeposit = Math.max(t.deposit_percent, Number(this.depositMin()) || 0);
+        this.selectedProposal = fill(t.summary);
+        this.selectedSchedule = fill(t.schedule);
+        this.selectedTerms = fill(t.terms);
+        const d = new Date(); d.setDate(d.getDate() + (t.valid_days || 14));
+        this.selectedValidUntil = d.toISOString().slice(0, 10);
+        this.notify(`„${t.name}” betöltve – ellenőrizd, majd mentsd az ajánlatot.`);
+    }
+    saveAsTemplate(q: Quote) {
+        const name = prompt('A sablon neve (pl. „Céges weboldal – alap”):', '');
+        if (!name || name.trim().length < 2) return;
+        const price = q.promo_percent && this.selectedListPrice.trim() ? Number(this.selectedListPrice.replace(/\s/g, '')) : (this.selectedPrice.trim() ? Number(this.selectedPrice.replace(/\s/g, '')) : null);
+        const valid = this.selectedValidUntil ? Math.max(1, Math.round((new Date(this.selectedValidUntil).getTime() - Date.now()) / 86400000)) : 14;
+        const unfill = (text: string) => text.split(q.customer_name).join('{név}');
+        this.busy.set(true);
+        this.api.createProposalTemplate({
+            name: name.trim(), website_type: q.website_type || null, price_huf: Number.isInteger(price) ? price : null,
+            deposit_percent: this.selectedDeposit === '' || this.selectedDeposit === null ? null : Number(this.selectedDeposit),
+            summary: unfill(this.selectedProposal), schedule: this.selectedSchedule ? unfill(this.selectedSchedule) : null,
+            terms: this.selectedTerms ? unfill(this.selectedTerms) : null, valid_days: Math.min(120, valid),
+        }).subscribe({ next: r => { this.busy.set(false); this.loadTemplates(); this.templateId = r.data.id; this.notify('Sablon mentve.'); }, error: e => this.fail(e) });
+    }
+    deleteTemplate() {
+        const t = this.proposalTemplates().find(x => x.id === this.templateId);
+        if (!t || !confirm(`Törlöd a(z) „${t.name}” sablont?`)) return;
+        this.api.deleteProposalTemplate(t.id).subscribe({ next: () => { this.templateId = null; this.loadTemplates(); this.notify('Sablon törölve.'); }, error: e => this.fail(e) });
+    }
     saveQuote() {
         const q = this.selectedQuote();
         if (!q)
