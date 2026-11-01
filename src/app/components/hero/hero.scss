@@ -20,7 +20,10 @@
 .pillar::after{content:'';position:absolute;left:50%;top:0;width:2px;height:100%;margin-left:-1px;background:linear-gradient(180deg,transparent,rgba(210,230,255,.9));opacity:.8}
 .fpanel,.ffinale{position:absolute;left:0;top:0;visibility:hidden;opacity:0;will-change:transform,opacity;backface-visibility:hidden}
 .fpanel{width:min(520px,38vw);border-radius:22px;padding:14px;background:var(--glass);border:1px solid var(--glass-line);box-shadow:0 40px 100px rgba(0,0,0,.45),inset 0 1px rgba(255,255,255,.08)}
-.fpanel-img{aspect-ratio:16/10;border-radius:14px;background:#0b1224 center/cover no-repeat}
+.fpanel-img{position:relative;overflow:hidden;aspect-ratio:16/10;border-radius:14px;background:#0b1224 center/cover no-repeat}
+/* a valós fotók kék tónust kapnak, hogy egységesek legyenek a jelenettel; alul enyhe sötétítés a szöveg felé */
+.fpanel-img::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(46,86,255,.16) 0%,rgba(5,8,15,0) 45%,rgba(5,8,15,.55) 100%);mix-blend-mode:normal}
+.fpanel-img::before{content:'';position:absolute;inset:0;background:#1d3cff;mix-blend-mode:color;opacity:.22}
 .fpanel-meta{padding:18px 10px 8px}
 .fpanel-meta small{font:700 11px/1 'Manrope',sans-serif;letter-spacing:.24em;color:#4263ff}
 .fpanel-meta small{color:#8fb0ff}
