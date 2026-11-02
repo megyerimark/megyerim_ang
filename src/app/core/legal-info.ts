@@ -35,7 +35,7 @@ export const LEGAL_INFO: LegalInfo = {
   email: "megyerimarkmate@megyerimarkmate.hu",
   phone: "+36 (30) 7140806",
   taxNumber: "68419752-1-25",
-  registrationNumber: "XXXX",
+  registrationNumber: "",
   registry: "",
   chamber: "",
   hosting: { name: "Rackhost Zrt.", address: "6722 Szeged, Tisza Lajos körút 41.", email: "info@rackhost.hu"
