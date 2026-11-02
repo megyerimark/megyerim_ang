@@ -116,3 +116,18 @@ test('mobil: a görgetés után megjelenő gyors ajánlatkérés sáv a hívás 
     const colors = await call.evaluate(el => { const s = getComputedStyle(el); return [s.color, s.backgroundColor]; });
     expect(colors[0]).not.toBe(colors[1]);
 });
+
+test('kikapcsolt animációknál (Windows „animációs effektusok: ki”) a főcím van elöl, a kártyák utána', async ({ browser }) => {
+    const context = await browser.newContext({ reducedMotion: 'reduce', viewport: { width: 1280, height: 720 } });
+    const page = await context.newPage();
+    await mockApi(page);
+    await page.goto('/');
+    const title = await page.locator('#hero-title').boundingBox();
+    const firstCard = await page.locator('.fpanel').first().boundingBox();
+    const rock = await page.locator('.flight-core').boundingBox();
+    expect(title && firstCard && rock).toBeTruthy();
+    expect(title!.y).toBeLessThan(firstCard!.y);
+    // a kristályszikla a nyitóképen marad, nem lóg rá a kártyákra
+    expect(rock!.y + rock!.height).toBeLessThan(firstCard!.y);
+    await context.close();
+});
