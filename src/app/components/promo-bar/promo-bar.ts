@@ -28,14 +28,15 @@ const DISMISS_KEY = 'mm-promo-bar-dismissed';
     }`,
     styles: [`
       .promo-bar{position:relative;z-index:121;display:flex;align-items:center;justify-content:center;min-height:40px;padding:0 44px;
-        background:linear-gradient(100deg,var(--k-2b1f63),var(--k-1b2c5e) 55%,var(--k-123a52));border-bottom:1px solid #ffffff1f;color:var(--k-eef0ff)}
+        /* fix (palettától független) sötétkék sáv: világos módban a palettaváltozók kifehérednének, és a sáv eltűnne */
+        background:linear-gradient(100deg,#192760,#182c60 55%,#003d4d);border-bottom:1px solid #ffffff1f;color:#eef1f7}
       .promo-bar-link{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 12px;padding:9px 0;color:inherit;text-decoration:none;font-size:13px;line-height:1.3;text-align:center}
-      .promo-bar-pct{font:700 15px/1 'Space Grotesk',system-ui,sans-serif;color:var(--k-d8c9ff)}
+      .promo-bar-pct{font:700 15px/1 'Space Grotesk',system-ui,sans-serif;color:#9bb7ff}
       .promo-bar-text{font-weight:600}
-      .promo-bar-time{color:var(--k-a9e9f5)}
+      .promo-bar-time{color:#97ecfe}
       .promo-bar-cta{text-decoration:underline;text-underline-offset:3px}
       .promo-bar-link:hover .promo-bar-cta{color:#fff}
-      .promo-bar-close{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:32px;height:32px;border:0;border-radius:50%;background:transparent;color:var(--k-cfd3f3);font-size:20px;cursor:pointer}
+      .promo-bar-close{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:32px;height:32px;border:0;border-radius:50%;background:transparent;color:#c9d5f5;font-size:20px;cursor:pointer}
       .promo-bar-close:hover{background:#ffffff1a;color:#fff}
       @media (max-width:560px){.promo-bar{padding:0 38px 0 12px}.promo-bar-link{font-size:12px;gap:2px 8px}.promo-bar-time{display:none}}
     `]

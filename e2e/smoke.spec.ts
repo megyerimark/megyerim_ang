@@ -131,3 +131,17 @@ test('kikapcsolt animációknál (Windows „animációs effektusok: ki”) a f�
     expect(rock!.y + rock!.height).toBeLessThan(firstCard!.y);
     await context.close();
 });
+
+test('akciós sáv: világos módban is jól olvasható', async ({ page }) => {
+    await mockApi(page, { promo: { percent: 15, title: 'Őszi akció' } });
+    await page.addInitScript(() => { try { localStorage.setItem('mm-theme', 'light'); } catch { /* */ } });
+    await page.goto('/');
+    await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'light'));
+    const bar = page.locator('.promo-bar');
+    await expect(bar).toBeVisible();
+    await expect(bar).toContainText('−15%');
+    // sötét háttér, világos szöveg – a palettától függetlenül (korábban világos módban kifehéredett)
+    const [text, bg] = await bar.evaluate(el => { const s = getComputedStyle(el); return [s.color, s.backgroundImage]; });
+    expect(bg).toContain('rgb(25, 39, 96)');
+    expect(text).toBe('rgb(238, 241, 247)');
+});

@@ -5,7 +5,7 @@ export interface ApiLog { quotes: Record<string, unknown>[]; bookings: Record<st
 
 export const SLOT_START = '2030-03-14T09:30:00Z';
 
-export async function mockApi(page: Page, options: { phone?: string } = {}): Promise<ApiLog> {
+export async function mockApi(page: Page, options: { phone?: string; promo?: { percent: number; title: string } } = {}): Promise<ApiLog> {
     const log: ApiLog = { quotes: [], bookings: [], events: [] };
     const json = (status: number, body: unknown) => ({ status, contentType: 'application/json', body: JSON.stringify(body) });
     const body = (req: Request) => (req.postDataJSON() ?? {}) as Record<string, unknown>;
@@ -17,7 +17,7 @@ export async function mockApi(page: Page, options: { phone?: string } = {}): Pro
         const req = route.request();
         const path = new URL(req.url()).pathname;
         if (path === '/sanctum/csrf-cookie') return route.fulfill({ status: 204 });
-        if (path === '/api/site-settings') return route.fulfill(json(200, { data: { site_palette: 'cobalt', promo: { active: false, percent: 0 }, contact_phone: options.phone ?? null, phone: options.phone ?? null } }));
+        if (path === '/api/site-settings') return route.fulfill(json(200, { data: { site_palette: 'cobalt', promo: options.promo ? { active: true, percent: options.promo.percent, title: options.promo.title, ends_at: null } : { active: false, percent: 0 }, contact_phone: options.phone ?? null, phone: options.phone ?? null } }));
         if (path === '/api/consultations/available') return route.fulfill(json(200, { data: [{ id: 7, starts_at: SLOT_START, duration_minutes: 30 }] }));
         if (path === '/api/consultations/book' && req.method() === 'POST') {
             log.bookings.push(body(req));
