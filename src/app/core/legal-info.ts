@@ -34,10 +34,10 @@ export const LEGAL_INFO: LegalInfo = {
   address: "5747 Almáskamarás Dózsa György utca 51",
   email: "megyerimarkmate@megyerimarkmate.hu",
   phone: "+36 (30) 7140806",
-  taxNumber: "XXXXXX",
+  taxNumber: "68419752-1-25",
   registrationNumber: "XXXX",
-  registry: "XXX",
-  chamber: "XXX",
+  registry: "",
+  chamber: "",
   hosting: { name: "Rackhost Zrt.", address: "6722 Szeged, Tisza Lajos körút 41.", email: "info@rackhost.hu"
 , website: "www.rackhost.hu" },
   emailProvider: "megyerimarkmate@megyerimarkmate.hu",
