@@ -145,3 +145,19 @@ test('akciós sáv: világos módban is jól olvasható', async ({ page }) => {
     expect(bg).toContain('rgb(25, 39, 96)');
     expect(text).toBe('rgb(238, 241, 247)');
 });
+
+test('angol ajánlatkérő: a funkciók, a költségkeret és a mezőszövegek is angolul', async ({ page }) => {
+    await mockApi(page);
+    await page.goto('/en/request-a-quote');
+    await page.locator('.type-card').first().click();
+    await page.getByRole('button', { name: /Continue/ }).click();
+    await page.locator('.style-card').first().click();
+    await page.getByRole('button', { name: /Continue/ }).click();
+    await expect(page.locator('.feature-grid')).toContainText('Contact form');
+    await expect(page.locator('.feature-grid')).not.toContainText('Kapcsolatfelvételi');
+    await expect(page.locator('#inspirations')).toHaveAttribute('placeholder', /example\.com/);
+    await page.locator('#project-description').fill('A company website with booking.');
+    await page.getByRole('button', { name: /Continue/ }).click();
+    await expect(page.locator('#budget option').first()).toHaveText(/Not sure yet/);
+    await expect(page.locator('#budget')).not.toContainText('ezer Ft');
+});
