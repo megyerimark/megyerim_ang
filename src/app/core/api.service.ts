@@ -35,7 +35,7 @@ export class ApiService {
     }
     publicTestimonials() { return this.http.get<Envelope<Testimonial[]>>('/api/testimonials', this.opts); }
     /** Anonim eseményszámlálás: IP-t, sütit nem tárol; hiba esetén csendben elbukik. */
-    trackEvent(event: 'page_view' | 'cta_click' | 'quote_start' | 'quiz_start' | 'consultation_start', path: string): void {
+    trackEvent(event: 'page_view' | 'cta_click' | 'quote_start' | 'quiz_start' | 'consultation_start' | 'phone_click' | 'email_click', path: string): void {
         if (!this.attribution.tracking) return;
         const source = this.attribution.get().source;
         this.http.post('/api/events', { event, path: path.split(/[?#]/)[0].slice(0, 160), ...(source ? { source } : {}) }, this.opts).subscribe({ error: () => { /* nem kritikus */ } });

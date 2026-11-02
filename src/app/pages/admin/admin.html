@@ -388,6 +388,7 @@
       <div><small>Látogató (főoldal)</small><strong>{{g.funnel.visits}}</strong></div>
       <div><small>Megkeresés</small><strong>{{g.funnel.submissions}}</strong></div>
       <div><small>Látogatóból megkeresés</small><strong>{{g.funnel.visit_to_lead_percent === null ? '—' : g.funnel.visit_to_lead_percent + '%'}}</strong></div>
+      <div><small>Telefon / e-mail kattintás</small><strong>{{g.funnel.phone_clicks ?? 0}} / {{g.funnel.email_clicks ?? 0}}</strong></div>
       <div><small>Átlagos válaszidő</small><strong>{{hours(g.response.average_hours)}}</strong></div>
       <div><small>Nyerési arány</small><strong>{{g.revenue.win_rate_percent === null ? '—' : g.revenue.win_rate_percent + '%'}}</strong></div>
       <div><small>Függő ajánlatok értéke</small><strong>{{money(g.revenue.pipeline_value_huf)}}</strong></div>

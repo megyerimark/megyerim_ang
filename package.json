@@ -12,7 +12,8 @@
     "palettes": "node scripts/build-palettes.mjs",
     "palettes:photos": "node scripts/build-palette-photos.mjs && node scripts/build-palettes.mjs",
     "seasonal-art": "node scripts/build-seasonal-art.mjs",
-    "prerender": "node scripts/prerender.mjs"
+    "prerender": "node scripts/prerender.mjs",
+    "e2e": "playwright test -c e2e/playwright.config.ts"
   },
   "prettier": {
     "printWidth": 100,
@@ -43,6 +44,7 @@
     "@angular/build": "^20.3.10",
     "@angular/cli": "^20.3.10",
     "@angular/compiler-cli": "^20.3.0",
+    "@playwright/test": "^1.63.0",
     "@types/jasmine": "~5.1.0",
     "jasmine-core": "~5.9.0",
     "karma": "~6.4.0",

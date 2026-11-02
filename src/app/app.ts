@@ -55,11 +55,19 @@ export class App {
         const cta = window.scrollY > 700 && this.ctaRoute; if (cta !== this.showMobileCta()) this.showMobileCta.set(cta);
     }
     private ctaRoute = false;
-    /** Ajánlatkérésre mutató linkek kattintásainak anonim számlálása (főleg a hero, a navigáció és a lábléc). */
+    /**
+     * Anonim kattintásszámlálás: ajánlatkérésre mutató linkek (hero, navigáció, lábléc), valamint
+     * telefonszám- és e-mail-linkek (tel:, mailto:) – az admin és az ügyfélportál kattintásai nélkül.
+     */
     @HostListener('document:click', ['$event'])
     onDocumentClick(event: MouseEvent): void {
         const link = (event.target as Element | null)?.closest?.('a[href]');
         if (!link) return;
+        const raw = (link.getAttribute('href') ?? '').trim().toLowerCase();
+        if (raw.startsWith('tel:') || raw.startsWith('mailto:')) {
+            if (!/^\/(admin|ugyfel)/.test(this.router.url)) this.api.trackEvent(raw.startsWith('tel:') ? 'phone_click' : 'email_click', this.router.url);
+            return;
+        }
         const href = toHuPath(link.getAttribute('href') ?? '');
         if (href.startsWith('/ajanlatkeres') || href.startsWith('/projekt-kviz') || href.startsWith('/konzultacio')) this.api.trackEvent('cta_click', this.router.url);
     }
