@@ -15,11 +15,11 @@ export interface LegalInfo {
   /** Adószám, pl. 12345678-1-23 */
   taxNumber: string | null;
   /** Egyéni vállalkozói nyilvántartási szám VAGY cégjegyzékszám */
-  registrationNumber: string | null;
+ // registrationNumber: string | null;
   /** Nyilvántartást vezető szerv, pl. „Belügyminisztérium (EVNY)” vagy „Fővárosi Törvényszék Cégbírósága” */
-  registry: string | null;
+ // registry: string | null;
   /** Kamarai tagság (ha van), pl. „Budapesti Kereskedelmi és Iparkamara” */
-  chamber: string | null;
+  //chamber: string | null;
   hosting: { name: string | null; address: string | null; email: string | null; website: string | null };
   /** Az e-mailek kiküldéséhez használt szolgáltató (SMTP), ha eltér a tárhelytől */
   emailProvider: string | null;
@@ -35,9 +35,9 @@ export const LEGAL_INFO: LegalInfo = {
   email: "megyerimarkmate@megyerimarkmate.hu",
   phone: "+36 (30) 7140806",
   taxNumber: "68419752-1-25",
-  registrationNumber: "",
-  registry: "",
-  chamber: "",
+  //registrationNumber: "11111111",
+  //registry: "111111",
+  //chamber: "22", 
   hosting: { name: "Rackhost Zrt.", address: "6722 Szeged, Tisza Lajos körút 41.", email: "info@rackhost.hu"
 , website: "www.rackhost.hu" },
   emailProvider: "megyerimarkmate@megyerimarkmate.hu",
