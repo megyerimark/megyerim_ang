@@ -156,7 +156,7 @@
               <span>
                 {{data.features.includes(f)?'✓':'+'}}
               </span>
-              {{f}}
+              {{ f | t }}
             </button>
             }
           </div>
@@ -245,7 +245,7 @@
               <select class="input" id="budget" [(ngModel)]="data.budget_range">
                 @for(b of budgets;track b.v){
                 <option [value]="b.v">
-                  {{b.l}}
+                  {{ b.l | t }}
                 </option>
                 }
               </select>

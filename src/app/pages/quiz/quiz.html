@@ -26,7 +26,7 @@
             <span class="quiz-step-eyebrow">{{ question.eyebrow | t }}</span>
             <h2 id="quiz-question-title">{{ question.title | t }}</h2>
             <p class="quiz-hint">{{ question.hint | t }}</p>
-            <div class="quiz-options" role="group" [attr.aria-label]="question.title">
+            <div class="quiz-options" role="group" [attr.aria-label]="question.title | t">
               @for(option of question.options;track option.value){
                 <button class="quiz-option" type="button" [class.selected]="answers()[question.key]===option.value" [attr.aria-pressed]="answers()[question.key]===option.value" (click)="choose(question.key,option.value)">
                   <span class="quiz-option-icon" aria-hidden="true">{{option.icon}}</span>

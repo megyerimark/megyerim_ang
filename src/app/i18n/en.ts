@@ -851,6 +851,7 @@ export const EN: Record<string, string> = {
   "Útmutatók weboldal készítéshez": "Website guides",
   "Gyakorlati, közérthető útmutatók vállalkozásoknak: mennyibe kerül egy weboldal, milyen típus kell, hogyan zajlik a készítés, és mitől lesz gyors és jól kereshető.": "Practical, plain-language guides for businesses: how much a website costs, which type you need, how the build works, and what makes a site fast and easy to find.",
   "Útmutató": "Guide",
+  "https://pelda.hu (soronként egy link)": "https://example.com (one link per line)",
   "perc olvasás": "min read",
   "frissítve:": "updated:",
   "Tartalomjegyzék": "Table of contents",
