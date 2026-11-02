@@ -101,17 +101,19 @@
 }
 @media(max-width:380px){.hero-btn--ghost{display:none}}
 
-/* csökkentett mozgás: nincs rögzítés és repülés, a panelek egymás alatt */
+/* Csökkentett mozgás (pl. Windowsban kikapcsolt animációk, sok céges laptopon): nincs rögzítés és repülés.
+   Sorrend: nyitókép (főcím + kristályszikla) → „Így kel életre egy weboldal” cím → a négy lépés kártyái. */
 :host(.flat) .flight{height:auto}
-:host(.flat) .flight-pin{position:relative;height:auto;min-height:0;overflow:visible;padding-bottom:60px}
-:host(.flat) .hero-grid{position:relative;inset:auto;min-height:100svh}
+:host(.flat) .flight-pin{position:relative;height:auto;min-height:0;overflow:visible;padding-bottom:clamp(48px,7vw,96px);display:flex;flex-direction:column}
+:host(.flat) .hero-grid{position:relative;inset:auto;min-height:min(100svh,920px);order:1}
 :host(.flat) .flight-fx,:host(.flat) .pillar,:host(.flat) .flight-hud,:host(.flat) .flight-hint{display:none}
-:host(.flat) .flight-core{animation:none;top:50svh;left:72%;--R:min(17vw,190px)}
-@media(max-width:760px){:host(.flat) .flight-core{top:auto;bottom:auto;position:relative;left:50%;margin:-40px 0 20px;translate:0 50%;--R:30vw}}
-:host(.flat) .flight-space{position:relative;inset:auto;perspective:none;overflow:visible;pointer-events:auto}
-:host(.flat) .flight-world{position:static;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:20px;padding:0 clamp(20px,4.6vw,88px)}
+:host(.flat) .flight-core{animation:none;top:min(50svh,460px);left:72%;--R:min(17vw,190px);order:2}
+@media(max-width:760px){:host(.flat) .hero-grid{min-height:0;padding-bottom:8px}:host(.flat) .flight-core{top:auto;bottom:auto;left:auto;position:relative;align-self:center;margin:8px 0 0;translate:none;transform:none;--R:30vw}}
+:host(.flat) .flight-space{position:relative;inset:auto;perspective:none;overflow:visible;pointer-events:auto;order:3;padding-top:clamp(24px,5vw,72px)}
+:host(.flat) .flight-world{position:static;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:20px;padding:0 clamp(20px,4.6vw,88px);max-width:1320px;margin:0 auto;width:100%;box-sizing:border-box}
 :host(.flat) :is(.fpanel,.ffinale){position:relative;width:auto;visibility:visible;opacity:1;transform:none}
-:host(.flat) .ffinale{grid-column:1/-1}
+:host(.flat) .ffinale{grid-column:1/-1;order:-1;padding:0 0 clamp(12px,2vw,28px);justify-self:center;max-width:860px}
+@media(min-width:1180px){:host(.flat) .flight-world{grid-template-columns:repeat(4,minmax(0,1fr))}}
 
 /* akció a nyitóképen */
 .hero-promo{display:inline-flex;align-items:center;gap:10px;margin-top:22px;padding:8px 16px 8px 8px;border-radius:99px;border:1px solid rgba(0,217,255,.35);
