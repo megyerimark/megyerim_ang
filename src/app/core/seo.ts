@@ -13,8 +13,8 @@ export interface PageSeo { title: string; description: string; }
 export const PAGE_SEO: Record<Lang, Record<string, PageSeo>> = {
     hu: {
         '/': {
-            title: 'Weboldal készítés és egyedi webfejlesztés | Megyeri Márk Máté',
-            description: 'Egyedi weboldal, webshop és webes rendszer készítése vállalkozásoknak – online, itthon és külföldön. Prémium design, gyors betöltés. Kérj ajánlatot!',
+            title: 'Weboldal készítés Budapesten és online | Megyeri Márk Máté',
+            description: 'Egyedi weboldal, landing oldal és webshop vállalkozásoknak – Budapesten személyesen, országosan online. Gyors és mobilbarát. Kérj ajánlatot!',
         },
         '/tervezo': {
             title: 'Interaktív weboldaltervező – tervezd meg a weboldalad | Megyeri Márk Máté',
@@ -39,7 +39,7 @@ export const PAGE_SEO: Record<Lang, Record<string, PageSeo>> = {
     en: {
         '/': {
             title: 'Custom Website Design & Web Development | Márk Máté Megyeri',
-            description: 'Freelance web developer building custom websites, web shops and web apps for businesses worldwide. Premium design, fast loading. Request a quote!',
+            description: 'Budapest-based web developer: custom websites, web shops and web apps for businesses in Hungary and worldwide. Fast and mobile-friendly. Request a quote!',
         },
         '/tervezo': {
             title: 'Interactive Website Designer – Plan Your Website | Márk Máté Megyeri',

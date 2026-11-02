@@ -50,8 +50,8 @@ export const SERVICES: Record<ServiceKey, ServiceDef> = {
         copy: {
             hu: {
                 label: 'Weboldal készítés',
-                seoTitle: 'Weboldal készítés vállalkozásoknak | Megyeri Márk Máté',
-                seoDescription: 'Egyedi céges weboldal készítése: prémium design, gyors betöltés, mobilbarát felület és keresőbarát alapok. Kérj személyre szabott árajánlatot!',
+                seoTitle: 'Weboldal készítés vállalkozásoknak Budapesten | Megyeri Márk Máté',
+                seoDescription: 'Egyedi céges weboldal készítése Budapesten és online: prémium design, gyors betöltés, mobilbarát felület, keresőbarát alapok. Kérj árajánlatot!',
                 h1: 'Weboldal készítés vállalkozásoknak',
                 intro: 'Egyedi tervezésű céges weboldalt készítek, amely hitelesen bemutatja a vállalkozásodat, gyorsan betölt mobilon is, és egyértelművé teszi a látogatóknak, hogyan léphetnek kapcsolatba veled.',
                 problemsTitle: 'Mikor érdemes új weboldalban gondolkodni?',
@@ -122,7 +122,7 @@ export const SERVICES: Record<ServiceKey, ServiceDef> = {
             hu: {
                 label: 'Landing oldal készítés',
                 seoTitle: 'Landing oldal készítés – konverzióra tervezve | Megyeri Márk Máté',
-                seoDescription: 'Egyetlen célra fókuszáló landing oldal kampányokhoz, termékbevezetéshez vagy szolgáltatáshoz: gyors, mobilbarát, mérhető. Kérj ajánlatot!',
+                seoDescription: 'Landing oldal készítés Budapesten és online: egy célra fókuszáló oldal kampányhoz, termékbevezetéshez, szolgáltatáshoz. Gyors, mérhető. Kérj ajánlatot!',
                 h1: 'Landing oldal készítés',
                 intro: 'Egy jól meghatározott cél köré épített, fókuszált oldalt készítek – legyen szó hirdetési kampányról, új szolgáltatásról, eseményről vagy termékbevezetésről.',
                 problemsTitle: 'Mikor jó választás a landing oldal?',
@@ -184,7 +184,7 @@ export const SERVICES: Record<ServiceKey, ServiceDef> = {
         copy: {
             hu: {
                 label: 'Webshop készítés',
-                seoTitle: 'Webshop készítés egyedi igényekre | Megyeri Márk Máté',
+                seoTitle: 'Webshop készítés Budapesten, egyedi igényekre | Megyeri Márk Máté',
                 seoDescription: 'Webshop készítés vállalkozásoknak: átlátható termékoldalak, egyszerű vásárlási folyamat, online fizetés és kezelhető admin. Kérj árajánlatot!',
                 h1: 'Webshop készítés',
                 intro: 'Olyan webáruházat készítek, amelyben a vásárlók könnyen megtalálják és megveszik a termékeidet, te pedig egyszerűen kezelheted a rendeléseket.',

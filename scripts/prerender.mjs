@@ -180,7 +180,7 @@ for (const [key, def] of Object.entries(SERVICES)) {
             jsonLd: [
                 {
                     '@context': 'https://schema.org', '@type': 'Service', name: c.label, description: c.seoDescription,
-                    url: abs(path), inLanguage: lang, serviceType: c.label, areaServed: [{ '@type': 'Country', name: 'Hungary' }, { '@type': 'Place', name: 'Worldwide' }],
+                    url: abs(path), inLanguage: lang, serviceType: c.label, areaServed: [{ '@type': 'City', name: 'Budapest' }, { '@type': 'Country', name: 'Hungary' }, { '@type': 'Place', name: 'Worldwide' }],
                     provider: { '@type': 'ProfessionalService', '@id': ORG_ID, name: 'Megyeri Márk Máté | Webfejlesztés', url: SITE_URL + '/' },
                 },
                 crumbs(lang, [{ name: tr(lang, 'Főoldal'), path: link(lang, 'home') }, { name: c.label, path }]),
