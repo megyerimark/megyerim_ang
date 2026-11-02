@@ -387,7 +387,7 @@ export interface Testimonial {
 export type TestimonialInput = Pick<Testimonial, 'author_name' | 'author_role' | 'company' | 'quote' | 'rating' | 'portfolio_project_id' | 'is_published' | 'sort_order'>;
 export interface GrowthLead { id: number; customer_name: string; company_name: string | null; }
 export interface GrowthData {
-    funnel: { visits: number; page_views: number; cta_clicks: number; quote_starts: number; submissions: number; visit_to_lead_percent: number | null };
+    funnel: { visits: number; page_views: number; cta_clicks: number; quote_starts: number; submissions: number; visit_to_lead_percent: number | null; phone_clicks?: number; email_clicks?: number };
     channels: { channel: string; leads: number; won: number; won_value_huf: number }[];
     budgets: { label: string; count: number }[];
     daily_leads: { date: string; count: number }[];

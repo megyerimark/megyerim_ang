@@ -23,6 +23,16 @@ Ez a **felhasználó által küldött Angular 20 projekt továbbfejlesztett vál
 
 **Fontos:** Angular-t és Laravel-t is `localhost`-on nyisd meg; ne keverd a 127.0.0.1 címmel. A Laravel `.env` fájlban: `APP_URL=http://localhost:8000`, `SANCTUM_STATEFUL_DOMAINS=localhost:4200,localhost:8000`, `SESSION_DRIVER=database`; a cookie és CSRF beállítások a backend útmutató szerint.
 
+## Tesztek
+
+- Egységtesztek: `npm test`
+- Böngészős füsttesztek (ajánlatkérés HU/EN, konzultációfoglalás, útmutató-nyelvváltás, telefon/e-mail kattintásmérés, 404, mobil gyors-sáv):
+  1. `npm run build` (a teszt a kész buildet használja; backend nem kell, az API-t a teszt szimulálja)
+  2. egyszer: `npx playwright install chromium`
+  3. `npm run e2e`
+
+  Élesítés előtt érdemes lefuttatni: ha valamelyik piros, egy módosítás eltörte az adott folyamatot.
+
 ## Frontend oldalak
 
 - `/` – Főoldal (Hero, szolgáltatások, referenciák, bemutatkozás, folyamatszekció, GYIK).
