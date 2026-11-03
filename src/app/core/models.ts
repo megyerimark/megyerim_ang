@@ -372,6 +372,14 @@ export interface ProjectMessage { id: number; author: 'client' | 'admin'; body: 
 export interface ProjectDocument { id: number; title: string; filename: string; mime_type: string; size_bytes: number; created_at: string; is_deliverable?: boolean; locked?: boolean; }
 export interface ProjectCollaboration { messages: ProjectMessage[]; documents: ProjectDocument[]; }
 
+/** A Google Cégprofil értékelése és legfrissebb véleményei (backend: GET /api/google-reviews, naponta frissül). */
+export interface GoogleReviews {
+    name: string;
+    rating: number | null;
+    count: number;
+    url: string | null;
+    reviews: { author: string; author_url: string | null; rating: number; text: string; published_at: string | null }[];
+}
 export interface Testimonial {
     id: number;
     author_name: string;

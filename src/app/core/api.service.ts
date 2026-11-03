@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, switchMap } from 'rxjs';
-import { ManagedConsultation, NewsletterCampaign, NewsletterDraft, ProposalTemplate } from './models';
+import { GoogleReviews, ManagedConsultation, NewsletterCampaign, NewsletterDraft, ProposalTemplate } from './models';
 import { AdminSecurityStatus, SystemStatus, ClientSite, ClientSiteInput, FinanceEntry, FinanceEntryInput, FinanceSettings, FinanceSummary, AdminUser, Activity, Client, ClientProject, ConsultationConfirmation, ConsultationSlot, Dashboard, Envelope, Paged, Project, ProjectMilestone, ProjectMessage, ProjectDocument, ProjectCollaboration, Quote, QuotePayload, QuoteBoard, Service, SiteSettings, StudioTask, StudioClientNote, WorkspaceProject, CommunicationCenter, MaintenanceData, MaintenanceAgreement, MaintenanceEditor, Testimonial, TestimonialInput, GrowthData, NewsletterSubscriber, NewsletterCounts } from './models';
 import { AttributionService } from './attribution.service';
 import { I18nService } from '../i18n/i18n.service';
@@ -34,6 +34,7 @@ export class ApiService {
         }>('/api/quote-requests', payload, this.opts)));
     }
     publicTestimonials() { return this.http.get<Envelope<Testimonial[]>>('/api/testimonials', this.opts); }
+    googleReviews() { return this.http.get<{ data: GoogleReviews | null }>('/api/google-reviews', this.opts); }
     /** Anonim eseményszámlálás: IP-t, sütit nem tárol; hiba esetén csendben elbukik. */
     trackEvent(event: 'page_view' | 'cta_click' | 'quote_start' | 'quiz_start' | 'consultation_start' | 'phone_click' | 'email_click', path: string): void {
         if (!this.attribution.tracking) return;
