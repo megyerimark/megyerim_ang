@@ -16,7 +16,7 @@ const VARIANTS = {
         ribbon: 'TERVEZET — A PADA TRADE KFT. ÚJ WEBOLDALÁNAK BEMUTATÓ VÁLTOZATA',
         title: 'Pada Trade Kft. – Autószerviz, autóvillamosság, autóklíma | Budapest XVIII.',
         description: 'Autószerviz, autóvillamosság és autóklíma Budapest XVIII. kerületében: diagnosztika, indítómotor- és generátorjavítás, klímatöltés, vizsgaügyintézés.',
-        brand: 'PADA TRADE', brandSub: 'Autószerviz · Autóvillamosság', legal: 'Pada Trade Kft.',
+        logoText: 'PADA TRADE KFT.', brand: 'PADA TRADE', brandSub: 'Autószerviz · Autóvillamosság', legal: 'Pada Trade Kft.',
         district: 'Budapest XVIII. kerületében',
         motto: 'Minden, ami autó', slogan: 'Trabanttól a kamionig',
         address: '1188 Budapest, Kölcsey u. 40/a.', addressNote: 'Arany J. u. – Törvény u. között',
@@ -40,7 +40,7 @@ const VARIANTS = {
         ribbon: 'PORTFÓLIÓ DEMÓ — FIKTÍV AUTÓSZERVIZ',
         title: 'VOLT Autószerviz – Autószerviz, autóvillamosság, autóklíma | Demó',
         description: 'VOLT Autószerviz – fiktív autószerviz demóweboldal: szolgáltatások, időpontkérés, vélemények, elérhetőség.',
-        brand: 'VOLT', brandSub: 'Autószerviz · Autóvillamosság', legal: 'VOLT Autószerviz (fiktív)',
+        logoText: 'VOLT AUTÓSZERVIZ', brand: 'VOLT', brandSub: 'Autószerviz · Autóvillamosság', legal: 'VOLT Autószerviz (fiktív)',
         district: 'Budapesten',
         motto: 'Gyors hibakeresés, korrekt ár', slogan: 'Kisautótól a kisteherautóig',
         address: '1234 Budapest, Minta utca 12.', addressNote: 'fiktív cím',
@@ -74,6 +74,7 @@ const I = {
     truck: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 6h11v10H3zM14 9h4l3 3v4h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>',
     chip: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M10 3v4M14 3v4M10 17v4M14 17v4M3 10h4M3 14h4M17 10h4M17 14h4"/></svg>',
     arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>',
+    logo: '<svg class="logo-car" viewBox="0 0 200 44" fill="none" aria-hidden="true"><defs><linearGradient id="logo-g" x1="0" x2="1"><stop offset="0" stop-color="#2f6bff"/><stop offset=".55" stop-color="#5a96ff"/><stop offset="1" stop-color="#2f6bff"/></linearGradient></defs><path d="M14 40C8 40 6 35 12 31c12-6 32-9 52-10 16-9 34-16 56-16s38 6 50 14c12 2 22 5 26 10 2 3 1 6-2 7" stroke="url(#logo-g)" stroke-width="3" stroke-linecap="round"/><path d="M78 19c14-7 28-10 43-10s27 4 35 10z" stroke="url(#logo-g)" stroke-width="1.6" stroke-linejoin="round" opacity=".85"/><path d="M104 10l-2 9" stroke="url(#logo-g)" stroke-width="1.6" opacity=".85"/></svg>',
     car: '<svg viewBox="0 0 48 22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 17h4m30 0h10V13c0-2-1.5-3-3.5-3.4L36 8 28 3H14L7 8.5 3 10v7"/><circle cx="11" cy="17" r="3"/><circle cx="33" cy="17" r="3"/><path d="M14 17h16"/></svg>',
 };
 
@@ -126,7 +127,7 @@ function page(slug, d) {
     <div class="demo-ribbon">${esc(d.ribbon)}${slug === 'autoszerviz' ? ' <a href="../index.html">← Összes demó</a>' : ''}</div>
     <header class="topbar">
       <div class="topbar-inner">
-        <a class="logo" href="#top" aria-label="${esc(d.legal)} – főoldal">${I.car}<span><b>${esc(d.brand)}</b><small>${esc(d.brandSub)}</small></span></a>
+        <a class="logo" href="#top" aria-label="${esc(d.legal)} – főoldal">${I.logo}<b>${esc(d.logoText)}</b></a>
         <nav class="nav" aria-label="Fő navigáció">
           <a href="#szolgaltatasok">Szolgáltatások</a><a href="#rolunk">Rólunk</a><a href="#velemenyek">Vélemények</a><a href="#kapcsolat">Kapcsolat</a>
         </nav>
@@ -140,7 +141,7 @@ function page(slug, d) {
 
     <main id="top">
       <section class="hero" aria-labelledby="hero-title">
-        <div class="hero-bg"><img src="../autoszerviz/img/hero-2000.webp" srcset="../autoszerviz/img/hero-m.webp 800w, ../autoszerviz/img/hero-1000.webp 1000w, ../autoszerviz/img/hero-2000.webp 2000w" sizes="100vw" alt="" width="2000" height="1333" fetchpriority="high" decoding="async"></div>
+        <div class="hero-bg"><img src="../autoszerviz/img/hero-2000.webp" srcset="../autoszerviz/img/hero-m.webp 800w, ../autoszerviz/img/hero-1000.webp 1000w, ../autoszerviz/img/hero-2000.webp 2000w" sizes="100vw" alt="" width="2000" height="1250" fetchpriority="high" decoding="async"></div>
         <div class="hero-copy">
           <span class="eyebrow">Autószerviz · Autóvillamosság · Autóklíma</span>
           <h1 id="hero-title">Megbízható szerviz <span>az autója</span> szolgálatában.</h1>
