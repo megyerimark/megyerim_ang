@@ -12,7 +12,7 @@
     <h2>1. The service provider</h2>
     <p>
       {{ legal.operatorName || todoEn }} (registered address: {{ legal.address || todoEn }}; tax number: {{ legal.taxNumber || todoEn }};
-      registration number: {{ legal.registrationNumber || todoEn }}; email: {{ legal.email || todoEn }}),
+      @if (legal.registrationNumber) {registration number: {{ legal.registrationNumber }}; }email: {{ legal.email || todoEn }}),
       hereinafter the <strong>Provider</strong>. The customer is hereinafter the <strong>Client</strong>.
     </p>
 
@@ -121,7 +121,7 @@
     <h2>1. A szolgáltató</h2>
     <p>
       {{ legal.operatorName || todo }} (székhely: {{ legal.address || todo }}; adószám: {{ legal.taxNumber || todo }};
-      nyilvántartási szám: {{ legal.registrationNumber || todo }}; e-mail: {{ legal.email || todo }}),
+      @if (legal.registrationNumber) {nyilvántartási szám: {{ legal.registrationNumber }}; }e-mail: {{ legal.email || todo }}),
       a továbbiakban: <strong>Szolgáltató</strong>. A megrendelő a továbbiakban: <strong>Ügyfél</strong>.
     </p>
 

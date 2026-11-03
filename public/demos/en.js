@@ -23,6 +23,13 @@ window.DEMO_EN = {
     'világot.': 'world.',
     'A képekre vagy a gombokra kattintva mindegyik működő weboldal teljes egészében megnyitható.': 'Click an image or a button to open each fully working website.',
     'ÚJ / PREMIUM & CINEMATIC': 'NEW / PREMIUM & CINEMATIC',
+    'PREMIUM & CINEMATIC': 'PREMIUM & CINEMATIC',
+    'ÚJ / DARK & TRUSTWORTHY': 'NEW / DARK & TRUSTWORTHY',
+    'Autószerviz és autóvillamosság sötét, kék fényekkel: a nyitóképen a fényszórók mélységben mozdulnak görgetésre, a szolgáltatások finoman úsznak be. Szolgáltatáskártyák, online időpontkérés, vélemények, szolgáltatási terület és útvonaltervezés – visszafogott, gyors, mobilra tervezett.':
+      'A car service and auto electrics site in dark tones with blue lights: the headlights in the hero move in depth as you scroll, and the services glide in gently. Service cards, online appointment requests, reviews, service area and directions – restrained, fast and designed for mobile.',
+    'VOLT autószerviz weboldal nyitóképernyője': 'Home screen of the VOLT car service website',
+    'Parallax': 'Parallax',
+    'Időpontkérés': 'Appointment requests',
     'Prémium autószalon fekete–pezsgőarany arculattal és valódi fotókkal: görgetésre „felkapcsolnak a fények” a nyitóképen, a kollekcióban 3D térben repülünk át a lebegő paneleken, amelyek elhaladáskor aranyporrá esnek szét. Konfigurátor, finanszírozási kalkulátor és tesztvezetés-foglalás.':
       'A premium car showroom with a black and champagne-gold identity and real photos: scrolling “turns on the lights” in the hero, the collection flies you through floating panels in 3D space that dissolve into gold dust as you pass. Configurator, finance calculator and test-drive booking.',
     'Reszponzív': 'Responsive',
