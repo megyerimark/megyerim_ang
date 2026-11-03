@@ -9,7 +9,7 @@ import { MmFx } from '../../core/scroll-fx';
 import { ApiService } from '../../core/api.service';
 import { ConsentService } from '../../core/consent.service';
 import { ExternalReviews } from '../../components/external-reviews/external-reviews';
-import { Project, Service, SiteSettings, Testimonial, SITE_DEFAULTS } from '../../core/models';
+import { GoogleReviews, Project, Service, SiteSettings, Testimonial, SITE_DEFAULTS } from '../../core/models';
 import { TPipe } from '../../i18n/t.pipe';
 import { BrandMark } from '../../components/brand-mark/brand-mark';
 import { I18nService } from '../../i18n/i18n.service';
@@ -48,6 +48,8 @@ export class Home implements OnInit {
     services = signal<Service[]>([]);
     projects = signal<Project[]>([]);
     testimonials = signal<Testimonial[]>([]);
+    /** Google-vélemények a Cégprofilból (ha a backendben be van állítva). */
+    googleReviews = signal<GoogleReviews | null>(null);
     servicesUnavailable = signal(false);
     projectsUnavailable = signal(false);
     settingsUnavailable = signal(false);
@@ -95,6 +97,7 @@ export class Home implements OnInit {
     private readonly anchor = inject(ActivatedRoute, { optional: true })?.snapshot.fragment ?? null;
     readonly hasAnchor = !!this.anchor;
     readonly demoSites = [
+        { slug: 'autoszerviz', preview: 'volt', title: 'VOLT Autószerviz', kind: 'AUTÓSZERVIZ / DEMÓ', text: 'Autószerviz és autóvillamosság sötét, kék fényekkel: visszafogott görgetési mélység, szolgáltatáskártyák és egy kattintásos hívás.', tags: ['Szolgáltatások', 'Egy kattintásos hívás', 'Útvonaltervezés'] },
         { slug: 'nobile-autoszalon', preview: 'nobile', title: 'NOBILE Autószalon', kind: 'PRÉMIUM AUTÓSZALON / DEMÓ', text: 'Görgetéses 3D kollekció aranyporrá bomló panelekkel, konfigurátor, finanszírozási kalkulátor és tesztvezetés-foglalás.', tags: ['3D kollekció', 'Konfigurátor', 'Tesztvezetés-foglalás'] },
         { slug: 'vagat-barber', preview: 'vagat', title: 'VÁGAT Barber Studio', kind: 'BARBER SHOP / DEMÓ', text: 'Fiktív barber shop weboldal prémium megjelenéssel.', tags: ['Szolgáltatások', 'Árlista', 'Időpontfoglalás'] },
         { slug: 'axis-detailing', preview: 'axis', title: 'AXIS Auto Detailing', kind: 'AUTÓKOZMETIKA / DEMÓ', text: 'Prémium autókozmetikai oldal interaktív csomagokkal.', tags: ['Csomagok', 'Átalakulás', 'Ajánlatkérés'] },
@@ -200,6 +203,7 @@ export class Home implements OnInit {
         });
         // Vélemények: hiba vagy üres lista esetén a szakasz egyszerűen nem jelenik meg.
         this.api.publicTestimonials().subscribe({ next: response => this.testimonials.set(response.data), error: () => this.testimonials.set([]) });
+        this.api.googleReviews().subscribe({ next: response => this.googleReviews.set(response.data && response.data.count > 0 ? response.data : null), error: () => this.googleReviews.set(null) });
         this.api.publicProjects().subscribe({
             next: response => this.projects.set(response.data),
             error: () => this.projectsUnavailable.set(true)
@@ -211,6 +215,15 @@ export class Home implements OnInit {
         }
         const value = new Intl.NumberFormat('hu-HU').format(amount);
         return this.i18n.lang() === 'en' ? `From HUF ${value}` : `${value} Ft-tól`;
+    }
+    /** Monogram a véleményíró nevéből (profilkép helyett – nem töltünk be képet a Google-től). */
+    initials(name: string): string { return name.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join('').toUpperCase() || 'G'; }
+    roundRating(n: number | null): number { return Math.round(n ?? 0); }
+    /** 4,9 (magyarul) / 4.9 (angolul) */
+    ratingText(n: number | null): string { return n === null ? '' : (this.i18n.lang() === 'en' ? n.toFixed(1) : n.toFixed(1).replace('.', ',')); }
+    reviewDate(iso: string | null): string {
+        if (!iso) return '';
+        return new Date(iso + 'T12:00:00Z').toLocaleDateString(this.i18n.lang() === 'en' ? 'en-GB' : 'hu-HU', { year: 'numeric', month: 'long' });
     }
     stars(n: number): string { return '★'.repeat(Math.max(0, Math.min(5, n))) + '☆'.repeat(5 - Math.max(0, Math.min(5, n))); }
     toggleFaq(index: number): void {
