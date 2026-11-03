@@ -131,11 +131,11 @@ function page(slug, d) {
         <nav class="nav" aria-label="Fő navigáció">
           <a href="#szolgaltatasok">Szolgáltatások</a><a href="#rolunk">Rólunk</a><a href="#velemenyek">Vélemények</a><a href="#kapcsolat">Kapcsolat</a>
         </nav>
-        <a class="btn btn-primary top-cta" href="#idopont">${I.cal}Időpontfoglalás</a>
+        <a class="btn btn-primary top-cta" href="tel:${d.phoneTel}">${I.phone}${esc(d.phone)}</a>
         <button type="button" class="menu-toggle" aria-controls="mobile-nav" aria-expanded="false" aria-label="Menü megnyitása"><span></span><span></span><span></span></button>
       </div>
       <nav class="mobile-nav" id="mobile-nav" hidden aria-label="Mobil navigáció">
-        <a href="#szolgaltatasok">Szolgáltatások</a><a href="#rolunk">Rólunk</a><a href="#idopont">Időpontfoglalás</a><a href="#velemenyek">Vélemények</a><a href="#kapcsolat">Kapcsolat</a>
+        <a href="#szolgaltatasok">Szolgáltatások</a><a href="#rolunk">Rólunk</a><a href="#idopont">Időpont egyeztetése</a><a href="#velemenyek">Vélemények</a><a href="#kapcsolat">Kapcsolat</a>
       </nav>
     </header>
 
@@ -147,8 +147,8 @@ function page(slug, d) {
           <h1 id="hero-title">Megbízható szerviz <span>az autója</span> szolgálatában.</h1>
           <p class="lead">Teljes körű autószerviz, autóvillamosság és autóklíma ${esc(d.district)} – gyorsan, szakszerűen, korrekt áron.</p>
           <div class="hero-actions">
-            <a class="btn btn-primary" href="#idopont">${I.cal}Időpontfoglalás</a>
-            <a class="btn btn-ghost" href="tel:${d.phoneTel}">${I.phone}${esc(d.phone)}</a>
+            <a class="btn btn-primary" href="tel:${d.phoneTel}">${I.phone}${esc(d.phone)}</a>
+            <a class="btn btn-ghost" href="tel:${d.phone2Tel}">${I.phone}${esc(d.phone2)}</a>
           </div>
           <ul class="hero-facts">
             <li>${I.pin}${esc(d.address)}</li>
@@ -203,30 +203,22 @@ function page(slug, d) {
       <section class="section" id="idopont" aria-labelledby="booking-title" style="padding-top:0">
         <div class="wrap booking">
           <div class="reveal">
-            <span class="eyebrow">Időpontfoglalás</span>
-            <h2 id="booking-title" style="margin:14px 0 0;font-size:clamp(30px,4vw,48px)">Kérjen időpontot pár kattintással.</h2>
+            <span class="eyebrow">Időpont egyeztetése</span>
+            <h2 id="booking-title" style="margin:14px 0 0;font-size:clamp(30px,4vw,48px)">Egy hívás, és megbeszéljük.</h2>
             <ol class="steps">
-              <li><b>Időpontkérés</b><span>Adja meg az autót és a problémát – visszahívjuk egyeztetni.</span></li>
+              <li><b>Telefonos egyeztetés</b><span>Mondja el, milyen autóról és milyen problémáról van szó – megbeszéljük az időpontot.</span></li>
               <li><b>Állapotfelmérés</b><span>Diagnosztikával megkeressük a hiba okát.</span></li>
               <li><b>Ár egyeztetése</b><span>A javítás előtt elmondjuk, mi kell és mennyibe kerül.</span></li>
               <li><b>Javítás és átadás</b><span>Elvégezzük a munkát, és elmondjuk, mire figyeljen.</span></li>
             </ol>
           </div>
-          <form class="form-card reveal" id="booking-form" style="--d:.1s">
-            <h3>Időpontkérés</h3>
-            <p>Munkaidőben hamarosan visszahívjuk az időpont egyeztetéséhez.</p>
-            <div class="form-grid">
-              <div class="field"><label for="bk-name">Név</label><input id="bk-name" name="name" autocomplete="name" required></div>
-              <div class="field"><label for="bk-phone">Telefonszám</label><input id="bk-phone" name="phone" type="tel" autocomplete="tel" required></div>
-              <div class="field"><label for="bk-car">Autó (márka, típus)</label><input id="bk-car" name="car" placeholder="pl. Opel Astra 2015"></div>
-              <div class="field"><label for="bk-service">Szolgáltatás</label>
-                <select id="bk-service" name="service"><option>Autóvillamosság</option><option>Autószerviz / javítás</option><option>Diagnosztika</option><option>Autóklíma</option><option>Vizsgaügyintézés</option><option>Egyéb</option></select></div>
-              <div class="field full"><label for="booking-date">Kívánt nap</label><input id="booking-date" name="date" type="date"></div>
-              <div class="field full"><label for="bk-msg">A probléma röviden</label><textarea id="bk-msg" name="message" placeholder="pl. nem indul reggel, ég a motorhiba-lámpa…"></textarea></div>
-            </div>
-            <button class="btn btn-primary" type="submit">Időpontot kérek ${I.arrow}</button>
-            <p class="form-status" id="form-status" role="status"></p>
-          </form>
+          <div class="form-card call-card reveal" style="--d:.1s">
+            <h3>Hívjon minket</h3>
+            <p>Időpontot telefonon egyeztetünk – hívjon nyitvatartási időben, és megbeszéljük, mikor tudja hozni az autót.</p>
+            <a class="call-line" href="tel:${d.phoneTel}"><small>Mobil</small><b>${esc(d.phone)}</b>${I.phone}</a>
+            <a class="call-line" href="tel:${d.phone2Tel}"><small>Vezetékes</small><b>${esc(d.phone2)}</b>${I.phone}</a>
+            <table class="hours"><tr><td>Hétfő – Péntek</td><td>08:00 – 17:00</td></tr><tr><td>Szombat – Vasárnap</td><td>Zárva</td></tr></table>
+          </div>
         </div>
       </section>
 
