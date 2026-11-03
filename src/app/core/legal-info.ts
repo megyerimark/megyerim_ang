@@ -14,12 +14,12 @@ export interface LegalInfo {
   phone: string | null;
   /** Adószám, pl. 12345678-1-23 */
   taxNumber: string | null;
-  /** Egyéni vállalkozói nyilvántartási szám VAGY cégjegyzékszám */
- // registrationNumber: string | null;
-  /** Nyilvántartást vezető szerv, pl. „Belügyminisztérium (EVNY)” vagy „Fővárosi Törvényszék Cégbírósága” */
- // registry: string | null;
+  /** Egyéni vállalkozói nyilvántartási szám VAGY cégjegyzékszám (ha van; üresen a sor nem jelenik meg) */
+  registrationNumber: string | null;
+  /** Nyilvántartást vezető szerv, pl. „Belügyminisztérium (EVNY)” (ha van; üresen a sor nem jelenik meg) */
+  registry: string | null;
   /** Kamarai tagság (ha van), pl. „Budapesti Kereskedelmi és Iparkamara” */
-  //chamber: string | null;
+  chamber: string | null;
   hosting: { name: string | null; address: string | null; email: string | null; website: string | null };
   /** Az e-mailek kiküldéséhez használt szolgáltató (SMTP), ha eltér a tárhelytől */
   emailProvider: string | null;
@@ -35,9 +35,10 @@ export const LEGAL_INFO: LegalInfo = {
   email: "megyerimarkmate@megyerimarkmate.hu",
   phone: "+36 (30) 7140806",
   taxNumber: "68419752-1-25",
-  //registrationNumber: "11111111",
-  //registry: "111111",
-  //chamber: "22", 
+  // Nyilvántartási szám / nyilvántartó szerv / kamara: egyéni vállalkozás után töltsd ki (addig a sorok nem jelennek meg).
+  registrationNumber: null,
+  registry: null,
+  chamber: null,
   hosting: { name: "Rackhost Zrt.", address: "6722 Szeged, Tisza Lajos körút 41.", email: "info@rackhost.hu"
 , website: "www.rackhost.hu" },
   emailProvider: "megyerimarkmate@megyerimarkmate.hu",
@@ -52,8 +53,6 @@ export function missingLegalFields(info: LegalInfo = LEGAL_INFO): string[] {
     ['székhely / cím', info.address],
     ['e-mail-cím', info.email],
     ['adószám', info.taxNumber],
-    ['nyilvántartási szám / cégjegyzékszám', info.registrationNumber],
-    ['nyilvántartó szerv', info.registry],
     ['tárhelyszolgáltató neve', info.hosting.name],
     ['tárhelyszolgáltató címe', info.hosting.address],
     ['tárhelyszolgáltató elérhetősége', info.hosting.email],
