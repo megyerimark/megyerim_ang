@@ -27,7 +27,7 @@ window.DEMO_EN = {
     'ÚJ / DARK & TRUSTWORTHY': 'NEW / DARK & TRUSTWORTHY',
     'Autószerviz és autóvillamosság sötét, kék fényekkel: a nyitóképen a fényszórók mélységben mozdulnak görgetésre, a szolgáltatások finoman úsznak be. Szolgáltatáskártyák, egy kattintásos hívás, vélemények, szolgáltatási terület és útvonaltervezés – visszafogott, gyors, mobilra tervezett.':
       'A car service and auto electrics site in dark tones with blue lights: the headlights in the hero move in depth as you scroll, and the services glide in gently. Service cards, one-tap calling, reviews, service area and directions – restrained, fast and designed for mobile.',
-    'VOLT autószerviz weboldal nyitóképernyője': 'Home screen of the VOLT car service website',
+    'Pada Trade autószerviz weboldal nyitóképernyője': 'Home screen of the Pada Trade car service website',
     'Parallax': 'Parallax',
     'Egy kattintásos hívás': 'One-tap calling',
     'Prémium autószalon fekete–pezsgőarany arculattal és valódi fotókkal: görgetésre „felkapcsolnak a fények” a nyitóképen, a kollekcióban 3D térben repülünk át a lebegő paneleken, amelyek elhaladáskor aranyporrá esnek szét. Konfigurátor, finanszírozási kalkulátor és tesztvezetés-foglalás.':
