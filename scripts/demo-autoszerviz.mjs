@@ -124,7 +124,7 @@ function page(slug, d) {
     <script src="../autoszerviz/en.js" defer></script><script src="../shared/i18n.js" defer></script><script src="../autoszerviz/script.js" defer></script>
   </head>
   <body>
-    <div class="demo-ribbon">${esc(d.ribbon)}${slug === 'autoszerviz' ? ' <a href="../index.html">← Összes demó</a>' : ''}</div>
+    <div class="demo-ribbon">${esc(d.ribbon)} <a href="../index.html">← Összes demó</a></div>
     <header class="topbar">
       <div class="topbar-inner">
         <a class="logo" href="#top" aria-label="${esc(d.legal)} – főoldal">${I.logo}<b>${esc(d.logoText)}</b></a>

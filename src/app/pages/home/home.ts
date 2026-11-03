@@ -97,7 +97,7 @@ export class Home implements OnInit {
     private readonly anchor = inject(ActivatedRoute, { optional: true })?.snapshot.fragment ?? null;
     readonly hasAnchor = !!this.anchor;
     readonly demoSites = [
-        { slug: 'autoszerviz', preview: 'volt', title: 'VOLT Autószerviz', kind: 'AUTÓSZERVIZ / DEMÓ', text: 'Autószerviz és autóvillamosság sötét, kék fényekkel: visszafogott görgetési mélység, szolgáltatáskártyák és egy kattintásos hívás.', tags: ['Szolgáltatások', 'Egy kattintásos hívás', 'Útvonaltervezés'] },
+        { slug: 'pada-trade', preview: 'pada', title: 'Pada Trade Autószerviz', kind: 'AUTÓSZERVIZ / DEMÓ', text: 'Autószerviz és autóvillamosság sötét, kék fényekkel: visszafogott görgetési mélység, szolgáltatáskártyák és egy kattintásos hívás.', tags: ['Szolgáltatások', 'Egy kattintásos hívás', 'Útvonaltervezés'] },
         { slug: 'nobile-autoszalon', preview: 'nobile', title: 'NOBILE Autószalon', kind: 'PRÉMIUM AUTÓSZALON / DEMÓ', text: 'Görgetéses 3D kollekció aranyporrá bomló panelekkel, konfigurátor, finanszírozási kalkulátor és tesztvezetés-foglalás.', tags: ['3D kollekció', 'Konfigurátor', 'Tesztvezetés-foglalás'] },
         { slug: 'vagat-barber', preview: 'vagat', title: 'VÁGAT Barber Studio', kind: 'BARBER SHOP / DEMÓ', text: 'Fiktív barber shop weboldal prémium megjelenéssel.', tags: ['Szolgáltatások', 'Árlista', 'Időpontfoglalás'] },
         { slug: 'axis-detailing', preview: 'axis', title: 'AXIS Auto Detailing', kind: 'AUTÓKOZMETIKA / DEMÓ', text: 'Prémium autókozmetikai oldal interaktív csomagokkal.', tags: ['Csomagok', 'Átalakulás', 'Ajánlatkérés'] },

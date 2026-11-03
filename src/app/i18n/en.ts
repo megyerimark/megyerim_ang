@@ -119,7 +119,7 @@ export const EN: Record<string, string> = {
   "AURORA / INTERAKTÍV IGÉNYFELMÉRÉS": "AURORA / INTERACTIVE NEEDS QUIZ",
   "AUTÓKOZMETIKA / DEMÓ": "CAR DETAILING / DEMO",
   "AUTÓSZERVIZ / DEMÓ": "CAR SERVICE / DEMO",
-  "VOLT Autószerviz": "VOLT Car Service",
+  "Pada Trade Autószerviz": "Pada Trade Car Service",
   "Autószerviz és autóvillamosság sötét, kék fényekkel: visszafogott görgetési mélység, szolgáltatáskártyák és egy kattintásos hívás.": "A car service and auto electrics site in dark tones with blue lights: subtle scroll depth, service cards and one-tap calling.",
   "Egy kattintásos hívás": "One-tap calling",
   "Útvonaltervezés": "Directions",
