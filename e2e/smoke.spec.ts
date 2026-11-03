@@ -161,3 +161,19 @@ test('angol ajánlatkérő: a funkciók, a költségkeret és a mezőszövegek i
     await expect(page.locator('#budget option').first()).toHaveText(/Not sure yet/);
     await expect(page.locator('#budget')).not.toContainText('ezer Ft');
 });
+
+test('Google-vélemények: értékelés, kártyák és forrásmegjelölés a főoldalon', async ({ page }) => {
+    await mockApi(page);
+    await page.route('**/api/google-reviews', route => route.fulfill({ contentType: 'application/json', body: JSON.stringify({ data: {
+        name: 'Teszt', rating: 4.9, count: 12, url: 'https://maps.google.com/?cid=1',
+        reviews: [{ author: 'Kiss Anna', author_url: 'https://www.google.com/maps/contrib/1', rating: 5, text: 'Nagyon gyors és pontos munka!', published_at: '2026-10-28' }],
+    } }) }));
+    await page.goto('/');
+    const section = page.locator('#velemenyek');
+    await section.scrollIntoViewIfNeeded();
+    await expect(section.locator('.g-rating')).toHaveText('4,9');
+    await expect(section).toContainText('12 Google-értékelés alapján');
+    await expect(section.locator('.g-card')).toContainText('Nagyon gyors és pontos munka!');
+    await expect(section.locator('.g-card a[href="https://www.google.com/maps/contrib/1"]')).toContainText('Kiss Anna');
+    await expect(section.locator('.g-all')).toHaveAttribute('href', 'https://maps.google.com/?cid=1');
+});
