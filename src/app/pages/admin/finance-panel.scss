@@ -68,4 +68,16 @@
 .nl-compose .form-field{display:grid;gap:6px;font-size:12px}
 .nl-compose-row{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:12px}
 .nl-compose-actions{display:flex;flex-wrap:wrap;gap:10px}
-@media(max-width:800px){.nl-compose-row{grid-template-columns:1fr}}
+.nl-brevo{margin:18px 0 0;padding:22px;display:grid;gap:14px}
+.nl-brevo h3{margin:4px 0 6px;font-size:20px}.nl-brevo p{margin:0}
+.nl-brevo code{font-size:12px;padding:1px 5px;border-radius:5px;background:rgba(127,140,170,.16)}
+.nl-brevo-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.nl-brevo-actions{display:flex;flex-wrap:wrap;gap:10px;flex-shrink:0}
+.nl-brevo-stats{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:13px;opacity:.9}
+.nl-bad{color:#ff8f8f}
+:host-context([data-theme='light']) .nl-bad{color:#c62828}
+.nl-import{display:grid;gap:12px;padding-top:6px;border-top:1px solid rgba(127,140,170,.2)}
+.nl-import .form-field{display:grid;gap:6px;font-size:12px}
+.nl-import .nl-compose-row{grid-template-columns:2fr 1fr}
+.nl-check{display:flex;gap:10px;align-items:center;font-size:13px}
+@media(max-width:800px){.nl-compose-row,.nl-import .nl-compose-row{grid-template-columns:1fr}.nl-brevo-head{flex-direction:column}}

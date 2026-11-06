@@ -3,9 +3,9 @@ import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../core/api.service';
 import { ToastService } from '../../core/toast.service';
 import { apiErrorMessage } from '../../core/http-error';
-import { NewsletterCampaign, NewsletterCounts, NewsletterSubscriber } from '../../core/models';
+import { BrevoStatus, NewsletterCampaign, NewsletterCounts, NewsletterSubscriber } from '../../core/models';
 
-/** Hírlevél fül: feliratkozók (kettős megerősítéssel), CSV-export, GDPR-törlés. */
+/** Hírlevél fül: feliratkozók (kettős megerősítéssel), Brevo-szinkron, import, CSV-export, GDPR-törlés. */
 @Component({
     selector: 'app-newsletter-panel',
     standalone: true,
@@ -25,6 +25,12 @@ export class NewsletterPanel implements OnInit {
     readonly audience = signal<{ all: number; hu: number; en: number }>({ all: 0, hu: 0, en: 0 });
     readonly sending = signal(false);
     draft: { subject: string; body: string; button_text: string; button_url: string; audience: 'all' | 'hu' | 'en' } = { subject: '', body: '', button_text: '', button_url: '', audience: 'all' };
+    readonly brevo = signal<BrevoStatus | null>(null);
+    readonly syncing = signal(false);
+    readonly importing = signal(false);
+    importOpen = false;
+    importDraft: { emails: string; lang: 'hu' | 'en'; consent_note: string; confirm: boolean } = { emails: '', lang: 'hu', consent_note: '', confirm: false };
+    readonly welcomeLabel: Record<string, string> = { queued: 'üdvözlő sorozat: indul', added: 'üdvözlő sorozat: elindult', skipped: 'üdvözlő sorozat nélkül' };
     readonly statusLabel: Record<string, string> = { confirmed: 'Megerősítve', pending: 'Megerősítésre vár', unsubscribed: 'Leiratkozott' };
 
     ngOnInit(): void { this.load(); this.loadCampaigns(); }
@@ -60,8 +66,35 @@ export class NewsletterPanel implements OnInit {
     load(): void {
         this.loading.set(true);
         this.api.adminNewsletter(this.q.trim(), this.status).subscribe({
-            next: r => { this.items.set(r.data); this.counts.set(r.counts); this.loading.set(false); },
+            next: r => { this.items.set(r.data); this.counts.set(r.counts); this.brevo.set(r.brevo ?? null); this.loading.set(false); },
             error: e => { this.loading.set(false); this.toast.error(apiErrorMessage(e)); }
+        });
+    }
+    syncBrevo(): void {
+        this.syncing.set(true);
+        this.api.brevoSync().subscribe({
+            next: r => { this.toast.success(r.message); this.brevo.set(r.brevo); this.syncing.set(false); this.load(); },
+            error: e => { this.toast.error(apiErrorMessage(e)); this.syncing.set(false); }
+        });
+    }
+    /** Brevo-állapot egy sorhoz (csak ha a Brevo be van állítva). */
+    brevoState(s: NewsletterSubscriber): string {
+        if (!this.brevo()?.configured || s.status === 'pending') return '';
+        if (s.brevo_synced_at) return 'Brevo ✓';
+        return s.brevo_error ? 'Brevo: hiba – újrapróbálja' : 'Brevo: szinkronra vár';
+    }
+    importCount(): number {
+        return new Set(this.importDraft.emails.split(/[\s,;]+/).map(e => e.trim().toLowerCase()).filter(e => e.includes('@'))).size;
+    }
+    runImport(): void {
+        const d = this.importDraft;
+        if (!this.importCount()) { this.toast.error('Adj meg legalább egy e-mail-címet.'); return; }
+        if (d.consent_note.trim().length < 10) { this.toast.error('Írd le, hol és mikor adtak marketing-hozzájárulást (legalább 10 karakter).'); return; }
+        if (!d.confirm) { this.toast.error('Erősítsd meg, hogy mindegyik címhez van igazolható hozzájárulás.'); return; }
+        this.importing.set(true);
+        this.api.importNewsletter({ emails: d.emails, lang: d.lang, consent_note: d.consent_note.trim(), confirm: true }).subscribe({
+            next: r => { this.toast.success(r.message); this.importing.set(false); this.importOpen = false; this.importDraft = { emails: '', lang: 'hu', consent_note: '', confirm: false }; this.load(); this.loadCampaigns(); },
+            error: e => { this.toast.error(apiErrorMessage(e)); this.importing.set(false); }
         });
     }
     exportCsv(): void {

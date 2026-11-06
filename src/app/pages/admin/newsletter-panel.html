@@ -10,6 +10,46 @@
   <div class="fin-kpi"><span>Megerősítésre vár</span><strong>{{ counts().pending }}</strong><small>30 nap után automatikusan törlődik</small></div>
   <div class="fin-kpi"><span>Leiratkozott</span><strong>{{ counts().unsubscribed }}</strong><small>Nekik nem küldhetsz</small></div>
 </div>
+<section class="nl-brevo card">
+  <div class="nl-brevo-head">
+    <div>
+      <span class="panel-eyebrow">BREVO / AUTOMATIZÁLÁS</span>
+      @if (brevo()?.configured) {
+        <h3>Brevo összekötve</h3>
+        <p class="muted">A megerősített feliratkozók automatikusan felkerülnek a Brevo-listára; az újak az üdvözlő listára is, onnan indul a 3 részes sorozat. A Brevóban leiratkozottak itt is leiratkozottként jelennek meg (10 percenként).</p>
+      } @else {
+        <h3>A Brevo még nincs bekötve</h3>
+        <p class="muted">A szerver <code>.env</code> fájljában add meg: <code>BREVO_API_KEY</code>, <code>BREVO_LIST_ID</code>, <code>BREVO_WELCOME_LIST_ID</code>. Addig a feliratkozás itt ugyanúgy működik, csak a Brevóba nem kerül át.</p>
+      }
+    </div>
+    <div class="nl-brevo-actions">
+      <button type="button" class="btn btn-outline btn-sm" (click)="importOpen = !importOpen">Korábbi ügyfelek importja</button>
+      <button type="button" class="btn btn-primary btn-sm" [disabled]="!brevo()?.configured || syncing()" (click)="syncBrevo()">{{ syncing() ? 'Szinkronizálás…' : 'Szinkronizálás most' }}</button>
+    </div>
+  </div>
+  @if (brevo()?.configured) {
+    <div class="nl-brevo-stats">
+      <span>Szinkronra vár: <strong>{{ brevo()!.waiting }}</strong></span>
+      @if (brevo()!.errors) { <span class="nl-bad">Hibás: <strong>{{ brevo()!.errors }}</strong> (automatikusan újrapróbálja)</span> }
+      <span>Utolsó lehúzás: <strong>{{ brevo()!.last_pull_at ? date(brevo()!.last_pull_at) : '—' }}</strong></span>
+      @if (!brevo()!.welcome_list) { <span class="nl-bad">Nincs üdvözlő lista (BREVO_WELCOME_LIST_ID) – az új feliratkozók nem kapják meg a sorozatot.</span> }
+    </div>
+  }
+  @if (importOpen) {
+    <div class="nl-import">
+      <p class="fin-warning">Csak olyan címet importálj, akinek a tulajdonosa <strong>igazolhatóan hozzájárult</strong> a marketinglevelekhez (pl. bejelölte az ajánlatkérőn). Egy korábbi ügyfél e-mail-címe önmagában nem elég. Az importáltak nem kapják meg az üdvözlő sorozatot, a leiratkozottak kimaradnak.</p>
+      <label class="form-field"><span>E-mail-címek (soronként, vesszővel vagy pontosvesszővel elválasztva) · {{ importCount() }} cím</span><textarea class="input" rows="5" [(ngModel)]="importDraft.emails" placeholder="anna@example.com&#10;bela@example.com"></textarea></label>
+      <div class="nl-compose-row">
+        <label class="form-field"><span>A hozzájárulás forrása</span><input class="input" maxlength="300" [(ngModel)]="importDraft.consent_note" placeholder="pl. Ajánlatkérő űrlap, marketing-hozzájárulás bejelölve, 2026"></label>
+        <label class="form-field"><span>Nyelv</span><select class="input" [(ngModel)]="importDraft.lang"><option value="hu">Magyar</option><option value="en">Angol</option></select></label>
+      </div>
+      <label class="nl-check"><input type="checkbox" [(ngModel)]="importDraft.confirm"> Mindegyik címhez van igazolható marketing-hozzájárulás.</label>
+      <div class="nl-compose-actions">
+        <button type="button" class="btn btn-primary btn-sm" [disabled]="importing()" (click)="runImport()">{{ importing() ? 'Importálás…' : 'Importálás' }}</button>
+      </div>
+    </div>
+  }
+</section>
 <section class="nl-compose card">
   <span class="panel-eyebrow">HÍRLEVÉL / ÚJ LEVÉL</span>
   <h3>Levél küldése a feliratkozóknak</h3>
@@ -38,7 +78,6 @@
   </div>
   }
 </section>
-<p class="fin-warning nl-hint">Nagyobb listához (több száz cím felett) külső hírlevélküldő (pl. MailerLite, Brevo) is használható: töltsd le a CSV-t, és importáld.</p>
 <div class="fin-toolbar">
   <input class="input" type="search" placeholder="Keresés e-mail-címre…" aria-label="Keresés e-mail-címre" [(ngModel)]="q" (keyup.enter)="load()">
   <select class="input" aria-label="Állapot szűrése" [(ngModel)]="status" (ngModelChange)="load()">
@@ -50,7 +89,7 @@
   <div class="nl-list">
     @for (s of items(); track s.id) {
       <div class="nl-row">
-        <div><strong>{{ s.email }}</strong><small>{{ statusLabel[s.status] }} · {{ s.lang.toUpperCase() }} · feliratkozott: {{ date(s.created_at) }}@if (s.confirmed_at) { · megerősítve: {{ date(s.confirmed_at) }} }</small></div>
+        <div><strong>{{ s.email }}</strong><small>{{ statusLabel[s.status] }} · {{ s.lang.toUpperCase() }} · feliratkozott: {{ date(s.created_at) }}@if (s.confirmed_at) { · megerősítve: {{ date(s.confirmed_at) }} }@if (s.source === 'import') { · import }@if (s.welcome_status && s.status === 'confirmed') { · {{ welcomeLabel[s.welcome_status] }} }@if (brevoState(s)) { · <span [class.nl-bad]="!!s.brevo_error" [attr.title]="s.brevo_error || null">{{ brevoState(s) }}</span> }</small></div>
         <button type="button" class="danger-text" (click)="remove(s)">Törlés</button>
       </div>
     } @empty { <p class="empty-state">Még nincs feliratkozó. A főoldal alján lévő űrlapon tudnak feliratkozni.</p> }

@@ -46,8 +46,11 @@ export interface Promotion { active: boolean; percent: number; title: string; en
 export interface NewsletterSubscriber {
     id: number; email: string; status: 'pending' | 'confirmed' | 'unsubscribed'; lang: string; source: string | null;
     consent_ip: string | null; confirmed_at: string | null; unsubscribed_at: string | null; created_at: string;
+    brevo_synced_at?: string | null; brevo_error?: string | null; welcome_status?: 'queued' | 'added' | 'skipped' | null;
 }
 export interface NewsletterCounts { confirmed: number; pending: number; unsubscribed: number; }
+export interface BrevoStatus { configured: boolean; welcome_list: boolean; waiting: number; errors: number; last_pull_at: string | null; }
+export interface NewsletterImport { emails: string; lang: 'hu' | 'en'; consent_note: string; confirm: boolean; }
 export interface Service {
     id: number;
     slug: string;
