@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 
 /** A frontend verziója – a Rendszerállapot panel összeveti a backend verziójával. */
-export const FRONTEND_VERSION = 'v21';
+export const FRONTEND_VERSION = 'v22';
 
 /**
  * Egységes, emberi nyelvű hibaüzenet az admin számára.

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, switchMap } from 'rxjs';
-import { GoogleReviews, ManagedConsultation, NewsletterCampaign, NewsletterDraft, ProposalTemplate } from './models';
+import { BrevoStatus, GoogleReviews, ManagedConsultation, NewsletterCampaign, NewsletterDraft, NewsletterImport, ProposalTemplate } from './models';
 import { AdminSecurityStatus, SystemStatus, ClientSite, ClientSiteInput, FinanceEntry, FinanceEntryInput, FinanceSettings, FinanceSummary, AdminUser, Activity, Client, ClientProject, ConsultationConfirmation, ConsultationSlot, Dashboard, Envelope, Paged, Project, ProjectMilestone, ProjectMessage, ProjectDocument, ProjectCollaboration, Quote, QuotePayload, QuoteBoard, Service, SiteSettings, StudioTask, StudioClientNote, WorkspaceProject, CommunicationCenter, MaintenanceData, MaintenanceAgreement, MaintenanceEditor, Testimonial, TestimonialInput, GrowthData, NewsletterSubscriber, NewsletterCounts } from './models';
 import { AttributionService } from './attribution.service';
 import { I18nService } from '../i18n/i18n.service';
@@ -185,7 +185,9 @@ export class ApiService {
     }
     newsletterConfirm(token: string) { return this.csrf().pipe(switchMap(() => this.http.post<{ message: string; unsubscribe_token: string }>('/api/newsletter/confirm', { token }, this.opts))); }
     newsletterUnsubscribe(token: string) { return this.csrf().pipe(switchMap(() => this.http.post<{ message: string }>('/api/newsletter/unsubscribe', { token }, this.opts))); }
-    adminNewsletter(q = '', status = '') { return this.http.get<{ data: NewsletterSubscriber[]; counts: NewsletterCounts }>('/api/admin/newsletter', { ...this.opts, params: this.params({ q, status }) }); }
+    adminNewsletter(q = '', status = '') { return this.http.get<{ data: NewsletterSubscriber[]; counts: NewsletterCounts; brevo?: BrevoStatus }>('/api/admin/newsletter', { ...this.opts, params: this.params({ q, status }) }); }
+    brevoSync() { return this.http.post<{ message: string; brevo: BrevoStatus }>('/api/admin/newsletter/brevo-sync', {}, this.opts); }
+    importNewsletter(data: NewsletterImport) { return this.http.post<{ message: string; counts: Record<string, number> }>('/api/admin/newsletter/import', data, this.opts); }
     deleteNewsletterSubscriber(id: number) { return this.http.delete<{ message: string }>('/api/admin/newsletter/' + id, this.opts); }
     exportNewsletter() { return this.http.get('/api/admin/exports/newsletter', { ...this.opts, responseType: 'blob' }); }
     newsletterCampaigns() { return this.http.get<{ data: NewsletterCampaign[]; audience: { all: number; hu: number; en: number } }>('/api/admin/newsletter/campaigns', this.opts); }
