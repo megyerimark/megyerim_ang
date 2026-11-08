@@ -694,4 +694,4 @@ export const ENTRIES = [
   }
  }
 ];
-export const UI = {"more":{"hu":"Szócikk megnyitása ↓","en":"Open the entry ↓"},"pick":{"hu":"Válassz bolygót a térképen vagy a nevére kattintva.","en":"Pick a planet on the map or by clicking its name."},"moon":{"hu":"Hold","en":"Moon"}};
+export const UI = {"more":{"hu":"Szócikk megnyitása ↓","en":"Open the entry ↓"},"pick":{"hu":"Válassz bolygót a térképen vagy a nevére kattintva.","en":"Pick a planet on the map or by clicking its name."},"moon":{"hu":"Hold","en":"Moon"},"start":{"hu":"Kezdet","en":"Start"},"map":{"hu":"Térkép","en":"Map"},"compare":{"hu":"Összehasonlítás","en":"Compare"},"end":{"hu":"Vége","en":"The end"}};
