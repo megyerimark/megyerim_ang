@@ -165,32 +165,101 @@ const BODIES = [
     },
 ];
 
+// Felfedezés: néhány fontos küldetés égitestenként [év, magyar, angol]
+const MISSIONS = {
+    nap: [
+        ['1995', 'SOHO: azóta is folyamatosan figyeli a Napot.', 'SOHO: has watched the Sun continuously ever since.'],
+        ['2018', 'Parker Solar Probe: minden ember alkotta tárgynál közelebb jutott a Naphoz.', 'Parker Solar Probe: has flown closer to the Sun than any other human-made object.'],
+        ['2020', 'Solar Orbiter: elsőként készített képeket a Nap pólusairól.', 'Solar Orbiter: the first to image the Sun’s poles.'],
+    ],
+    merkur: [
+        ['1974', 'Mariner 10: az első szonda a Merkúrnál, három elrepüléssel.', 'Mariner 10: the first probe at Mercury, with three flybys.'],
+        ['2011', 'MESSENGER: elsőként állt pályára körülötte, és feltérképezte a teljes felszínt.', 'MESSENGER: the first to orbit it and map its entire surface.'],
+        ['2018', 'BepiColombo: európai–japán küldetés a bolygó részletes vizsgálatára.', 'BepiColombo: a European–Japanese mission to study the planet in detail.'],
+    ],
+    venusz: [
+        ['1970', 'Venyera–7: az első sikeres leszállás egy másik bolygón, adatokat küldött a felszínről.', 'Venera 7: the first successful landing on another planet, sending data from the surface.'],
+        ['1990', 'Magellan: radarral térképezte fel a felhők alatti felszínt.', 'Magellan: mapped the surface beneath the clouds by radar.'],
+        ['2015', 'Akatsuki: a japán szonda a légkör mozgását vizsgálta.', 'Akatsuki: the Japanese probe studied how the atmosphere moves.'],
+    ],
+    fold: [
+        ['1957', 'Szputnyik–1: az első mesterséges hold a Föld körül.', 'Sputnik 1: the first artificial satellite to orbit Earth.'],
+        ['1968', 'Apollo–8: elkészült a híres „Földkelte” fotó.', 'Apollo 8: the famous “Earthrise” photo was taken.'],
+        ['2000', 'Nemzetközi Űrállomás: azóta folyamatosan laknak rajta űrhajósok.', 'International Space Station: continuously crewed ever since.'],
+    ],
+    mars: [
+        ['1965', 'Mariner 4: az első közeli felvételek a Marsról.', 'Mariner 4: the first close-up pictures of Mars.'],
+        ['1976', 'Viking 1: az első tartósan működő leszállóegység a felszínen.', 'Viking 1: the first long-lived lander on the surface.'],
+        ['2021', 'Perseverance és Ingenuity: a rover mintákat gyűjt, a helikopter elsőként repült egy másik bolygón.', 'Perseverance and Ingenuity: the rover collects samples, and the helicopter made the first powered flight on another planet.'],
+    ],
+    jupiter: [
+        ['1973', 'Pioneer 10: az első szonda a Jupiternél.', 'Pioneer 10: the first probe at Jupiter.'],
+        ['1995', 'Galileo: az első keringő egység, légköri szondát is leküldött.', 'Galileo: the first orbiter; it also dropped a probe into the atmosphere.'],
+        ['2016', 'Juno: a pólusok fölötti pályáról vizsgálja a bolygó belsejét.', 'Juno: studies the planet’s interior from a polar orbit.'],
+    ],
+    szaturnusz: [
+        ['1979', 'Pioneer 11: az első szonda a Szaturnusznál.', 'Pioneer 11: the first probe at Saturn.'],
+        ['2004', 'Cassini: 13 évig keringett körülötte, majd 2017-ben a légkörébe merült.', 'Cassini: orbited it for 13 years before plunging into its atmosphere in 2017.'],
+        ['2005', 'Huygens: leszállt a Titánra – ez a legtávolabbi leszállás a Naprendszerben.', 'Huygens: landed on Titan – the most distant landing in the Solar System.'],
+    ],
+    uranusz: [
+        ['1986', 'Voyager 2: eddig az egyetlen szonda az Uránusznál; 10 új holdat fedezett fel.', 'Voyager 2: still the only probe to visit Uranus; it discovered 10 new moons.'],
+        ['2023', 'James Webb űrtávcső: részletes felvétel a gyűrűkről és a légkörről.', 'James Webb Space Telescope: detailed images of its rings and atmosphere.'],
+    ],
+    neptunusz: [
+        ['1846', 'Johann Galle a matematikai előrejelzés alapján azonosította távcsővel.', 'Johann Galle found it with a telescope, guided by a mathematical prediction.'],
+        ['1989', 'Voyager 2: az egyetlen elrepülés; ekkor fedezték fel a Nagy Sötét Foltot.', 'Voyager 2: the only flyby so far; it discovered the Great Dark Spot.'],
+        ['2022', 'James Webb űrtávcső: évtizedek óta a legélesebb kép a gyűrűiről.', 'James Webb Space Telescope: the clearest view of its rings in decades.'],
+    ],
+};
+const CHAPTERS = [['Bemutatás', 'Introduction'], ['Adatlap', 'Fact sheet'], ['Érdekességek', 'Did you know?'], ['Felfedezés', 'Exploration']];
+
 const nf = n => n.toLocaleString('hu-HU').replace(/ /g, ' ');
 const nfEn = n => n.toLocaleString('en-US');
 
 // ── HTML darabok ─────────────────────────────────────────────────────────────
-const toc = BODIES.map((b, i) => `<a href="#${b.key}" data-toc="${b.key}"><span>${String(i + 1).padStart(2, '0')}</span>${t(b.hu, b.en)}</a>`).join('');
+// pálya-navigáció: a megállók egy körív mentén (--a = szög), a JS rajzolja a haladást és jelöli az aktívat
+const STOPS = [...BODIES.map(b => [b.key, b.hu, b.en]), ['terkep', 'Térkép', 'Map']];
+const orbitNav = STOPS.map(([key, hu, en], i) => {
+    const a = (-48 + 96 * i / (STOPS.length - 1)).toFixed(2);
+    return `<a href="#${key}" data-stop="${key}" style="--a:${a}deg" aria-label="${t(hu, en)}"><i aria-hidden="true"></i><span>${t(hu, en)}</span></a>`;
+}).join('');
 
 const entry = (b, i) => {
     const ratio = b.d / 12742;
     // a .st elemek a görgetéssel, egymás után (--i sorrendben) úsznak be
-    const rows = FIELDS.map(([k, hu, en], n) => `<tr class="st" style="--i:${4 + n}"><th scope="row">${t(hu, en)}</th><td>${t(b.data[k][0], b.data[k][1])}</td></tr>`).join('');
-    const facts = b.facts.map(([hu, en], n) => `<li class="st" style="--i:${12 + n}">${t(hu, en)}</li>`).join('');
+    const rows = FIELDS.map(([k, hu, en], n) => `<tr class="st" style="--i:${1 + n}"><th scope="row">${t(hu, en)}</th><td>${t(b.data[k][0], b.data[k][1])}</td></tr>`).join('');
+    const facts = b.facts.map(([hu, en], n) => `<li class="st" style="--i:${1 + n}">${t(hu, en)}</li>`).join('');
     const ratioHu = ratio >= 10 ? ratio.toFixed(0) : ratio.toFixed(2).replace('.', ',');
     const ratioEn = ratio >= 10 ? ratio.toFixed(0) : ratio.toFixed(2);
     const bar = b.key === 'nap'
-        ? `<p class="entry-compare-note st" style="--i:10">${t('Átmérője a Földének kb. 109-szerese.', 'Its diameter is about 109 times Earth’s.')}</p>`
-        : `<div class="entry-compare st" style="--i:10"><span>${t('Átmérő a Földhöz képest', 'Diameter compared with Earth')}</span><div class="bar" aria-hidden="true"><i style="--w:${Math.min(100, Math.sqrt(ratio / 11) * 100).toFixed(1)}%"></i></div><b>${t(ratioHu + '×', ratioEn + '×')}</b></div>`;
+        ? `<p class="entry-compare-note st" style="--i:3">${t('Átmérője a Földének kb. 109-szerese.', 'Its diameter is about 109 times Earth’s.')}</p>`
+        : `<div class="entry-compare st" style="--i:3"><span>${t('Átmérő a Földhöz képest', 'Diameter compared with Earth')}</span><div class="bar" aria-hidden="true"><i style="--w:${Math.min(100, Math.sqrt(ratio / 11) * 100).toFixed(1)}%"></i></div><b>${t(ratioHu + '×', ratioEn + '×')}</b></div>`;
+    const missions = (MISSIONS[b.key] || []).map(([y, hu, en], n) => `<li class="st" style="--i:${n + 1}"><b>${y}</b><span>${t(hu, en)}</span></li>`).join('');
+    const steps = CHAPTERS.map(([hu, en], n) => `<li data-step="${n}"><i></i><span>${t(hu, en)}</span></li>`).join('');
     return `
     <article class="entry" id="${b.key}" data-focus="${b.key}" aria-labelledby="${b.key}-title">
       <div class="entry-card">
         <p class="entry-kicker st" style="--i:0"><span>${String(i + 1).padStart(2, '0')}</span>${t(b.kind[0], b.kind[1])}</p>
         <h2 id="${b.key}-title" class="split">${t(b.hu, b.en)}</h2>
-        <p class="entry-lead st" style="--i:2">${t(b.lead[0], b.lead[1])}</p>
-        <table class="infobox"><caption class="st" style="--i:3">${t('Adatlap', 'Fact sheet')}</caption><tbody>${rows}</tbody></table>
-        ${bar}
-        <h3 class="st" style="--i:11">${t('Érdekességek', 'Did you know?')}</h3>
-        <ul class="facts">${facts}</ul>
+        <div class="chapters">
+          <section class="chapter" data-ch="0" aria-label="${t(CHAPTERS[0][0], CHAPTERS[0][1])}">
+            <p class="entry-lead st" style="--i:1">${t(b.lead[0], b.lead[1])}</p>
+            ${bar}
+          </section>
+          <section class="chapter" data-ch="1" aria-label="${t(CHAPTERS[1][0], CHAPTERS[1][1])}">
+            <table class="infobox"><caption class="st" style="--i:0">${t('Adatlap', 'Fact sheet')}</caption><tbody>${rows}</tbody></table>
+          </section>
+          <section class="chapter" data-ch="2" aria-label="${t(CHAPTERS[2][0], CHAPTERS[2][1])}">
+            <h3 class="st" style="--i:0">${t('Érdekességek', 'Did you know?')}</h3>
+            <ul class="facts">${facts}</ul>
+          </section>
+          <section class="chapter" data-ch="3" aria-label="${t(CHAPTERS[3][0], CHAPTERS[3][1])}">
+            <h3 class="st" style="--i:0">${t('Felfedezés', 'Exploration')}</h3>
+            <ol class="missions">${missions}</ol>
+          </section>
+        </div>
+        <ol class="steps" aria-hidden="true">${steps}</ol>
       </div>
     </article>`;
 };
@@ -235,7 +304,17 @@ const html = `<!doctype html>
         <a href="#osszehasonlitas">${t('Összehasonlítás', 'Compare')}</a>
       </nav>
     </header>
-    <nav class="toc" aria-label="${t('Tartalom', 'Contents')}"><p>${t('Tartalom', 'Contents')}</p>${toc}<a href="#terkep" data-toc="terkep"><span>◎</span>${t('Térkép', 'Map')}</a></nav>
+    <div class="veil" aria-hidden="true"></div>
+    <nav class="orbit-nav" aria-label="${t('Tartalom', 'Contents')}">
+      <svg viewBox="0 0 120 440" aria-hidden="true"><path class="track" d="M -170 -60 A 260 260 0 0 1 -170 500"></path><path class="progress" d="M -170 -60 A 260 260 0 0 1 -170 500" pathLength="1"></path></svg>
+      ${orbitNav}
+    </nav>
+    <nav class="orbit-mini" aria-label="${t('Tartalom', 'Contents')}">
+      <a class="om-prev" href="#kezdet" aria-label="${t('Előző', 'Previous')}">‹</a>
+      <span class="om-ring" aria-hidden="true"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15"></circle><circle class="om-bar" cx="18" cy="18" r="15" pathLength="1"></circle></svg></span>
+      <span class="om-name" translate="no"></span>
+      <a class="om-next" href="#nap" aria-label="${t('Következő', 'Next')}">›</a>
+    </nav>
 
     <main>
       <section class="hero" id="kezdet" data-focus="hold" aria-labelledby="hero-title">
@@ -258,7 +337,7 @@ const html = `<!doctype html>
       <section class="map" id="terkep" data-focus="overview" aria-labelledby="map-title">
         <div class="map-head reveal">
           <p class="eyebrow">${t('A Naprendszer térképe', 'Map of the Solar System')}</p>
-          <h2 id="map-title">${t('Kattints egy bolygóra.', 'Click a planet.')}</h2>
+          <h2 id="map-title" class="words">${t('Kattints egy bolygóra.', 'Click a planet.')}</h2>
           <p>${t('Húzással forgathatod a nézetet. A méretek és a távolságok nem méretarányosak – úgy sűrítettük őket, hogy minden bolygó egyszerre látszódjon.', 'Drag to rotate the view. Sizes and distances are not to scale – they are compressed so every planet fits on screen at once.')}</p>
         </div>
         <aside class="map-card" aria-live="polite" translate="no"></aside>
@@ -267,7 +346,7 @@ const html = `<!doctype html>
       <section class="compare" id="osszehasonlitas" data-focus="overview-quiet" aria-labelledby="compare-title">
         <div class="compare-card reveal">
           <p class="eyebrow">${t('Összehasonlító táblázat', 'Comparison table')}</p>
-          <h2 id="compare-title">${t('A nyolc bolygó egymás mellett', 'The eight planets side by side')}</h2>
+          <h2 id="compare-title" class="words">${t('A nyolc bolygó egymás mellett', 'The eight planets side by side')}</h2>
           <p class="muted">${t('Kattints egy oszlop fejlécére a rendezéshez.', 'Click a column header to sort.')}</p>
           <div class="table-wrap">
             <table class="sortable">
@@ -283,6 +362,18 @@ const html = `<!doctype html>
             </table>
           </div>
           <p class="source">${t('Adatok: a NASA Solar System Exploration összefoglalói alapján, kerekítve. A holdak száma az ismert holdakat jelenti, és az új felfedezésekkel nő. CsE = csillagászati egység, a Föld–Nap közepes távolság (149,6 millió km).', 'Data: based on NASA Solar System Exploration summaries, rounded. Moon counts are known moons and grow with new discoveries. AU = astronomical unit, the mean Earth–Sun distance (149.6 million km).')}</p>
+        </div>
+      </section>
+
+      <section class="outro" id="vege" data-focus="outro" aria-labelledby="outro-title">
+        <div class="outro-copy reveal">
+          <p class="eyebrow">${t('Az utazás vége', 'End of the journey')}</p>
+          <h2 id="outro-title" class="words">${t('A Naprendszer csak a kezdet.', 'The Solar System is only the beginning.')}</h2>
+          <p>${t('A Nap egy a Tejútrendszer becslések szerint 100–400 milliárd csillaga közül – és szinte mindegyik körül keringhetnek bolygók.', 'The Sun is one of an estimated 100–400 billion stars in the Milky Way – and almost any of them may have planets of its own.')}</p>
+          <div class="hero-actions">
+            <a class="btn btn-solid" href="#nap">${t('Utazás újra ↑', 'Travel again ↑')}</a>
+            <a class="btn btn-ghost" href="#terkep">${t('Vissza a térképre', 'Back to the map')}</a>
+          </div>
         </div>
       </section>
     </main>
@@ -305,6 +396,10 @@ const dataJs = `// Generálta: scripts/demo-naprendszer.mjs – ne kézzel szerk
     more: { hu: 'Szócikk megnyitása ↓', en: 'Open the entry ↓' },
     pick: { hu: 'Válassz bolygót a térképen vagy a nevére kattintva.', en: 'Pick a planet on the map or by clicking its name.' },
     moon: { hu: 'Hold', en: 'Moon' },
+    start: { hu: 'Kezdet', en: 'Start' },
+    map: { hu: 'Térkép', en: 'Map' },
+    compare: { hu: 'Összehasonlítás', en: 'Compare' },
+    end: { hu: 'Vége', en: 'The end' },
 })};\n`;
 
 const enJs = `// ORBIS – angol szótár a ../shared/i18n.js-hez. Generálta: scripts/demo-naprendszer.mjs – ne kézzel szerkeszd.

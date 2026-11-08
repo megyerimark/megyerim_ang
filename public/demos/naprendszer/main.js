@@ -11,10 +11,12 @@ const LOW = matchMedia('(max-width: 760px), (pointer: coarse)').matches;
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 document.documentElement.classList.add('js');
+const clamp01 = v => Math.min(1, Math.max(0, v));
+const easeOut = t => 1 - Math.pow(1 - t, 3);
 
 setupReveal();
 setupEntryFx();
-setupToc();
+setupOrbitNav();
 setupSearch();
 setupSort();
 const mapCard = $('.map-card');
@@ -28,34 +30,70 @@ function setupReveal() {
     items.forEach(el => io.observe(el));
 }
 
-// A szócikk-kártyák görgetéshez kötött animációja: a cím betűkre bontva, --in / --out a szakaszon belüli helyzetből.
+/** Szövegből betű- vagy szó-spanok (a képernyőolvasó a teljes szöveget kapja). */
+function splitText(el, mode) {
+    const text = el.textContent.replace(/\s+/g, ' ').trim();
+    el.setAttribute('aria-label', text);
+    el.setAttribute('translate', 'no');
+    const parts = mode === 'words' ? text.split(' ').map((w, k, a) => w + (k < a.length - 1 ? ' ' : '')) : [...text];
+    el.innerHTML = parts.map((c, j) => `<span class="${mode === 'words' ? 'w' : 'ch'}" aria-hidden="true" style="--j:${j}">${c}</span>`).join('');
+}
+
+// Szócikkek: görgetéshez kötött be-/kilépés (--in, --out), a megállás alatt fejezetváltás (Bemutatás → … → Felfedezés).
+// Az i18n.js már lefutott (előbb töltődik), így a betűkre bontás a végleges nyelvű szövegen történik.
 function setupEntryFx() {
-    const entries = $$('.entry').map(section => {
-        const card = $('.entry-card', section), h2 = $('h2.split', section);
-        if (h2 && !REDUCED) {
-            const text = h2.textContent.trim();
-            h2.setAttribute('aria-label', text);
-            h2.setAttribute('translate', 'no');
-            h2.innerHTML = [...text].map((c, j) => `<span class="ch" aria-hidden="true" style="--j:${j}">${c}</span>`).join('');
-        }
-        return { section, card };
-    });
-    if (REDUCED) return;
-    const clamp01 = v => Math.min(1, Math.max(0, v));
-    const ease = t => 1 - Math.pow(1 - t, 3);
+    if (!REDUCED) {
+        $$('.hero h1 > span').forEach((span, n) => {
+            const text = span.textContent;
+            span.innerHTML = [...text].map((c, j) => `<span class="ch" style="--j:${j + n * 8}">${c}</span>`).join('');
+        });
+        $('.hero h1').setAttribute('translate', 'no');
+        $$('.entry h2.split').forEach(h => splitText(h, 'chars'));
+        $$('.words').forEach(h => splitText(h, 'words'));
+    }
+    // szavanként élesedő címek: oda-vissza görgetésre is
+    const words = $$('.words');
+    if (REDUCED || !('IntersectionObserver' in window)) words.forEach(w => w.classList.add('in'));
+    else {
+        const io = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('in', e.isIntersecting)), { rootMargin: '-12% 0px -12% 0px' });
+        words.forEach(w => io.observe(w));
+    }
+
+    const entries = $$('.entry').map(section => ({
+        section, card: $('.entry-card', section), chapters: $$('.chapter', section), steps: $$('.steps li', section), cur: -1,
+    }));
+    const setChapter = (e, idx) => {
+        if (idx === e.cur) return;
+        e.cur = idx;
+        e.chapters.forEach((ch, i) => { ch.classList.toggle('on', i === idx); ch.classList.toggle('past', i < idx); });
+    };
+    if (REDUCED) { entries.forEach(e => setChapter(e, 0)); }
     function placeTop() {
-        for (const e of entries) e.card.style.setProperty('--top', Math.max(84, Math.round((innerHeight - e.card.offsetHeight) / 2)) + 'px');
+        const narrow = innerWidth <= 760;
+        for (const e of entries) {
+            const h = e.card.offsetHeight;
+            // asztalon függőlegesen középen, mobilon a képernyő alján (a mini-navigáció fölött) marad
+            const top = narrow ? innerHeight - h - 78 : (innerHeight - h) / 2;
+            e.card.style.setProperty('--top', Math.max(narrow ? 60 : 84, Math.round(top)) + 'px');
+        }
     }
     let queued = false;
     function update() {
         queued = false;
-        const H = innerHeight;
+        const H = innerHeight, c = H / 2;
         for (const e of entries) {
             const r = e.section.getBoundingClientRect();
             if (r.bottom < -H || r.top > 2 * H) continue;
-            const t = (H - r.top) / (H + r.height); // 0: a szakasz alul belép ... 1: felül kilép
-            e.card.style.setProperty('--in', ease(clamp01((t - .1) / .24)).toFixed(4));
-            e.card.style.setProperty('--out', clamp01((t - .7) / .2).toFixed(4));
+            const d = c - r.top; // a képernyő közepe ennyi px-re van a szakasz tetejétől
+            const n = e.chapters.length;
+            const cp = clamp01((d - .5 * H) / Math.max(1, r.height - 1.35 * H));
+            const idx = Math.min(n - 1, Math.floor(cp * n));
+            if (!REDUCED) {
+                e.card.style.setProperty('--in', easeOut(clamp01((d - .08 * H) / (.45 * H))).toFixed(4));
+                e.card.style.setProperty('--out', clamp01((d - (r.height - .78 * H)) / (.34 * H)).toFixed(4));
+                setChapter(e, d < .3 * H ? 0 : idx);
+            }
+            e.steps.forEach((st, i) => { st.style.setProperty('--f', clamp01(cp * n - i).toFixed(3)); st.classList.toggle('on', i === e.cur); });
         }
     }
     const queue = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
@@ -63,19 +101,55 @@ function setupEntryFx() {
     addEventListener('resize', () => { placeTop(); queue(); });
     placeTop(); update();
     if (document.fonts) document.fonts.ready.then(() => { placeTop(); update(); });
+    if (REDUCED) entries.forEach(e => setChapter(e, 0));
 }
 
-function setupToc() {
-    const toc = $('.toc');
-    const links = new Map($$('[data-toc]', toc).map(a => [a.dataset.toc, a]));
-    const onScroll = () => toc.classList.toggle('on', scrollY > innerHeight * .6);
-    addEventListener('scroll', onScroll, { passive: true }); onScroll();
-    const io = new IntersectionObserver(es => es.forEach(e => {
-        if (!e.isIntersecting) return;
-        const key = e.target.id === 'terkep' || e.target.id === 'osszehasonlitas' ? 'terkep' : e.target.id;
-        links.forEach((a, k) => a.classList.toggle('active', k === key));
-    }), { rootMargin: '-45% 0px -45% 0px' });
-    $$('.entry, .map, .compare').forEach(s => io.observe(s));
+// Pálya-navigáció (asztal) és mini-navigáció (mobil/tablet): aktív szakasz, haladás, ugrás
+function setupOrbitNav() {
+    const nav = $('.orbit-nav'), mini = $('.orbit-mini');
+    if (!nav || !mini) return;
+    const stops = $$('a[data-stop]', nav).map(a => ({ key: a.dataset.stop, a }));
+    const order = ['kezdet', ...stops.map(st => st.key), 'osszehasonlitas', 'vege'];
+    const els = order.map(id => document.getElementById(id));
+    const names = { kezdet: UI.start[LANG], terkep: UI.map[LANG], osszehasonlitas: UI.compare[LANG], vege: UI.end[LANG] };
+    ENTRIES.forEach(e => { names[e.key] = e.name[LANG]; });
+    const firstEl = document.getElementById(stops[0].key), lastEl = document.getElementById(stops[stops.length - 1].key);
+    const miniName = $('.om-name', mini), prev = $('.om-prev', mini), next = $('.om-next', mini);
+    let queued = false, lastIdx = -1;
+    function update() {
+        queued = false;
+        const H = innerHeight, c = H / 2;
+        let idx = 0;
+        els.forEach((el, i) => { if (el && el.getBoundingClientRect().top <= c) idx = i; });
+        const f = firstEl.getBoundingClientRect(), l = lastEl.getBoundingClientRect();
+        const y0 = f.top + f.height / 2, y1 = l.top + l.height / 2;
+        const p = clamp01((c - y0) / Math.max(1, y1 - y0));
+        // az ív teljes hossza 180°, a megállók −48° … +48° között vannak
+        nav.style.setProperty('--dash', (1 - (.2333 + .5333 * p)).toFixed(4));
+        const total = document.documentElement.scrollHeight - H;
+        mini.style.setProperty('--dash', (1 - clamp01(scrollY / Math.max(1, total))).toFixed(4));
+        nav.classList.toggle('on', scrollY > H * .6 && order[idx] !== 'vege');
+        mini.classList.toggle('on', scrollY > H * .5);
+        if (idx !== lastIdx) {
+            lastIdx = idx;
+            const cur = order.indexOf(order[idx]);
+            stops.forEach(st => {
+                const si = order.indexOf(st.key);
+                st.a.classList.toggle('active', si === cur);
+                st.a.classList.toggle('past', si < cur);
+                if (si === cur) st.a.setAttribute('aria-current', 'true'); else st.a.removeAttribute('aria-current');
+            });
+            miniName.textContent = names[order[idx]] || '';
+            prev.href = '#' + order[Math.max(0, idx - 1)];
+            next.href = '#' + order[Math.min(order.length - 1, idx + 1)];
+            prev.setAttribute('aria-disabled', String(idx === 0));
+            next.setAttribute('aria-disabled', String(idx === order.length - 1));
+        }
+    }
+    const queue = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+    addEventListener('scroll', queue, { passive: true });
+    addEventListener('resize', queue);
+    update();
 }
 
 function setupSearch() {
@@ -328,6 +402,22 @@ const POINTS_FS = /* glsl */`
 varying vec3 vC; varying float vA;
 void main(){ float d=length(gl_PointCoord-0.5); float a=smoothstep(0.5,0.0,d); gl_FragColor=vec4(vC*a*a*vA,1.0); }`;
 
+// Por és előtér-„bokeh”: a pontok a kamera körüli dobozban ismétlődnek, így repülés közben elsuhannak mellettünk.
+const DUST_VS = /* glsl */`
+attribute float aSize; uniform vec3 uCam; uniform float uBox; uniform float uPx; uniform float uAlpha;
+varying float vA;
+void main(){
+  vec3 rel=mod(position-uCam,uBox)-uBox*0.5;
+  vec4 mv=viewMatrix*vec4(uCam+rel,1.0);
+  gl_Position=projectionMatrix*mv;
+  float dist=-mv.z;
+  gl_PointSize=aSize*uPx*clamp(10.0/max(dist,0.3),0.4,46.0);
+  vA=uAlpha*(1.0-smoothstep(uBox*0.28,uBox*0.5,length(rel)))*smoothstep(0.25,1.6,dist)/(1.0+aSize*0.35);
+}`;
+const DUST_FS = /* glsl */`
+varying float vA;
+void main(){ float d=length(gl_PointCoord-0.5); float a=smoothstep(0.5,0.0,d); gl_FragColor=vec4(vec3(1.0,0.93,0.82)*a*vA,1.0); }`;
+
 const METEOR_FS = /* glsl */`
 uniform float uAlpha; varying vec2 vUv;
 void main(){ float head=pow(vUv.x,3.5); float core=1.0-abs(vUv.y-0.5)*2.0; float a=head*smoothstep(0.0,0.7,core)*uAlpha;
@@ -481,6 +571,50 @@ function initSpace() {
     }, true);
     scene.add(belt);
 
+    // közeli csillagok: valódi térbeli pontok, repülés közben láthatóan elmozdulnak a távoli háttérhez képest
+    const nearStars = pointCloud(LOW ? 700 : 1600, (v, c) => {
+        randDir(v).multiplyScalar(140 + Math.random() * 520);
+        const k = Math.random(); c.setRGB(k < .2 ? .78 : 1, k < .2 ? .86 : .97, k > .8 ? .8 : 1).multiplyScalar(.5 + Math.random() * .5);
+        return .8 + Math.random() * 1.8;
+    }, true);
+    scene.add(nearStars);
+
+    // ködök: halvány, nagy színfoltok a háttérben; a görgetéssel a csillagoknál gyorsabban fordulnak (mélység)
+    const nebula = new THREE.Group(); scene.add(nebula);
+    const nebulaTex = (rgb, seed) => {
+        const c = document.createElement('canvas'); c.width = c.height = 256;
+        const g = c.getContext('2d');
+        let r = seed; const rnd = () => (r = (r * 9301 + 49297) % 233280) / 233280;
+        for (let i = 0; i < 26; i++) {
+            const x = 128 + (rnd() - .5) * 120, y = 128 + (rnd() - .5) * 90, rad = 30 + rnd() * 80;
+            const gr = g.createRadialGradient(x, y, 0, x, y, rad);
+            gr.addColorStop(0, `rgba(${rgb},${(.05 + rnd() * .09).toFixed(3)})`); gr.addColorStop(1, `rgba(${rgb},0)`);
+            g.fillStyle = gr; g.fillRect(0, 0, 256, 256);
+        }
+        const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+    };
+    [['70,90,190', 11, [-.6, .35, -.7], 900], ['120,70,170', 23, [.75, -.2, -.5], 760], ['40,130,150', 37, [.2, .55, .8], 820], ['150,80,55', 41, [-.8, -.4, .45], 640], ['60,80,160', 53, [.5, .1, .85], 700]]
+        .slice(0, LOW ? 3 : 5).forEach(([rgb, seed, dir, size]) => {
+            const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: nebulaTex(rgb, seed), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: .85 }));
+            sp.position.set(...dir).normalize().multiplyScalar(1250); sp.scale.setScalar(size); nebula.add(sp);
+        });
+
+    // légköri por és előtér-részecskék (néhány nagy, életlen „bokeh” folt)
+    const DUST_N = LOW ? 110 : 240, DUST_BOX = 34;
+    const dustPos = new Float32Array(DUST_N * 3), dustSize = new Float32Array(DUST_N);
+    for (let i = 0; i < DUST_N; i++) {
+        dustPos.set([Math.random() * DUST_BOX, Math.random() * DUST_BOX, Math.random() * DUST_BOX], i * 3);
+        dustSize[i] = Math.random() < .06 ? 7 + Math.random() * 8 : .7 + Math.random() * 1.6;
+    }
+    const dustGeo = new THREE.BufferGeometry();
+    dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+    dustGeo.setAttribute('aSize', new THREE.BufferAttribute(dustSize, 1));
+    const dust = new THREE.Points(dustGeo, new THREE.ShaderMaterial({
+        vertexShader: DUST_VS, fragmentShader: DUST_FS, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+        uniforms: { uCam: { value: new THREE.Vector3() }, uBox: { value: DUST_BOX }, uPx: { value: DPR }, uAlpha: { value: .5 } },
+    }));
+    dust.frustumCulled = false; scene.add(dust);
+
     // meteorok (a kamerához rögzítve, mint egy hullócsillag a háttérben)
     const meteors = [];
     for (let i = 0; i < 3; i++) {
@@ -527,8 +661,15 @@ function initSpace() {
     let yaw = .5, yawTarget = .5;
     const portrait = () => innerWidth < 760 || innerWidth / innerHeight < .9;
 
-    function bodyState(key, out) {
+    let introT = REDUCED ? 1 : 0; // nyitány: a kamera a betöltéskor messziről érkezik a Holdhoz
+    function bodyState(key, out, p = .5) {
         const narrow = portrait();
+        if (key === 'outro') { // zárás: a kamera kihátrál, a Naprendszer egyetlen fénypont lesz a csillagok között
+            out.target.set(0, 0, 0);
+            const dist = (narrow ? 820 : 620) * (1 + p * .5);
+            out.pos.set(Math.sin(yaw + .6) * dist * .6, dist * .62, Math.cos(yaw + .6) * dist * .6);
+            out.sx = 0; out.sy = narrow ? .1 : 0; return out;
+        }
         if (key === 'overview' || key === 'overview-quiet') {
             out.target.set(0, 0, 0);
             const dist = narrow ? 230 : 150;
@@ -540,6 +681,9 @@ function initSpace() {
         else if (key === 'hold') { P = moonState.world; r = moonState.r; k = 6.2; }
         else { const b = bodies.get(key); P = b.world; r = b.d.r; k = key === 'szaturnusz' ? 7.6 : key === 'uranusz' ? 6.6 : 5.6; }
         if (narrow) k *= 1.35;
+        // a megállás alatt a kamera lassan közelít és kissé körbejárja az égitestet
+        k *= THREE.MathUtils.lerp(1.12, .93, p);
+        if (key === 'hold') k *= 1 + 2.8 * (1 - easeOut(introT));
         const toSun = key === 'nap' ? new THREE.Vector3(.55, .2, 1).normalize() : sunPos.clone().sub(P).normalize();
         const side = new THREE.Vector3().crossVectors(UP, toSun).normalize();
         let dir;
@@ -550,6 +694,7 @@ function initSpace() {
         } else {
             dir = toSun.clone().multiplyScalar(Math.cos(.62)).addScaledVector(side, Math.sin(.62)).addScaledVector(UP, key === 'szaturnusz' ? .32 : .2).normalize();
         }
+        dir.applyAxisAngle(UP, (p - .5) * .55 + (key === 'hold' ? (1 - easeOut(introT)) * .7 : 0));
         out.target.copy(P);
         out.pos.copy(P).addScaledVector(dir, r * k);
         out.sx = narrow ? 0 : .2; out.sy = narrow ? (key === 'hold' ? .3 : .2) : 0;
@@ -559,32 +704,71 @@ function initSpace() {
     // görgetés → szakasz-index
     let anchors = [];
     function measure() {
-        anchors = $$('[data-focus]').map(el => { const r = el.getBoundingClientRect(); return { key: el.dataset.focus, y: r.top + scrollY + r.height / 2 }; });
+        anchors = $$('[data-focus]').map(el => { const r = el.getBoundingClientRect(); return { key: el.dataset.focus, y: r.top + scrollY + r.height / 2, top: r.top + scrollY, h: r.height }; });
     }
     const ease = t => t * t * (3 - 2 * t);
     const camPos = new THREE.Vector3(), camTarget = new THREE.Vector3(), desiredPos = new THREE.Vector3(), desiredTarget = new THREE.Vector3();
-    let shiftX = 0, shiftY = 0, overview = 0, mapOnly = 0, focusKey = 'hold', first = true;
+    let shiftX = 0, shiftY = 0, overview = 0, mapOnly = 0, outroMix = 0, veilO = 0, veilColor = '#5aa8ff', focusKey = 'hold', first = true;
+    // átrepülés: ezekről az égitestekről a kamera a légkörbe merülve, színes fátylon át érkezik a következőhöz
+    const ZOOM = { fold: '#6fb4ff', jupiter: '#e3c08e' };
+    const veil = $('.veil');
+    const radiusOfKey = key => key === 'nap' ? SUN_R : key === 'hold' ? moonState.r : bodies.has(key) ? bodies.get(key).d.r : 1;
+    const progressIn = (A, y) => THREE.MathUtils.clamp((y - A.top) / Math.max(1, A.h), 0, 1);
+    const vA = new THREE.Vector3(), vB = new THREE.Vector3();
 
-    let yS = null;
+    let yS = null, sunScrollP = 0;
     function desired(k) {
         const yRaw = scrollY + innerHeight / 2;
         yS = yS === null ? yRaw : yS + (yRaw - yS) * k;
         const y = yS;
+        // A: az aktuális szakasz, B: a következő; a repülés a kettő határa körüli ablakban történik,
+        // a szakasz többi részén a kamera az égitestnél marad (lassan közelít, körbejár)
         let i = 0;
-        while (i < anchors.length - 1 && anchors[i + 1].y <= y) i++;
+        while (i < anchors.length - 1 && anchors[i + 1].top <= y) i++;
         const A = anchors[i], B = anchors[Math.min(i + 1, anchors.length - 1)];
-        let f = B === A ? 0 : THREE.MathUtils.clamp((y - A.y) / (B.y - A.y), 0, 1);
-        f = ease(THREE.MathUtils.clamp((f - .18) / .64, 0, 1)); // a bolygónál „megáll”, közte repül
-        const a = bodyState(A.key, tmp.a), b = bodyState(B.key, tmp.b);
-        desiredPos.lerpVectors(a.pos, b.pos, f);
-        const hop = Math.min(a.pos.distanceTo(b.pos) * .18, 26);
-        desiredPos.addScaledVector(UP, Math.sin(f * Math.PI) * hop);
-        desiredTarget.lerpVectors(a.target, b.target, f);
-        const sx = THREE.MathUtils.lerp(a.sx, b.sx, f), sy = THREE.MathUtils.lerp(a.sy, b.sy, f);
+        const zoom = ZOOM[A.key] && B !== A && !REDUCED;
+        const H = innerHeight, win = (zoom ? 1.25 : .9) * H;
+        const raw = B === A ? 0 : THREE.MathUtils.clamp((y - (B.top - win / 2)) / win, 0, 1);
+        const pA = progressIn(A, y), pB = progressIn(B, y);
+        const a = bodyState(A.key, tmp.a, pA), b = bodyState(B.key, tmp.b, pB);
+        let sx, sy, f;
+        if (zoom) {
+            // 1. fele: a kamera ráközelít, a bolygó betölti a képet; 2. fele: messziről érkezik a következőhöz
+            f = raw;
+            if (f < .5) {
+                const g = Math.pow(f / .5, 2.2);
+                vA.copy(a.pos).sub(a.target).normalize().multiplyScalar(radiusOfKey(A.key) * 1.04).add(a.target);
+                desiredPos.lerpVectors(a.pos, vA, g); desiredTarget.copy(a.target);
+                sx = a.sx * (1 - g); sy = a.sy * (1 - g);
+            } else {
+                const g = easeOut((f - .5) / .5);
+                vB.copy(b.pos).sub(b.target).multiplyScalar(3.4).add(b.target);
+                desiredPos.lerpVectors(vB, b.pos, g); desiredTarget.copy(b.target);
+                sx = b.sx * g; sy = b.sy * g;
+            }
+            veilO = THREE.MathUtils.smoothstep(f, .34, .5) * (1 - THREE.MathUtils.smoothstep(f, .5, .68));
+            veilColor = ZOOM[A.key];
+        } else {
+            f = ease(raw);
+            desiredPos.lerpVectors(a.pos, b.pos, f);
+            const hop = Math.min(a.pos.distanceTo(b.pos) * .18, 26);
+            desiredPos.addScaledVector(UP, Math.sin(f * Math.PI) * hop);
+            desiredTarget.lerpVectors(a.target, b.target, f);
+            sx = THREE.MathUtils.lerp(a.sx, b.sx, f); sy = THREE.MathUtils.lerp(a.sy, b.sy, f);
+            veilO = 0;
+        }
         const ov = k => k.startsWith('overview');
         overview = (ov(A.key) ? 1 - f : 0) + (ov(B.key) ? f : 0);
         mapOnly = (A.key === 'overview' ? 1 - f : 0) + (B.key === 'overview' ? f : 0);
+        outroMix = (A.key === 'outro' ? 1 - f : 0) + (B.key === 'outro' ? f : 0);
         focusKey = f < .5 ? A.key : B.key;
+        // görgetéssel vezérelt forgás: égitestenként a saját szakaszán belüli haladás (a simított görgetésből → tehetetlenség)
+        for (const an of anchors) {
+            const sp = THREE.MathUtils.clamp((y - an.top + H * .5) / (an.h + H), 0, 1);
+            if (bodies.has(an.key)) bodies.get(an.key).scrollP = sp;
+            else if (an.key === 'nap') sunScrollP = sp;
+            else if (an.key === 'hold') moonState.scrollP = sp;
+        }
         return { sx, sy };
     }
 
@@ -639,7 +823,8 @@ function initSpace() {
 
     const clock = new THREE.Clock();
     const v3 = new THREE.Vector3();
-    let t = 0;
+    let t = 0, sunAuto = 0;
+    const navy = new THREE.Color(0x02040b), warm = new THREE.Color(0x0b0705), clear = new THREE.Color();
     function frame() {
         requestAnimationFrame(frame);
         if (document.hidden) { clock.getDelta(); return; }
@@ -652,9 +837,11 @@ function initSpace() {
         for (const b of bodies.values()) {
             b.angle += dt * speed * (Math.PI * 2) / (ORBIT_SEC * Math.sqrt(b.d.years));
             b.orbit.position.set(Math.cos(b.angle) * b.d.dist, 0, Math.sin(b.angle) * b.d.dist);
-            const boost = focusKey === b.key ? spinBoost : 0;
-            b.spin.rotation.y += dt * speed * b.d.spin + boost;
-            if (b.clouds) b.clouds.rotation.y += dt * speed * b.d.spin * 1.25 + boost;
+            if (focusKey === b.key) b.extra += spinBoost;
+            b.auto = (b.auto || 0) + dt * speed * b.d.spin;
+            const scrollRot = (b.scrollP || 0) * Math.PI * 1.6 * Math.sign(b.d.spin);
+            b.spin.rotation.y = b.auto + scrollRot + b.extra;
+            if (b.clouds) b.clouds.rotation.y = b.auto * 1.25 + scrollRot * 1.08 + b.extra;
             b.orbit.updateMatrixWorld();
             b.world.setFromMatrixPosition(b.mesh.matrixWorld);
             if (b.halo) b.halo.material.uniforms.uCenter.value.copy(b.world);
@@ -664,13 +851,15 @@ function initSpace() {
         moonState.drift += dt * speed * (Math.PI * 2) / 1200;
         moonState.angle = bodies.get('fold').angle - Math.PI / 2 + moonState.drift;
         moon.position.set(earth.x + Math.cos(moonState.angle) * 2.6, earth.y + Math.sin(moonState.angle) * .25, earth.z + Math.sin(moonState.angle) * 2.6);
-        moon.rotation.y = -moonState.angle + Math.PI / 2 + moonState.extra;
+        moon.rotation.y = -moonState.angle + Math.PI / 2 + moonState.extra + (moonState.scrollP || 0) * Math.PI * .9;
         if (focusKey === 'hold') moonState.extra += spinBoost;
         moonState.world.copy(moon.position);
-        sun.rotation.y += dt * speed * .02 + (focusKey === 'nap' ? spinBoost : 0);
+        sunAuto += dt * speed * .02 + (focusKey === 'nap' ? spinBoost : 0);
+        sun.rotation.y = sunAuto + sunScrollP * Math.PI * .8;
         spinBoost *= REDUCED ? 0 : Math.exp(-dt * 3.5);
         belt.rotation.y += dt * speed * .004;
 
+        if (introT < 1) introT = Math.min(1, introT + realDt / 3.4);
         // kamera
         yaw += (yawTarget - yaw) * (REDUCED ? 1 : 1 - Math.exp(-Math.min(realDt, .5) * 5));
         const k = first || REDUCED ? 1 : 1 - Math.exp(-Math.min(realDt, .5) * 3.2);
@@ -681,7 +870,7 @@ function initSpace() {
         if (warpInit) { prevCam.copy(camPos); warpInit = false; }
         const vel = camPos.distanceTo(prevCam) / Math.max(dt, 1e-3);
         prevCam.copy(camPos);
-        const wantWarp = REDUCED ? 0 : THREE.MathUtils.smoothstep(vel, 6, 34) * (1 - overview);
+        const wantWarp = REDUCED || introT < 1 ? 0 : THREE.MathUtils.smoothstep(vel, 6, 34) * (1 - overview) * (1 - outroMix);
         warp += (wantWarp - warp) * (1 - Math.exp(-dt * 6));
         camera.fov = baseFov + warp * 9;
         warpLines.material.opacity = warp * .9;
@@ -699,9 +888,21 @@ function initSpace() {
         const W = innerWidth, H = innerHeight;
         camera.setViewOffset(W, H, -shiftX * W, shiftY * H, W, H);
         sky.position.copy(camera.position);
+        // mélység: a távoli csillagok alig, a ködök gyorsabban fordulnak a görgetéssel; a por a kamera körül ismétlődik
+        const yy = yS || 0;
+        sky.rotation.y = yy * .000012;
+        nebula.position.copy(camera.position); nebula.rotation.y = yy * .000045; nebula.rotation.x = yy * .000012;
+        dust.material.uniforms.uCam.value.copy(camera.position);
+        dust.material.uniforms.uAlpha.value = (.42 + warp * .9) * (1 - overview * .7) * (1 - outroMix);
+        // hangulatfény: a Nap közelében meleg, kint hideg, sötétkék háttér
+        const warmK = 1 - THREE.MathUtils.smoothstep(camera.position.length(), 22, 75);
+        clear.copy(navy).lerp(warm, warmK); renderer.setClearColor(clear, 1);
+        glow2.material.opacity = 1 - outroMix * .4;
+        // átrepülési fátyol
+        if (veil) { veil.style.setProperty('--o', veilO.toFixed(3)); veil.style.setProperty('--c', veilColor); }
 
         // térkép-réteg
-        orbitLines.forEach(l => { l.material.opacity = .05 + .3 * overview; });
+        orbitLines.forEach(l => { l.material.opacity = .05 + .3 * overview + .22 * outroMix; });
         belt.material.uniforms.uPx.value = DPR * (.5 + .5 * overview);
         labelBox.classList.toggle('on', mapOnly > .65);
         if (overview > .02) {
