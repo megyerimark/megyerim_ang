@@ -13,6 +13,7 @@ const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 document.documentElement.classList.add('js');
 
 setupReveal();
+setupEntryFx();
 setupToc();
 setupSearch();
 setupSort();
@@ -25,6 +26,43 @@ function setupReveal() {
     if (REDUCED || !('IntersectionObserver' in window)) { items.forEach(el => el.classList.add('visible')); return; }
     const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } }), { threshold: .15 });
     items.forEach(el => io.observe(el));
+}
+
+// A szócikk-kártyák görgetéshez kötött animációja: a cím betűkre bontva, --in / --out a szakaszon belüli helyzetből.
+function setupEntryFx() {
+    const entries = $$('.entry').map(section => {
+        const card = $('.entry-card', section), h2 = $('h2.split', section);
+        if (h2 && !REDUCED) {
+            const text = h2.textContent.trim();
+            h2.setAttribute('aria-label', text);
+            h2.setAttribute('translate', 'no');
+            h2.innerHTML = [...text].map((c, j) => `<span class="ch" aria-hidden="true" style="--j:${j}">${c}</span>`).join('');
+        }
+        return { section, card };
+    });
+    if (REDUCED) return;
+    const clamp01 = v => Math.min(1, Math.max(0, v));
+    const ease = t => 1 - Math.pow(1 - t, 3);
+    function placeTop() {
+        for (const e of entries) e.card.style.setProperty('--top', Math.max(84, Math.round((innerHeight - e.card.offsetHeight) / 2)) + 'px');
+    }
+    let queued = false;
+    function update() {
+        queued = false;
+        const H = innerHeight;
+        for (const e of entries) {
+            const r = e.section.getBoundingClientRect();
+            if (r.bottom < -H || r.top > 2 * H) continue;
+            const t = (H - r.top) / (H + r.height); // 0: a szakasz alul belép ... 1: felül kilép
+            e.card.style.setProperty('--in', ease(clamp01((t - .1) / .24)).toFixed(4));
+            e.card.style.setProperty('--out', clamp01((t - .7) / .2).toFixed(4));
+        }
+    }
+    const queue = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+    addEventListener('scroll', queue, { passive: true });
+    addEventListener('resize', () => { placeTop(); queue(); });
+    placeTop(); update();
+    if (document.fonts) document.fonts.ready.then(() => { placeTop(); update(); });
 }
 
 function setupToc() {
@@ -461,6 +499,23 @@ function initSpace() {
         s.speed = THREE.MathUtils.randFloat(7, 12); s.life = 0; s.m.visible = true;
     }
 
+    // „hipertér”: repülés közben a csillagok fénycsíkokká nyúlnak (a kamerához rögzített vonalak)
+    const WARP_N = LOW ? 70 : 140;
+    const warpPos = new Float32Array(WARP_N * 6), warpCol = new Float32Array(WARP_N * 6), warpSeed = [];
+    for (let i = 0; i < WARP_N; i++) {
+        const a = Math.random() * Math.PI * 2, r = 1.2 + Math.pow(Math.random(), .6) * 9;
+        warpSeed.push({ x: Math.cos(a) * r, y: Math.sin(a) * r, z: -Math.random() * 90, len: 3 + Math.random() * 7 });
+        const c = .55 + Math.random() * .45;
+        warpCol.set([0, 0, 0, c * .8, c * .9, c], i * 6); // farka sötét, feje világos (additív keverés)
+    }
+    const warpGeo = new THREE.BufferGeometry();
+    warpGeo.setAttribute('position', new THREE.BufferAttribute(warpPos, 3));
+    warpGeo.setAttribute('color', new THREE.BufferAttribute(warpCol, 3));
+    const warpLines = new THREE.LineSegments(warpGeo, new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false }));
+    warpLines.frustumCulled = false; warpLines.renderOrder = -2; camera.add(warpLines);
+    let warp = 0, baseFov = 40, warpInit = true;
+    const prevCam = new THREE.Vector3();
+
     // kijelölő gyűrű a térképen
     const selRing = new THREE.Mesh(new THREE.RingGeometry(1, 1.08, 64), new THREE.MeshBasicMaterial({ color: 0xffbf6b, transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide }));
     scene.add(selRing);
@@ -574,7 +629,7 @@ function initSpace() {
     function resize() {
         const w = innerWidth, h = innerHeight;
         renderer.setSize(w, h, false);
-        camera.aspect = w / h; camera.fov = portrait() ? 52 : 40; camera.updateProjectionMatrix();
+        camera.aspect = w / h; baseFov = portrait() ? 52 : 40; camera.fov = baseFov; camera.updateProjectionMatrix();
         measure();
     }
     addEventListener('resize', resize);
@@ -622,6 +677,24 @@ function initSpace() {
         const s = desired(k);
         camPos.copy(desiredPos); camTarget.copy(desiredTarget);
         shiftX = s.sx; shiftY = s.sy; first = false;
+        // repülési sebesség -> hipertér-hatás és enyhe látószög-tágulás
+        if (warpInit) { prevCam.copy(camPos); warpInit = false; }
+        const vel = camPos.distanceTo(prevCam) / Math.max(dt, 1e-3);
+        prevCam.copy(camPos);
+        const wantWarp = REDUCED ? 0 : THREE.MathUtils.smoothstep(vel, 6, 34) * (1 - overview);
+        warp += (wantWarp - warp) * (1 - Math.exp(-dt * 6));
+        camera.fov = baseFov + warp * 9;
+        warpLines.material.opacity = warp * .9;
+        if (warp > .01) {
+            for (let i = 0; i < WARP_N; i++) {
+                const w = warpSeed[i];
+                w.z += dt * (40 + 140 * warp);
+                if (w.z > -1) w.z -= 90;
+                const L = w.len * (.4 + 2.2 * warp);
+                warpPos.set([w.x, w.y, w.z - L, w.x, w.y, w.z], i * 6);
+            }
+            warpGeo.attributes.position.needsUpdate = true;
+        }
         camera.position.copy(camPos); camera.lookAt(camTarget);
         const W = innerWidth, H = innerHeight;
         camera.setViewOffset(W, H, -shiftX * W, shiftY * H, W, H);

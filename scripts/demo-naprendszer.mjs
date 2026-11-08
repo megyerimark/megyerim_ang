@@ -173,22 +173,23 @@ const toc = BODIES.map((b, i) => `<a href="#${b.key}" data-toc="${b.key}"><span>
 
 const entry = (b, i) => {
     const ratio = b.d / 12742;
-    const rows = FIELDS.map(([k, hu, en]) => `<tr><th scope="row">${t(hu, en)}</th><td>${t(b.data[k][0], b.data[k][1])}</td></tr>`).join('');
-    const facts = b.facts.map(([hu, en]) => `<li>${t(hu, en)}</li>`).join('');
+    // a .st elemek a görgetéssel, egymás után (--i sorrendben) úsznak be
+    const rows = FIELDS.map(([k, hu, en], n) => `<tr class="st" style="--i:${4 + n}"><th scope="row">${t(hu, en)}</th><td>${t(b.data[k][0], b.data[k][1])}</td></tr>`).join('');
+    const facts = b.facts.map(([hu, en], n) => `<li class="st" style="--i:${12 + n}">${t(hu, en)}</li>`).join('');
     const ratioHu = ratio >= 10 ? ratio.toFixed(0) : ratio.toFixed(2).replace('.', ',');
     const ratioEn = ratio >= 10 ? ratio.toFixed(0) : ratio.toFixed(2);
     const bar = b.key === 'nap'
-        ? `<p class="entry-compare-note">${t('Átmérője a Földének kb. 109-szerese.', 'Its diameter is about 109 times Earth’s.')}</p>`
-        : `<div class="entry-compare"><span>${t('Átmérő a Földhöz képest', 'Diameter compared with Earth')}</span><div class="bar" aria-hidden="true"><i style="--w:${Math.min(100, Math.sqrt(ratio / 11) * 100).toFixed(1)}%"></i></div><b>${t(ratioHu + '×', ratioEn + '×')}</b></div>`;
+        ? `<p class="entry-compare-note st" style="--i:10">${t('Átmérője a Földének kb. 109-szerese.', 'Its diameter is about 109 times Earth’s.')}</p>`
+        : `<div class="entry-compare st" style="--i:10"><span>${t('Átmérő a Földhöz képest', 'Diameter compared with Earth')}</span><div class="bar" aria-hidden="true"><i style="--w:${Math.min(100, Math.sqrt(ratio / 11) * 100).toFixed(1)}%"></i></div><b>${t(ratioHu + '×', ratioEn + '×')}</b></div>`;
     return `
     <article class="entry" id="${b.key}" data-focus="${b.key}" aria-labelledby="${b.key}-title">
-      <div class="entry-card reveal">
-        <p class="entry-kicker"><span>${String(i + 1).padStart(2, '0')}</span>${t(b.kind[0], b.kind[1])}</p>
-        <h2 id="${b.key}-title">${t(b.hu, b.en)}</h2>
-        <p class="entry-lead">${t(b.lead[0], b.lead[1])}</p>
-        <table class="infobox"><caption>${t('Adatlap', 'Fact sheet')}</caption><tbody>${rows}</tbody></table>
+      <div class="entry-card">
+        <p class="entry-kicker st" style="--i:0"><span>${String(i + 1).padStart(2, '0')}</span>${t(b.kind[0], b.kind[1])}</p>
+        <h2 id="${b.key}-title" class="split">${t(b.hu, b.en)}</h2>
+        <p class="entry-lead st" style="--i:2">${t(b.lead[0], b.lead[1])}</p>
+        <table class="infobox"><caption class="st" style="--i:3">${t('Adatlap', 'Fact sheet')}</caption><tbody>${rows}</tbody></table>
         ${bar}
-        <h3>${t('Érdekességek', 'Did you know?')}</h3>
+        <h3 class="st" style="--i:11">${t('Érdekességek', 'Did you know?')}</h3>
         <ul class="facts">${facts}</ul>
       </div>
     </article>`;

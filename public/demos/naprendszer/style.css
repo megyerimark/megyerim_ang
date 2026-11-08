@@ -78,11 +78,14 @@ main a, main button, main input, main table, .entry-card, .map-card, .map-head, 
 
 /* szócikkek */
 .entries { width: var(--wrap); margin: 0 auto; }
-.entry { min-height: 150vh; display: flex; align-items: center; padding: 18vh 0; }
-.entry-card { width: min(470px, 100%); padding: 30px 30px 26px; border: 1px solid var(--line); border-radius: 22px; background: var(--card); backdrop-filter: blur(14px) saturate(1.2); -webkit-backdrop-filter: blur(14px) saturate(1.2); box-shadow: 0 30px 80px rgba(0, 0, 0, .45); }
+.entry { min-height: 210vh; padding: 24vh 0 20vh; }
+/* asztalon a kártya a bolygónál „megáll” (sticky), a be- és kilépését a görgetés vezérli (--in, --out: 0…1, a main.js állítja) */
+.entry-card { position: sticky; top: var(--top, 96px); }
+.entry-card { --in: 1; --out: 0; width: min(470px, 100%); padding: 30px 30px 26px; border: 1px solid var(--line); border-radius: 22px; background: var(--card); backdrop-filter: blur(14px) saturate(1.2); -webkit-backdrop-filter: blur(14px) saturate(1.2); box-shadow: 0 30px 80px rgba(0, 0, 0, .45); }
 .entry-kicker { display: flex; gap: 12px; align-items: center; margin: 0 0 10px; font: 600 11.5px/1 var(--display); letter-spacing: .2em; text-transform: uppercase; color: var(--accent); }
 .entry-kicker span { color: var(--dim); }
-.entry h2 { margin: 0 0 14px; font: 700 clamp(40px, 5vw, 60px)/1 var(--display); letter-spacing: -.045em; }
+.entry h2 { margin: 0 0 14px; padding-bottom: .08em; font: 700 clamp(40px, 5vw, 60px)/1 var(--display); letter-spacing: -.045em; overflow: hidden; }
+.entry h2 .ch { display: inline-block; white-space: pre; }
 .entry-lead { margin: 0 0 20px; color: #c9cad3; }
 .infobox { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 18px; }
 .infobox caption { text-align: left; padding-bottom: 8px; font: 700 11px/1 var(--display); letter-spacing: .2em; text-transform: uppercase; color: var(--dim); }
@@ -92,8 +95,20 @@ main a, main button, main input, main table, .entry-card, .map-card, .map-head, 
 .entry-compare { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; align-items: center; margin-bottom: 18px; font-size: 12.5px; color: var(--muted); }
 .entry-compare span { grid-column: 1 / -1; }
 .entry-compare .bar { height: 6px; border-radius: 6px; background: rgba(255, 255, 255, .08); overflow: hidden; }
-.entry-compare .bar i { display: block; height: 100%; width: var(--w); border-radius: inherit; background: linear-gradient(90deg, var(--accent-2), var(--accent)); transform-origin: 0 50%; transform: scaleX(0); transition: transform 1.2s cubic-bezier(.2, .8, .2, 1) .2s; }
-.entry-card.visible .bar i { transform: scaleX(1); }
+.entry-compare .bar i { display: block; height: 100%; width: var(--w); border-radius: inherit; background: linear-gradient(90deg, var(--accent-2), var(--accent)); transform-origin: 0 50%; transform: scaleX(clamp(0, calc(var(--in) * 2.2 - 1.1), 1)); }
+
+/* görgetéshez kötött belépő: 3D-ben befordul, alulról „kinyílik”; kilépéskor felfelé kifordul és halványul */
+.js .entry-card {
+  opacity: calc(min(1, var(--in) * 1.6) * (1 - var(--out)));
+  transform: perspective(1400px) translate3d(calc((1 - var(--in)) * -90px), calc((1 - var(--in)) * 50px - var(--out) * 70px), 0) rotateY(calc((1 - var(--in)) * 16deg)) rotateX(calc(var(--out) * 10deg)) scale(calc(1 - var(--out) * .07));
+  transform-origin: 0 60%;
+  clip-path: inset(calc(var(--out) * 35%) 0 calc((1 - var(--in)) * 100%) 0 round 22px);
+  will-change: transform, opacity, clip-path;
+}
+/* a tartalom egymás után úszik be (--i = sorrend) */
+.js .entry-card .st { --p: clamp(0, calc(var(--in) * 2.6 - var(--i) * .1 - .25), 1); opacity: var(--p); transform: translate3d(calc((1 - var(--p)) * -18px), calc((1 - var(--p)) * 16px), 0); }
+/* a cím betűnként emelkedik ki */
+.js .entry h2 .ch { --q: clamp(0, calc(var(--in) * 2.4 - var(--j) * .07 - .15), 1); transform: translateY(calc((1 - var(--q)) * 110%)) rotate(calc((1 - var(--q)) * 9deg)); opacity: calc(.2 + var(--q) * .8); }
 .entry-compare b { font: 700 14px/1 var(--display); color: var(--ink); }
 .entry-compare-note { margin: 0 0 18px; font-size: 13px; color: var(--muted); }
 .entry h3 { margin: 0 0 8px; font: 700 11px/1 var(--display); letter-spacing: .2em; text-transform: uppercase; color: var(--dim); }
@@ -153,6 +168,15 @@ main a, main button, main input, main table, .entry-card, .map-card, .map-head, 
 .js .reveal { opacity: 0; transform: translateY(28px); transition: opacity .9s ease, transform .9s cubic-bezier(.2, .8, .2, 1); }
 .js .reveal.visible { opacity: 1; transform: none; }
 
+@media (min-width: 761px) and (max-height: 880px) {
+  .entry-card { padding: 22px 26px 20px; }
+  .entry h2 { font-size: clamp(36px, 4.2vw, 48px); margin-bottom: 10px; }
+  .entry-lead { font-size: 14.5px; margin-bottom: 14px; }
+  .infobox { font-size: 13px; margin-bottom: 12px; }
+  .infobox th, .infobox td { padding: 5px 0; }
+  .facts { font-size: 13px; gap: 5px; }
+  .entry-compare { margin-bottom: 12px; }
+}
 @media (max-width: 1320px) { .toc { display: none; } }
 /* keskenyebb széles kijelzőn a tartalomjegyzéknek helyet hagyunk */
 @media (min-width: 1321px) and (max-width: 1640px) { .entries { width: calc(100% - 340px); margin-left: 190px; } .map { width: calc(100% - 340px); margin-left: 190px; } }
@@ -172,7 +196,8 @@ main a, main button, main input, main table, .entry-card, .map-card, .map-head, 
   .hero-caption { position: static; text-align: left; margin-top: 22px; }
   .scroll-hint { display: none; }
   /* a bolygó felül, a szócikk alul */
-  .entry { min-height: 160vh; align-items: flex-end; padding: 52vh 0 10vh; }
+  .entry { min-height: 160vh; padding: 56vh 0 12vh; }
+  .entry-card { position: relative; top: auto; }
   .entry-card { padding: 22px 20px; background: rgba(9, 10, 16, .82); backdrop-filter: none; -webkit-backdrop-filter: none; }
   .map { min-height: auto; padding-top: 50vh; }
   .map-head { position: static; }
@@ -183,6 +208,7 @@ main a, main button, main input, main table, .entry-card, .map-card, .map-head, 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .js .reveal { opacity: 1; transform: none; transition: none; }
-  .entry-compare .bar i { transform: none; transition: none; }
+  .entry-compare .bar i { transform: none; }
+  .js .entry-card, .js .entry-card .st, .js .entry h2 .ch { opacity: 1; transform: none; clip-path: none; }
   .scroll-hint i { animation: none; }
 }
