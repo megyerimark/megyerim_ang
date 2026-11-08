@@ -97,6 +97,7 @@ export class Home implements OnInit {
     private readonly anchor = inject(ActivatedRoute, { optional: true })?.snapshot.fragment ?? null;
     readonly hasAnchor = !!this.anchor;
     readonly demoSites = [
+        { slug: 'naprendszer', preview: 'orbis', title: 'ORBIS Naprendszer-lexikon', kind: 'INTERAKTÍV 3D / DEMÓ', text: 'WebGL-es 3D lexikon: görgetésre a kamera bolygóról bolygóra repül, mellette szócikkek, kattintható térkép és összehasonlító táblázat.', tags: ['WebGL / Three.js', '3D görgetés', 'Interaktív térkép'] },
         { slug: 'pada-trade', preview: 'pada', title: 'Pada Trade Autószerviz', kind: 'AUTÓSZERVIZ / DEMÓ', text: 'Autószerviz és autóvillamosság sötét, kék fényekkel: visszafogott görgetési mélység, szolgáltatáskártyák és egy kattintásos hívás.', tags: ['Szolgáltatások', 'Egy kattintásos hívás', 'Útvonaltervezés'] },
         { slug: 'nobile-autoszalon', preview: 'nobile', title: 'NOBILE Autószalon', kind: 'PRÉMIUM AUTÓSZALON / DEMÓ', text: 'Görgetéses 3D kollekció aranyporrá bomló panelekkel, konfigurátor, finanszírozási kalkulátor és tesztvezetés-foglalás.', tags: ['3D kollekció', 'Konfigurátor', 'Tesztvezetés-foglalás'] },
         { slug: 'vagat-barber', preview: 'vagat', title: 'VÁGAT Barber Studio', kind: 'BARBER SHOP / DEMÓ', text: 'Fiktív barber shop weboldal prémium megjelenéssel.', tags: ['Szolgáltatások', 'Árlista', 'Időpontfoglalás'] },

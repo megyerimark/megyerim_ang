@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="robots" content="noindex, follow">
+    <meta name="description" content="ORBIS – interaktív 3D Naprendszer-lexikon: görgess végig a Naptól a Neptunuszig, kattints a bolygókra, és hasonlítsd össze őket.">
+    <meta name="theme-color" content="#030305">
+    <title>ORBIS – Interaktív Naprendszer-lexikon | Demó</title>
+    <link rel="stylesheet" href="/fonts/fonts.css"><link rel="stylesheet" href="style.css">
+    <script src="en.js" defer></script><script src="../shared/i18n.js" defer></script>
+    <script type="module" src="main.js"></script>
+  </head>
+  <body>
+    <canvas class="space" aria-hidden="true"></canvas>
+    <div class="labels" aria-hidden="true"></div>
+    <div class="demo-ribbon">PORTFÓLIÓ DEMÓ — INTERAKTÍV 3D LEXIKON <a href="../index.html">← Összes demó</a></div>
+    <header class="topbar">
+      <a class="logo" href="#kezdet" aria-label="ORBIS kezdőlap"><i aria-hidden="true"></i>ORBIS</a>
+      <form class="search" role="search" aria-label="Keresés a lexikonban">
+        <input type="search" list="orbis-bodies" placeholder="Keresés…" aria-label="Égitest keresése">
+        <datalist id="orbis-bodies"><option value="Nap"></option><option value="Merkúr"></option><option value="Vénusz"></option><option value="Föld"></option><option value="Mars"></option><option value="Jupiter"></option><option value="Szaturnusz"></option><option value="Uránusz"></option><option value="Neptunusz"></option></datalist>
+        <button type="submit">Ugrás</button>
+      </form>
+      <nav class="top-nav" aria-label="Fő navigáció">
+        <a href="#nap">Lexikon</a>
+        <a href="#terkep">Térkép</a>
+        <a href="#osszehasonlitas">Összehasonlítás</a>
+      </nav>
+    </header>
+    <nav class="toc" aria-label="Tartalom"><p>Tartalom</p><a href="#nap" data-toc="nap"><span>01</span>Nap</a><a href="#merkur" data-toc="merkur"><span>02</span>Merkúr</a><a href="#venusz" data-toc="venusz"><span>03</span>Vénusz</a><a href="#fold" data-toc="fold"><span>04</span>Föld</a><a href="#mars" data-toc="mars"><span>05</span>Mars</a><a href="#jupiter" data-toc="jupiter"><span>06</span>Jupiter</a><a href="#szaturnusz" data-toc="szaturnusz"><span>07</span>Szaturnusz</a><a href="#uranusz" data-toc="uranusz"><span>08</span>Uránusz</a><a href="#neptunusz" data-toc="neptunusz"><span>09</span>Neptunusz</a><a href="#terkep" data-toc="terkep"><span>◎</span>Térkép</a></nav>
+
+    <main>
+      <section class="hero" id="kezdet" data-focus="hold" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Interaktív 3D enciklopédia</p>
+          <h1 id="hero-title"><span>Naprendszer</span><span class="dim">lexikon.</span></h1>
+          <p class="hero-lead">Görgess végig a Naptól a Neptunuszig: a kamera bolygóról bolygóra repül, közben minden égitestről rövid, közérthető szócikket olvashatsz.</p>
+          <div class="hero-actions">
+            <a class="btn btn-solid" href="#nap">Utazás indítása ↓</a>
+            <a class="btn btn-ghost" href="#terkep">Ugrás a térképre</a>
+          </div>
+        </div>
+        <p class="hero-caption"><b>A képen: a Hold</b> 3 474 km átmérő · 384 400 km-re a Földtől · húzással forgathatod</p>
+        <a class="scroll-hint" href="#nap" aria-label="Tovább a lexikonhoz"><i></i></a>
+      </section>
+
+      <div class="entries">
+    <article class="entry" id="nap" data-focus="nap" aria-labelledby="nap-title">
+      <div class="entry-card reveal">
+        <p class="entry-kicker"><span>01</span>Csillag · G2V sárga törpe</p>
+        <h2 id="nap-title">Nap</h2>
+        <p class="entry-lead">A Naprendszer középpontja és egyetlen csillaga: a teljes tömeg 99,8%-át adja. Magjában másodpercenként mintegy 600 millió tonna hidrogén olvad héliummá – ez a fény és a hő forrása.</p>
+        <table class="infobox"><caption>Adatlap</caption><tbody><tr><th scope="row">Átmérő</th><td>1 392 700 km</td></tr><tr><th scope="row">Távolság a Naptól</th><td>– (a Tejút középpontjától ~26 000 fényév)</td></tr><tr><th scope="row">Tengelyforgás</th><td>~25 nap (az egyenlítőn)</td></tr><tr><th scope="row">Keringési idő</th><td>~230 millió év a Tejút körül</td></tr><tr><th scope="row">Holdak</th><td>8 bolygó kering körülötte</td></tr><tr><th scope="row">Hőmérséklet</th><td>~5 500 °C a felszínen</td></tr></tbody></table>
+        <p class="entry-compare-note">Átmérője a Földének kb. 109-szerese.</p>
+        <h3>Érdekességek</h3>
+        <ul class="facts"><li>A fénye kb. 8 perc 20 másodperc alatt ér a Földre.</li><li>Nagyjából 1,3 millió Föld férne bele.</li><li>Kb. 4,6 milliárd éves – élete nagyjából felénél tart.</li></ul>
+      </div>
+    </article>
+    <article class="entry" id="merkur" data-focus="merkur" aria-labelledby="merkur-title">
+      <div class="entry-card reveal">
+        <p class="entry-kicker"><span>02</span>Kőzetbolygó</p>
+        <h2 id="merkur-title">Merkúr</h2>
+        <p class="entry-lead">A legkisebb és a Naphoz legközelebbi bolygó. Szinte nincs légköre, ezért nappal 430 °C-ra hevül, éjjel −180 °C alá hűl. Felszínét a Holdéhoz hasonlóan kráterek borítják.</p>
+        <table class="infobox"><caption>Adatlap</caption><tbody><tr><th scope="row">Átmérő</th><td>4 879 km</td></tr><tr><th scope="row">Távolság a Naptól</th><td>57,9 millió km (0,39 CsE)</td></tr><tr><th scope="row">Tengelyforgás</th><td>58,6 földi nap</td></tr><tr><th scope="row">Keringési idő</th><td>88 földi nap</td></tr><tr><th scope="row">Holdak</th><td>0</td></tr><tr><th scope="row">Hőmérséklet</th><td>−180 … +430 °C</td></tr></tbody></table>
+        <div class="entry-compare"><span>Átmérő a Földhöz képest</span><div class="bar" aria-hidden="true"><i style="--w:18.7%"></i></div><b>0,38×</b></div>
+        <h3>Érdekességek</h3>
+        <ul class="facts"><li>Egy merkúri nap napkeltétől napkeltéig 176 földi nap – hosszabb, mint az éve.</li><li>Bár a Naphoz legközelebb van, nem ő a legforróbb bolygó, hanem a Vénusz.</li><li>Hatalmas vasmagja a bolygó sugarának mintegy 85%-áig ér.</li></ul>
+      </div>
+    </article>
+    <article class="entry" id="venusz" data-focus="venusz" aria-labelledby="venusz-title">
+      <div class="entry-card reveal">
+        <p class="entry-kicker"><span>03</span>Kőzetbolygó</p>
+        <h2 id="venusz-title">Vénusz</h2>
+        <p class="entry-lead">Méretében a Föld ikertestvére, de sűrű szén-dioxid-légköre és kénsavfelhői miatt üvegházpokol: felszínén 465 °C van, a légnyomás a földi 90-szerese.</p>
+        <table class="infobox"><caption>Adatlap</caption><tbody><tr><th scope="row">Átmérő</th><td>12 104 km</td></tr><tr><th scope="row">Távolság a Naptól</th><td>108,2 millió km (0,72 CsE)</td></tr><tr><th scope="row">Tengelyforgás</th><td>243 földi nap (ellentétes irányban)</td></tr><tr><th scope="row">Keringési idő</th><td>224,7 földi nap</td></tr><tr><th scope="row">Holdak</th><td>0</td></tr><tr><th scope="row">Hőmérséklet</th><td>~465 °C</td></tr></tbody></table>
+        <div class="entry-compare"><span>Átmérő a Földhöz képest</span><div class="bar" aria-hidden="true"><i style="--w:29.4%"></i></div><b>0,95×</b></div>
+        <h3>Érdekességek</h3>
+        <ul class="facts"><li>Egy nap hosszabb rajta, mint egy év.</li><li>Fordított irányban forog: ott a Nap nyugaton kel fel.</li><li>A Hold után a legfényesebb égitest az éjszakai égbolton.</li></ul>
+      </div>
+    </article>
+    <article class="entry" id="fold" data-focus="fold" aria-labelledby="fold-title">
+      <div class="entry-card reveal">
+        <p class="entry-kicker"><span>04</span>Kőzetbolygó · otthonunk</p>
+        <h2 id="fold-title">Föld</h2>
+        <p class="entry-lead">Az egyetlen ismert hely, ahol élet van. Felszínének mintegy 71%-át víz borítja, nitrogén–oxigén légköre és mágneses tere véd a világűr sugárzásától.</p>
+        <table class="infobox"><caption>Adatlap</caption><tbody><tr><th scope="row">Átmérő</th><td>12 742 km</td></tr><tr><th scope="row">Távolság a Naptól</th><td>149,6 millió km (1 CsE)</td></tr><tr><th scope="row">Tengelyforgás</th><td>23 óra 56 perc</td></tr><tr><th scope="row">Keringési idő</th><td>365,25 nap</td></tr><tr><th scope="row">Holdak</th><td>1 (a Hold)</td></tr><tr><th scope="row">Hőmérséklet</th><td>átlagosan +15 °C</td></tr></tbody></table>
+        <div class="entry-compare"><span>Átmérő a Földhöz képest</span><div class="bar" aria-hidden="true"><i style="--w:30.2%"></i></div><b>1,00×</b></div>
+        <h3>Érdekességek</h3>
+        <ul class="facts"><li>A Hold kb. 384 400 km-re kering, és mindig ugyanazt az oldalát mutatja felénk.</li><li>A 23,4°-os tengelyferdeség okozza az évszakokat.</li><li>Az egyetlen bolygó, amelynek felszínén tartósan folyékony víz van.</li></ul>
+      </div>
+    </article>
+    <article class="entry" id="mars" data-focus="mars" aria-labelledby="mars-title">
+      <div class="entry-card reveal">
+        <p class="entry-kicker"><span>05</span>Kőzetbolygó · a vörös bolygó</p>
+        <h2 id="mars-title">Mars</h2>
+        <p class="entry-lead">Színét a felszíni vas-oxid, vagyis a rozsda adja. Ritka szén-dioxid-légkörű, hideg sivatag, sarki jégsapkákkal és a Naprendszer legmagasabb vulkánjával.</p>
+        <table class="infobox"><caption>Adatlap</caption><tbody><tr><th scope="row">Átmérő</th><td>6 779 km</td></tr><tr><th scope="row">Távolság a Naptól</th><td>227,9 millió km (1,52 CsE)</td></tr><tr><th scope="row">Tengelyforgás</th><td>24 óra 37 perc</td></tr><tr><th scope="row">Keringési idő</th><td>687 földi nap</td></tr><tr><th scope="row">Holdak</th><td>2 (Phobos, Deimos)</td></tr><tr><th scope="row">Hőmérséklet</th><td>átlagosan −65 °C</td></tr></tbody></table>
+        <div class="entry-compare"><span>Átmérő a Földhöz képest</span><div class="bar" aria-hidden="true"><i style="--w:22.0%"></i></div><b>0,53×</b></div>
+        <h3>Érdekességek</h3>
+        <ul class="facts"><li>Az Olympus Mons kb. 22 km magas – közel háromszorosa a Mount Everestnek.</li><li>A Valles Marineris kanyonrendszer mintegy 4 000 km hosszú.</li><li>Felszínét jelenleg is robotok kutatják, például a Perseverance rover.</li></ul>
+      </div>
+    </article>
+    <article class="entry" id="jupiter" data-focus="jupiter" aria-labelledby="jupiter-title">
+      <div class="entry-card reveal">
+        <p class="entry-kicker"><span>06</span>Gázóriás</p>
+        <h2 id="jupiter-title">Jupiter</h2>
+        <p class="entry-lead">A legnagyobb bolygó: tömege két és félszerese az összes többi bolygóénak együttvéve. Felhősávjait több száz km/órás szelek hajtják.</p>
+        <table class="infobox"><caption>Adatlap</caption><tbody><tr><th scope="row">Átmérő</th><td>139 820 km</td></tr><tr><th scope="row">Távolság a Naptól</th><td>778,5 millió km (5,2 CsE)</td></tr><tr><th scope="row">Tengelyforgás</th><td>9 óra 56 perc</td></tr><tr><th scope="row">Keringési idő</th><td>11,9 földi év</td></tr><tr><th scope="row">Holdak</th><td>95+</td></tr><tr><th scope="row">Hőmérséklet</th><td>~−110 °C (felhőtető)</td></tr></tbody></table>
+        <div class="entry-compare"><span>Átmérő a Földhöz képest</span><div class="bar" aria-hidden="true"><i style="--w:99.9%"></i></div><b>11×</b></div>
+        <h3>Érdekességek</h3>
+        <ul class="facts"><li>A Nagy Vörös Folt egy évszázadok óta tomboló vihar, nagyobb a Földnél.</li><li>A leggyorsabban forgó bolygó: egy nap rajta 10 óránál is rövidebb.</li><li>Ganümédész nevű holdja nagyobb a Merkúrnál.</li></ul>
+      </div>
+    </article>
+    <article class="entry" id="szaturnusz" data-focus="szaturnusz" aria-labelledby="szaturnusz-title">
+      <div class="entry-card reveal">
+        <p class="entry-kicker"><span>07</span>Gázóriás · gyűrűs bolygó</p>
+        <h2 id="szaturnusz-title">Szaturnusz</h2>
+        <p class="entry-lead">Látványos gyűrűi főleg vízjégdarabokból állnak, átmérőjük mintegy 280 000 km – vastagságuk viszont sok helyen alig néhány tíz méter.</p>
+        <table class="infobox"><caption>Adatlap</caption><tbody><tr><th scope="row">Átmérő</th><td>116 460 km</td></tr><tr><th scope="row">Távolság a Naptól</th><td>1,43 milliárd km (9,5 CsE)</td></tr><tr><th scope="row">Tengelyforgás</th><td>10 óra 33 perc</td></tr><tr><th scope="row">Keringési idő</th><td>29,4 földi év</td></tr><tr><th scope="row">Holdak</th><td>270+</td></tr><tr><th scope="row">Hőmérséklet</th><td>~−140 °C (felhőtető)</td></tr></tbody></table>
+        <div class="entry-compare"><span>Átmérő a Földhöz képest</span><div class="bar" aria-hidden="true"><i style="--w:91.2%"></i></div><b>9,14×</b></div>
+        <h3>Érdekességek</h3>
+        <ul class="facts"><li>Átlagos sűrűsége kisebb a vízénél – egy elég nagy kádban elúszna.</li><li>Neki van a legtöbb ismert holdja a Naprendszerben.</li><li>Titán nevű holdján sűrű légkör és metántavak vannak.</li></ul>
+      </div>
+    </article>
+    <article class="entry" id="uranusz" data-focus="uranusz" aria-labelledby="uranusz-title">
+      <div class="entry-card reveal">
+        <p class="entry-kicker"><span>08</span>Jégóriás</p>
+        <h2 id="uranusz-title">Uránusz</h2>
+        <p class="entry-lead">Szinte az oldalán fekve kering: tengelye 98°-ban dől. Halvány kékeszöld színét a légkörében lévő metán adja.</p>
+        <table class="infobox"><caption>Adatlap</caption><tbody><tr><th scope="row">Átmérő</th><td>50 724 km</td></tr><tr><th scope="row">Távolság a Naptól</th><td>2,87 milliárd km (19,2 CsE)</td></tr><tr><th scope="row">Tengelyforgás</th><td>17 óra 14 perc (ellentétes irányban)</td></tr><tr><th scope="row">Keringési idő</th><td>84 földi év</td></tr><tr><th scope="row">Holdak</th><td>28+</td></tr><tr><th scope="row">Hőmérséklet</th><td>~−195 °C (felhőtető)</td></tr></tbody></table>
+        <div class="entry-compare"><span>Átmérő a Földhöz képest</span><div class="bar" aria-hidden="true"><i style="--w:60.2%"></i></div><b>3,98×</b></div>
+        <h3>Érdekességek</h3>
+        <ul class="facts"><li>A sarkain 42 évig tart a nappal, majd 42 évig az éjszaka.</li><li>Az első távcsővel felfedezett bolygó (William Herschel, 1781).</li><li>Neki is van gyűrűrendszere, csak sötét és halvány.</li></ul>
+      </div>
+    </article>
+    <article class="entry" id="neptunusz" data-focus="neptunusz" aria-labelledby="neptunusz-title">
+      <div class="entry-card reveal">
+        <p class="entry-kicker"><span>09</span>Jégóriás</p>
+        <h2 id="neptunusz-title">Neptunusz</h2>
+        <p class="entry-lead">A legtávolabbi bolygó, mélykék jégóriás. Itt fújnak a Naprendszer leggyorsabb szelei, akár 2 000 km/óra sebességgel.</p>
+        <table class="infobox"><caption>Adatlap</caption><tbody><tr><th scope="row">Átmérő</th><td>49 244 km</td></tr><tr><th scope="row">Távolság a Naptól</th><td>4,5 milliárd km (30,1 CsE)</td></tr><tr><th scope="row">Tengelyforgás</th><td>16 óra 6 perc</td></tr><tr><th scope="row">Keringési idő</th><td>164,8 földi év</td></tr><tr><th scope="row">Holdak</th><td>16</td></tr><tr><th scope="row">Hőmérséklet</th><td>~−200 °C (felhőtető)</td></tr></tbody></table>
+        <div class="entry-compare"><span>Átmérő a Földhöz képest</span><div class="bar" aria-hidden="true"><i style="--w:59.3%"></i></div><b>3,86×</b></div>
+        <h3>Érdekességek</h3>
+        <ul class="facts"><li>Előbb számításokkal jósolták meg a létezését, csak utána látták távcsővel (1846).</li><li>Felfedezése óta mindössze egyetlen kört tett meg a Nap körül (2011-ben).</li><li>Legnagyobb holdja, a Triton, a bolygó forgásával ellentétes irányban kering.</li></ul>
+      </div>
+    </article>
+      </div>
+
+      <section class="map" id="terkep" data-focus="overview" aria-labelledby="map-title">
+        <div class="map-head reveal">
+          <p class="eyebrow">A Naprendszer térképe</p>
+          <h2 id="map-title">Kattints egy bolygóra.</h2>
+          <p>Húzással forgathatod a nézetet. A méretek és a távolságok nem méretarányosak – úgy sűrítettük őket, hogy minden bolygó egyszerre látszódjon.</p>
+        </div>
+        <aside class="map-card" aria-live="polite" translate="no"></aside>
+      </section>
+
+      <section class="compare" id="osszehasonlitas" data-focus="overview-quiet" aria-labelledby="compare-title">
+        <div class="compare-card reveal">
+          <p class="eyebrow">Összehasonlító táblázat</p>
+          <h2 id="compare-title">A nyolc bolygó egymás mellett</h2>
+          <p class="muted">Kattints egy oszlop fejlécére a rendezéshez.</p>
+          <div class="table-wrap">
+            <table class="sortable">
+              <thead><tr>
+                <th scope="col"><button type="button" data-col="0">Bolygó</button></th>
+                <th scope="col"><button type="button" data-col="1">Átmérő (km)</button></th>
+                <th scope="col"><button type="button" data-col="2">Naptávolság (CsE)</button></th>
+                <th scope="col"><button type="button" data-col="3">Keringés (földi nap)</button></th>
+                <th scope="col"><button type="button" data-col="4">Holdak</button></th>
+              </tr></thead>
+              <tbody><tr>
+          <th scope="row"><a href="#merkur">Merkúr</a></th>
+          <td data-v="4879">4879</td>
+          <td data-v="0.39">0,39</td>
+          <td data-v="88">88</td>
+          <td data-v="0">0</td>
+        </tr><tr>
+          <th scope="row"><a href="#venusz">Vénusz</a></th>
+          <td data-v="12104">12 104</td>
+          <td data-v="0.72">0,72</td>
+          <td data-v="224.7">224,7</td>
+          <td data-v="0">0</td>
+        </tr><tr>
+          <th scope="row"><a href="#fold">Föld</a></th>
+          <td data-v="12742">12 742</td>
+          <td data-v="1">1</td>
+          <td data-v="365.25">365,25</td>
+          <td data-v="1">1</td>
+        </tr><tr>
+          <th scope="row"><a href="#mars">Mars</a></th>
+          <td data-v="6779">6779</td>
+          <td data-v="1.52">1,52</td>
+          <td data-v="687">687</td>
+          <td data-v="2">2</td>
+        </tr><tr>
+          <th scope="row"><a href="#jupiter">Jupiter</a></th>
+          <td data-v="139820">139 820</td>
+          <td data-v="5.2">5,2</td>
+          <td data-v="4333">4333</td>
+          <td data-v="95">95+</td>
+        </tr><tr>
+          <th scope="row"><a href="#szaturnusz">Szaturnusz</a></th>
+          <td data-v="116460">116 460</td>
+          <td data-v="9.5">9,5</td>
+          <td data-v="10759">10 759</td>
+          <td data-v="274">270+</td>
+        </tr><tr>
+          <th scope="row"><a href="#uranusz">Uránusz</a></th>
+          <td data-v="50724">50 724</td>
+          <td data-v="19.2">19,2</td>
+          <td data-v="30687">30 687</td>
+          <td data-v="28">28+</td>
+        </tr><tr>
+          <th scope="row"><a href="#neptunusz">Neptunusz</a></th>
+          <td data-v="49244">49 244</td>
+          <td data-v="30.1">30,1</td>
+          <td data-v="60190">60 190</td>
+          <td data-v="16">16</td>
+        </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="source">Adatok: a NASA Solar System Exploration összefoglalói alapján, kerekítve. A holdak száma az ismert holdakat jelenti, és az új felfedezésekkel nő. CsE = csillagászati egység, a Föld–Nap közepes távolság (149,6 millió km).</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p><b>ORBIS</b> · Portfólió-demó: interaktív 3D lexikon WebGL-lel. A bolygók felszíne valós időben, programból készül.</p>
+      <p>Készítette: <a href="https://megyerimarkmate.hu" target="_blank" rel="noopener">Megyeri Márk Máté</a></p>
+    </footer>
+  </body>
+</html>
